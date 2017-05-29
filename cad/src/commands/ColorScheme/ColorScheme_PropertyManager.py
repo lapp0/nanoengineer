@@ -153,7 +153,7 @@ def writeColorSchemeFavoriteFile( filename ):
         elif isinstance(val, bool):
             f.write("%s = %d\n" % (pref_key, val))
         else:
-            print "Not sure what pref_key '%s' is." % pref_key
+            print("Not sure what pref_key '%s' is." % pref_key)
 
     f.close()
 
@@ -214,7 +214,7 @@ def loadFavoriteFile( filename ):
                 elif selectionColor_prefs_key.endswith(pref_keyString):
                     pref_valueToStore = tuple(map(float, pref_value[1:-1].split(',')))
                 else:
-                    print "Not sure what pref_key '%s' is." % pref_keyString
+                    print("Not sure what pref_key '%s' is." % pref_keyString)
                     continue
             except:
                 msg = "\npref_key = '%s'\nvalue = %s" \
@@ -634,8 +634,8 @@ class ColorScheme_PropertyManager(Command_PropertyManager):
                              "Background_Black",   "Background_White",
                              "Background_Gray",    "Background_Custom"]
 
-        backgroundIconsDict = dict(zip(backgroundNames, backgroundIcons))
-        backgroundNamesDict = dict(zip(backgroundIndexes, backgroundNames))
+        backgroundIconsDict = dict(list(zip(backgroundNames, backgroundIcons)))
+        backgroundNamesDict = dict(list(zip(backgroundIndexes, backgroundNames)))
 
         for backgroundName in backgroundNames:
 
@@ -794,7 +794,7 @@ class ColorScheme_PropertyManager(Command_PropertyManager):
                     ok2, text = writeColorSchemeToFavoritesFile(name)
                     indexOfDuplicateItem = self.favoritesComboBox.findText(name)
                     self.favoritesComboBox.removeItem(indexOfDuplicateItem)
-                    print "Add Favorite: removed duplicate favorite item."
+                    print("Add Favorite: removed duplicate favorite item.")
                 else:
                     env.history.message("Add Favorite: cancelled overwriting favorite item.")
                     return

@@ -44,8 +44,8 @@ def parse(pat, rest):
     except SyntaxError:
         raise
     except:
-        print "retval at exception: %r" % (retval,)
-        raise SyntaxError, "exception %s %s at %s" % (sys.exc_info()[0], sys.exc_info()[1], describe_where(rest)) ###k ##e need more info, about pat?
+        print("retval at exception: %r" % (retval,))
+        raise SyntaxError("exception %s %s at %s" % (sys.exc_info()[0], sys.exc_info()[1], describe_where(rest))) ###k ##e need more info, about pat?
         ##e maybe also postprocess the results using another method of pat, or call pat.parse1 to do it all,
         # to support uniform keyword args for postprocess funcs (with access to rest's env)
     try:
@@ -56,7 +56,7 @@ def parse(pat, rest):
         try:
             return resultfunc(res), newrest
         except:
-            print "resultfunc %r failed on res %r" % (resultfunc, res) # this seems often useful
+            print("resultfunc %r failed on res %r" % (resultfunc, res)) # this seems often useful
             raise
     return res, newrest
 
@@ -65,7 +65,7 @@ def parse_top(pat, rest):
         return parse(pat, rest)
     except ParseFail:
         return "ParseFail", None
-    except SyntaxError, e:
+    except SyntaxError as e:
         return 'SyntaxError: ' + str(e), None
     pass
 
@@ -99,7 +99,7 @@ class Seq(ParseRule):
                     msg = "Can't complete %s, stuck at arg %d = %s\nat %s" % (self, len(res) + 1, arg, describe_where(rest))
                 else:
                     msg = "%s" % (describe_where(rest),)
-                raise SyntaxError, msg
+                raise SyntaxError(msg)
             res.append(res0)
         return res, rest
     pass
@@ -132,7 +132,7 @@ def ListOf(pat):
     """
     res = ForwardDef()
     res.pat = Optional(Seq(pat, res,
-                            result = lambda (p,r): [p] + r # fix retval format to be a single list (warning: quadratic time)
+                            result = lambda p_r: [p_r[0]] + p_r[1] # fix retval format to be a single list (warning: quadratic time)
                                # note: this has value None: [p].extend(r)
                                # (and it too would make entire ListOf take quadratic time if it worked)
                            ))
@@ -186,9 +186,9 @@ class TokenType(ParseRule):
         self.want_tokname = self.kws.get('want_tokname', want_tokname_dflt)
         assert type(toknames) == type([])
         for tokname in toknames:
-            assert type(tokname) == type("") and tokname in tok_name.itervalues(), \
+            assert type(tokname) == type("") and tokname in iter(tok_name.values()), \
                    "illegal tokname: %r (not found in %r)" % \
-                   ( tokname, tok_name.values() )
+                   ( tokname, list(tok_name.values()) )
         self.toknames = toknames
         try:
             self.cond = self.args[1]
@@ -227,12 +227,12 @@ def Op( opstring):
 # ignore everything else (some are errors) (easiest: filter the ok to ignore, stop at an error, print it at end)
 
 def make_number(token, sign = 1): # other signs untested
-    for type in (int, long, float):
+    for type in (int, int, float):
         try:
             return type(token) * sign
         except:
             pass
-    raise SyntaxError, "illegal number: %r" % (token,) ### flaw: this doesn't include desc of where it happened...
+    raise SyntaxError("illegal number: %r" % (token,)) ### flaw: this doesn't include desc of where it happened...
 
 Name = TokenType('NAME')
 Colon = Op(':')
@@ -248,19 +248,19 @@ String = TokenType('STRING', result = eval)
 Arg = Alt( Number,
            String,
            Name, #e do STRING & NAME results need to be distinguished?? We'll see...
-           Seq( Minus, Number, result = lambda (m,n): - n )
+           Seq( Minus, Number, result = lambda m_n: - m_n[1] )
         )
 Arglist = ListOf(Arg) # not comma-sep; whitespace sep is ok (since ws is ignored by tokenizer) ##k test that!
 
 def Indented(pat):
-    return Seq(TokenType('INDENT'), pat, TokenType('DEDENT'), result = lambda (i,p,d): p )
+    return Seq(TokenType('INDENT'), pat, TokenType('DEDENT'), result = lambda i_p_d: i_p_d[1] )
 
 Thing = ForwardDef("Thing")
 Thing.pat = Seq( Name, Colon, Arglist, Newline, Optional(Indented(ListOf(Thing))),
-                 result = lambda (name,c,args,nl,subthings): makeThing(name, args, subthings)
+                 result = lambda name_c_args_nl_subthings: makeThing(name_c_args_nl_subthings[0], name_c_args_nl_subthings[2], name_c_args_nl_subthings[4])
                  )
 
-Whole = Seq(ListOf(Thing), End, result = lambda (lt,e): lt )
+Whole = Seq(ListOf(Thing), End, result = lambda lt_e: lt_e[0] )
 
 # ==
 
@@ -272,7 +272,7 @@ class attr_interface_to_dict:
         self._dict1 = _dict1
     def __getattr__(self, attr): # in class attr_interface_to_dict
         if attr.startswith('_'):
-            raise AttributeError, attr
+            raise AttributeError(attr)
             # Something like this is needed, even if _dict1 contains such an attr,
             # so such an attr (if specially named) won't fool Python into giving us different semantics.
             # But if we decide _dict1 should be able to contain some names of this form, we could make
@@ -280,7 +280,7 @@ class attr_interface_to_dict:
         try:
             return self._dict1[attr]
         except KeyError:
-            raise AttributeError, attr
+            raise AttributeError(attr)
         pass
     pass
 
@@ -343,7 +343,7 @@ class ThingData(Info):
             dict1[self.name] = self.thingargs[0]
     def pprint(self, indent = ""):
         name, args, subthings = self._args
-        print indent + name + ': ' + ', '.join(map(repr,args)) # works decently except for 1.4099999999999999 rather than 1.41
+        print(indent + name + ': ' + ', '.join(map(repr,args))) # works decently except for 1.4099999999999999 rather than 1.41
         for sub in subthings:
             sub.pprint( indent + '    ' )
     def kids(self, kinds):
@@ -365,7 +365,7 @@ class ThingData(Info):
         # but for booleans, the stored val is 'true' or 'false' -- not ok. How do we get best of all these worlds?? ####
         if self.name != kind:
             return False
-        for param, val in conds.items():
+        for param, val in list(conds.items()):
             #### LOGIC BUG 2 - do we match if we don't store param at all? who supplies defaults?
             # for now: let missing param be the same as a value of None. (this is used in matching widget = ('lineedit',None), etc)
             if self.matches( self.options.get(param, None), val):
@@ -395,7 +395,7 @@ def makeThing(name, args, subthings):
     thingdata.maybe_set_self_as_option_in(parent) to make and execute that decision.
     """
     if not args and not subthings:
-        print "warning: \"%s:\" with no args or subthings" % (name,)
+        print("warning: \"%s:\" with no args or subthings" % (name,))
     return ThingData(name, args, subthings)
 
 # == test code (might not be up to date)
@@ -426,13 +426,13 @@ if __name__ == '__main__':
         pprint(res)
 
     res, newrest = parse_top(Whole, list(gentok))
-    print len(` res `), 'chars in res' #3924
-    print res # might be an error message
+    print(len(repr( res)), 'chars in res') #3924
+    print(res) # might be an error message
     if newrest is not None:
-        print newrest
-        print res[0].pprint() #k
+        print(newrest)
+        print(res[0].pprint()) #k
 
-    print "test done"
+    print("test done")
 
 # that might be working... now what?
 # the language has an ambiguity... exprhead:args {moreargs}, vs option:val meaning option=val.

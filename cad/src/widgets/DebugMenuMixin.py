@@ -69,7 +69,7 @@ def debug_runpycode_from_a_dialog( source = "some debug menu??"):
         command = command.replace("@@@",'\n')
         debug_run_command(command, source = source)
     else:
-        print "run py code: cancelled"
+        print("run py code: cancelled")
     return
 
 class DebugMenuMixin:
@@ -237,7 +237,7 @@ class DebugMenuMixin:
             ('Part', 'model.part'),
             ('Assembly', 'model.assembly')):
             # should also have a command to look for other classes with high refcounts
-            if sys.modules.has_key(modulename):
+            if modulename in sys.modules:
                 module = sys.modules[modulename]
                 clas = getattr(module, clasname, None)
                 if clas:
@@ -268,7 +268,7 @@ class DebugMenuMixin:
             self.setFont(newfont)
             try:
                 if debug_flags.atom_debug:
-                    print "atom_debug: new font.toString():", newfont.toString()
+                    print("atom_debug: new font.toString():", newfont.toString())
             except:
                 print_compact_traceback("new font.toString() failed: ")
         return
@@ -310,7 +310,7 @@ class DebugMenuMixin:
                 after = event.stateAfter()
             except:
                 after = "<no stateAfter>" # needed for Wheel events, at least
-            print "%s: event; state = %r, stateAfter = %r; time = %r" % (funcname, before, after, time.asctime())
+            print("%s: event; state = %r, stateAfter = %r; time = %r" % (funcname, before, after, time.asctime()))
 
         # It seems, from doc and experiments, that event.state() is
         # from just before the event (e.g. a button press or release,
@@ -339,11 +339,11 @@ class DebugMenuMixin:
             print_compact_traceback("bug in do_debug_menu ignored; menu_spec is %r" % (menu_spec,) )
 
     def _debug_printself(self):
-        print self
+        print(self)
 
     def _debug_set_widget(self): #bruce 050604
         debug._widget = self
-        print "set debug._widget to",self
+        print("set debug._widget to",self)
 
     def _debug_destroy_self(self): #bruce 050604
         #e should get user confirmation
@@ -358,7 +358,7 @@ class DebugMenuMixin:
     def _debug_do_benchmark(self):
         # simple graphics benchmark, piotr 080311
         from time import clock
-        print "Entering graphics benchmark. Drawing 100 frames... please wait."
+        print("Entering graphics benchmark. Drawing 100 frames... please wait.")
         win = self._debug_win
         self.win.resize(1024,768) # resize the window to a constant size
 
@@ -372,7 +372,7 @@ class DebugMenuMixin:
         tm0 = clock()
         profile_single_call_if_enabled(self._draw_hundred_frames, self, None)
         tm1 = clock()
-        print "Benchmark complete. FPS = ", 100.0 / (tm1 - tm0)
+        print("Benchmark complete. FPS = ", 100.0 / (tm1 - tm0))
         return
 
     def _debug_profile_userEnterCommand(self):
@@ -407,18 +407,18 @@ class DebugMenuMixin:
             label = "Enter the command.commandName e.g. 'BUILD_DNA' , 'DEPOSIT'"
          )
         if not ok:
-            print "No command name entered, returning"
+            print("No command name entered, returning")
             return
 
         commandName = str(commandName)
         commandName = commandName.upper()
         if not commandName in RECOGNIZED_COMMAND_NAMES:
             #bruce 090305 changed this to just a warning, added try/except
-            print "Warning: command name %r might or might not work. " \
-                  "Trying it anyway." % (commandName,)
+            print("Warning: command name %r might or might not work. " \
+                  "Trying it anyway." % (commandName,))
             pass
 
-        print "Profiling command enter for %s" % (commandName,)
+        print("Profiling command enter for %s" % (commandName,))
 
         win = self._debug_win
         meth = self.win.commandSequencer.userEnterCommand
@@ -427,13 +427,13 @@ class DebugMenuMixin:
         try:
             profile_single_call_if_enabled(meth, commandName)
         except:
-            print "exception entering command caught and discarded." #e improve
+            print("exception entering command caught and discarded.") #e improve
             sys.stdout.flush()
             pass
         tm1 = clock()
         set_enabled_for_profile_single_call(False)
-        print "Profiling complete. Total CPU time to enter %s = %s" % \
-              (commandName, (tm1 - tm0))
+        print("Profiling complete. Total CPU time to enter %s = %s" % \
+              (commandName, (tm1 - tm0)))
         return
 
     def _debug_print_profile_output(self): #bruce 090305

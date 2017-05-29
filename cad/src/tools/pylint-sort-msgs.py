@@ -15,13 +15,13 @@ import sys, os, time
 files = {} ### REVIEW: can I have any number of open files at a time?
 
 def open_file_for_message_type(mtype):
-    if not files.has_key(mtype):
+    if mtype not in files:
         filename = "%s.txt" % mtype
         files[mtype] = open(filename, "w")
     return files[mtype]
 
 def close_files(): # maybe not needed, if normal exit does this??
-    for key, val in files.items():
+    for key, val in list(files.items()):
         val.close()
     return
 

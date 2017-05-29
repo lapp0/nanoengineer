@@ -86,7 +86,7 @@ class Clipped(InstanceOrExpr):
             # from an env which stays fixed (or from an env var which is changedtracked), not just from each draw call's caller
             # (i.e. a glpane attr).
         # enable the planes
-        for i, plane in zip(range(len(planes)), planes):
+        for i, plane in zip(list(range(len(planes))), planes):
             assert len(plane) == 4
             glEnable( GL_CLIP_PLANE_table[i] )
             glClipPlane( GL_CLIP_PLANE_table[i], plane)

@@ -66,7 +66,7 @@ def replace_atom_class( atom, newclass, *atomdicts): #e refile?
     # some of that work, and a more detailed comment about what would have
     # to be done, also covering analogous replacements for Bond and Chunk.
     if debug_flags.DEBUG_DNA_UPDATER:
-        print "dna_updater: replacing %r class %r with %r" % (atom, atom.__class__, newclass)
+        print("dna_updater: replacing %r class %r with %r" % (atom, atom.__class__, newclass))
     atom.__class__ = newclass
     return
 
@@ -76,7 +76,7 @@ def replace_bond_class( bond, newclass, *bonddicts): #e refile?
     The bonddicts map id(bond) -> bond.
     """
     if debug_flags.DEBUG_DNA_UPDATER:
-        print "dna_updater: replacing %r class %r with %r" % (bond, bond.__class__, newclass)
+        print("dna_updater: replacing %r class %r with %r" % (bond, bond.__class__, newclass))
     bond.__class__ = newclass
     return
 
@@ -97,11 +97,11 @@ def remove_killed_atoms( atomdict):
     @see: remove_closed_or_disabled_assy_atoms
     """
     killed = []
-    for atom in atomdict.itervalues():
+    for atom in atomdict.values():
         if atom.killed():
             killed.append(atom)
     if debug_flags.DEBUG_DNA_UPDATER and killed:
-        print "dna_updater: ignoring %d killed atoms" % len(killed)
+        print("dna_updater: ignoring %d killed atoms" % len(killed))
     for atom in killed:
         del atomdict[atom.key]
     return
@@ -111,11 +111,11 @@ def remove_error_atoms( atomdict):
     Remove from atomdict any atoms with _dna_updater__error set.
     """
     error_atoms = []
-    for atom in atomdict.itervalues():
+    for atom in atomdict.values():
         if atom._dna_updater__error:
             error_atoms.append(atom)
     if debug_flags.DEBUG_DNA_UPDATER and error_atoms:
-        print "dna_updater: ignoring %d atoms with _dna_updater__error" % len(error_atoms)
+        print("dna_updater: ignoring %d atoms with _dna_updater__error" % len(error_atoms))
     for atom in error_atoms:
         del atomdict[atom.key]
     return
@@ -128,7 +128,7 @@ def remove_closed_or_disabled_assy_atoms( atomdict): #bruce 080314
     updaters to modify its atoms (e.g. whose assy has been closed).
     """
     atoms_to_remove = []
-    for atom in atomdict.itervalues():
+    for atom in atomdict.values():
         try:
             disabled = atom.molecule.assy.permanently_disable_updaters
         except:
@@ -137,7 +137,7 @@ def remove_closed_or_disabled_assy_atoms( atomdict): #bruce 080314
         if disabled:
             atoms_to_remove += [atom]
     if debug_flags.DEBUG_DNA_UPDATER and atoms_to_remove:
-        print "dna_updater: ignoring %d atoms from closed files or updater-disabled assys" % len(atoms_to_remove)
+        print("dna_updater: ignoring %d atoms from closed files or updater-disabled assys" % len(atoms_to_remove))
     for atom in atoms_to_remove:
         del atomdict[atom.key]
     return

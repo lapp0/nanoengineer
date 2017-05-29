@@ -76,7 +76,7 @@ def usePyrexAtomsAndBonds(): #bruce 080218, revised/renamed 080220
         else:
             _pyrex_atoms_succeeded = True
             # for now, we need a can't miss note for success, as well (red, though not an error):
-            print "\nNOTE: using experimental Pyrex Atoms and Bonds from atombase module\n"
+            print("\nNOTE: using experimental Pyrex Atoms and Bonds from atombase module\n")
             import foundation.env as env # import cycle??
             env.history.redmsg("NOTE: using experimental Pyrex Atoms and Bonds from atombase module")
         pass
@@ -391,8 +391,8 @@ def bondpoint_policy(bondpoint, sim_flag): #bruce 080507/080603
         return BONDPOINT_UNCHANGED
     if len(bondpoint.bonds) != 1:
         # should never happen
-        print "bug: %r has %d bonds, namely %r" % \
-              (bondpoint, len(bondpoint.bonds), bondpoint.bonds)
+        print("bug: %r has %d bonds, namely %r" % \
+              (bondpoint, len(bondpoint.bonds), bondpoint.bonds))
         ## someday: return BONDPOINT_LEFT_OUT # or BONDPOINT_UNCHANGED??
         # for now, only this is safe:
         return BONDPOINT_UNCHANGED

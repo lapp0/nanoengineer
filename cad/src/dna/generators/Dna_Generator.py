@@ -167,7 +167,7 @@ class Dna_Generator:
         #Do a safety check. If number of base pairs to add or subtract is 0,
         #don't proceed further.
         if numberOfBasePairs == 0:
-            print "Duplex not created. The number of base pairs are unchanged"
+            print("Duplex not created. The number of base pairs are unchanged")
             return
 
         #If the number of base pairs supplied by the caller are negative, it
@@ -246,7 +246,7 @@ class Dna_Generator:
             #self.make that calls self._create_atomLists_for_regrouping
             #after calling self._postProcess
             for m in new_ladder.all_chunks():
-                for atm in m.atoms.values():
+                for atm in list(m.atoms.values()):
                     if atm.element.symbol in ('Ss3') and atm.getDnaBaseName() in ('a','b'):
                         atm.setDnaBaseName('X')
 
@@ -797,7 +797,7 @@ class Dna_Generator:
             strand_neighbors_to_delete = self._strand_neighbors_to_delete(atm)
 
             for a in strand_neighbors_to_delete:
-                if not atomsScheduledForDeletionDict.has_key(id(a)):
+                if id(a) not in atomsScheduledForDeletionDict:
                     atomsScheduledForDeletionDict[id(a)] = a
 
             #Add the axis atom to the atoms scheduled for deletion only when
@@ -814,10 +814,10 @@ class Dna_Generator:
             #uses -- Ninad 2008-05-15
             if len(strand_neighbors_to_delete) == 2 or \
                len(atm.strand_neighbors()) == len(strand_neighbors_to_delete):
-                if not atomsScheduledForDeletionDict.has_key(id(atm)):
+                if id(atm) not in atomsScheduledForDeletionDict:
                     atomsScheduledForDeletionDict[id(atm)] = atm
                 else:
-                    print "unexpected: atom %r already in atomsScheduledForDeletionDict" % atm #bruce 080807 added this
+                    print("unexpected: atom %r already in atomsScheduledForDeletionDict" % atm) #bruce 080807 added this
 
             # REVIEW: if any atom can be added twice to that dict above without
             # this being a bug, then the has_key tests can simply be removed
@@ -837,10 +837,10 @@ class Dna_Generator:
         #a._f_will_kill has the same value on both atoms). Fixes a memory leak
         #(at least in some code where it's done). See bug 2880 for details.
         val = Atom_prekill_prep()
-        for a in atomsScheduledForDeletionDict.itervalues():
+        for a in atomsScheduledForDeletionDict.values():
             a._f_will_kill = val # inlined a._f_prekill(val), for speed
 
-        for atm in atomsScheduledForDeletionDict.values():
+        for atm in list(atomsScheduledForDeletionDict.values()):
             if atm: # this test is probably not needed [bruce 080807 comment]
                 try:
                     atm.kill()
@@ -1106,7 +1106,7 @@ class Dna_Generator:
             # 'member' is a chunk containing a full set of
             # base-pair pseudo atoms.
 
-            for atm in member.atoms.values():
+            for atm in list(member.atoms.values()):
                 atm._posn = tfm(atm._posn) + position
 
             member.name = "BasePairChunk"
@@ -1227,15 +1227,15 @@ class Dna_Generator:
         rawOffset = b * scalar
 
         if 0: # Debugging code.
-            print "~~~~~~~~~~~~~~"
-            print "uVector  a = ", a
-            print "uVector  b = ", b
-            print "cross(a,b) =", axis
-            print "theta      =", theta
-            print "baserise   =", self.getBaseRise()
-            print "# of bases =", self.getNumberOfBasePairs()
-            print "scalar     =", scalar
-            print "rawOffset  =", rawOffset
+            print("~~~~~~~~~~~~~~")
+            print("uVector  a = ", a)
+            print("uVector  b = ", b)
+            print("cross(a,b) =", axis)
+            print("theta      =", theta)
+            print("baserise   =", self.getBaseRise())
+            print("# of bases =", self.getNumberOfBasePairs())
+            print("scalar     =", scalar)
+            print("rawOffset  =", rawOffset)
 
         if theta == 0.0 or theta == 180.0:
             axis = V(0, 1, 0)

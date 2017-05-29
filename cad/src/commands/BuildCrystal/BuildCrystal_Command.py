@@ -475,7 +475,7 @@ class BuildCrystal_Command(basicMode):
         elif self.o.modkeys == 'Shift+Control':
             self.o.setCursor(self.w.CookieSubtractCursor)
         else:
-            print "Error in update_cursor_for_no_MB(): Invalid modkey=", self.o.modkeys
+            print("Error in update_cursor_for_no_MB(): Invalid modkey=", self.o.modkeys)
         return
 
     # == LMB down-click (button press) methods
@@ -753,7 +753,7 @@ class BuildCrystal_Command(basicMode):
                     self.selCurve_List[-2] = self.selCurve_List[-1]
                 self.selCurve_List[-1] = p1
             except:
-                print self.selCurve_List
+                print(self.selCurve_List)
             if self.Rubber:
                 self.rubberWithoutMoving = False
                 env.history.statusbar_msg("Double click to end selection; Press <Esc> key to cancel selection.")
@@ -1098,7 +1098,7 @@ class BuildCrystal_Command(basicMode):
         ]
 
     def copy(self):
-        print 'NYI'
+        print('NYI')
 
     def addLayer(self):
         """
@@ -1349,7 +1349,7 @@ class BuildCrystal_Command(basicMode):
                     up = V(0, 0, 1)
                     rt = V(0, 1, 0)
         else: ##Sth wrong
-            raise ValueError, self.o.out
+            raise ValueError(self.o.out)
 
         orig3d = self._project2Plane(offset)
         p2 -= orig3d
@@ -1413,7 +1413,7 @@ class BuildCrystal_Command(basicMode):
             lx = (ay[1] * pt[0] - ay[0] * pt[1]) / (ax[0] * ay[1] - ay[0] * ax[1])
             ly = (ax[1] * pt[0] - ax[0] * pt[1]) / (ax[1] * ay[0] - ax[0] * ay[1])
         except ZeroDivisionError:
-            print " In _getNCartP2d() of BuildCrystal_Command.py, divide-by-zero detected."
+            print(" In _getNCartP2d() of BuildCrystal_Command.py, divide-by-zero detected.")
             return None
 
         return V(lx, ly)
@@ -1478,7 +1478,7 @@ class BuildCrystal_Command(basicMode):
         ix = int(floor(pt[0] / uLen)) - uv1[0][0]
         if ix == -1: ix = 0
         elif ix == (len(uv1) - 1): ix = len(uv1) - 2
-        elif ix < -1 or ix >= len(uv1): raise ValueError, (uv1, pt, uLen, ix)
+        elif ix < -1 or ix >= len(uv1): raise ValueError(uv1, pt, uLen, ix)
 
         dist = vlen(V(uv1[ix][0] * uLen, uv1[ix][1] * vLen) - pt)
         if dist < hd:

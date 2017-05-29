@@ -427,10 +427,10 @@ class GraphDrawDemo_FixedToolOnArg1(InstanceMacro): # see also class World_dna_h
 
     def on_press_bg(self):
         if 0:
-            print "compare:"
-            print self, self.delegate, self.delegate.delegate, self.delegate.delegate.plain # the background
-            print self.background
-            print "hl.highlighted =",self.delegate.delegate.highlighted
+            print("compare:")
+            print(self, self.delegate, self.delegate.delegate, self.delegate.delegate.plain) # the background
+            print(self.background)
+            print("hl.highlighted =",self.delegate.delegate.highlighted)
                 # self.background is the same as the .plain printed above, which means, as of 061208 941pm anyway,
                 # instantiating an instance gives exactly that instance. (Reasonable for now...)
 
@@ -544,7 +544,7 @@ class GraphDrawDemo_FixedToolOnArg1(InstanceMacro): # see also class World_dna_h
             self.world.make_and_add(node_expr, type = "dot") #070206 added type = "dot" -- note, not deducible from the expr!!
         elif what == 'polyline':
             if not lastnode:
-                print "bug: no self.newnode!!!"
+                print("bug: no self.newnode!!!")
             else:
                 if not isinstance(lastnode, polyline):
                     lastnode = self.newnode = self.world.make_and_add( polyline(lastnode), type = "polyline" )
@@ -552,7 +552,7 @@ class GraphDrawDemo_FixedToolOnArg1(InstanceMacro): # see also class World_dna_h
         elif what == 'drag':
             # drag the new node made by the click
             if not lastnode:
-                print "bug: no self.newnode!!!"
+                print("bug: no self.newnode!!!")
             else:
                 lastnode.pos = newpos
             pass

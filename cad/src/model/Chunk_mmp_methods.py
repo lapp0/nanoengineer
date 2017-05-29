@@ -68,12 +68,12 @@ class Chunk_mmp_methods:
         elif key == ['color']: #bruce 050505
             # val should be 3 decimal ints from 0-255;
             # colors of None are not saved since they're the default
-            r, g, b = map(int, val.split())
+            r, g, b = list(map(int, val.split()))
             color = r/255.0, g/255.0, b/255.0
             self.setcolor(color, repaint_in_MT = False)
         else:
             if debug_flags.atom_debug:
-                print "atom_debug: fyi: info chunk with unrecognized key %r" % (key,)
+                print("atom_debug: fyi: info chunk with unrecognized key %r" % (key,))
         return
 
     def atoms_in_mmp_file_order(self, mapping = None):
@@ -115,7 +115,7 @@ class Chunk_mmp_methods:
         # to recompute it and atpos and basepos just due to calling this. Maybe
         # that's silly and this should just return self.atlist,
         # or at least optim by doing that when it's in self.__dict__. ##e
-        pairs = self.atoms.items() # key, val pairs; keys are atom.key,
+        pairs = list(self.atoms.items()) # key, val pairs; keys are atom.key,
             # which is an int which counts from 1 as atoms are created in one
             # session, and which is (as of now, 050228) specified to sort in
             # order of creation even if we later change the kind of value it

@@ -202,14 +202,14 @@ class MakeCrossovers_Graphicsmode(BuildDna_GraphicsMode,
 
     def _drawHandles(self):
         if self._crossoverSite_marker and self._crossoverSite_marker.handleDict:
-            for handle in self._crossoverSite_marker.handleDict.values():
+            for handle in list(self._crossoverSite_marker.handleDict.values()):
                 if handle is not None: #if handle is None its a bug!
                     handle.draw()
 
 
     def _drawSpecialIndicators(self):
         final_crossover_atoms_dict = self._crossoverSite_marker.get_final_crossover_atoms_dict()
-        for atm in final_crossover_atoms_dict.values():
+        for atm in list(final_crossover_atoms_dict.values()):
             sphere_radius = max(1.20*atm.drawing_radius(),
                                 SPHERE_RADIUS)
             drawsphere(darkgreen,
@@ -220,7 +220,7 @@ class MakeCrossovers_Graphicsmode(BuildDna_GraphicsMode,
 
         if self.DEBUG_DRAW_ALL_POTENTIAL_CROSSOVER_SITES:
             atom_dict = self._crossoverSite_marker.get_base_orientation_indicator_dict()
-            for atm in atom_dict.values():
+            for atm in list(atom_dict.values()):
                 drawsphere(darkred,
                            atm.posn(),
                            1.5,

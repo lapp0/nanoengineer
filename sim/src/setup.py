@@ -33,11 +33,11 @@ from distutils.extension import Extension
 try:
     from Pyrex.Distutils import build_ext
 except:
-    print "Problem importing Pyrex. You need to install Pyrex before it makes sense to run this."
-    print "For more info see cad/src/README-Pyrex and/or "
-    print "  http://www.nanoengineer-1.net/mediawiki/index.php?title=Integrating_Pyrex_into_the_Build_System"
-    print "(If you already installed Pyrex, there's a bug in your Pyrex installation or in setup.py, "
-    print " since the import should have worked.)"
+    print("Problem importing Pyrex. You need to install Pyrex before it makes sense to run this.")
+    print("For more info see cad/src/README-Pyrex and/or ")
+    print("  http://www.nanoengineer-1.net/mediawiki/index.php?title=Integrating_Pyrex_into_the_Build_System")
+    print("(If you already installed Pyrex, there's a bug in your Pyrex installation or in setup.py, ")
+    print(" since the import should have worked.)")
     sys.exit(1)
 
 # Work around Mac compiler hang for -O3 with newtables.c
@@ -80,7 +80,7 @@ setup(name = 'Simulator',
       cmdclass = {'build_ext': build_ext})
 
 # this exit reminds people not to "import setup" from nE-1 itself!
-print "setup.py finished; exiting."
+print("setup.py finished; exiting.")
 sys.exit(0)
 
 #end

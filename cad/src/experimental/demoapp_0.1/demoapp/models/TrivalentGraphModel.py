@@ -171,9 +171,9 @@ class TrivalentGraphModel(object):
         return True
 
     def hit_test_objects(self): # front to back
-        for node in self.nodes.itervalues():
+        for node in self.nodes.values():
             yield node
-        for edge in self.edges.itervalues():
+        for edge in self.edges.values():
             yield edge
 
     def drawn_objects(self):

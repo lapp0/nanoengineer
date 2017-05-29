@@ -199,7 +199,7 @@ class GLPrefs:
         self.use_drawing_variant = debug_pref(
             "GLPane: drawing method (unbatched spheres)",
             Choice(names = variants,
-                   values = range(len(variants)),
+                   values = list(range(len(variants))),
                    defaultValue = self.use_drawing_variant_default),
             prefs_key = self.use_drawing_variant_prefs_key)
         return

@@ -206,7 +206,7 @@ class viewSlotsMixin:
                 if command is not commandSequencer.nullmode:
                     # bruce 071009 add condition to fix bug 2512
                     # (though the cause remains only guessed at)
-                    print "bug: _zoomPanRotateTool sees unexpected current command: %r" % (command,)
+                    print("bug: _zoomPanRotateTool sees unexpected current command: %r" % (command,))
                 # Note: This can happen on nullMode after certain other exceptions occur.
                 # [In fact, it seems to happen whenever we exit zoom/pan/rotate normally...
                 #  that is now bug 2512, and its cause is not known, but it might relate
@@ -258,7 +258,7 @@ class viewSlotsMixin:
             # axis attr stored in the chunk.  Get the chunks atoms and let
             # compute_heuristic_axis() recompute them.
             for c in range(len(chunks)):
-                atoms += chunks[c].atoms.values()
+                atoms += list(chunks[c].atoms.values())
         elif len(jigs) == 1 and len(atoms) == 0:
             # Warning: RectGadgets have no atoms.  We handle this special case below.
             atoms = jigs[0].atoms
@@ -266,14 +266,14 @@ class viewSlotsMixin:
             # There is a problem when allowing only 2 selected atoms.
             # Changing requirement to 3 atoms fixes bug 1418. mark 060322
             msg = redmsg("Please select some atoms, jigs, and/or chunks, covering at least 3 atoms")
-            print "ops_view.py len(atoms) = ", len(atoms)
+            print("ops_view.py len(atoms) = ", len(atoms))
             env.history.message(cmd + msg)
             return
 
         # This check is needed for jigs that have no atoms.  Currently, this
         # is the case for RectGadgets (ESP Image and Grid Plane) only.
         if len(atoms):
-            pos = A( map( lambda a: a.posn(), atoms ) )
+            pos = A( [a.posn() for a in atoms] )
             nears = [ self.glpane.out, self.glpane.up ]
             axis = compute_heuristic_axis( pos, 'normal', already_centered = False, nears = nears, dflt = None )
         else: # We have a jig with no atoms.
@@ -319,7 +319,7 @@ class viewSlotsMixin:
             env.history.message(cmd + msg)
             return
 
-        pos = A( map( lambda a: a.posn(), atoms ) ) # build list of atom xyz positions.
+        pos = A( [a.posn() for a in atoms] ) # build list of atom xyz positions.
         nears = [ self.glpane.out, self.glpane.up ]
         axis = compute_heuristic_axis( pos, 'normal', already_centered = False, nears = nears, dflt = None )
 

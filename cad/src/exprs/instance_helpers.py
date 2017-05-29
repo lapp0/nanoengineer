@@ -215,7 +215,7 @@ class InstanceOrExpr(IorE_guest_mixin): # see docstring for discussion of the ba
     def _copy(self, _instance_warning = True):
         ## assert not self._e_is_instance ## ??? [061019]
         if self._e_is_instance and _instance_warning:
-            print "WARNING: copying an instance %r" % (self,) # this might be ok...
+            print("WARNING: copying an instance %r" % (self,)) # this might be ok...
         return self.__class__(_copy_of = self) # this calls _destructive_copy on the new instance
     def copy(self):#061213 experiment, used in demo_drag.py, background.copy(color=green) ###k
         """
@@ -256,7 +256,7 @@ class InstanceOrExpr(IorE_guest_mixin): # see docstring for discussion of the ba
         # but it's shared by Instances and their expr templates
         # don't do this, since we need canon_expr:
         ## self._e_kws.update(kws)
-        for k,v in kws.iteritems():
+        for k,v in kws.items():
             self._e_kws[k] = canon_expr(v)
         return
     def _destructive_supply_args(self, args):
@@ -530,7 +530,7 @@ class InstanceOrExpr(IorE_guest_mixin): # see docstring for discussion of the ba
                 if is_expr_Instance(kid):
                     kid.draw()
                 else:
-                    print "***BUG: drawkid in %r sees non-Instance (skipping it): %r" % (self, kid,)
+                    print("***BUG: drawkid in %r sees non-Instance (skipping it): %r" % (self, kid,))
                         #070226, worrying about self.delegate rather than self._delegate being passed --
                         # common but why does it work??####BUG?? in testexpr_33x I tried it and it fails here...
                         # I predict there are a bunch of bugs like this, that some used to work, and others were not tested
@@ -695,8 +695,8 @@ class DelegatingMixin(object): # 061109 # see also DelegatingInstanceOrExpr #070
                 # note, _C__attr for _attr starting with _ is permitted, so we can't check whether attr starts '_' before doing this.
         except LvalError_ValueIsUnset:
             # 061205 new feature to prevent bugs: don't delegate in this case. UNTESTED! #####TEST
-            print "fyi (maybe not always bug): " \
-                  "don't delegate attr %r from %r when it raises LvalError_ValueIsUnset! reraising instead." % (attr, self)
+            print("fyi (maybe not always bug): " \
+                  "don't delegate attr %r from %r when it raises LvalError_ValueIsUnset! reraising instead." % (attr, self))
             raise
         except AttributeError:
             if attr.startswith('_'):
@@ -710,7 +710,7 @@ class DelegatingMixin(object): # 061109 # see also DelegatingInstanceOrExpr #070
 ##                        # before hasattr check, this happens for _args, _e_override_replace, _CK__i_instance_CVdict
 ##                        # (in notyetworking Boxed test, 061110 142p).
 ##                        #e could revise to only report if present in delegate... hard to do, see above.
-                raise AttributeError, attr # not just an optim -- we don't want to delegate any attrs that start with '_'.
+                raise AttributeError(attr) # not just an optim -- we don't want to delegate any attrs that start with '_'.
                 ##k reviewing this 061109, I'm not sure this is viable; maybe we'll need to exclude only __ or _i_ or _e_,
                 # or maybe even some of those need delegation sometimes -- we'll see.
                 #e Maybe the subclass will need to declare what attrs we exclude, or what _attrs we include!
@@ -730,11 +730,11 @@ class DelegatingMixin(object): # 061109 # see also DelegatingInstanceOrExpr #070
                 # so it will raise the same exception we would. Are there confusing cases where None *does* have the attr??
                 # I doubt it (since we're excluding _attrs). But it's worth giving more info about likely errors, so I'm printing some.
                 if delegate is None:
-                    raise AttributeError, attr # new feature 070121: this means there is no delegate (more useful than a delegate of None).
+                    raise AttributeError(attr) # new feature 070121: this means there is no delegate (more useful than a delegate of None).
                 if is_pure_expr(delegate):
                     print_compact_stack( "likely-invalid _delegate %r for %r in self = %r: " % (delegate, attr, self)) #061114
                 if attr == _DELEGATION_DEBUG_ATTR: # you can set that to any attr of current interest, for debugging
-                    print "debug_attr: delegating %r from %r to %r" % (attr, self, delegate)
+                    print("debug_attr: delegating %r from %r to %r" % (attr, self, delegate))
                 try:
                     res = getattr(delegate, attr) # here is where we delegate. It's normal for this to raise AttributeError (I think).
                 except AttributeError:
@@ -743,16 +743,16 @@ class DelegatingMixin(object): # 061109 # see also DelegatingInstanceOrExpr #070
                     printnim("too expensive for routine use")
                     msg = "no attr %r in delegate %r of self = %r" % (attr, delegate, self)
                     if attr == _DELEGATION_DEBUG_ATTR:
-                        print "debug_attr:", msg
-                    raise AttributeError, msg
+                        print("debug_attr:", msg)
+                    raise AttributeError(msg)
                 else:
                     if attr == _DELEGATION_DEBUG_ATTR:
-                        print "debug_attr: delegation of %r from %r is returning %r" % (attr, self, res) #070208
+                        print("debug_attr: delegation of %r from %r is returning %r" % (attr, self, res)) #070208
                     return res
-            print "DelegatingMixin: too early to delegate %r from %r, which is still a pure Expr" % (attr, self)
+            print("DelegatingMixin: too early to delegate %r from %r, which is still a pure Expr" % (attr, self))
                 # it might be an error to try computing self._delegate this early, so don't print it even if you can compute it
                 # (don't even try, in case it runs a compute method too early)
-            raise AttributeError, attr
+            raise AttributeError(attr)
         pass
     pass # end of class DelegatingMixin
 
@@ -927,7 +927,7 @@ class WithAttributes(DelegatingInstanceOrExpr): # 070216 experimental, STUB
     """
     delegate = Arg(InstanceOrExpr)
     def _init_instance(self):
-        for k, v in self._e_kws.items():
+        for k, v in list(self._e_kws.items()):
             # we hope v is a constant_Expr
             ok, vv = expr_constant_value(v)
             assert ok, "WithAttributes only supports constant attribute values for now, not exprs like in %s = %r" % (k,v,)

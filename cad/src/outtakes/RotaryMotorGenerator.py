@@ -62,7 +62,7 @@ class RotaryMotorGenerator(RotaryMotorPropMgr, GeneratorBaseClass):
         #atoms = self.selectedAtomsListWidget.atoms
 
         if 1:
-            print "\n---------------------------------------------------" \
+            print("\n---------------------------------------------------" \
                   "\ngather_parameters(): "\
                   "\ntorque = ", torque, \
                   "\ninitial_speed = ", initial_speed, \
@@ -70,7 +70,7 @@ class RotaryMotorGenerator(RotaryMotorPropMgr, GeneratorBaseClass):
                   "\ndampers_state = ", dampers_state, \
                   "\nenable_minimize_state = ", enable_minimize_state, \
                   "\ncolor = ", color, \
-                  "\natoms = ", atoms
+                  "\natoms = ", atoms)
 
         return (torque, initial_speed, final_speed,
                 dampers_state, enable_minimize_state,
@@ -94,7 +94,7 @@ class RotaryMotorGenerator(RotaryMotorPropMgr, GeneratorBaseClass):
         self.jig.atoms = atoms
 
         if 1:
-            print "\n---------------------------------------------------" \
+            print("\n---------------------------------------------------" \
                   "\nbuild_struct(): "\
                   "\ntorque = ", self.jig.torque, \
                   "\ninitial_speed = ", self.jig.initial_speed, \
@@ -102,7 +102,7 @@ class RotaryMotorGenerator(RotaryMotorPropMgr, GeneratorBaseClass):
                   "\ndampers_state = ", self.jig.dampers_enabled, \
                   "\nenable_minimize_state =", self.jig.enable_minimize, \
                   "\ncolor = ", self.jig.color, \
-                  "\natoms = ", self.jig.atoms
+                  "\natoms = ", self.jig.atoms)
 
         return self.jig
 

@@ -90,10 +90,10 @@ def canonicalize(value, dict1):
     """
     orig_value = value
     prior_values = [value]
-    while dict1.has_key(value):
+    while value in dict1:
         value = dict1[value]
         if value in prior_values:
-            print >> sys.stderr, "error: canonicalize loop: %r" % (prior_values + [value])
+            print("error: canonicalize loop: %r" % (prior_values + [value]), file=sys.stderr)
             return orig_value
         prior_values.append(value)
     return value
@@ -103,34 +103,34 @@ def check_basename(basename):
     Return an improved basename; fix and report errors.
     """
     if ' ' in basename:
-        print >> sys.stderr, "error: basename should not contain %r: %r" % (' ', basename,)
+        print("error: basename should not contain %r: %r" % (' ', basename,), file=sys.stderr)
         assert 0 # can't handle this error
     for suffix in (".py", "/"):
         if basename.endswith( suffix):
-            print >> sys.stderr, "error: basename should not end with %r: %r" % (suffix, basename,)
+            print("error: basename should not end with %r: %r" % (suffix, basename,), file=sys.stderr)
             basename = basename[:-len(suffix)]
-            print >> sys.stderr, " (using %r instead)" % basename
+            print(" (using %r instead)" % basename, file=sys.stderr)
     return basename
 
 def summarize_packageMapping( flags):
 
     counts = {}
 
-    for basename, value in packageMapping.items():
+    for basename, value in list(packageMapping.items()):
         basename = check_basename(basename)
         classification = packageClassification(value, flags)
         countnow = counts.setdefault(classification, 0)
         countnow += 1
         counts[classification] = countnow
 
-    items = counts.items()
+    items = list(counts.items())
     items.sort() # by classification
 
-    print
-    print "classication: count (for %s)" % (flags,)
-    print
+    print()
+    print("classication: count (for %s)" % (flags,))
+    print()
     for classification, count in items:
-        print "%s: %d" % (classification, count)
+        print("%s: %d" % (classification, count))
     return
 
 def summarize_packageMapping_using_default_flags():
@@ -159,19 +159,19 @@ class _VirtualSubdir(type({})):
 
     def print_listing(self, indent = "", skip_toplevel_indent = False):
         if not skip_toplevel_indent:
-            print indent + self.__basename + "/" + "   (%d)" % len(self)
+            print(indent + self.__basename + "/" + "   (%d)" % len(self))
             subindent = indent + "    "
         else:
-            print indent + self.__basename + "/" + "   (%d)" % len(self) + " contains:"
-            print
+            print(indent + self.__basename + "/" + "   (%d)" % len(self) + " contains:")
+            print()
             subindent = indent
-        items = [(sortorder, basename.lower(), basename, explan) for (basename, (sortorder, explan)) in self.items()]
+        items = [(sortorder, basename.lower(), basename, explan) for (basename, (sortorder, explan)) in list(self.items())]
         items.sort()
         last_sortorder = None
         for sortorder, basename_tolower, basename, explan in items:
             ## if last_sortorder is not None and ...
             if (sortorder != last_sortorder or sortorder == ORDER_NEW_SUBPACKAGE):
-                print subindent # blank line before subdirs or between types of item
+                print(subindent) # blank line before subdirs or between types of item
             last_sortorder = sortorder
             if type(explan) == type(""):
                 print_with_word_wrapping(subindent, explan, 80)
@@ -194,13 +194,13 @@ def print_with_word_wrapping(indent, line, limit):
         trial += nextword
         if len(trial) > limit:
             # nextword won't fit, print prior line and use nextword to start next line
-            print sofar
+            print(sofar)
             sofar = indent + nextword
         else:
             sofar = trial
         continue
     if sofar != indent:
-        print sofar
+        print(sofar)
     return
 
 _toplevel_virtual_subdir = _VirtualSubdir("cad/src")
@@ -215,7 +215,7 @@ def get_virtual_subdir(parts, assert_already_there = False): # should be a metho
     else:
         parent = _toplevel_virtual_subdir
         basename = parts[-1]
-    if parent.has_key(basename):
+    if basename in parent:
         sortorder, child = parent[basename]
         assert sortorder == ORDER_NEW_SUBPACKAGE
         assert isinstance(child, _VirtualSubdir)
@@ -225,7 +225,7 @@ def get_virtual_subdir(parts, assert_already_there = False): # should be a metho
         sortorder = ORDER_NEW_SUBPACKAGE
         explan = child ### an object; for other sortorders, a string
         parent[basename] = (sortorder, explan)
-        assert parent.has_key(basename)
+        assert basename in parent
     return child
 
 def collect_virtual_listing( packageDict, ftype ):
@@ -233,7 +233,7 @@ def collect_virtual_listing( packageDict, ftype ):
     @param packageDict: packageMapping_for_files or packageMapping_for_packages
     @param ftype: T_MODULE or T_PACKAGE
     """
-    for basename, value in packageDict.items():
+    for basename, value in list(packageDict.items()):
         basename = check_basename(basename)
         subdirname = packageClassification(value, TOPIC_ONLY)
         parts = subdirname.split('/')
@@ -250,8 +250,8 @@ def collect_virtual_listing( packageDict, ftype ):
         else:
             explan = " [ error: unrecognized ftype %r, basename = %r]" % (ftype, basename)
             sortorder = ORDER_ERROR
-            print >>sys.stderr, explan
-        assert not dir1.has_key(basename), "duplicate basename: %r" % (basename,)
+            print(explan, file=sys.stderr)
+        assert basename not in dir1, "duplicate basename: %r" % (basename,)
         dir1[basename] = (sortorder, explan)
     return
 
@@ -267,17 +267,17 @@ def print_listings():
             if pyfile.endswith('.py'):
                 basename_ext = os.path.basename(pyfile)
                 basename, ext = os.path.splitext(basename_ext)
-                if not packageMapping_for_files.has_key(basename):
+                if basename not in packageMapping_for_files:
                     packageMapping_for_files[basename] = " NOT YET CLASSIFIED: "
                     # print "missing file:", basename
             else:
-                print "unrecognized argument: %r" % (pyfile,)
+                print("unrecognized argument: %r" % (pyfile,))
             continue
 
     collect_virtual_listing( packageMapping_for_files, T_MODULE)
     collect_virtual_listing( packageMapping_for_packages, T_PACKAGE)
 
-    for subdirname, note in subdir_notes.items():
+    for subdirname, note in list(subdir_notes.items()):
         parts = subdirname.split('/')
         dir1 = get_virtual_subdir(parts, assert_already_there = True)
         FAKENAME_NOTE = " FAKENAME_NOTE " # not a valid basename, but a string (since .lower() gets called on it)
@@ -293,8 +293,8 @@ if __name__ == '__main__':
     # print >> sys.stderr, "packageData_checker.py debug: starting __main__ section"
     ## summarize_packageMapping_using_default_flags()
     print_listings()
-    print
-    print "[end]"
+    print()
+    print("[end]")
     # print >> sys.stderr, "packageData_checker.py debug: ending __main__ section"
 
 # print >> sys.stderr, "packageData_checker.py debug: done with all of import"

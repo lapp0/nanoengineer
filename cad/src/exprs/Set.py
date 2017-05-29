@@ -59,11 +59,11 @@ class SetStateRefValue(Action): # experimental, 061130; renamed from Set to SetS
     stateref = Arg(StateRef)
     val = Arg(Anything)
     def _i_do_action(self):
-        print "%r (deprecated, fyi): setting %r.value = %r" % (self, self.stateref , self.val)###
+        print("%r (deprecated, fyi): setting %r.value = %r" % (self, self.stateref , self.val))###
         if self.stateref == 0:
             # kluge: debug print for testexpr_16; this happens because SetStateRefValue is trying to be two things at once re arg1,
             # lval like _self.var to set, or stateref (this code, used in ToggleShow).
-            print "that stateref of 0 came from this expr arg:", self._e_args[0]
+            print("that stateref of 0 came from this expr arg:", self._e_args[0])
         self.stateref.value = self.val
         return
     pass
@@ -86,7 +86,7 @@ class Set(Action): # adding Set with arg1 an lval eg a getattr_Expr, 061204; unt
             var.set_to( val) # .set_to is in api for lval-objects of this kind -- not the same kind as "exprs plus _self" (for now)
                 ###e probably we should rename set_to -> set_value -- see StateRefInterface [070312]
         except:
-            print "following exception in var.set_to( val) in %r concerns var = %r" % (self, var,)
+            print("following exception in var.set_to( val) in %r concerns var = %r" % (self, var,))
             raise
         return
     pass

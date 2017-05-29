@@ -94,4 +94,4 @@ while True:
     r = x * e1[2] + y * e2[2] + z * e3[2]
 
     #print "(%f %f %f) -> (%f %f %f) -> (%f %f %f)" % (xi, yi, zi, x, y, z, p, q, r)
-    print "(%f %f) -> (%f %f) -> (%f %f)" % (xi, yi, x, y, p, q)
+    print("(%f %f) -> (%f %f) -> (%f %f)" % (xi, yi, x, y, p, q))

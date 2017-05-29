@@ -69,7 +69,7 @@ class Block(Group):
     def _raw_MT_kids(self):
         if self._show_all_kids_for_debug():
             return self.members
-        return filter( lambda member: member.is_block(), self.members )
+        return [member for member in self.members if member.is_block()]
 
     def _show_all_kids_for_debug(self):
         classname_short = self.__class__.__name__.split('.')[-1]

@@ -206,12 +206,12 @@ class MinimizeEnergyProp(QDialog, Ui_MinimizeEnergyPropDialog):
         """
         QDialog.accept(self)
         if env.debug():
-            print "ok"
+            print("ok")
         self.gather_parameters()
         ### kluge: has side effect on env.prefs
         # (should we pass these as arg to Minimize_CommandRun rather than thru env.prefs??)
         if debug_flags.atom_debug:
-            print "debug: reloading runSim & sim_commandruns on each use, for development"
+            print("debug: reloading runSim & sim_commandruns on each use, for development")
             import simulation.runSim as runSim
             reload_once_per_event(runSim)
                 # bug: only works some of the times runSim.py is modified,
@@ -243,7 +243,7 @@ class MinimizeEnergyProp(QDialog, Ui_MinimizeEnergyPropDialog):
         Slot for Cancel button
         """
         if env.debug():
-            print "cancel"
+            print("cancel")
         # restore values we grabbed on entry.
         for key,val in zip((endRMS_prefs_key, endMax_prefs_key, cutoverRMS_prefs_key, cutoverMax_prefs_key), self.previousParams):
             env.prefs[key] = val

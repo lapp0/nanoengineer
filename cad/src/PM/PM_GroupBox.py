@@ -308,8 +308,8 @@ class PM_GroupBox( QGroupBox ):
         """
         for widget in self._widgetList:
             if debug_flags.atom_debug:
-                print "PM_GroupBox.restoreDefault(): widget =", \
-                      widget.objectName()
+                print(("PM_GroupBox.restoreDefault(): widget =", \
+                      widget.objectName()))
             widget.restoreDefault()
 
         return
@@ -757,8 +757,8 @@ class PM_GroupBox( QGroupBox ):
             else: # Expand groupbox by showing all widgets in groupbox.
                 self.expand()
         else:
-            print "Clicking on the group box button has no effect "\
-                   "since it has no widgets."
+            print("Clicking on the group box button has no effect "\
+                   "since it has no widgets.")
         return
 
     # GroupBox stylesheet methods. ##############################

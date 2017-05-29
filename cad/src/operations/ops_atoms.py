@@ -84,7 +84,7 @@ class ops_atoms_Mixin:
         from model.elements import PeriodicTable
         if self.selatoms:
             dstElem = PeriodicTable.getElement(elem)
-            for atm in self.selatoms.values():
+            for atm in list(self.selatoms.values()):
                 atm.Transmute(dstElem, force = force, atomtype=atomType)
                 # bruce 041215 fix bug 131 by replacing low-level mvElement call
                 # with new higher-level method Transmute. Note that singlets
@@ -98,7 +98,7 @@ class ops_atoms_Mixin:
             dstElem = PeriodicTable.getElement(elem) #bruce 060720 fix typo dstElm -> dstElem to fix bug 2149
                 # but we have to decide if we want the behavior this now gives us, of transmuting inside selected chunks.
             for mol in self.selmols[:]:
-                for atm in mol.atoms.values():
+                for atm in list(mol.atoms.values()):
                     atm.Transmute(dstElem, force = force, atomtype=atomType)
                         # this might run on some killed singlets; should be ok
             self.o.gl_update()
@@ -119,7 +119,7 @@ class ops_atoms_Mixin:
         cutbonds = 0
 
         # Delete bonds between selected atoms and their neighboring atoms that are not selected.
-        for a in self.selatoms.values():
+        for a in list(self.selatoms.values()):
             for b in a.bonds[:]:
                 neighbor = b.other(a)
                 if neighbor.element != Singlet:
@@ -203,7 +203,7 @@ class ops_atoms_Mixin:
 
         elif self.selatoms:
             count = 0
-            for a in self.selatoms.values():
+            for a in list(self.selatoms.values()):
                 ma = a.molecule
                 for atm in a.neighbors():
                     matm = atm.molecule
@@ -266,7 +266,7 @@ class ops_atoms_Mixin:
                 didwhat = "Selected chunks contain no hydrogens"
         elif self.selatoms:
             count = 0
-            for a in self.selatoms.values():
+            for a in list(self.selatoms.values()):
                 ma = a.molecule
                 for atm in list(a.neighbors()) + [a]:
                     #bruce 041018 semantic change: added [a] as well

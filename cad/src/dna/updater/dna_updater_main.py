@@ -94,21 +94,21 @@ def _full_dna_update_0( _runcount):
 
     # print debug info about the set of changed_atoms (and markers needing update)
     if debug_flags.DEBUG_DNA_UPDATER_MINIMAL:
-        print "\ndna updater: %d changed atoms to scan%s" % \
+        print("\ndna updater: %d changed atoms to scan%s" % \
               ( len(changed_atoms),
                 _f_are_there_any_homeless_dna_markers() and " (and some DnaMarkers)" or ""
-              )
+              ))
     if debug_flags.DEBUG_DNA_UPDATER and changed_atoms:
         # someday: should be _VERBOSE, but has been useful enough to keep seeing for awhile
-        items = changed_atoms.items()
+        items = list(changed_atoms.items())
         items.sort()
         atoms = [item[1] for item in items]
         NUMBER_TO_PRINT = 10
         if debug_flags.DEBUG_DNA_UPDATER_VERBOSE or len(atoms) <= NUMBER_TO_PRINT:
-            print " they are: %r" % atoms
+            print(" they are: %r" % atoms)
         else:
-            print " the first %d of them are: %r ..." % \
-                  (NUMBER_TO_PRINT, atoms[:NUMBER_TO_PRINT])
+            print(" the first %d of them are: %r ..." % \
+                  (NUMBER_TO_PRINT, atoms[:NUMBER_TO_PRINT]))
 
     if changed_atoms:
         remove_killed_atoms( changed_atoms) # only affects this dict, not the atoms
@@ -165,12 +165,12 @@ def _full_dna_update_0( _runcount):
 
     if debug_flags.DEBUG_DNA_UPDATER_MINIMAL:
         if _f_are_there_any_homeless_dna_markers():
-            print "dna updater fyi: as updater returns, some DnaMarkers await processing by next run"
+            print("dna updater fyi: as updater returns, some DnaMarkers await processing by next run")
                 # might be normal...don't know. find out, by printing it even
                 # in minimal debug output. [bruce 080317]
 
     if _f_invalid_dna_ladders: #bruce 080413
-        print "\n*** likely bug: some invalid ladders are recorded, as dna updater returns:", _f_invalid_dna_ladders
+        print("\n*** likely bug: some invalid ladders are recorded, as dna updater returns:", _f_invalid_dna_ladders)
         # but don't clear them, in case this was sometimes routine and we were
         # working around bugs (unknowingly) by invalidating them next time around
 

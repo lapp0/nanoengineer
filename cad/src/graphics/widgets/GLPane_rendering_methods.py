@@ -364,14 +364,14 @@ class GLPane_rendering_methods(GLPane_image_methods):
         # this is normally 1
         # (by experiment, qt-mac-free-3.3.3, Mac OS X 10.2.8...)
         if depth > 1:
-            print "apparent bug: glGetInteger(GL_MODELVIEW_STACK_DEPTH) = %r in GLPane.paintGL" % depth
-            print "workaround: pop it back to depth 1"
+            print("apparent bug: glGetInteger(GL_MODELVIEW_STACK_DEPTH) = %r in GLPane.paintGL" % depth)
+            print("workaround: pop it back to depth 1")
             while depth > 1:
                 depth -= 1
                 glPopMatrix()
             newdepth = glGetInteger(GL_MODELVIEW_STACK_DEPTH)
             if newdepth != 1:
-                print "hmm, after depth-1 pops we should have reached depth 1, but instead reached depth %r" % newdepth
+                print("hmm, after depth-1 pops we should have reached depth 1, but instead reached depth %r" % newdepth)
             pass
         return
 
@@ -423,7 +423,7 @@ class GLPane_rendering_methods(GLPane_image_methods):
                 # it'd be better if we'd make invals illegal in this case, but in current code
                 # we don't know the obj to tell to do that (easy to fix if needed)
         elif self.__subusage == -1:
-            print "(possible bug: looks like the last begin_tracking_usage raised an exception)"
+            print("(possible bug: looks like the last begin_tracking_usage raised an exception)")
             pass
         else:
             # usual case except for the first time
@@ -435,12 +435,12 @@ class GLPane_rendering_methods(GLPane_image_methods):
 
         debug_prints_prefs_key = "A9 devel/debug prints for my bug?" # also defined in exprs/test.py
         if env.prefs.get(debug_prints_prefs_key, False):
-            print "glpane begin_tracking_usage" #bruce 070110
+            print("glpane begin_tracking_usage") #bruce 070110
         try:
             try:
                 self.standard_repaint_0()
             except:
-                print "exception in standard_repaint_0 (being reraised)"
+                print("exception in standard_repaint_0 (being reraised)")
                     # we're not restoring stack depths here, so this will mess up callers, so we'll reraise;
                     # so the caller will print a traceback, thus we don't need to print one here. [bruce 050806]
                 raise
@@ -449,7 +449,7 @@ class GLPane_rendering_methods(GLPane_image_methods):
             self.__subusage = self.end_tracking_usage( match_checking_code, self.wants_gl_update_was_True )
                 # same invalidator even if exception
             if env.prefs.get(debug_prints_prefs_key, False):
-                print "glpane end_tracking_usage" #bruce 070110
+                print("glpane end_tracking_usage") #bruce 070110
         return
 
     drawing_phase = '?' # set to different fixed strings for different drawing phases
@@ -556,8 +556,8 @@ class GLPane_rendering_methods(GLPane_image_methods):
         cachename = self._drawingset_cachename_from_drawing_phase.get(drawing_phase)
         if cachename is None:
             cachename = 'temp'
-            print "bug: unknown drawing_phase %r, using cachename %r" % \
-                  (drawing_phase, cachename)
+            print("bug: unknown drawing_phase %r, using cachename %r" % \
+                  (drawing_phase, cachename))
             assert self._drawingset_temporary_cachenames.get(cachename, False) == True
             pass
         temporary = self._drawingset_temporary_cachenames.get(cachename, False)
@@ -632,8 +632,8 @@ class GLPane_rendering_methods(GLPane_image_methods):
         """
         if self.width != QGLWidget.width(self) or \
            self.height != QGLWidget.height(self): #bruce 080922; never yet seen
-            print "\n*** debug fyi: inconsistent: self width/height %r, %r vs QGLWidget %r, %r" % \
-                  (self.width, self.height, QGLWidget.width, QGLWidget.height)
+            print("\n*** debug fyi: inconsistent: self width/height %r, %r vs QGLWidget %r, %r" % \
+                  (self.width, self.height, QGLWidget.width, QGLWidget.height))
             pass
 
         self.glprefs.update()
@@ -831,8 +831,8 @@ class GLPane_rendering_methods(GLPane_image_methods):
                 else:
                     capture_saved_bg_image = True
                     if bg_image_comparison_data == self._cached_bg_image_comparison_data:
-                        print "DEBUG FYI: equal values not same_vals:\n%r, \n%r" % \
-                          ( bg_image_comparison_data, self._cached_bg_image_comparison_data ) ###
+                        print("DEBUG FYI: equal values not same_vals:\n%r, \n%r" % \
+                          ( bg_image_comparison_data, self._cached_bg_image_comparison_data )) ###
                 pass
             pass
         else:
@@ -887,7 +887,7 @@ class GLPane_rendering_methods(GLPane_image_methods):
             if debug_flags.atom_debug:
                 print_compact_traceback( "atom_debug: exception in self.graphicsMode.draw_glpane_label(self): " )
             else:
-                print "bug: exception in self.graphicsMode.draw_glpane_label; use ATOM_DEBUG to see details"
+                print("bug: exception in self.graphicsMode.draw_glpane_label; use ATOM_DEBUG to see details")
         self.set_drawing_phase('?')
 
         # draw the compass (coordinate-orientation arrows) in chosen corner
@@ -1155,8 +1155,8 @@ class GLPane_rendering_methods(GLPane_image_methods):
                 msg = "atom_debug: selobj_highlight_color exception for %r" % (obj,)
                 print_compact_traceback(msg + ": ")
             else:
-                print "bug: selobj_highlight_color exception for %r; " \
-                      "for details use ATOM_DEBUG" % (obj,)
+                print("bug: selobj_highlight_color exception for %r; " \
+                      "for details use ATOM_DEBUG" % (obj,))
             hicolor = None
         return hicolor
 
@@ -1190,9 +1190,9 @@ if "test same_vals during import": #bruce 080922, of interest to GLPane_image_me
     if not same_vals( Q(1,0,0,0), Q(1,0,0,0) ):
         # this bug was in the C version but not the Python version;
         # Eric M fixed it in samevalshelp.c rev 14311, 080922
-        print "BUG: not same_vals( Q(1,0,0,0), Q(1,0,0,0) ) [%s version]" % used_version
+        print("BUG: not same_vals( Q(1,0,0,0), Q(1,0,0,0) ) [%s version]" % used_version)
     elif ALWAYS_PRINT:
-        print "fyi: same_vals( Q(1,0,0,0), Q(1,0,0,0) ) is True (correct) [%s version]" % used_version
+        print("fyi: same_vals( Q(1,0,0,0), Q(1,0,0,0) ) is True (correct) [%s version]" % used_version)
     pass
 
 # end

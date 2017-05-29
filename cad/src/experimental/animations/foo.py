@@ -8,7 +8,7 @@ JUST_CHECK_FOR_INPUTS = False
 REALLY = False
 
 def do(cmd):
-    print cmd
+    print(cmd)
     if REALLY: os.system(cmd)
 
 
@@ -54,7 +54,7 @@ def crossFade(outdir, srcdir1, srcdir2, step, avg):
     average(outdir, srcdir1, step, avg, 5)
     # kill the last frame produced from that sequence
     do("rm -f " + os.path.join(WHERE, outdir, "frame.000150.png"))
-    print "Doing the crossfade"
+    print("Doing the crossfade")
     for index in range(15):
         outputFrame = index + 150
         result = os.path.join(WHERE, outdir, "frame.%06d.png" % outputFrame)

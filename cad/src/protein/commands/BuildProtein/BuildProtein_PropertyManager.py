@@ -159,7 +159,7 @@ class BuildProtein_PropertyManager(EditCommand_PM):
         if selection_params_unchanged and structure_params_unchanged and command_stack_params_unchanged:
             #This second condition above fixes bug 2888
             if 0:
-                print "Build Protein: _update_UI_do_updates() - DO NOTHING"
+                print("Build Protein: _update_UI_do_updates() - DO NOTHING")
             return
 
         self._previousStructureParams = current_struct_params

@@ -36,6 +36,7 @@ import sys, os, time, traceback
 from utilities.constants import noop
 import foundation.env as env
 from utilities import debug_flags
+import imp
 
 # note: some debug features run user-supplied code in this module's
 # global namespace (on platforms where this is permitted by our licenses).
@@ -48,8 +49,8 @@ def print_verbose_traceback(x = _default_x): # by wware
     # note: doesn't print the exception itself.
     traceback.print_stack(file = sys.stdout)
     if x is not _default_x:
-        print x
-    print
+        print(x)
+    print()
 
 # ==
 
@@ -62,7 +63,7 @@ def linenum(depth = 0):
         f = tb.tb_frame
         for i in range(depth + 1):
             f = f.f_back
-        print f.f_code.co_filename, f.f_code.co_name, f.f_lineno
+        print(f.f_code.co_filename, f.f_code.co_name, f.f_lineno)
 
 # ==
 
@@ -80,7 +81,7 @@ def debug_enter():
             f = tb.tb_frame.f_back
             fname = f.f_code.co_name
         _timing_stack.append((fname, time.time()))
-        print 'ENTER', fname
+        print('ENTER', fname)
 
 def debug_leave():
     if debug_flags.atom_debug:
@@ -92,7 +93,7 @@ def debug_leave():
             fname = f.f_code.co_name
         fname1, start = _timing_stack.pop()
         assert fname == fname1, 'enter/leave mismatch, got ' + fname1 + ', expected ' + fname
-        print 'LEAVE', fname, time.time() - start
+        print('LEAVE', fname, time.time() - start)
 
 def debug_middle():
     if debug_flags.atom_debug:
@@ -104,7 +105,7 @@ def debug_middle():
             fname, line = f.f_code.co_name, f.f_lineno
         fname1, start = _timing_stack[-1]
         assert fname == fname1, 'enter/middle mismatch, got ' + fname1 + ', expected ' + fname
-        print 'MIDDLE', fname, line, time.time() - start
+        print('MIDDLE', fname, line, time.time() - start)
 
 # ==
 
@@ -127,11 +128,11 @@ class Stopwatch:
 #    ...stuff to be timed...
 #    end_timing(start, "description of stuff")
 def begin_timing(msg = ""):
-    print "begin_timing: %s" % msg
+    print("begin_timing: %s" % msg)
     return time.time()
 
 def end_timing(start, msg = ""):
-    print "end_timing: %s %s" % (msg, time.time() - start)
+    print("end_timing: %s %s" % (msg, time.time() - start))
 
 def time_taken(func):
     """
@@ -172,11 +173,11 @@ def legally_execfile_in_globals(filename, globals, error_exception = True):
         import platform_dependent.gpl_only as gpl_only
     except ImportError:
         msg = "execfile(%r): not allowed in this non-GPL version" % (filename,)
-        print msg #e should be in a dialog too, maybe depending on an optional arg
+        print(msg) #e should be in a dialog too, maybe depending on an optional arg
         if error_exception:
-            raise ValueError, msg
+            raise ValueError(msg)
         else:
-            print "ignoring this error, doing nothing (as if the file was empty)"
+            print("ignoring this error, doing nothing (as if the file was empty)")
     else:
         gpl_only._execfile_in_globals(filename, globals) # this indirection might not be needed...
     return
@@ -191,12 +192,12 @@ def legally_exec_command_in_globals( command, globals, error_exception = True ):
         import platform_dependent.gpl_only as gpl_only
     except ImportError:
         msg = "exec is not allowed in this non-GPL version"
-        print msg #e should be in a dialog too, maybe depending on an optional arg
-        print " fyi: the command we hoped to exec was: %r" % (command,)
+        print(msg) #e should be in a dialog too, maybe depending on an optional arg
+        print(" fyi: the command we hoped to exec was: %r" % (command,))
         if error_exception:
-            raise ValueError, msg
+            raise ValueError(msg)
         else:
-            print "ignoring this error, doing nothing (as if the command was a noop)"
+            print("ignoring this error, doing nothing (as if the command was a noop)")
     else:
         gpl_only._exec_command_in_globals( command, globals) # this indirection might not be needed...
     return
@@ -236,7 +237,7 @@ def safe_repr(obj, maxlen = 1000):
 # traceback / stack utilities (see also print_verbose_traceback)
 
 def print_compact_traceback(msg = "exception ignored: "):
-    print >> sys.__stderr__, msg.encode("utf_8") + compact_traceback() # bruce 061227 changed this back to old form
+    print(msg.encode("utf_8") + compact_traceback(), file=sys.__stderr__) # bruce 061227 changed this back to old form
     return
     ## import traceback
     ## print >> sys.__stderr__, msg
@@ -281,8 +282,7 @@ def print_compact_stack( msg = "current stack:\n", skip_innermost_n = 0, **kws )
     #bruce 080314 pass our msg arg to new msg arg of compact_stack
     #bruce 080917 revise semantics of skip_innermost_n in all related functions
     # (now 0 means "only frames outside this function")
-    print >> sys.__stderr__, \
-          compact_stack( msg, skip_innermost_n = skip_innermost_n + 1, **kws )
+    print(compact_stack( msg, skip_innermost_n = skip_innermost_n + 1, **kws ), file=sys.__stderr__)
 
 STACKFRAME_IDS = False # don't commit with True,
     # but set to True in debugger to see more info in compact_stack printout [bruce 060330]
@@ -327,7 +327,7 @@ def compact_stack( msg = "", skip_innermost_n = 0, linesep = ' ', frame_repr = N
 # test code for those -- but more non-test code follows, below this!
 
 if __name__ == '__main__':
-    print "see sys.__stderr__ (perhaps a separate console) for test output"
+    print("see sys.__stderr__ (perhaps a separate console) for test output")
     def f0():
         return f1()
     def f1():
@@ -338,14 +338,14 @@ if __name__ == '__main__':
             f3()
         except:
             print_compact_traceback("exception in f3(): ")
-        print >> sys.__stderr__, "done with f2()"
+        print("done with f2()", file=sys.__stderr__)
     def f3():
         f4()
     def f4():
         assert 0, "assert 0"
     f0()
-    print >> sys.__stderr__, "returned from f0()"
-    print "test done"
+    print("returned from f0()", file=sys.__stderr__)
+    print("test done")
     pass
 
 # ===
@@ -371,14 +371,14 @@ def debug_run_command(command, source = "user debug input"): #bruce 040913-16 in
     while command and command[-1] == '\n':
         command = command[:-1]
     if not command:
-        print "empty command (from %s), nothing executed" % (source,)
+        print("empty command (from %s), nothing executed" % (source,))
         return 1
     if '\n' not in command:
         msg = "will execute (from %s): %s" % (source, command)
     else:
         nlines = command.count('\n')+1
         msg = "will execute (from %s; %d lines):\n%s" % (source, nlines, command)
-    print msg
+    print(msg)
     try:
         # include in history file, so one can search old history files for useful things to execute [bruce 060409]
         from utilities.Log import _graymsg, quote_html
@@ -393,7 +393,7 @@ def debug_run_command(command, source = "user debug input"): #bruce 040913-16 in
         print_compact_traceback("exception from that: ")
         return 0
     else:
-        print "did it!"
+        print("did it!")
         return 1
     pass
 
@@ -407,27 +407,27 @@ def debug_timing_test_pycode_from_a_dialog( ): #bruce 051117
     parent = None
     text, ok = QInputDialog.getText(parent, title, label) # parent argument needed only in Qt4 [bruce 070329, more info above]
     if not ok:
-        print "time python code code: cancelled"
+        print("time python code code: cancelled")
         return
     # fyi: type(text) == <class '__main__.qt.QString'>
     command = str(text)
     command = command.replace("@@@",'\n')
-    print "trying to time the exec or eval of command:",command
+    print("trying to time the exec or eval of command:",command)
     from code import compile_command
     try:
         try:
             mycode = compile( command + '\n', '<string>', 'exec') #k might need '\n\n' or '' or to be adaptive in length?
             # 'single' means print value if it's an expression and value is not None; for timing we don't want that so use 'eval'
             # or 'exec' -- but we don't know which one is correct! So try exec, if that fails try eval.
-            print "exec" # this happens even for an expr like 2+2 -- why?
+            print("exec") # this happens even for an expr like 2+2 -- why?
         except SyntaxError:
-            print "try eval" # i didn't yet see this happen
+            print("try eval") # i didn't yet see this happen
             mycode = compile_command( command + '\n', '<string>', 'eval')
     except:
         print_compact_traceback("exception in compile_command: ")
         return
     if mycode is None:
-        print "incomplete command:",command
+        print("incomplete command:",command)
         return
     # mycode is now a code object
     print_exec_timing_explored(mycode)
@@ -447,13 +447,13 @@ def print_exec_timing_explored(mycode, ntimes = 1, trymore = True): #bruce 05111
         timetook = print_exec_timing(mycode, ntimes, glob) # print results, return time it took in seconds
         if trymore and timetook < 1.0:
             if ntimes > toomany:
-                print "%d is too many to do more than, even though it's still fast. (bug?)" % ntimes
+                print("%d is too many to do more than, even though it's still fast. (bug?)" % ntimes)
                 break
             ntimes *= 4
             continue
         else:
             break
-    print "done"
+    print("done")
     return
 
 def print_exec_timing(mycode, ntimes, glob): #bruce 051117
@@ -463,12 +463,12 @@ def print_exec_timing(mycode, ntimes, glob): #bruce 051117
     PERMITS EXECUTING USER CODE in the caller; see print_exec_timing_explored for one way to do that.
     """
     start = time.time()
-    for i in xrange(ntimes):
-        exec mycode in glob
+    for i in range(ntimes):
+        exec(mycode, glob)
     end = time.time()
     took = float(end - start)
     tookper = took / ntimes
-    print "%d times: total time %f, time per call %f" % (ntimes, took, tookper)
+    print("%d times: total time %f, time per call %f" % (ntimes, took, tookper))
     return took
 
 # ==
@@ -542,14 +542,14 @@ def register_debug_menu_command( *args, **kws ):
     return
 
 def register_debug_menu_command_maker( *args, **kws): # guess: maker interface is better as a separate function.
-    assert not kws.has_key('maker')
+    assert 'maker' not in kws
     kws['maker'] = True
-    assert not kws.has_key('text') # since not useful for maker = True
+    assert 'text' not in kws # since not useful for maker = True
     register_debug_menu_command( *args, **kws)
     return
 
 def registered_commands_menuspec( widget):
-    order_cmd_pairs = _commands.values()
+    order_cmd_pairs = list(_commands.values())
     order_cmd_pairs.sort()
     spec = []
     for orderjunk, cmd in order_cmd_pairs:
@@ -572,7 +572,7 @@ def overridden_attrs( class1, instance1 ): #bruce 050108
         if ca != ia:
             try:
                 # is ca an unbound instance method, and ia its bound version for instance1?
-                if ia.im_func == ca.im_func:
+                if ia.__func__ == ca.__func__:
                     # (approximate test; could also verify the types and the bound object in ia #e)
                     # (note: im_func seems to work for both unbound and bound methods; #k py docs)
                     continue
@@ -629,7 +629,7 @@ def reload_once_per_event(module, always_print = False, never_again = True, coun
         return
     # after this, if debug_reload_once_per_event, print something every time
     if debug_reload_once_per_event:
-        print "reload_once_per_event(%r)" % (module,)
+        print("reload_once_per_event(%r)" % (module,))
     if old == 'never again': #bruce 060304
         return
     # now we will try to reload it (unless prevented by modtime check or _reload_ok == False)
@@ -648,7 +648,7 @@ def reload_once_per_event(module, always_print = False, never_again = True, coun
                 # check modtime
                 our_mtime = os.stat(ff).st_mtime
             else:
-                print "not ok to check modtime of source file of %r: " % (module,)
+                print("not ok to check modtime of source file of %r: " % (module,))
         except:
             print_compact_traceback("problem checking modtime of source file of %r: " % (module,) )
             ok = False
@@ -658,13 +658,13 @@ def reload_once_per_event(module, always_print = False, never_again = True, coun
             want_reload = (old_mtime != our_mtime)
             setattr(module, '__modtime_when_reloaded__', our_mtime)
             if debug_reload_once_per_event:
-                print "old_mtime %s, our_mtime %s, want_reload = %s" % \
-                      (time.asctime(time.localtime(old_mtime)), time.asctime(time.localtime(our_mtime)), want_reload)
+                print("old_mtime %s, our_mtime %s, want_reload = %s" % \
+                      (time.asctime(time.localtime(old_mtime)), time.asctime(time.localtime(our_mtime)), want_reload))
             pass
         else:
             want_reload = not never_again
             if debug_reload_once_per_event:
-                print "want_reload = %s" % want_reload
+                print("want_reload = %s" % want_reload)
         if not want_reload:
             return
         pass
@@ -674,7 +674,7 @@ def reload_once_per_event(module, always_print = False, never_again = True, coun
     _reload_ok = getattr(module, '_reload_ok', True)
     if _reload_ok:
         def doit(module):
-            reload(module)
+            imp.reload(module)
         reloading = "reloading"
     else:
         def doit(module):
@@ -683,11 +683,11 @@ def reload_once_per_event(module, always_print = False, never_again = True, coun
     del _reload_ok
     # now we will definitely try to reload it (or not, due to _reload_ok), and in some cases print what we're doing
     if old == -1:
-        print reloading, module.__name__
+        print(reloading, module.__name__)
         if not always_print:
-            print "  (and will do so up to once per redraw w/o saying so again)"
+            print("  (and will do so up to once per redraw w/o saying so again)")
     elif always_print:
-        print reloading, module.__name__
+        print(reloading, module.__name__)
     try:
         doit(module)
     except:
@@ -777,17 +777,17 @@ def profile_single_call_if_enabled(func, *args, **keywordArgs):
         try:
             import cProfile as py_Profile
         except ImportError:
-            print "Unable to import cProfile. Using profile module instead."
+            print("Unable to import cProfile. Using profile module instead.")
             import profile as py_Profile
             pass
 
         filePath = os.path.dirname(os.path.abspath(sys.argv[0])) + "/" + _profile_output_file
         filePath = os.path.normpath(filePath)
-        print "Capturing profile..."
-        print "Profile output file: %s" % (filePath,)
+        print("Capturing profile...")
+        print("Profile output file: %s" % (filePath,))
         py_Profile.run('from utilities.debug import _call_profile_function; _call_profile_function()', _profile_output_file)
-        print "...end of profile capture"
-        print "(to analyze, see utilities.debug.print_profile_output)"
+        print("...end of profile capture")
+        print("(to analyze, see utilities.debug.print_profile_output)")
 
         # Uncomment this to print the profile output in a human readable form:
         ## print_profile_output(_profile_output_file)

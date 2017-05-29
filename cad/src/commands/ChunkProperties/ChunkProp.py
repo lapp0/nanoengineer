@@ -60,15 +60,15 @@ class ChunkProp(QDialog, Ui_ChunkPropDialog):
 
         # Determining the number of element types in this Chunk.
         ele2Num = {}
-        for a in self.chunk.atoms.itervalues():
-            if not ele2Num.has_key(a.element.symbol):
+        for a in self.chunk.atoms.values():
+            if a.element.symbol not in ele2Num:
                 ele2Num[a.element.symbol] = 1 # New element found
             else:
                 ele2Num[a.element.symbol] += 1 # Increment element
 
         # String construction for each element to be displayed.
         nsinglets = 0
-        for item in ele2Num.iteritems():
+        for item in ele2Num.items():
             if item[0] == "X":  # It is a Singlet
                 nsinglets = int(item[1])
                 continue

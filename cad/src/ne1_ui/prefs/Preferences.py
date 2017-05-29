@@ -1455,8 +1455,8 @@ class Preferences(QDialog, Ui_PreferencesDialog):
                              "Background_Black",   "Background_White",
                              "Background_Gray",    "Background_Custom"]
 
-        backgroundIconsDict = dict(zip(backgroundNames, backgroundIcons))
-        backgroundNamesDict = dict(zip(backgroundIndexes, backgroundNames))
+        backgroundIconsDict = dict(list(zip(backgroundNames, backgroundIcons)))
+        backgroundNamesDict = dict(list(zip(backgroundIndexes, backgroundNames)))
 
         for backgroundName in backgroundNames:
 
@@ -1509,7 +1509,7 @@ class Preferences(QDialog, Ui_PreferencesDialog):
         Loads the global display style combobox with all the display options
         and sets the current display style
         """
-        gdsIconDist = dict(zip(GDS_NAMES, GDS_ICONS))
+        gdsIconDist = dict(list(zip(GDS_NAMES, GDS_ICONS)))
 
         for gdsName in GDS_NAMES: # gds = global display style
             basename = gdsIconDist[gdsName] + ".png"
@@ -2170,7 +2170,7 @@ class Preferences(QDialog, Ui_PreferencesDialog):
             # note: this decoding must use the same (arbitrary) int->symbol mapping as the button group does.
             # It's just a coincidence that the order is the same as in the prefs-type listed above.
         except KeyError: #bruce 060627 added specific exception class (untested)
-            print "bug in change_high_order_bond_display: unknown val ignored:", val
+            print("bug in change_high_order_bond_display: unknown val ignored:", val)
         else:
             env.prefs[ pibondStyle_prefs_key ] = symbol
         return
@@ -2509,7 +2509,7 @@ class Preferences(QDialog, Ui_PreferencesDialog):
         @param angle: The angular threshold for DNA base indicators.
         @type  angle: double
         """
-        print "angle (set) = ", angle
+        print("angle (set) = ", angle)
         env.prefs[dnaBaseIndicatorsAngle_prefs_key] = angle
         self.update_dnaBaseIndicatorsAngle()
 
@@ -2689,7 +2689,7 @@ class Preferences(QDialog, Ui_PreferencesDialog):
         elif light_num == 2:
             self.glpane.setLighting([light1, light2, new_light])
         else:
-            print "Unsupported light # ", light_num,". No lighting change made."
+            print("Unsupported light # ", light_num,". No lighting change made.")
 
     def change_active_light(self, currentIndexJunk = None):
         """
@@ -2779,27 +2779,27 @@ class Preferences(QDialog, Ui_PreferencesDialog):
         self.ms_brightness_linedit.setText(str(brightness * 0.01))
 
     def change_material_finish_start(self):
-        if debug_sliders: print "Finish slider pressed"
+        if debug_sliders: print("Finish slider pressed")
         env.prefs.suspend_saving_changes() #bruce 051205 new prefs feature - keep updating to glpane but not (yet) to disk
 
     def change_material_finish_stop(self):
-        if debug_sliders: print "Finish slider released"
+        if debug_sliders: print("Finish slider released")
         env.prefs.resume_saving_changes() #bruce 051205 new prefs feature - save accumulated changes now
 
     def change_material_shininess_start(self):
-        if debug_sliders: print "Shininess slider pressed"
+        if debug_sliders: print("Shininess slider pressed")
         env.prefs.suspend_saving_changes()
 
     def change_material_shininess_stop(self):
-        if debug_sliders: print "Shininess slider released"
+        if debug_sliders: print("Shininess slider released")
         env.prefs.resume_saving_changes()
 
     def change_material_brightness_start(self):
-        if debug_sliders: print "Brightness slider pressed"
+        if debug_sliders: print("Brightness slider pressed")
         env.prefs.suspend_saving_changes()
 
     def change_material_brightness_stop(self):
-        if debug_sliders: print "Brightness slider released"
+        if debug_sliders: print("Brightness slider released")
         env.prefs.resume_saving_changes()
 
     def reset_lighting(self):
@@ -3395,7 +3395,7 @@ class Preferences(QDialog, Ui_PreferencesDialog):
 
     def povdir_lineedit_textChanged(self, *args): #bruce 060710
         if debug_povdir_signals():
-            print "povdir_lineedit_textChanged",args
+            print("povdir_lineedit_textChanged",args)
             # this happens on programmatic changes, such as when the page is shown or the choose button slot sets the text
         try:
             # note: Ideally we'd only do this when return was pressed, mouse was clicked elsewhere (with that also removing keyfocus),
@@ -3404,7 +3404,7 @@ class Preferences(QDialog, Ui_PreferencesDialog):
             # (This even runs on programmatic sets of the text. Hope that's ok.)
             env.prefs[povdir_path_prefs_key] = path = str_or_unicode( self.povdir_lineedit.text() ).strip()
             if debug_povdir_signals():
-                print "debug fyi: set pov include dir to [%s]" % (path,)
+                print("debug fyi: set pov include dir to [%s]" % (path,))
         except:
             if env.debug():
                 print_compact_traceback("bug, ignored: ")
@@ -3412,7 +3412,7 @@ class Preferences(QDialog, Ui_PreferencesDialog):
 
     def povdir_lineedit_returnPressed(self, *args): #bruce 060710
         if debug_povdir_signals():
-            print "povdir_lineedit_returnPressed",args
+            print("povdir_lineedit_returnPressed",args)
             # this happens when return is pressed in the widget, but NOT when user clicks outside it
             # or presses OK on the dialog -- which means it's useless when taken alone,
             # in case user edits text and then presses ok without ever pressing return.
@@ -3536,9 +3536,9 @@ class Preferences(QDialog, Ui_PreferencesDialog):
         self.set_font_widgets(setFontFromPrefs = True) # Also sets the current display font.
 
         if debug_flags.atom_debug:
-            print "change_selected_font_to_default_font(): " \
+            print("change_selected_font_to_default_font(): " \
                   "Button clicked. Default font: ", font.family(), \
-                  ", size=", font.pointSize()
+                  ", size=", font.pointSize())
         return
 
     def set_font_widgets(self, setFontFromPrefs = True):
@@ -3552,7 +3552,7 @@ class Preferences(QDialog, Ui_PreferencesDialog):
         """
 
         if debug_flags.atom_debug:
-            print "set_font_widgets(): Here!"
+            print("set_font_widgets(): Here!")
 
 
         if env.prefs[displayFont_prefs_key] == "defaultFont":
@@ -3570,9 +3570,9 @@ class Preferences(QDialog, Ui_PreferencesDialog):
             env.prefs[displayFont_prefs_key] = font_family
             env.prefs[displayFontPointSize_prefs_key] = font_size
             if debug_flags.atom_debug:
-                print "set_font_widgets(): No prefs db. " \
+                print("set_font_widgets(): No prefs db. " \
                       "Using default font: ", font.family(), \
-                      ", size=", font.pointSize()
+                      ", size=", font.pointSize())
 
         else:
             font_family = env.prefs[displayFont_prefs_key]
@@ -3612,12 +3612,12 @@ class Preferences(QDialog, Ui_PreferencesDialog):
             env.prefs[displayFont_prefs_key] = font_family
             env.prefs[displayFontPointSize_prefs_key] = fontsize
             if debug_flags.atom_debug:
-                print "set_font(): Using selected font: ", font.family(), ", size=", font.pointSize()
+                print("set_font(): Using selected font: ", font.family(), ", size=", font.pointSize())
 
         else: # Use default font
             font = self.w.defaultFont
             if debug_flags.atom_debug:
-                print "set_font(): Using default font: ", font.family(), ", size=", font.pointSize()
+                print("set_font(): Using default font: ", font.family(), ", size=", font.pointSize())
 
         # Set font
         self.w.setFont(font)

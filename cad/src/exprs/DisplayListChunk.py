@@ -153,7 +153,7 @@ class DisplayListChunk( DelegatingInstanceOrExpr, SelfUsageTrackingMixin, SubUsa
         self._disabled = not hasattr(self.glpane, 'glGenLists')
         if self._disabled:
             # this should never happen after the merge of GLPane_overrider into GLPane done today [070110]
-            print "bug: %r is disabled since its GLPane is missing required methods" % self
+            print("bug: %r is disabled since its GLPane is missing required methods" % self)
         return
 
     def _C_displist(self): # compute method for self.displist
@@ -172,10 +172,10 @@ class DisplayListChunk( DelegatingInstanceOrExpr, SelfUsageTrackingMixin, SubUsa
         self.glpane.makeCurrent() # not sure when this compute method might get called, so make sure our GL context is current
         displist = self.glpane.glGenLists(1) # allocate the display list name [#k does this do makeCurrent??]
         # make sure it's a nonzero int or long
-        assert type(displist) in (type(1), type(1L))
+        assert type(displist) in (type(1), type(1))
         assert displist, "error: allocated displist was zero"
         if self._debug_print_name:
-            print "%s: allocated display list name %r" % (self._debug_print_name, displist)
+            print("%s: allocated display list name %r" % (self._debug_print_name, displist))
         return displist
 
     def __repr__(self):
@@ -184,7 +184,7 @@ class DisplayListChunk( DelegatingInstanceOrExpr, SelfUsageTrackingMixin, SubUsa
                 return super(DisplayListChunk, self).__repr__()
             _debug_print_name = self._debug_print_name # only legal on an instance
         except:
-            print "exception in self._debug_print_name discarded" #e print more, at least id(self), maybe traceback, if this happens
+            print("exception in self._debug_print_name discarded") #e print more, at least id(self), maybe traceback, if this happens
             # (but don't print self or you might infrecur!!)
             ##e can we print self.displist and/or self.delegate?
             return "<%s at %#x>" % (self.__class__.__name__, id(self))
@@ -275,14 +275,14 @@ class DisplayListChunk( DelegatingInstanceOrExpr, SelfUsageTrackingMixin, SubUsa
             #  our content and/or drawing effects being "finalized", we can optim
             #  in that case, by reducing what we report here.)
             if _debug_print_name:
-                print "%s: compiling glCallList into parent list %r" % (_debug_print_name, parent_dlist)
+                print("%s: compiling glCallList into parent list %r" % (_debug_print_name, parent_dlist))
 
             parent_dlist.__you_called_dlist( self) #e optim: inline this
                 # (note: this will also make sure the alg recompiles us and whatever lists we turn out to call,
                 #  before calling any list that calls us, if our drawing effects are not valid now.)
 
         elif self.glpane.compiling_displist:
-            print "warning: compiling dlist %r with no owner" % self.glpane.compiling_displist
+            print("warning: compiling dlist %r with no owner" % self.glpane.compiling_displist)
             #e If this ever happens, decide then whether anything but glCallList is needed.
             # (Can it happen when compiling a "fixed display list"? Not likely if we define that using a widget expr.)
 
@@ -290,7 +290,7 @@ class DisplayListChunk( DelegatingInstanceOrExpr, SelfUsageTrackingMixin, SubUsa
             # immediate mode -- do all needed recompiles before emitting the glCallList,
             # and make sure glpane will be updated if anything used by our total drawing effect changes.
             if _debug_print_name:
-                print "%s: prepare to emit glCallList in immediate mode" % (_debug_print_name, )
+                print("%s: prepare to emit glCallList in immediate mode" % (_debug_print_name, ))
 
             self.glpane.ensure_dlist_ready_to_call( self) # (this might print "compiling glCallList" for sublists)
                 # note: does transclose starting with self, calls _recompile_if_needed_and_return_sublists_dict
@@ -300,7 +300,7 @@ class DisplayListChunk( DelegatingInstanceOrExpr, SelfUsageTrackingMixin, SubUsa
                 # Note: this draw method only does track_use in immediate mode (since it would be wrong otherwise),
                 # but when compiling displists, it can be done by the external recursive algorithm via track_use_of_drawing_effects.
         if _debug_print_name:
-            print "%s: emit glCallList(%r)" % (_debug_print_name, self.displist)
+            print("%s: emit glCallList(%r)" % (_debug_print_name, self.displist))
         self.do_glCallList() #e optim: inline this
         return # from draw
 
@@ -366,7 +366,7 @@ exception in testdraw.py's drawfunc call ignored: exceptions.AssertionError:
         if not self.contents_valid:
             # we need to recompile our own displist.
             if self._debug_print_name:
-                print "%s: compiling our displist(%r)" % (self._debug_print_name, self.displist)
+                print("%s: compiling our displist(%r)" % (self._debug_print_name, self.displist))
 
             self._direct_sublists_dict = 3 # intentional error if this temporary value is used as a dict
                 # (note: this might detect the error of a recursive direct or indirect call -- untested ##k)
@@ -396,7 +396,7 @@ exception in testdraw.py's drawfunc call ignored: exceptions.AssertionError:
 
             mc2 = self.begin_tracking_usage() # this tracks how our drawing effects depend on those of the sublists we call
             try:
-                for sublist in self._direct_sublists_dict.itervalues():
+                for sublist in self._direct_sublists_dict.values():
                     sublist.track_use() # really track_use_of_drawing_effects (note: that's tracked into the global env, as always for track_use)
             finally:
                 self.end_tracking_usage( mc2, self.invalidate_drawing_effects )
@@ -407,7 +407,7 @@ exception in testdraw.py's drawfunc call ignored: exceptions.AssertionError:
         if self.drawing_effects_valid:
             if debug_pref("DisplayListChunk: permit optim 070204?", Choice_boolean_False):
                 ###BUG: this old optim seems to cause the bug 070203 -- I don't know why, but disabling it seems to fix the bug ###k
-                print "doing optim 070204"#e and listnames [#e only print if the optim makes a difference?]
+                print("doing optim 070204")#e and listnames [#e only print if the optim makes a difference?]
                 return {} # optim; only possible when self.contents_valid,
                     # tho if we had a separate flag for sublist contents alone,
                     # we could correctly use that here as a better optim #e
@@ -427,7 +427,7 @@ exception in testdraw.py's drawfunc call ignored: exceptions.AssertionError:
         else:
             # this clause would not be needed except for fear of bugs; it detects/complains/works around certain bugs.
             if self.drawing_effects_valid:
-                print "bug: self.drawing_effects_valid when not self.contents_valid. Error, but invalidate_drawing_effects anyway."
+                print("bug: self.drawing_effects_valid when not self.contents_valid. Error, but invalidate_drawing_effects anyway.")
                 self.invalidate_drawing_effects()
             pass
         return

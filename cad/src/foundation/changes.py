@@ -90,7 +90,7 @@ class OneTimeSubsList: #bruce 050804; as of 061022, looks ok for use in new expr
         del self._subs # (this would expose the class's definition of _subs, if there is one; presently there's not)
             # Does this make it illegal to subscribe to this object ever again? No!
             # It causes such a subs to be immediately fulfilled.
-        for sublis in subs.values(): #bruce 060405 precaution: itervalues -> values (didn't analyze whether needed)
+        for sublis in list(subs.values()): #bruce 060405 precaution: itervalues -> values (didn't analyze whether needed)
             for sub1 in sublis:
                 # note: fulfilling at most one elt might be acceptable if we redefined API to permit that
                 # (since all elts are identical),
@@ -105,7 +105,7 @@ class OneTimeSubsList: #bruce 050804; as of 061022, looks ok for use in new expr
         """
         res = []
         subs = self._subs
-        for sublis in subs.itervalues():
+        for sublis in subs.values():
             res.extend(sublis)
         return res
     def remove_all_subs(self): #bruce 070109 experimental (for trying to fix a bug in exprs module), might become normal
@@ -117,13 +117,13 @@ class OneTimeSubsList: #bruce 050804; as of 061022, looks ok for use in new expr
         try:
             self._subs.clear() # does self._subs always exist when this is called? I think so but I'm not sure, so check for this.
         except AttributeError:
-            print "no _subs in %r so nothing to clear in remove_all_subs" % (self,)
+            print("no _subs in %r so nothing to clear in remove_all_subs" % (self,))
         return
     def _fulfill1(self, sub1, debug = False):
         # note: the only use of self is in the debug msg.
         try:
             if debug or _print_all_subs:
-                print "%r: fulfilling sub1 %r" % (self, sub1)
+                print("%r: fulfilling sub1 %r" % (self, sub1))
             sub1() #e would an arg of self be useful?
         except:
             # We have no choice but to ignore the exception, even if it's always a bug (as explained in docstring).
@@ -159,7 +159,7 @@ class OneTimeSubsList: #bruce 050804; as of 061022, looks ok for use in new expr
             pass # not sure this ever happens, but it's legal (if we call this multiple times on one func)
         except AttributeError:
             if 0 and debug_flags.atom_debug:
-                print "atom_debug: fyi: %r's event already occurred, in remove_all_instances( %r)" % (self, func)
+                print("atom_debug: fyi: %r's event already occurred, in remove_all_instances( %r)" % (self, func))
             pass # this happens routinely after fulfill_all removes self._subs,
                 # since our recipient is too lazy to only remove its other subs when one gets fulfilled --
                 # it just removes all the subs it had, including the one that got fulfilled.
@@ -400,7 +400,7 @@ class begin_end_matcher: #bruce 050804
     def active_apply(self, func, args, kws = {}):
         self.active = True
         try:
-            return apply(func, args, kws)
+            return func(*args, **kws)
         finally:
             self.active = False
     def begin(self, *args, **kws):
@@ -443,7 +443,7 @@ class begin_end_matcher: #bruce 050804
                 self.active = False
             return doneobj
         # some kind of error
-        ids = map( id, stack )
+        ids = list(map( id, stack ))
         if match_checking_code in ids:
             # some subroutines did begin and no end, but the present end has a begin -- we can recover from this error
             doneobj = stack.pop()
@@ -567,7 +567,7 @@ class SubUsageTrackingMixin: #bruce 050804; as of 061022 this is used only in cl
             dict1 = usage_tracker._do_after_current_tracked_usage_ends
             if dict1: # condition is optim
                 usage_tracker._do_after_current_tracked_usage_ends = {}
-                for func in dict1.itervalues():
+                for func in dict1.values():
                     try:
                         func()
                     except:
@@ -632,7 +632,7 @@ class usage_tracker_obj: #bruce 050804; docstring added 060927
         # For now, just store subslist, at most one copy. Later we'll subscribe just once to each one stored.
         self.data[id(subslist)] = subslist
     def error(self, text):
-        print "bug: error in usage_tracker_obj:", text #e stub
+        print("bug: error in usage_tracker_obj:", text) #e stub
     def end(self):
         pass # let the caller think about self.data.values() (eg filter or compress them) before subscribing to them
     def standard_end(self, invalidator, debug = False):
@@ -641,14 +641,14 @@ class usage_tracker_obj: #bruce 050804; docstring added 060927
         self.end gets called; see the class docstring for more info
         """
         self.invalidator = invalidator # this will be called only by our own standard_inval
-        whatweused = self.whatweused = self.data.values() # this list is saved for use in other methods called later
+        whatweused = self.whatweused = list(self.data.values()) # this list is saved for use in other methods called later
         self.last_sub_invalidator = inval = self.standard_inval
             # save the exact copy of this bound method object which we use now, so comparison with 'is' will work for unsubscribes
             # (this might not be needed if they compare using '==' [###k find out])
             # note: that's a self-referential value, which would cause a memory leak, except that it gets deleted
             # in standard_inval (so it's ok). [060927 comment]
         if debug:
-            print "changes debug: %r.standard_end subscribing %r to each of %r" % (self, inval, whatweused) #bruce 070816
+            print("changes debug: %r.standard_end subscribing %r to each of %r" % (self, inval, whatweused)) #bruce 070816
         for subslist in whatweused:
             subslist.subscribe( inval ) #e could save retvals to help with unsub, if we wanted
         self.data = 222 # make further calls of self.track() illegal [#e do this in self.end()??]
@@ -707,9 +707,9 @@ class usage_tracker_obj: #bruce 050804; docstring added 060927
                                             ## frame_repr = _std_frame_repr, #bruce 061120, might or might not be temporary, not normally seen
                                             linesep = '\n')
                     else:
-                        print msg
+                        print(msg)
             else:
-                print "likely bug: %r unsubscribe_to_invals twice, whys are %r and %r" % (self, self.last_sub_invalidator_why, why)
+                print("likely bug: %r unsubscribe_to_invals twice, whys are %r and %r" % (self, self.last_sub_invalidator_why, why))
                 #e print stack?
             return 1
         elif _debug_standard_inval_nottwice_stack:
@@ -752,12 +752,12 @@ class usage_tracker_obj: #bruce 050804; docstring added 060927
                     # but the zapping fixes my continuous redraw bug in exprs module!
                     # [bruce 070110; more info and cleanup to follow when situation is better understood --
                     #  could it be a bug in the removal of subs which makes it never happen at all?!? ###k]
-                    print "fyi: %r still has %d subs of its invalidator to things it used; zapping/disabling them" % \
-                          (obj_for_errmsgs or self, len(self.whatweused))
+                    print("fyi: %r still has %d subs of its invalidator to things it used; zapping/disabling them" % \
+                          (obj_for_errmsgs or self, len(self.whatweused)))
             already = self.unsubscribe_to_invals('standard_inval')
             if already:
                 # error message was already printed -- but, I don't think this can ever happen, so print *that*
-                print "(should never happen in make_invals_illegal)"
+                print("(should never happen in make_invals_illegal)")
         else:
             # if an inval comes (to self.standard_inval), we'll find out, since it'll complain (I think)
             pass
@@ -795,7 +795,7 @@ class begin_disallowing_usage_tracking(SubUsageTrackingMixin):
         return
     def inval(self):
         #e don't use noprint, since this implies a bug in self, tho for now, that's a known bug, always there, til implem is done
-        print "bug (some time ago): something that %r should not have subscribed to (but did - also a bug) has changed" % self
+        print("bug (some time ago): something that %r should not have subscribed to (but did - also a bug) has changed" % self)
     def __repr__(self):
         return "<%s at %#x for %r>" % (self.__class__.__name__, id(self), self.whosays)
     def end_tracking_usage(self, match_checking_code, invalidator):
@@ -807,7 +807,7 @@ class begin_disallowing_usage_tracking(SubUsageTrackingMixin):
         if obj.whatweused: # a private attr of obj (a usage_tracker_obj), that we happen to know about, being a friend of it
             msg = "begin_disallowing_usage_tracking for %s sees some things were used: %r" % (self.whosays, obj.whatweused,)
             if not self.noprint:
-                print msg
+                print(msg)
             assert 0, msg ##e should be a private exception so clients can catch it specifically; until then, noprint is not useful
         return obj #070110 be compatible with new superclass API
     pass
@@ -893,8 +893,8 @@ class Formula( SubUsageTrackingMixin): #bruce 050805 [not related to class Expr 
             #bruce 070816 included True in that condition, since prior code could
             # silently discard exceptions which indicated real bugs.
         if debug:
-            print "\n_changes__debug_print: %r.recompute() calling %r" % \
-                  ( self, self.value_lambda )
+            print("\n_changes__debug_print: %r.recompute() calling %r" % \
+                  ( self, self.value_lambda ))
         error = False
         match_checking_code = self.begin_tracking_usage()
         try:

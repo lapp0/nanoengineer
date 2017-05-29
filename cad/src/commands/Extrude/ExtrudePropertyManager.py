@@ -122,11 +122,13 @@ class ExtrudePropertyManager(Ui_ExtrudePropertyManager):
         """
         self.command.update_from_controls()
 
-    def set_extrude_controls_xyz(self, (x, y, z) ):
+    def set_extrude_controls_xyz(self, xxx_todo_changeme ):
+        (x, y, z) = xxx_todo_changeme
         self.set_extrude_controls_xyz_nolength((x, y, z))
         self.update_length_control_from_xyz()
 
-    def set_extrude_controls_xyz_nolength(self, (x, y, z) ):
+    def set_extrude_controls_xyz_nolength(self, xxx_todo_changeme1 ):
+        (x, y, z) = xxx_todo_changeme1
         self.extrudeSpinBox_x.setValue(x)
         self.extrudeSpinBox_y.setValue(y)
         self.extrudeSpinBox_z.setValue(z)

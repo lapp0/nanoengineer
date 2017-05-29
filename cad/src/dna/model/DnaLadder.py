@@ -158,7 +158,7 @@ class DnaLadder(object, DnaLadder_pam_conversion_methods):
     def __len__(self):
         return self.baselength()
 
-    def __nonzero__(self): # 080311
+    def __bool__(self): # 080311
         # avoid Python calling __len__ for this [review: need __eq__ as well?]
         return True
 
@@ -208,8 +208,8 @@ class DnaLadder(object, DnaLadder_pam_conversion_methods):
         from dna.updater.dna_updater_prefs import legal_numbers_of_strand_neighbors_on_axis
         legal_nums = legal_numbers_of_strand_neighbors_on_axis()
         if not ( len(self.strand_rails) in legal_nums ):
-            print "error: axis atom %r has %d strand_neighbors (should be %s)" % \
-                  (self, len(self.strand_rails), " or ".join(map(str, legal_nums)))
+            print("error: axis atom %r has %d strand_neighbors (should be %s)" % \
+                  (self, len(self.strand_rails), " or ".join(map(str, legal_nums))))
             self.error = "bug: illegal number (%d) of strand rails" % len(self.strand_rails)
         axis_rail = self.axis_rail
         # make sure rungs are aligned between the strand and axis rails
@@ -239,10 +239,10 @@ class DnaLadder(object, DnaLadder_pam_conversion_methods):
          this code works even if there are none)
         """
         if _DEBUG_REVERSE_STRANDS():
-            print "\n *** _DEBUG_REVERSE_STRANDS start for %r" % self
+            print("\n *** _DEBUG_REVERSE_STRANDS start for %r" % self)
         for strand_rail in self.strand_rails:
             if _DEBUG_REVERSE_STRANDS():
-                print "deciding whether to reverse:", strand_rail
+                print("deciding whether to reverse:", strand_rail)
             if strand_rail is self.strand_rails[0]:
                 desired_dir = 1
                 reverse = True # if dir is wrong, reverse all three rails
@@ -265,7 +265,7 @@ class DnaLadder(object, DnaLadder_pam_conversion_methods):
                 msg = "bug: %r strand %r has unknown or inconsistent bond " \
                       "direction - should have been caught by fix_bond_directions" % \
                       (self, strand_rail)
-                print "\n*** " + msg
+                print("\n*** " + msg)
                 ## env.history.redmsg(quote_html(msg))
                 self.error = "bug: strand with unknown or inconsistent bond direction"
                 reverse = True # might as well fix the other strand, if we didn't get to it yet
@@ -276,16 +276,16 @@ class DnaLadder(object, DnaLadder_pam_conversion_methods):
                     # or report error (if we're second strand)
                     if strand_rail.bond_direction_is_arbitrary():
                         if _DEBUG_REVERSE_STRANDS():
-                            print "reversing %r (bond_direction_is_arbitrary)" % strand_rail
+                            print("reversing %r (bond_direction_is_arbitrary)" % strand_rail)
                         strand_rail._f_reverse_arbitrary_bond_direction()
                         have_dir = strand_rail.bond_direction() # only needed for assert
                         assert have_dir == desired_dir
                     elif reverse:
                         if _DEBUG_REVERSE_STRANDS():
-                            print "reversing all rails in %r:" % (self,)
+                            print("reversing all rails in %r:" % (self,))
                         for rail in self.all_rails(): # works for ladder or single strand domain
                             if _DEBUG_REVERSE_STRANDS():
-                                print "   including: %r" % (rail,)
+                                print("   including: %r" % (rail,))
                             ### review: this reverses even the ones this for loop didn't get to, is that desired? @@@
                             rail.reverse_baseatoms()
                     else:
@@ -293,28 +293,28 @@ class DnaLadder(object, DnaLadder_pam_conversion_methods):
                         # don't print details unless verbose,
                         # use a summary message instead
                         if debug_flags.DEBUG_DNA_UPDATER_VERBOSE:
-                            print "\ndna updater input data error: %r's strands have parallel bond directions." % self
-                            print "data about that:"
-                            print "this rail %r in list of rails %r" % (strand_rail, self.strand_rails)
-                            print "desired_dir = %r, reverse = %r, have_dir = %r" % (desired_dir, reverse, have_dir)
-                            print "self.error now = %r (is about to be set)" % (self.error,)
+                            print("\ndna updater input data error: %r's strands have parallel bond directions." % self)
+                            print("data about that:")
+                            print("this rail %r in list of rails %r" % (strand_rail, self.strand_rails))
+                            print("desired_dir = %r, reverse = %r, have_dir = %r" % (desired_dir, reverse, have_dir))
+                            print("self.error now = %r (is about to be set)" % (self.error,))
                         if strand_rail.bond_direction_is_arbitrary():
-                            print " *** bug: parallel strands but strand_rail.bond_direction_is_arbitrary() is true, should be false"
+                            print(" *** bug: parallel strands but strand_rail.bond_direction_is_arbitrary() is true, should be false")
                         self.error = "parallel strand bond directions"
                         # should we just reverse them? no, unless we use minor/major groove to decide which is right.
                     pass
                 else:
                     # strand bond direction is already correct
                     if _DEBUG_REVERSE_STRANDS():
-                        print "no need to reverse %r" % strand_rail
+                        print("no need to reverse %r" % strand_rail)
             continue
         if _DEBUG_REVERSE_STRANDS():
-            print "done reversing if needed; current rail baseatom order is:"
+            print("done reversing if needed; current rail baseatom order is:")
             for rail in self.all_rails():
-                print "  %r" % rail.baseatoms # see if it gets it right after the first step
+                print("  %r" % rail.baseatoms) # see if it gets it right after the first step
             for rail in self.strand_rails:
                 strand_rail.debug_check_bond_direction("end of %r._finish_strand_rails" % self)
-            print " *** _DEBUG_REVERSE_STRANDS end for %r\n" % self
+            print(" *** _DEBUG_REVERSE_STRANDS end for %r\n" % self)
         self._ladder_set_valid(True) # desired even if self.error was set above, or will be set below
         self._duplex_geometric_checks() # might set or append to self.error
         if self.error:
@@ -412,9 +412,9 @@ class DnaLadder(object, DnaLadder_pam_conversion_methods):
             if minor_groove_where_expected_ness <= 0:
                 error_here = "bond directions both wrong re major groove"
                 if 0: # turn this on to know why it reported that error [080210]
-                    print "data for %s:" % error_here
-                    print axis_atoms, strand1_atoms, strand2_atoms
-                    print rung0_vec, rung0_vec_2, axis_vec
+                    print("data for %s:" % error_here)
+                    print(axis_atoms, strand1_atoms, strand2_atoms)
+                    print(rung0_vec, rung0_vec_2, axis_vec)
                 self.error = error_here
         if old_self_error or error_here:
             assert self.error
@@ -434,11 +434,11 @@ class DnaLadder(object, DnaLadder_pam_conversion_methods):
                 for atom in self.rail_end_baseatoms():
                     # (could debug-warn if already set to a valid ladder)
                     if atom._DnaLadder__ladder is not None and atom._DnaLadder__ladder.valid:
-                        print "\n*** likely bug: %r is owned by %r as %r takes it over" % \
-                              (atom, atom._DnaLadder__ladder, self)
+                        print("\n*** likely bug: %r is owned by %r as %r takes it over" % \
+                              (atom, atom._DnaLadder__ladder, self))
                     atom._DnaLadder__ladder = self
                     if debug_flags.DEBUG_DNA_UPDATER_VERBOSE:
-                        print "%r owning %r" % (self, atom)
+                        print("%r owning %r" % (self, atom))
             else:
                 # un-tell them, but first, warn if this might cause or indicate
                 # a bug in pam conversion
@@ -465,7 +465,7 @@ class DnaLadder(object, DnaLadder_pam_conversion_methods):
                     # since it makes it harder to debug things;
                     # uses of atom._DnaLadder__ladder check self.valid anyway
                     if debug_flags.DEBUG_DNA_UPDATER_VERBOSE:
-                        print "%r de-owning %r" % (self, atom)
+                        print("%r de-owning %r" % (self, atom))
                 # tell the next run of the dna updater we're invalid
                 _f_invalid_dna_ladders[id(self)] = self
         return
@@ -499,8 +499,8 @@ class DnaLadder(object, DnaLadder_pam_conversion_methods):
     def ladder_invalidate_and_assert_permitted(self): #bruce 080413
         dnaladder_inval_policy = get_dnaladder_inval_policy()
         if dnaladder_inval_policy != DNALADDER_INVAL_IS_OK:
-            print "\n*** BUG: dnaladder_inval_policy is %r, but we'll inval %r anyway" % \
-                  (dnaladder_inval_policy, self)
+            print("\n*** BUG: dnaladder_inval_policy is %r, but we'll inval %r anyway" % \
+                  (dnaladder_inval_policy, self))
         self._ladder_set_valid(False)
         return
 
@@ -510,7 +510,7 @@ class DnaLadder(object, DnaLadder_pam_conversion_methods):
             # usual case should be fastest
             self._ladder_set_valid(False)
         elif dnaladder_inval_policy == DNALADDER_INVAL_IS_NOOP_BUT_OK:
-            print "fyi: disabled inval of %r" % self ### remove when works, or put under debug_flags
+            print("fyi: disabled inval of %r" % self) ### remove when works, or put under debug_flags
             pass # don't invalidate it
         elif dnaladder_inval_policy == DNALADDER_INVAL_IS_ERROR:
             # this will happen for true errors, but also for places where we
@@ -618,8 +618,8 @@ class DnaLadder(object, DnaLadder_pam_conversion_methods):
         """
         if not self.valid: #bruce 080411
             # maybe make this an assertion failure?
-            print "likely bug: invalid ladder in whichrail_and_index_of_baseatom(%r, %r)" % \
-                  (self, baseatom)
+            print("likely bug: invalid ladder in whichrail_and_index_of_baseatom(%r, %r)" % \
+                  (self, baseatom))
         # TODO: pass index hint to optimize?
         look_at_rails = self.rail_indices_and_rails(baseatom)
         for index in range(-1, len(self) - 1):
@@ -866,7 +866,7 @@ class DnaLadder(object, DnaLadder_pam_conversion_methods):
             if rail is None:
                 return None
             return rail.end_baseatoms()[end]
-        res0 = map( atom0, rails)
+        res0 = list(map( atom0, rails))
         if end != LADDER_END1:
             assert end == LADDER_END0
             res0.reverse()
@@ -910,13 +910,13 @@ class DnaLadder(object, DnaLadder_pam_conversion_methods):
         flip_other = (other_end != LADDER_END0)
 
         if _DEBUG_LADDER_FINISH_AND_MERGE():
-            print "dna updater: fyi: _do_merge_with_other_at_ends(self = %r, other_ladder = %r, end = %r, other_end = %r)" % \
-              (self, other, end, other_end)
+            print("dna updater: fyi: _do_merge_with_other_at_ends(self = %r, other_ladder = %r, end = %r, other_end = %r)" % \
+              (self, other, end, other_end))
         if _DEBUG_LADDER_FINISH_AND_MERGE():
             # following was useful for a bug: 080122 noon
-            print self.ladder_string("self", mark_end = end, flipQ = flip_self)
-            print other.ladder_string("other", mark_end = other_end, flipQ = flip_other)
-            print
+            print(self.ladder_string("self", mark_end = end, flipQ = flip_self))
+            print(other.ladder_string("other", mark_end = other_end, flipQ = flip_other))
+            print()
 
         self_baseatom_lists = [rail_to_baseatoms(rail, flip_self)
                                for rail in self.all_rail_slots_from_top_to_bottom()]
@@ -929,26 +929,27 @@ class DnaLadder(object, DnaLadder_pam_conversion_methods):
             other_baseatom_lists.reverse()
         # now (after flipping) we need to attach self END1 to other END0,
         # i.e. "self rail + other rail" for each rail.
-        def concatenate_rail_atomlists((r1, r2)):
+        def concatenate_rail_atomlists(xxx_todo_changeme):
+            (r1, r2) = xxx_todo_changeme
             assert (r1 and r2) or (not r1 and not r2)
             res = r1 + r2
             assert res is not r1
             assert res is not r2
             return res
-        new_baseatom_lists = map( concatenate_rail_atomlists,
-                                  zip(self_baseatom_lists, other_baseatom_lists))
+        new_baseatom_lists = list(map( concatenate_rail_atomlists,
+                                  list(zip(self_baseatom_lists, other_baseatom_lists))))
         # flip the result if we flipped self, so we know it defines a legal
         # set of rails for a ladder even if some rails are missing
         # (todo: could optim by never flipping self, instead swapping
         #  ladders and negating both flips)
         if flip_self:
             if _DEBUG_LADDER_FINISH_AND_MERGE():
-                print "dna updater: fyi: new_baseatom_lists before re-flip == %r" % (new_baseatom_lists,)
+                print("dna updater: fyi: new_baseatom_lists before re-flip == %r" % (new_baseatom_lists,))
             new_baseatom_lists.reverse() # bugfix 080122 circa 2pm: .reverse -> .reverse() [confirmed]
             for listi in new_baseatom_lists:
                 listi.reverse()
         if _DEBUG_LADDER_FINISH_AND_MERGE():
-            print "dna updater: fyi: new_baseatom_lists (after flip or no flip) == %r" % (new_baseatom_lists,)
+            print("dna updater: fyi: new_baseatom_lists (after flip or no flip) == %r" % (new_baseatom_lists,))
         # invalidate old ladders before making new rails or new ladder
         self.ladder_invalidate_and_assert_permitted()
         other.ladder_invalidate_and_assert_permitted()
@@ -964,7 +965,7 @@ class DnaLadder(object, DnaLadder_pam_conversion_methods):
                           ) ]
         new_ladder = _new_ladder(new_rails)
         if debug_flags.DEBUG_DNA_UPDATER:
-            print "dna updater: fyi: merged %r and %r to produce %r" % (self, other, new_ladder,)
+            print("dna updater: fyi: merged %r and %r to produce %r" % (self, other, new_ladder,))
         return new_ladder
 
     def ladder_string(self, name = None, flipQ = False, mark_end = None):
@@ -1043,7 +1044,7 @@ class DnaLadder(object, DnaLadder_pam_conversion_methods):
             # make sure we notice if it happens without self.error being set: [bruce 080219]
             if not self.error:
                 self.error = "late-detected wrong number of strands, %d" % len(self.strand_rails)
-                print "\n***BUG: %r: %s" % (self, self.error)
+                print("\n***BUG: %r: %s" % (self, self.error))
             return [None, self.axis_rail, None] # same as above, see comment there
         pass
 
@@ -1085,8 +1086,8 @@ class DnaLadder(object, DnaLadder_pam_conversion_methods):
             if not part:
                 # will this happen in MMKit? get it from assy
                 assy = old_chunk.assy
-                print "\nbug: %r in assy %r has no .part" % \
-                      (old_chunk, assy)
+                print("\nbug: %r in assy %r has no .part" % \
+                      (old_chunk, assy))
                 assert assy is self.assy
                 # note: when some bugs happen, assy is None here [080227]
                 assert assy is not None, "%r.remake_chunks notices self.assy is None" % self
@@ -1101,14 +1102,14 @@ class DnaLadder(object, DnaLadder_pam_conversion_methods):
                 # this happens for MMKit chunks with "dummy" in their names;
                 # can it happen for anything else? should fix in mmkit code.
                 if "dummy" not in old_chunk.name:
-                    print "dna updater: why is %r.dad == None? (old_chunk.assy = %r)" % (old_chunk, old_chunk.assy) ###
+                    print("dna updater: why is %r.dad == None? (old_chunk.assy = %r)" % (old_chunk, old_chunk.assy)) ###
                 group = part.topnode
             assert group.is_group()
             ## assert group.part is part, \
             if not (group.part is part):
-                print "\n*** BUG: " \
+                print("\n*** BUG: " \
                    "group.part %r is not part %r, for old_chunk %r, .dad %r, part.topnode %r" % \
-                   (group.part, part, old_chunk, old_chunk.dad, part.topnode)
+                   (group.part, part, old_chunk, old_chunk.dad, part.topnode))
                 # this is failing in Undo of creating or bonding lone Ss3, or Undo/Redo/Undo of same,
                 # with group.part None, group probably a DnaStrand which doesn't exist in new state(?).
                 # [bruce 080405 comment, might relate to "tom's undo bug" reported by email yesterday]
@@ -1122,7 +1123,7 @@ class DnaLadder(object, DnaLadder_pam_conversion_methods):
                 # it also may copy in certain kinds of info
                 # from their old chunk (e.g. its .hidden state?)
             if debug_flags.DEBUG_DNA_UPDATER_VERBOSE:
-                print "%r.remake_chunks made %r" % (self, chunk)
+                print("%r.remake_chunks made %r" % (self, chunk))
             chunk.color = old_chunk.color # works, at least if a color was set
             #e put it into the model in the right place [stub - puts it in the same group]
             # (also - might be wrong, we might want to hold off and put it in a better place a bit later during dna updater)
@@ -1148,12 +1149,12 @@ class DnaLadder(object, DnaLadder_pam_conversion_methods):
         # only for atoms with _f_dna_updater_should_reposition_baggage set
         # (and optimizes by knowing where those might be inside the ladder)
         if DEBUG_BONDPOINTS:
-            print "_f_reposition_baggage called on", self
+            print("_f_reposition_baggage called on", self)
         for atom in self._atoms_needing_reposition_baggage_check():
             # (for single strands, we need to scan all the baseatoms)
             if atom._f_dna_updater_should_reposition_baggage:
                 if DEBUG_BONDPOINTS:
-                    print " calling %r.reposition_baggage_using_DnaLadder()" % atom
+                    print(" calling %r.reposition_baggage_using_DnaLadder()" % atom)
                 atom.reposition_baggage_using_DnaLadder()
                     # fyi: as of 080404, the only case this handles is giving
                     # an Ax with one axis bond a parallel open bond.
@@ -1354,11 +1355,11 @@ class DnaLadder(object, DnaLadder_pam_conversion_methods):
         if not self.valid:
             # was assert, but happened for convert to pam3 of ladder
             # whose self & neighbor were converted to PAM5 [bruce 080413 336pm]
-            print "possible bug: strand_neighbor_ladders called on %r " \
-                  " which is not valid" % (self,)
+            print("possible bug: strand_neighbor_ladders called on %r " \
+                  " which is not valid" % (self,))
         if self.error:
-            print "possible bug: strand_neighbor_ladders called on %r " \
-                  " which has error = %r" % (self, self.error)
+            print("possible bug: strand_neighbor_ladders called on %r " \
+                  " which has error = %r" % (self, self.error))
         res = []
         for rail in self.strand_rails:
             for end in LADDER_ENDS:
@@ -1573,7 +1574,7 @@ def _new_rail(baseatoms, strandQ, bond_direction):
         assert not bond_direction
     if _DEBUG_LADDER_FINISH_AND_MERGE():
         # print all calls
-        print "\n_new_rail(%r, %r, %r)" % (baseatoms, strandQ, bond_direction)
+        print("\n_new_rail(%r, %r, %r)" % (baseatoms, strandQ, bond_direction))
     if debug_flags.DEBUG_DNA_UPDATER:
         # check bondedness of adjacent baseatoms
         for i in range(len(baseatoms) - 1):

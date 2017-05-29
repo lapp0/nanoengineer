@@ -261,7 +261,7 @@ class PM_Dialog( QDialog, SponsorableMixin ):
             commandSequencer = self.win.commandSequencer #bruce 071008
             commandName = commandSequencer.currentCommand.commandName
                 # that's an internal name, but this is just for a debug print
-            print "PM_Dialog.open(): Reopening the PM for command:", commandName
+            print(("PM_Dialog.open(): Reopening the PM for command:", commandName))
 
         # The following line of code is buggy when you, for instance, exit a PM
         # and reopen the previous one. It sends the disconnect signal twice to
@@ -274,8 +274,8 @@ class PM_Dialog( QDialog, SponsorableMixin ):
         try:
             pm.setSponsor()
         except:
-            print """PM_Dialog.open(): pm has no attribute 'setSponsor()'
-                     ignoring."""
+            print("""PM_Dialog.open(): pm has no attribute 'setSponsor()'
+                     ignoring.""")
         self.pw.pwProjectTabWidget.setCurrentIndex(
             self.pw.pwProjectTabWidget.indexOf(pm))
 

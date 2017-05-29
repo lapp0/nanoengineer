@@ -31,20 +31,19 @@ def find_elements_by_localName(node, localName):
 
 def blab(node, level=0):
     indent = level * '    '
-    print indent + repr(node)
+    print(indent + repr(node))
     for kid in find_children(node):
         blab(kid, level + 1)
 
 def main():
-    uifiles = map(lambda x: x[:-1],
-                  os.popen('/bin/ls *.ui').readlines())
+    uifiles = [x[:-1] for x in os.popen('/bin/ls *.ui').readlines()]
 
     for f in uifiles:
         rev = os.popen('cvs status ' + f).readlines()[3].split()[2]
         branchpoint = '.'.join(rev.split('.')[:2])
-        print '==========================='
-        print f, '     ', rev
-        print '==========================='
+        print('===========================')
+        print(f, '     ', rev)
+        print('===========================')
         r = os.popen('cvs up -p -r ' + branchpoint + ' ' + f).read()
         doc = xml.dom.minidom.parseString(r)
         ui = find_elements(doc)[0]
@@ -58,8 +57,8 @@ def main():
             signal = first_text_node(signal).wholeText
             slot = find_elements_by_localName(conn, 'slot')[0]
             slot = first_text_node(slot).wholeText
-            print ('        self.connect(self.%s,SIGNAL("%s"),self.%s)' %
-                   (sender, signal, re.sub('\(.*', '', slot)))
+            print(('        self.connect(self.%s,SIGNAL("%s"),self.%s)' %
+                   (sender, signal, re.sub('\(.*', '', slot))))
 
 if (__name__ == '__main__'):
     main()

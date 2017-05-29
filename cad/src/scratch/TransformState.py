@@ -154,7 +154,7 @@ class StaticTransform( TransformState):
         """
         yield the nodes we belong to
         """
-        return self._nodes.itervalues()
+        return iter(self._nodes.values())
 
     pass
 

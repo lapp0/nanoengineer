@@ -67,7 +67,7 @@ def writemdlfile(part, glpane, filename): #bruce 050927 replaced assy argument w
 
     for mol in part.molecules:
         col = mol.color # Color of molecule
-        for a in mol.atoms.values():
+        for a in list(mol.atoms.values()):
 
             # Begin GROUP record for this atom.
             f.write("[GROUP]\nName=Atom%d\nCount=80\n"%atomindex)
@@ -86,7 +86,7 @@ def writemdlfile(part, glpane, filename): #bruce 050927 replaced assy argument w
             color = col or a.element.color
                 # if this was color = a.drawing_color() it would mess up the specularity lookup below;
                 # could be fixed somehow... [bruce 070417 comment]
-            rgb=map(int,A(color)*255) # rgb = 3-tuple of int
+            rgb=list(map(int,A(color)*255)) # rgb = 3-tuple of int
             color=(int(rgb[0]), int(rgb[1]), int(rgb[2]))
             f.write("DiffuseColor=%d %d %d\n"%color)
 

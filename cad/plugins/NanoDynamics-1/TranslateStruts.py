@@ -61,11 +61,11 @@ def vmulk(a, k):
 def vcross(a, b):
     return [a[1]*b[2]-a[2]*b[1], a[2]*b[0]-a[0]*b[2], a[0]*b[1]-a[1]*b[0]]
 
-print "enter groove position"
+print("enter groove position")
 g = readVector()
-print "enter a"
+print("enter a")
 a = readVector()
-print "enter b"
+print("enter b")
 b = readVector()
 
 va = vsub(a, g)
@@ -76,7 +76,7 @@ mat = array([[va[0], vb[0], vc[0]], [va[1], vb[1], vc[1]], [va[2], vb[2], vc[2]]
 inv = inverse(mat)
 
 while (True):
-    print "enter vector"
+    print("enter vector")
     v = readVector()
     vv = vsub(v, g)
 
@@ -91,4 +91,4 @@ while (True):
     delta2d = vsub(vv, vcalc1)
     error2d = math.sqrt(vdot(delta2d, delta2d))
 
-    print "A: %f  B: %f  C: %f  error: %e  error2d: %e" % (A, B, C, error, error2d)
+    print(("A: %f  B: %f  C: %f  error: %e  error2d: %e" % (A, B, C, error, error2d)))

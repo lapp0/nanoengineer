@@ -228,7 +228,7 @@ class PM_ToolButtonGrid( PM_WidgetGrid ):
 
         @note: If multiple buttons have the same text, only the last one is returned.
         """
-        if self.buttonsByText.has_key(text):
+        if text in self.buttonsByText:
             return self.buttonsByText[text]
         else:
             return None
@@ -240,7 +240,7 @@ class PM_ToolButtonGrid( PM_WidgetGrid ):
         return: The button, or B{None} if no button was found.
         rtype:  U{B{QToolButton}<http://doc.trolltech.com/4/qtoolbutton.html>}
         """
-        if self.buttonsById.has_key(buttonId):
+        if buttonId in self.buttonsById:
             return self.buttonsById[buttonId]
         else:
             return None

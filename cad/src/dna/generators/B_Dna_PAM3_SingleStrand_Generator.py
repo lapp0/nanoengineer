@@ -261,15 +261,15 @@ class B_Dna_PAM3_SingleStrand_Generator(B_Dna_PAM3_Generator):
             #Thus, after we replace the overlapping axis atoms of the
             #new dna with the original axis atoms, we should make sure
             #to bond them with the atoms [A] mentioned above
-            if fusableAxisAtomPairsDict.has_key(atm_to_keep):
+            if atm_to_keep in fusableAxisAtomPairsDict:
                 atm_to_delete = fusableAxisAtomPairsDict[atm_to_keep]
                 for neighbor in atm_to_delete.axis_neighbors():
                     if neighbor is not None and \
-                       neighbor not in fusableAxisAtomPairsDict.values():
+                       neighbor not in list(fusableAxisAtomPairsDict.values()):
                         axis_and_axis_atomPairs_to_bond.append((atm_to_keep,
                                                            neighbor))
 
-        for atm_to_delete in fusableAxisAtomPairsDict.values():
+        for atm_to_delete in list(fusableAxisAtomPairsDict.values()):
             try:
                 #Now delete the overlapping axis atom on new dna
                 atm_to_delete.kill()

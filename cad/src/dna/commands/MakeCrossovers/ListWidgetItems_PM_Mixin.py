@@ -202,6 +202,6 @@ class ListWidgetItems_PM_Mixin:
         """
         self.segmentListWidget.deleteSelection()
         itemDict = self.segmentListWidget.getItemDictonary()
-        self.command.setSegmentList(itemDict.values())
+        self.command.setSegmentList(list(itemDict.values()))
         self.updateListWidgets()
         self.win.win_update()

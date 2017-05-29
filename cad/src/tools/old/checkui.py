@@ -8,9 +8,9 @@ $Id$
 """
 
 import sys
-from commands import getoutput
+from subprocess import getoutput
 import re
-from StringIO import StringIO
+from io import StringIO
 
 isdef = re.compile("\s*def (\w*)\(self,?\W*([^)]*)\):")
 
@@ -31,6 +31,6 @@ if __name__ == '__main__':
             lis += [m.group(1) + '(' + m.group(2) + ')']
     lis.sort()
     for i in lis:
-        print i
+        print(i)
 
 # end

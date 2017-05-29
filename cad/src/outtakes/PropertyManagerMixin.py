@@ -594,15 +594,15 @@ class pmMessageGroupBox(QGroupBox, PropertyManager_common):
         new_height = num_lines * self.MessageTextEdit.fontMetrics().lineSpacing() + margin
 
         if 0: # Debugging code for me. Mark 2007-05-24
-            print "--------------------------------"
-            print "Widget name =", self.objectName()
-            print "minLines =", minLines
-            print "maxLines =", maxLines
-            print "num_lines=", num_lines
-            print "New height=", new_height
-            print "text =", text
-            print "Text width=", text_width
-            print "current_width (of PropMgrTextEdit)=", current_width
+            print("--------------------------------")
+            print("Widget name =", self.objectName())
+            print("minLines =", minLines)
+            print("maxLines =", maxLines)
+            print("num_lines=", num_lines)
+            print("New height=", new_height)
+            print("text =", text)
+            print("Text width=", text_width)
+            print("current_width (of PropMgrTextEdit)=", current_width)
 
         # Reset height of PropMgrTextEdit.
         self.MessageTextEdit.setMinimumSize(QSize(pmMinWidth * 0.5, new_height))
@@ -655,7 +655,7 @@ class PropertyManagerMixin(PropertyManager_common, SponsorableMixin):
         try:
             tab.setSponsor()
         except:
-            print "tab has no attribute 'setSponsor()'  ignoring."
+            print("tab has no attribute 'setSponsor()'  ignoring.")
         self.pw.featureManager.setCurrentIndex(self.pw.featureManager.indexOf(tab))
 
     def closePropertyManager(self):
@@ -701,7 +701,7 @@ class PropertyManagerMixin(PropertyManager_common, SponsorableMixin):
                 for thing in things:
                     thing.show()
         else:
-            print "Groupbox has no widgets. Clicking on groupbox button has no effect."
+            print("Groupbox has no widgets. Clicking on groupbox button has no effect.")
         return
 
     def getMsgGroupBoxPalette(self): # note: not used by anything as of 070615

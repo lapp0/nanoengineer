@@ -94,19 +94,19 @@ def ignore_new_changes( from_what, changes_ok = True, debug_print_even_if_none =
     if ignore_these or debug_print_even_if_none:
         if (not ignore_these) or changes_ok:
             if debug_flags.DEBUG_DNA_UPDATER:
-                print "dna updater: ignoring %d new changes %s" % (len(ignore_these), from_what)
+                print("dna updater: ignoring %d new changes %s" % (len(ignore_these), from_what))
         else:
             msg = "\nBUG: dna updater: ignoring %d new changes %s -- any such changes are a bug: " % \
                   (len(ignore_these), from_what)
             print_compact_stack(msg)
-            print
+            print()
 
-        if ignore_these.has_key(_DEBUG_ATOM_KEY):
+        if _DEBUG_ATOM_KEY in ignore_these:
             msg = "*** _DEBUG_ATOM_KEY %r: %r seen in those changes" % (_DEBUG_ATOM_KEY, ignore_these[_DEBUG_ATOM_KEY])
             if changes_ok:
                 print_compact_stack(msg + ": ") # since we didn't print stack just above
             else:
-                print msg
+                print(msg)
 
     del ignore_these
     return
@@ -130,15 +130,15 @@ def _f_get_invalid_dna_ladders(): # moved here from DnaLadder.py, bruce 080413
     would cause it to miss newly invalid ladders,
     causing serious bugs.
     """
-    res = _f_invalid_dna_ladders.values()
+    res = list(_f_invalid_dna_ladders.values())
     _f_invalid_dna_ladders.clear()
-    res = filter( lambda ladder: not ladder.valid, res ) # probably not needed
+    res = [ladder for ladder in res if not ladder.valid] # probably not needed
     return res
 
 def _f_clear_invalid_dna_ladders(): #bruce 080413; see comment in caller about need for review/testing
     if _f_invalid_dna_ladders:
-        print "fyi: dna updater: ignoring %d newly invalid dnaladders" % \
-              len( _f_invalid_dna_ladders)
+        print("fyi: dna updater: ignoring %d newly invalid dnaladders" % \
+              len( _f_invalid_dna_ladders))
     _f_invalid_dna_ladders.clear()
     return
 
@@ -246,8 +246,8 @@ def rail_end_atom_to_ladder(atom):
         return ladder
     except:
         error = atom._dna_updater__error and ("[%s]" % atom._dna_updater__error) or ""
-        print "\nfollowing exception is an error in rail_end_atom_to_ladder(%r%s): " % \
-              (atom, error)
+        print("\nfollowing exception is an error in rail_end_atom_to_ladder(%r%s): " % \
+              (atom, error))
         raise
     pass
 

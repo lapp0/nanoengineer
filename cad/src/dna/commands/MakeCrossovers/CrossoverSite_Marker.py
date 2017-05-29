@@ -144,9 +144,9 @@ class CrossoverSite_Marker:
 
         for d in (self.final_crossover_pairs_dict,
                   self._final_avg_center_pairs_for_crossovers_dict):
-            if d.has_key(crossoverPairs_id):
+            if crossoverPairs_id in d:
                 for atm in d[crossoverPairs_id]:
-                    if self._final_crossover_atoms_dict.has_key(id(atm)):
+                    if id(atm) in self._final_crossover_atoms_dict:
                         del self._final_crossover_atoms_dict[id(atm)]
                 del d[crossoverPairs_id]
 
@@ -174,9 +174,7 @@ class CrossoverSite_Marker:
                 return True
 
             return False
-        allDnaStrandChunkList = filter(lambda m:
-                                       func(m),
-                                       self.win.assy.molecules)
+        allDnaStrandChunkList = [m for m in self.win.assy.molecules if func(m)]
 
         return allDnaStrandChunkList
 
@@ -208,11 +206,11 @@ class CrossoverSite_Marker:
             allDnaSegments = self.getAllDnaSegments()
 
         for segment in allDnaSegments:
-            if not self._allDnaSegmentDict.has_key(segment):
+            if segment not in self._allDnaSegmentDict:
                 self._allDnaSegmentDict[id(segment)] = segment
 
     def _updateCrossoverSites(self):
-        allSegments = self._allDnaSegmentDict.values()
+        allSegments = list(self._allDnaSegmentDict.values())
         #dict segments_searched_for_neighbors is a dictionary object that
         #maintains all the dna segments that have been gone trorugh a
         #'neighbor search' . This is used for speedups.
@@ -273,7 +271,7 @@ class CrossoverSite_Marker:
 
         for neighbor in allSegments:
             if not neighbor is dnaSegment and \
-               not segments_searched_for_neighbors.has_key(id(neighbor)):
+               id(neighbor) not in segments_searched_for_neighbors:
 
                 ok_to_search, orthogonal_vector = \
                             self._neighborSegment_ok_for_crossover_search(neighbor,
@@ -380,17 +378,17 @@ class CrossoverSite_Marker:
         """
         new_atom_dict = {}
         atomPairsList = []
-        for atm in atom_dict.values():
+        for atm in list(atom_dict.values()):
             for neighbor in atm.neighbors():
-                if atom_dict.has_key(id(neighbor)):
-                    if self._final_crossover_atoms_dict.has_key(id(atm)) and \
-                       self._final_crossover_atoms_dict.has_key(id(neighbor)):
+                if id(neighbor) in atom_dict:
+                    if id(atm) in self._final_crossover_atoms_dict and \
+                       id(neighbor) in self._final_crossover_atoms_dict:
                         continue #skip this iteration
 
                     if self.graphicsMode.DEBUG_DRAW_ALL_POTENTIAL_CROSSOVER_SITES:
-                        if not new_atom_dict.has_key(id(neighbor)):
+                        if id(neighbor) not in new_atom_dict:
                             new_atom_dict[id(neighbor)] = neighbor
-                        if not new_atom_dict.has_key(id(atm)):
+                        if id(atm) not in new_atom_dict:
                             new_atom_dict[id(atm)] = atm
 
                     #@@BUG: What if both neighbors of atm are in atom_dict_1??
@@ -461,14 +459,14 @@ class CrossoverSite_Marker:
         crossoverPairs = (atm1, neighbor1, atm2, neighbor2)
 
         for a in crossoverPairs:
-            if not self._final_crossover_atoms_dict.has_key(id(a)):
+            if id(a) not in self._final_crossover_atoms_dict:
                 self._final_crossover_atoms_dict[id(a)] = a
 
         #important to sort this to create a unique id. Makes sure that same
         #crossover pairs are not added to the self.final_crossover_pairs_dict
         crossoverPairs_id = self._create_crossoverPairs_id(crossoverPairs)
 
-        if not self.final_crossover_pairs_dict.has_key(crossoverPairs_id):
+        if crossoverPairs_id not in self.final_crossover_pairs_dict:
             self._final_avg_center_pairs_for_crossovers_dict[crossoverPairs_id] = (center_1, center_2)
             self.final_crossover_pairs_dict[crossoverPairs_id] = crossoverPairs
 
@@ -484,16 +482,16 @@ class CrossoverSite_Marker:
 
     def _createExprsHandles(self):
         self.handleDict = {}
-        for crossoverPair_id in self._final_avg_center_pairs_for_crossovers_dict.keys():
+        for crossoverPair_id in list(self._final_avg_center_pairs_for_crossovers_dict.keys()):
             handle = self._expr_instance_for_vector(
                 self._final_avg_center_pairs_for_crossovers_dict[crossoverPair_id],
                 self.final_crossover_pairs_dict[crossoverPair_id])
 
-            if not self.handleDict.has_key(id(handle)):
+            if id(handle) not in self.handleDict:
                 self.handleDict[id(handle)] = handle
 
     def removeHandle(self, handle):
-        if self.handleDict.has_key(id(handle)):
+        if id(handle) in self.handleDict:
             del self.handleDict[id(handle)]
             self.glpane.set_selobj(None)
             self.glpane.gl_update()
@@ -552,4 +550,4 @@ class CrossoverSite_Marker:
         return self._final_crossover_atoms_dict
 
     def get_final_crossover_pairs(self):
-        return self.final_crossover_pairs_dict.values()
+        return list(self.final_crossover_pairs_dict.values())

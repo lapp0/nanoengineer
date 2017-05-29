@@ -66,17 +66,17 @@ class MainCommandToolButton(DelegatingInstanceOrExpr): #e rename?
     # actions
     def on_release_in(self):
         if not self.pressed:
-            print "on_release_in %s" % self.toolname
+            print("on_release_in %s" % self.toolname)
             self.pressed = True #e for now -- later we might let main toolbar decide if this is ok
             #e incremental redraw to look pressed right away? or let toolbar decide?
             self.toolbar._advise_got_pressed(self)
         else:
             #### WRONG but not yet another way to unpress:
             self.pressed = False
-            print "unpressed -- not normal in real life!"###
+            print("unpressed -- not normal in real life!")###
         return #e stub
     def cmenu_spec(self, highlightable): ###IMPLEM this simpler cmenu API (if it still seems good)
-        return map( self.menuitem_for_subtool, self.subtools ) ###e how can that func tell us to leave out one, or incl a sequence?
+        return list(map( self.menuitem_for_subtool, self.subtools )) ###e how can that func tell us to leave out one, or incl a sequence?
     def menuitem_for_subtool(self, subtool):
         # stub, assume not None etc
         return ( subtool.name, subtool.cmd_invoke )
@@ -125,7 +125,7 @@ class MainToolbar(Toolbar): ###e how is the Main one different from any other on
         instance = self.Instance( expr, "#" + toolname)
         return instance
     def _advise_got_pressed(self, button):
-        print "my button %r with toolname %r says it got pressed" % (button, button.toolname)
+        print("my button %r with toolname %r says it got pressed" % (button, button.toolname))
         ###STUB - do the following:
         #e decide if legal at this time
         #e set it as the next running button

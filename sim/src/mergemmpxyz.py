@@ -10,7 +10,7 @@ import sys
 import re
 
 if len(sys.argv) != 3:
-    print >>sys.stderr, "usage: mergemmpxyz.py file.mmp file.xyz > merged.mmp"
+    print("usage: mergemmpxyz.py file.mmp file.xyz > merged.mmp", file=sys.stderr)
     sys.exit(1)
 
 atomLinePattern = re.compile(r"^(atom.*\(.*\).*\().*(\).*)$")
@@ -39,12 +39,12 @@ while mmpInput:
                 z = int(float(m2.group(3)) * 1000.0)
                 mmpInput = "%s%d, %d, %d%s" % (m.group(1), x, y, z, m.group(2))
             else:
-                print >>stderr, "xyz format error: " + xyzInput,
+                print("xyz format error: " + xyzInput, end=' ', file=stderr)
                 sys.exit(1)
         else:
-            print >>stderr, "not enough lines in xyz file"
+            print("not enough lines in xyz file", file=stderr)
             sys.exit(1)
-    print mmpInput
+    print(mmpInput)
     mmpInput = mmpInputFile.readline()
 mmpInputFile.close()
 xyzInputFile.close()

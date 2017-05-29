@@ -322,7 +322,7 @@ class DnaGroup(Group):
         atomList = []
         def func(node):
             if isinstance(node, self.assy.Chunk):
-                atomList.extend(node.atoms.itervalues())
+                atomList.extend(iter(node.atoms.values()))
 
         self.apply2all(func)
         return atomList
@@ -367,8 +367,8 @@ def find_or_make_DnaGroup_for_homeless_object(node):
     part = node.part or node.assy.part
     assert part
     if not node.part:
-        print "likely bug: %r in %r has no .part" % \
-              (node, node.assy)
+        print("likely bug: %r in %r has no .part" % \
+              (node, node.assy))
     try:
         res = _f_DnaGroup_for_homeless_objects_in_Part[part]
     except KeyError:
@@ -382,9 +382,9 @@ def find_or_make_DnaGroup_for_homeless_object(node):
             # got killed by user; works, but now should never happen due to the
             # better fix of calling clear_updater_run_globals() at start and end
             # of every updater run]
-            print "\nBUG: _f_DnaGroup_for_homeless_objects_in_Part[%r] " \
+            print("\nBUG: _f_DnaGroup_for_homeless_objects_in_Part[%r] " \
                   "found %r which is killed -- discarding it" % \
-                  (part, res)
+                  (part, res))
             res = None
     if not res:
         res = _make_DnaGroup_for_homeless_objects_in_Part(part)
@@ -399,8 +399,8 @@ def _make_DnaGroup_for_homeless_objects_in_Part(part):
     dnaGroup = DnaGroup(name, assy, dad) # same args as for Group.__init__
     part.addnode(dnaGroup)
     if debug_flags.DEBUG_DNA_UPDATER:
-        print "dna_updater: made new dnaGroup %r" % dnaGroup, \
-              "(bug or unfixed mmp file)"
+        print("dna_updater: made new dnaGroup %r" % dnaGroup, \
+              "(bug or unfixed mmp file)")
     return dnaGroup
 
 # end

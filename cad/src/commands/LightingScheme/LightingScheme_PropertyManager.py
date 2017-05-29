@@ -166,12 +166,12 @@ def writeLightingSchemeFavoriteFile( filename ):
     # get the current three lights
     ok, lights = getLights()
     if not ok:
-        print "error getting lights"
+        print("error getting lights")
         return
     # write lights to the favorites file
-    for (i, light) in zip(range(3),lights):
+    for (i, light) in zip(list(range(3)),lights):
         name = "light%d" % i
-        print name, light
+        print(name, light)
         f.write("%s = %s\n" % (name, light))
     #write preference list in file without the NE version
     for pref_key in lightingSchemePrefsList:
@@ -193,7 +193,7 @@ def writeLightingSchemeFavoriteFile( filename ):
         elif isinstance(val, float):
             f.write("%s = %f\n" % (pref_key, val))
         else:
-            print "Not sure what pref_key '%s' is." % pref_key
+            print("Not sure what pref_key '%s' is." % pref_key)
 
     f.close()
 
@@ -254,7 +254,7 @@ def loadFavoriteFile( filename ):
                 elif material_specular_brightness_prefs_key.endswith(pref_keyString):
                     pref_valueToStore = float(pref_value)
                 else:
-                    print "Not sure what pref_key '%s' is." % pref_keyString
+                    print("Not sure what pref_key '%s' is." % pref_keyString)
                     continue
             except:
                 msg = "\npref_key = '%s'\nvalue = %s" \
@@ -594,7 +594,7 @@ class LightingScheme_PropertyManager(Command_PropertyManager):
         elif light_num == 2:
             self.win.glpane.setLighting([light1, light2, new_light])
         else:
-            print "Unsupported light # ", light_num,". No lighting change made."
+            print("Unsupported light # ", light_num,". No lighting change made.")
 
     def change_active_light(self, currentIndexJunk = None):
         """
@@ -931,7 +931,7 @@ class LightingScheme_PropertyManager(Command_PropertyManager):
                     ok2, text = writeLightingSchemeToFavoritesFile(name)
                     indexOfDuplicateItem = self.favoritesComboBox.findText(name)
                     self.favoritesComboBox.removeItem(indexOfDuplicateItem)
-                    print "Add Favorite: removed duplicate favorite item."
+                    print("Add Favorite: removed duplicate favorite item.")
                 else:
                     env.history.message("Add Favorite: cancelled overwriting favorite item.")
                     return

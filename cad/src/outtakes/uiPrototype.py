@@ -322,10 +322,10 @@ class MainWindow(QMainWindow):
         self.layout.addWidget(pw, row, col)
 
     def fileOpen(self):
-        print "Let's pretend we're opening a file"
+        print("Let's pretend we're opening a file")
 
     def fileSave(self):
-        print "Let's pretend we're saving a file"
+        print("Let's pretend we're saving a file")
 
     def helpAbout(self):
         AboutWindow(__doc__)

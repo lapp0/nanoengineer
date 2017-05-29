@@ -56,10 +56,10 @@ class SimpleColumn_NEW(Widget2D): #061115, revised 070321 to use new ArgList -- 
             args = self.args
             len(args) # make sure this works!
             if debug070321:
-                print "fyi: this SimpleColumn has %d args" % len(args)
-                print "fyi: the args i mentioned are: %r" % (args,) #####
+                print("fyi: this SimpleColumn has %d args" % len(args))
+                print("fyi: the args i mentioned are: %r" % (args,)) #####
         except:
-            print "following exception concerns self = %r, args = %r" % (self, args)
+            print("following exception concerns self = %r, args = %r" % (self, args))
             raise
         return
 
@@ -69,7 +69,7 @@ class SimpleColumn_NEW(Widget2D): #061115, revised 070321 to use new ArgList -- 
 
     print_lbox = Option(bool, False) #061127 for debugging; should be harmless; never tested (target bug got diagnosed in another way)
 
-    drawables = call_Expr(lambda args: filter(None, args) , args)
+    drawables = call_Expr(lambda args: [_f for _f in args if _f] , args)
     ## empty = not drawables ###e BUG: needs more Expr support, I bet; as it is, likely to silently be a constant False; not used internally
     empty = not_Expr(drawables)
     bleft = call_Expr(lambda drawables: max([arg.bleft for arg in drawables] + [0]) , drawables)
@@ -81,7 +81,7 @@ class SimpleColumn_NEW(Widget2D): #061115, revised 070321 to use new ArgList -- 
     bbottom = height - btop
     def draw(self):
         if self.print_lbox:
-            print "print_lbox: %r lbox attrs are %r" % (self, (self.bleft, self.bright, self.bbottom, self.btop))
+            print("print_lbox: %r lbox attrs are %r" % (self, (self.bleft, self.bright, self.bbottom, self.btop)))
         glPushMatrix()
         prior = None
         for a in self.drawables:
@@ -133,7 +133,7 @@ class SimpleColumn(Widget2D): #061115
 
     print_lbox = Option(bool, False) #061127 for debugging; should be harmless; never tested (target bug got diagnosed in another way)
 
-    drawables = call_Expr(lambda args: filter(None, args) , args)
+    drawables = call_Expr(lambda args: [_f for _f in args if _f] , args)
     ## empty = not drawables ###e BUG: needs more Expr support, I bet; as it is, likely to silently be a constant False; not used internally
     empty = not_Expr(drawables)
     bleft = call_Expr(lambda drawables: max([arg.bleft for arg in drawables] + [0]) , drawables)
@@ -145,7 +145,7 @@ class SimpleColumn(Widget2D): #061115
     bbottom = height - btop
     def draw(self):
         if self.print_lbox:
-            print "print_lbox: %r lbox attrs are %r" % (self, (self.bleft, self.bright, self.bbottom, self.btop))
+            print("print_lbox: %r lbox attrs are %r" % (self, (self.bleft, self.bright, self.bbottom, self.btop)))
         glPushMatrix()
         prior = None
         for a in self.drawables:
@@ -183,7 +183,7 @@ class SimpleRow(Widget2D):
     pixelgap = Option(int, 3)
     gap = pixelgap * PIXELS
 
-    drawables = call_Expr(lambda args: filter(None, args) , args)
+    drawables = call_Expr(lambda args: [_f for _f in args if _f] , args)
     empty = not_Expr( drawables)
     btop = call_Expr(lambda drawables: max([arg.btop for arg in drawables] + [0]) , drawables)
     bbottom = call_Expr(lambda drawables: max([arg.bbottom for arg in drawables] + [0]) , drawables)

@@ -93,13 +93,13 @@ class PM_ToolButton( QToolButton ):
         """
 
         if 0: # Debugging code
-            print "PM_ToolButton.__init__():"
-            print "  label        = ", label
-            print "  labelColumn  = ", labelColumn
-            print "  text         = ", text
-            print "  iconPath     = ", iconPath
-            print "  setAsDefault = ", setAsDefault
-            print "  spanWidth    = ", spanWidth
+            print("PM_ToolButton.__init__():")
+            print(("  label        = ", label))
+            print(("  labelColumn  = ", labelColumn))
+            print(("  text         = ", text))
+            print(("  iconPath     = ", iconPath))
+            print(("  setAsDefault = ", setAsDefault))
+            print(("  spanWidth    = ", spanWidth))
 
         QToolButton.__init__(self)
 

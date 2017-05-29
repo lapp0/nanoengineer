@@ -129,12 +129,12 @@ class ExternalBondSet(object):
         Do appropriate invals within self.
         """
         # removed for speed: assert self._correct_bond(bond)
-        if not self._bonds.has_key(id(bond)):
+        if id(bond) not in self._bonds:
             # test is to avoid needless invalidation (important optim)
             self.invalidate_display_lists()
             self._bonds[id(bond)] = bond
             if _DEBUG_EBSET:
-                print "added bond %r to %r" % (bond, self)
+                print("added bond %r to %r" % (bond, self))
         return
 
     def empty(self): # todo: rename to is_empty
@@ -148,7 +148,7 @@ class ExternalBondSet(object):
         invals within self.
         """
         bad = []
-        for bond in self._bonds.itervalues():
+        for bond in self._bonds.values():
             if not self._correct_bond(bond):
                 bad.append(bond)
         if bad:
@@ -156,7 +156,7 @@ class ExternalBondSet(object):
             for bond in bad:
                 del self._bonds[id(bond)]
                 if _DEBUG_EBSET:
-                    print "removed bond %r from %r" % (bond, self)
+                    print("removed bond %r from %r" % (bond, self))
         return
 
     def _correct_bond(self, bond): # REVIEW: might need to speed this up.
@@ -194,7 +194,7 @@ class ExternalBondSet(object):
         if not self.chunks:
             return # permit repeated destroy
         if _DEBUG_EBSET:
-            print "destroying %r" % self
+            print("destroying %r" % self)
         if self._drawer:
             self._drawer.destroy() # deallocate displists
             self._drawer = None

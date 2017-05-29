@@ -62,4 +62,4 @@ if (__name__ == '__main__'):
     importList = list(externalImports)
     importList.sort()
     for moduleName in importList:
-        print moduleName
+        print(moduleName)

@@ -35,6 +35,7 @@ from model.jigs import Jig
 #General  page prefs - paste offset scale for chunk and dna pasting prefs key
 from utilities.prefs_constants import pasteOffsetScaleFactorForChunks_prefs_key
 from utilities.prefs_constants import pasteOffsetScaleFactorForDnaObjects_prefs_key
+import imp
 
 DEBUG_COPY = False # do not leave this as True in the release [bruce 080414]
 
@@ -59,7 +60,7 @@ class ops_copy_Mixin:
     _previously_pasted_node_list = None
 
     def cut(self): # we should remove this obsolete alias shortly after the release. [bruce 080414 comment]
-        print "bug (worked around): assy.cut called, should use its new name cut_sel" #bruce 050927
+        print("bug (worked around): assy.cut called, should use its new name cut_sel") #bruce 050927
         if debug_flags.atom_debug:
             print_compact_stack( "atom_debug: assy.cut called, should use its new name cut_sel: ")
         return self.cut_sel()
@@ -128,13 +129,13 @@ class ops_copy_Mixin:
                 ###@@@ following should use description_for_history, but so far there's only one such Part so it doesn't matter yet
                 msg = "Can't cut the entire Part; copying its toplevel Group, cutting its members."
                 env.history.message(cmd + msg)
-                self.topnode.apply2picked(lambda(x): x.moveto(new))
+                self.topnode.apply2picked(lambda x: x.moveto(new))
                 use = new
                 use.name = self.topnode.name # not copying any other properties of the Group (if it has any)
                 new = Group(gensym("Copy", self.assy), self.assy, None) # (in cut_sel)
                 new.addchild(use)
             else:
-                self.topnode.apply2picked(lambda(x): x.moveto(new))
+                self.topnode.apply2picked(lambda x: x.moveto(new))
                 # bruce 050131 inference from recalled bug report:
                 # this must fail in some way that addchild handles, or tolerate jigs/groups but shouldn't;
                 # one difference is that for chunks it would leave them in assy.molecules whereas copy_sel would not;
@@ -245,9 +246,9 @@ class ops_copy_Mixin:
         # and emit message about what we're about to do
 
         if debug_flags.atom_debug: #bruce 050811 fixed this for A6 (it was a non-debug reload)
-            print "atom_debug: fyi: importing or reloading ops_copy from itself"
+            print("atom_debug: fyi: importing or reloading ops_copy from itself")
             import operations.ops_copy as hmm
-            reload(hmm)
+            imp.reload(hmm)
         from operations.ops_copy import Copier # use latest code for that class, even if not for this mixin method!
         copier = Copier(sel) #e sel.copier()?
         copier.prep_for_copy_to_shelf()
@@ -300,9 +301,9 @@ class ops_copy_Mixin:
         # (eg a new group to include it all, new chunks for bare atoms)
         # and emit message about what we're about to do
         if debug_flags.atom_debug: #bruce 050811 fixed this for A6 (it was a non-debug reload)
-            print "atom_debug: fyi: importing or reloading ops_copy from itself"
+            print("atom_debug: fyi: importing or reloading ops_copy from itself")
             import operations.ops_copy as hmm
-            reload(hmm)
+            imp.reload(hmm)
         from operations.ops_copy import Copier # use latest code for that class, even if not for this mixin method!
         copier = Copier(sel) #e sel.copier()?
         copier.prep_for_copy_to_shelf()
@@ -349,9 +350,9 @@ class ops_copy_Mixin:
         entire_part = self
         sel = selection_from_part(entire_part, use_selatoms = True) #k use_selatoms is a guess
         if debug_flags.atom_debug:
-            print "atom_debug: fyi: importing or reloading ops_copy from itself"
+            print("atom_debug: fyi: importing or reloading ops_copy from itself")
             import operations.ops_copy as hmm
-            reload(hmm)
+            imp.reload(hmm)
         from operations.ops_copy import Copier # use latest code for that class, even if not for this mixin method!
         copier = Copier(sel) #e sel.copier()?
         copier.prep_for_copy_to_shelf() ###k guess: same prep method should be ok
@@ -612,8 +613,8 @@ class ops_copy_Mixin:
                 # copying this is a precaution, probably not needed
         else:
             # new code failed, fall back to old code
-            print "bug in fix for bug 2919, falling back to older code " \
-                  "(len is %d, should be 1)" % len(newstuff)
+            print("bug in fix for bug 2919, falling back to older code " \
+                  "(len is %d, should be 1)" % len(newstuff))
             use_new_code = False
             newGroup = Group(pastable.name, assy, None)
                 # Review: should this use Group or groupToPaste.__class__,
@@ -672,12 +673,10 @@ class ops_copy_Mixin:
         chunkList = []
         other_pastable_items = []
 
-        chunkList = filter(lambda newNode: filterChunks(newNode), newNodeList)
+        chunkList = [newNode for newNode in newNodeList if filterChunks(newNode)]
 
         if len(chunkList) < len(newNodeList):
-            other_pastable_items = filter(lambda newNode:
-                                          filterOtherPastables(newNode),
-                                          newNodeList)
+            other_pastable_items = [newNode for newNode in newNodeList if filterOtherPastables(newNode)]
 
         #@see: self._getInitialPasteOffsetForPastableNodes()
         original_copied_nodes = nodes
@@ -844,7 +843,7 @@ class ops_copy_Mixin:
         return newJig, errorMsg
 
     def kill(self):
-        print "bug (worked around): assy.kill called, should use its new name delete_sel" #bruce 050927
+        print("bug (worked around): assy.kill called, should use its new name delete_sel") #bruce 050927
         if debug_flags.atom_debug:
             print_compact_stack( "atom_debug: assy.kill called, should use its new name delete_sel: ")
         self.delete_sel()
@@ -874,9 +873,9 @@ class ops_copy_Mixin:
                 # The basic rule is to do things in this order, for atoms only, for a lot of them at once:
                 # prekill_prep, prekill all the atoms, kill the same atoms.
                 val = Atom_prekill_prep()
-                for a in self.selatoms.itervalues():
+                for a in self.selatoms.values():
                     a._f_will_kill = val # inlined a._f_prekill(val), for speed
-            for a in self.selatoms.values(): # the above can be itervalues, but this can't be!
+            for a in list(self.selatoms.values()): # the above can be itervalues, but this can't be!
                 a.kill()
             self.selatoms = {} # should be redundant
 
@@ -937,8 +936,8 @@ def copied_nodes_for_DND( nodes, autogroup_at_top = False, assy = None, _sort = 
     if not nodes:
         return None
     if DEBUG_ORDER:
-        print "copied_nodes_for_DND: got nodes",nodes
-        print "their ids are",map(id,nodes)
+        print("copied_nodes_for_DND: got nodes",nodes)
+        print("their ids are",list(map(id,nodes)))
     part = nodes[0].part # kluge
     originals = nodes[:] #k not sure if this list-copy is needed
     copier = Copier(Selection(part, nodes = nodes), assy = assy)
@@ -967,18 +966,18 @@ def copied_nodes_for_DND( nodes, autogroup_at_top = False, assy = None, _sort = 
             "return the copy corresponding to orig"
             res = copier.origid_to_copy.get(id(orig), None)
             if res is None:
-                print "debug note: copy of %r is None" % (orig,) # remove this if it happens legitimately
+                print("debug note: copy of %r is None" % (orig,)) # remove this if it happens legitimately
             return res
-        nodes = map(lookup, originals)
+        nodes = list(map(lookup, originals))
     if nodes and autogroup_at_top:
         if _sort:
-            nodes = filter( lambda node: node is not None , nodes)
+            nodes = [node for node in nodes if node is not None]
         nodes = copier.autogroup_if_several(nodes)
     if DEBUG_ORDER:
-        print "copied_nodes_for_DND: return nodes",nodes
-        print "their ids are",map(id,nodes)
-        print "copier.origid_to_copy is",copier.origid_to_copy
-        print "... looking at that with id",[(k,id(v)) for (k,v) in copier.origid_to_copy.items()]
+        print("copied_nodes_for_DND: return nodes",nodes)
+        print("their ids are",list(map(id,nodes)))
+        print("copier.origid_to_copy is",copier.origid_to_copy)
+        print("... looking at that with id",[(k,id(v)) for (k,v) in list(copier.origid_to_copy.items())])
     return nodes
 
 def copy_nodes_in_order(nodes, assy = None): #bruce 070525
@@ -1051,7 +1050,7 @@ class Copier: #bruce 050523-050526; might need revision for merging with DND cop
         atom_jigs = self.atom_jigs = {}
         sel = self.sel
         if debug_flags.atom_debug and not sel.topnodes:
-            print "debug warning: prep_for_copy_to_shelf sees no sel.topnodes"
+            print("debug warning: prep_for_copy_to_shelf sees no sel.topnodes")
                 #bruce 060627; not always a bug (e.g. happens for copying atoms)
         for node in sel.topnodes: # no need to scan selmols too, it's redundant (and in general a subset)
             # chunks, jigs, Groups -- for efficiency and in case it's a feature,
@@ -1065,7 +1064,7 @@ class Copier: #bruce 050523-050526; might need revision for merging with DND cop
                 # we might need to recurse on their members here if the groups say no,
                 # unless that 'no' applies to copying the members too.
                 fullcopy[id(node)] = node
-        for atom in sel.selatoms.itervalues(): # this use of selatoms.itervalues is only safe because .pick/.unpick is not called
+        for atom in sel.selatoms.values(): # this use of selatoms.itervalues is only safe because .pick/.unpick is not called
             chunk = atom.molecule
             #e for now we assume that all these chunks will always be partly copied;
             # if that changes, we'd need to figure out which ones are not copied, but not right here
@@ -1092,7 +1091,7 @@ class Copier: #bruce 050523-050526; might need revision for merging with DND cop
         # Now we need to know which atom_jigs will actually agree to be partly copied,
         # just due to the selatoms inside them. Assume most of them will agree to be copied
         # (since they said they confer properties that should be copied) (so just delete the other ones).
-        for jig in atom_jigs.values():
+        for jig in list(atom_jigs.values()):
             if not jig.will_partly_copy_due_to_selatoms(sel):
                 del atom_jigs[id(jig)]
                 # This might delete some which should be copied since selected -- that's ok,
@@ -1219,7 +1218,7 @@ class Copier: #bruce 050523-050526; might need revision for merging with DND cop
         # Now "break" (in the copied atoms) the still uncopied bonds (those for which only one atom was copied)
         # (This does not affect original atoms or break any existing bond object, but it acts like
         #  we copied a bond and then broke that copied bond.)
-        for bondid, atom in halfbonds.items():
+        for bondid, atom in list(halfbonds.items()):
             bond = actualbonds[bondid]
             nuat = origid_to_copy[id(atom)]
             nuat.break_unmade_bond(bond, atom)
@@ -1243,7 +1242,7 @@ class Copier: #bruce 050523-050526; might need revision for merging with DND cop
         del self.newstuff
         ## assert (not self.make_partial_groups) or (not newstuff or len(newstuff) == 1)
         if not ((not self.make_partial_groups) or (not newstuff or len(newstuff) == 1)): # weakened to print, just in case, 080414
-            print "fyi: old sanity check failed: assert (not self.make_partial_groups) or (not newstuff or len(newstuff) == 1)"
+            print("fyi: old sanity check failed: assert (not self.make_partial_groups) or (not newstuff or len(newstuff) == 1)")
             # since either verytopnode is a leaf and refused or got copied,
             # or it's a group and copied as one (or all contents refused -- not sure if it copies then #k)
             # (this assert is not required by following code, it's just here as a sanity check)
@@ -1265,7 +1264,7 @@ class Copier: #bruce 050523-050526; might need revision for merging with DND cop
         res = id(group) in self.tentative_new_groups and \
               not self._non_dissolveable_group(group)
         if DEBUG_COPY and res:
-            print "debug copy: discarding the outer Group wrapper of: %r" % group
+            print("debug copy: discarding the outer Group wrapper of: %r" % group)
         return res
 
     def _non_dissolveable_group(self, group): #bruce 080414
@@ -1385,7 +1384,7 @@ class Copier: #bruce 050523-050526; might need revision for merging with DND cop
                 # with the initial self.newstuff unchanged
                 save = self.newstuff
                 self.newstuff = []
-            map( self.recurse, orig.members)
+            list(map( self.recurse, orig.members))
             if self.make_partial_groups: #050527
                 newstuff = self.newstuff
                 self.newstuff = save
@@ -1464,7 +1463,7 @@ class Copier: #bruce 050523-050526; might need revision for merging with DND cop
          e.g. it's ok if orig's components are not yet copied into copy.)
         Also asserts orig was not already copied.
         """
-        assert not self.origid_to_copy.has_key(id(orig))
+        assert id(orig) not in self.origid_to_copy
         self.origid_to_copy[id(orig)] = copy
 
     def do_at_end(self, func): #e might change to dict

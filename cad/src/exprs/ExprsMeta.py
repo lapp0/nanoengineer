@@ -158,6 +158,7 @@ from exprs.Exprs import expr_serno
 from exprs.Exprs import expr_is_Instance
 from exprs.Exprs import is_Expr_pyclass
 from exprs.__Symbols__ import _E_ATTR, _self
+import collections
 
 # ==
 
@@ -225,7 +226,7 @@ class ClassAttrSpecific_NonDataDescriptor(object):
         [private method for ExprsMeta to call when it knows the defining attr]
         """
         # 061201, not always called(?) or needed, experimental
-        print "called _ExprsMeta__set_attr",self,attr
+        print("called _ExprsMeta__set_attr",self,attr)
             ####k does it ever happen? if not, it's probably obs; even if so, might be unneeded [cmt 061204]
             # update: this probably never happens, since until 071107, it referenced
             # an undefined symbol FAKE_ATTRNAME (probably a typo)
@@ -289,8 +290,8 @@ class ClassAttrSpecific_NonDataDescriptor(object):
             # But WAIT AGAIN, the descriptor will gate access to the instance, not necessarily to the class -- we'll have to try it.
             setattr( cls, attr, copy) # this might fail in the DataDescriptor subclass used in C_rule, but I don't know. ###k
             if 0:
-                print "setattr( cls, attr, copy) worked for supporting %r from %r for attr %r in %r" % \
-                      (cls , self.cls, attr, self) ####@@@@ self is relevant so we see which kind of descriptor it worked for
+                print("setattr( cls, attr, copy) worked for supporting %r from %r for attr %r in %r" % \
+                      (cls , self.cls, attr, self)) ####@@@@ self is relevant so we see which kind of descriptor it worked for
             # btw it also might "succeed but not have the desired effect". What's the predicted bug if it silently has no effect? ##k
             return copy.__get__(obj, cls)
         return self.get_for_our_cls(obj)
@@ -363,8 +364,8 @@ class ClassAttrSpecific_DataDescriptor(ClassAttrSpecific_NonDataDescriptor):
             attr = self.attr
             setattr( cls, attr, copy) # this might fail in the DataDescriptor subclass used in C_rule, but I don't know. ###k
             if 1:
-                print "setattr( cls, attr, copy) worked for supporting __set__ %r from %r for attr %r in %r" % \
-                      (cls , self.cls, attr, self) ####@@@@ self is relevant so we see which kind of descriptor it worked for
+                print("setattr( cls, attr, copy) worked for supporting __set__ %r from %r for attr %r in %r" % \
+                      (cls , self.cls, attr, self)) ####@@@@ self is relevant so we see which kind of descriptor it worked for
             # btw it also might "succeed but not have the desired effect". What's the predicted bug if it silently has no effect? ##k
             return copy.__set__(obj, val)
         return self.set_for_our_cls(obj, val)
@@ -375,7 +376,7 @@ class ClassAttrSpecific_DataDescriptor(ClassAttrSpecific_NonDataDescriptor):
         """
         assert 0, "subclass %r of %r should implement set_for_our_cls" % (self.__class__, self)
     def __delete__(self, *args): # note: descriptor protocol wants __delete__, not __del__!
-        print "note: ClassAttrSpecific_DataDescriptor.__delete__ is about to assert 0"
+        print("note: ClassAttrSpecific_DataDescriptor.__delete__ is about to assert 0")
         assert 0, "__delete__ is not yet supported in this abstract class"
     pass # end of class ClassAttrSpecific_DataDescriptor
 
@@ -495,7 +496,7 @@ def choose_C_rule_for_val(clsname, attr, val, **kws):
         assert not flag # 061203
         if flag: # new feature 061117, for State macro and the like [note 061203: that State macro is obs, new one doesn't use this]
             # it's a formula for an lval, rather than for a val!
-            print "should not happen yet: val = %r, flag = %r" % (val,flag) # an expr or so??
+            print("should not happen yet: val = %r, flag = %r" % (val,flag)) # an expr or so??
             return C_rule_for_lval_formula(clsname, attr, val, **kws)
         return C_rule_for_formula(clsname, attr, val, **kws)
     elif is_Expr(val):
@@ -523,14 +524,14 @@ class C_rule_for_lval_formula(ClassAttrSpecific_DataDescriptor): #061117 - revie
         """
         return an lval (found or made by our formula) for this instance
         """
-        print "make_lval_for_instance",(self, instance)#####@@@@@
+        print("make_lval_for_instance",(self, instance))#####@@@@@
         #e not sure what to do if this formula turns out to be time-dependent... what should be invalidated if it does?? ####
         # for now, just be safe and discard tracked usage, tho it might be better to replace the lval with a new one if it invals.#e
         index = '$' + self.attr # guess, 061117
         lval = eval_and_discard_tracked_usage( self.lval_formula, instance, index)
         return lval
     def get_for_our_cls(self, instance):
-        print "get_for_our_cls",(self, self.attr, instance, )#####@@@@@
+        print("get_for_our_cls",(self, self.attr, instance, ))#####@@@@@
         attr = self.attr
         try:
             lval = instance.__dict__[attr]
@@ -540,7 +541,7 @@ class C_rule_for_lval_formula(ClassAttrSpecific_DataDescriptor): #061117 - revie
         if not lval.can_get_value(): ###e should optim by doing this only on exception from get_value
             # note: this has to be checked whether we found or made the lval
             # preventable by prior set (in this instance or a prior one), or by lval having an initval_compute_method
-            raise AttributeError, "attr %r hasn't been set yet in class %r" % (attr, self.cls)
+            raise AttributeError("attr %r hasn't been set yet in class %r" % (attr, self.cls))
                 ####k or LvalError_ValueIsUnset??? I think not... when less tired, explain why. [061117 late]
         # old code, whose index might be needed in state_Expr ##k:
 ##            index = '$$' + self.attr # guess, 061117
@@ -554,7 +555,7 @@ class C_rule_for_lval_formula(ClassAttrSpecific_DataDescriptor): #061117 - revie
 ##            lval.set_constant_value(initval) # needed so .get_value() will work; .get_value() is still needed for its usage-tracking
         return lval.get_value() # this does usage tracking, validation-checking, recompute if needed
     def set_for_our_cls(self, instance, val):
-        print "set_for_our_cls",(self, self.attr, instance, val)#####@@@@@
+        print("set_for_our_cls",(self, self.attr, instance, val))#####@@@@@
         attr = self.attr
         try:
             lval = instance.__dict__[attr]
@@ -643,7 +644,7 @@ class CV_rule(ClassAttrSpecific_NonDataDescriptor):
         # (Formulas or constants for them are not yet supported. ###e nim)
         try:
             rdobj = instance.__dict__[attr]
-            print "warning: rdobj was not found directly, but it should have been, since this is a non-data descriptor", self #e more?
+            print("warning: rdobj was not found directly, but it should have been, since this is a non-data descriptor", self) #e more?
         except KeyError:
             # make a new object from the compute_methods (happens once per attr per instance)
             rdobj = instance.__dict__[attr] = self.make_rdobj_for_instance(instance)
@@ -662,14 +663,14 @@ class CV_rule(ClassAttrSpecific_NonDataDescriptor):
 ##                                                              formula_symbols = (_self, _i), ###IMPLEM _i
 ##                                                              constants = True )
 ##            # also permit formulas in _self and _i, or constants (either will be converted to a callable)
-        assert callable(compute_methodV)
+        assert isinstance(compute_methodV, collections.Callable)
         compute_methodK = getattr(instance, self.prefixK + attr, None)
             # optional method or [nim] formula or constant, or None (None can mean missing, since legal constant values are sequences)
         if compute_methodK is not None:
 ##            compute_methodK = bound_compute_method_to_callable( compute_methodK,
 ##                                                                formula_symbols = (_self,),
 ##                                                                constants = True )
-            assert callable(compute_methodK)
+            assert isinstance(compute_methodK, collections.Callable)
         obj = RecomputableDict(compute_methodV, compute_methodK)
         return obj
     # Note: we have no __set__ method, so in theory (since Python will recognize us as a non-data descriptor),
@@ -787,7 +788,7 @@ def needs_wrap_by_ExprsMeta(val, msg_info = ''): # renamed from val_is_special, 
         ##weird val (('var', 'toggler')): an Expr that is not free in _self <State#6617: (<constant_Expr#6615: <type 'int'>>, <constant_Expr#6616: 0>)>
         ##weird val (('_value', 'toggler')): an Expr that is not free in _self <Highlightable#6647(a)>
     if val._e_is_instance: #061203
-        print "POSSIBLE BUG: val._e_is_instance true, for val being wrapped as Expr by ExprsMeta: %r" % (val,)#k ever happens??
+        print("POSSIBLE BUG: val._e_is_instance true, for val being wrapped as Expr by ExprsMeta: %r" % (val,))#k ever happens??
     return True
 ##    return is_Expr_pyinstance(val) and val._e_free_in('_self')
         # 061201 Q: are there any implicit ways of containing _self? A: not presently. But note that in sequential class assignments
@@ -830,16 +831,16 @@ class ExprsMeta(type):
         # - But we know which class is being defined, since we have its name in the argument <name>.
         data_for_attr = {}
         processed_vals = []
-        orig_ns_keys = ns.keys() # only used in exception text, for debugging
+        orig_ns_keys = list(ns.keys()) # only used in exception text, for debugging
         # handle _options [deprecated since 061101] by turning it into equivalent _DEFAULT_ decls
         _options = ns.pop('_options', None)
         if _options is not None:
-            print "_options (defined in class %s) is deprecated, since a later formula rhs won't see attr in namespace" % name
+            print("_options (defined in class %s) is deprecated, since a later formula rhs won't see attr in namespace" % name)
             assert type(_options) is type({})
-            for optname, optval in _options.items():
+            for optname, optval in list(_options.items()):
                 # _DEFAULT_optname = optval
                 attr = '_DEFAULT_' + optname
-                assert not ns.has_key(attr), \
+                assert attr not in ns, \
                        "error: can't define %r both as %r and inside _options in the same class %r (since ExprsMeta is its metaclass); ns contained %r" % \
                        ( optname, attr, name, orig_ns_keys )
                 ns[attr] = optval
@@ -847,7 +848,7 @@ class ExprsMeta(type):
                 # since it will pretend you defined it using _DEFAULT_; so we'll catch that case here, at least
                 # (though this doesn't catch a conflict with some other way of defining optname; that'll still have misleading error
                 #  msg below).
-                assert not ns.has_key(optname), \
+                assert optname not in ns, \
                        "error: can't define %r directly and inside _options in the same class %r (since ExprsMeta is its metaclass); ns contained %r" % \
                        ( optname, name, orig_ns_keys )
                 del attr
@@ -858,7 +859,7 @@ class ExprsMeta(type):
         # Remove "attr = _self.attr" entirely, before any other ns processing. [070324]
         # (This has to be done here, to permit _C_attr to coexist with that form.)
         # (I ran into this for a0 and _C_a0 in SimpleColumn, 070321, and in one or two other places since then.)
-        for attr, val in ns.items():
+        for attr, val in list(ns.items()):
             prefix = attr_prefix(attr)
             if not prefix:
                 if is_attr_equals_self_attr_assignment(attr, val):
@@ -867,7 +868,7 @@ class ExprsMeta(type):
 
         # look for special vals, or vals assigned to special prefixes, in the new class object's original namespace
         # (since we will modify these in the namespace we'll actually use to create it)
-        for attr, val in ns.iteritems():
+        for attr, val in ns.items():
 
             # [070210 removed "draw decorators" (autowrap of draw function by _e_decorate_draw),
             #  introduced 070104 but still nim, since it seems simpler and good enough
@@ -888,7 +889,7 @@ class ExprsMeta(type):
             prefix = attr_prefix(attr)
             if prefix:
                 attr0 = remove_prefix(attr, prefix)
-                if ns.has_key(attr0):
+                if attr0 in ns:
                     # assert not is_attr_equals_self_attr_assignment(attr0, ns[attr0]) # since already removed earlier # remove when works
                     assert 0, \
                        "error: can't define both %r and %r in the same class %r (since ExprsMeta is its metaclass); ns contained %r" % \
@@ -914,7 +915,7 @@ class ExprsMeta(type):
                     for helper_prefix in ('_CK_', '_TYPE_'):
                         ## assert not attr.startswith(helper_prefix), "special val not yet supported for %r: %r" % (attr, val)
                         if attr.startswith(helper_prefix):
-                            print "WARNING: special val not yet supported for %r: %r" % (attr, val)
+                            print("WARNING: special val not yet supported for %r: %r" % (attr, val))
                                 # this one we need to support:
                                 #   _DEFAULT_height = _self.width [now it's in prefix_map]
                                 # this one is a bug in my condition for detecting a formula:
@@ -938,7 +939,7 @@ class ExprsMeta(type):
         # and prepare those for sorting by expr_serno(val)
         # [needed so we process val1 before val2 if val1 is included in val2 -- assumed by FormulaScanner]
         newitems = []
-        for attr0, lis in data_for_attr.iteritems():
+        for attr0, lis in data_for_attr.items():
             assert len(lis) == 1, "error: can't define %r and %r in the same class %r (when ExprsMeta is its metaclass); ns contained %r" % \
                        ( lis[0][0] + attr0,
                          lis[1][0] + attr0,
@@ -1017,7 +1018,7 @@ class ExprsMeta(type):
                     thing._ExprsMeta__set_cls(res)
                         # style point: __set_cls is name-mangled manually, since the method defs are all outside this class
             except:
-                print "data for following exception: res,thing =",res,thing
+                print("data for following exception: res,thing =",res,thing)
                     # fixed by testing for __set_cls presence:
                     ## res,thing = <class 'exprs.Rect.Rect'> (0.5, 0.5, 0.5)
                     ## AttributeError: 'tuple' object has no attribute 'set_cls' [when it had a different name, non-private]
@@ -1109,8 +1110,8 @@ class FormulaScanner: #061101  ##e should it also add the attr to the arglist of
         res = self.replacement_subexpr(formula)
         # register formula to be replaced if found later in the same class definition [#e only if it's the right type??]
         if formula in self.replacements:
-            print "warning: formula %r already in replacements -- error?? its rhs is %r; new rhs would be for attr %r" % \
-                  (formula, self.replacements[formula], attr)
+            print("warning: formula %r already in replacements -- error?? its rhs is %r; new rhs would be for attr %r" % \
+                  (formula, self.replacements[formula], attr))
             # maybe not error (tho if smth uses it after this, that might deserve a warning) --
             # in any case, don't replace it with a new replacement
         else:
@@ -1181,8 +1182,8 @@ class FormulaScanner: #061101  ##e should it also add the attr to the arglist of
         except KeyError:
             # new argument -- allocate an arglist position for it
             if self.saw_arglist:
-                print "error (ignoring it): another arg is declared after an arglist was seen",\
-                      self,attr,required,arglist,self.argposns ###e improve message
+                print("error (ignoring it): another arg is declared after an arglist was seen",\
+                      self,attr,required,arglist,self.argposns) ###e improve message
                 self.saw_arglist = False # kluge: don't keep complaining about this for more args after the same ArgList
             if arglist:
                 self.saw_arglist = True
@@ -1195,7 +1196,7 @@ class FormulaScanner: #061101  ##e should it also add the attr to the arglist of
             self.argposns[attr] = pos
             ###e also record whether it's required, and assert that once they stop being required, new ones are also not required
             if self.saw_non_required_arg and required:
-                print "warning: required arg decl for %r comes after non-required arg decl -- it won't do what you want" % attr, self ###e improve msg
+                print("warning: required arg decl for %r comes after non-required arg decl -- it won't do what you want" % attr, self) ###e improve msg
                 self.saw_non_required_arg = False # kluge: don't keep complaining about this for the same non-required arg
             if not required:
                 self.saw_non_required_arg = True
@@ -1217,11 +1218,11 @@ class ConstantComputeMethodMixin:
     def __getattr__(self, attr): # in class ConstantComputeMethodMixin
         # return quickly for attrs that can't have compute rules
         if attr.startswith('__') or attr.startswith('_C'):
-            raise AttributeError, attr # must be fast for __repr__, __eq__, __add__, etc
+            raise AttributeError(attr) # must be fast for __repr__, __eq__, __add__, etc
         try:
             cmethod = getattr(self, '_C_' + attr)
         except AttributeError:
-            raise AttributeError, attr
+            raise AttributeError(attr)
         try:
             val = cmethod()
         except:
@@ -1250,7 +1251,7 @@ class DictFromKeysAndFunction(ConstantComputeMethodMixin):
     def __getitem__(self, key):
         if self.validate_keys: #e [if this is usually False, it'd be possible to optim by skipping this check somehow]
             if not key in self.key_set:
-                raise KeyError, key
+                raise KeyError(key)
         return self.compute_value_at_key(key) # not cached in self
     # dict methods, only supported when compute_key_sequence was supplied
     def keys(self):
@@ -1264,7 +1265,7 @@ class DictFromKeysAndFunction(ConstantComputeMethodMixin):
         @note: unlike for an ordinary dict, this is ordered, if compute_key_sequence retval is ordered
         """
         compval = self.compute_value_at_key
-        return map( compval, self.key_sequence )
+        return list(map( compval, self.key_sequence ))
     itervalues = values
     def items(self):
         """

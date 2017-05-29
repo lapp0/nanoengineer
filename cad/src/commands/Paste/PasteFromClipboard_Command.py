@@ -190,7 +190,7 @@ class PasteFromClipboard_Command(BuildAtoms_Command):
         ## not needed or correct since some time ago [bruce 050110]:
         ##   members.reverse() # bruce 041124 -- model tree seems to have them
         ##backwards
-        self.pastables_list = filter( is_pastable, members)
+        self.pastables_list = list(filter( is_pastable, members))
 
         # experiment 050122: mark the clipboard items to influence their
         #appearance
@@ -243,7 +243,7 @@ class PasteFromClipboard_Command(BuildAtoms_Command):
         in the clipboard
         """
         members = self.o.assy.shelf.members[:]
-        self.pastables_list = filter( is_pastable, members)
+        self.pastables_list = list(filter( is_pastable, members))
 
         try:
             cx = self.propMgr.clipboardGroupBox.currentRow()

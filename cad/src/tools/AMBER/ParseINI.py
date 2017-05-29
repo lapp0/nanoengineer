@@ -44,7 +44,7 @@ class Section(INIElement):
         return self.elements[index]
 
     def write(self, indent):
-        print "%s[ %s ]" % (indent, self.name)
+        print("%s[ %s ]" % (indent, self.name))
         for element in self.elements:
             element.write(indent + " ")
 
@@ -59,7 +59,7 @@ class Entry(INIElement):
         return len(self.columns)
 
     def write(self, indent):
-        print "%s%s" % (indent, " ".join(self.columns))
+        print("%s%s" % (indent, " ".join(self.columns)))
 
 class ParseINI(object):
     def __init__(self, filename):

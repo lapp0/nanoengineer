@@ -78,13 +78,11 @@ class B_Dna_PAM3_Generator(B_Dna_Generator):
                                 "run?: ")
             return
 
-        start_basepair_atoms = baseList[0].atoms.values()
-        end_basepair_atoms = baseList[-1].atoms.values()
+        start_basepair_atoms = list(baseList[0].atoms.values())
+        end_basepair_atoms = list(baseList[-1].atoms.values())
 
-        Ax_caps = filter( lambda atom: atom.element.symbol in ('Ax3'),
-                          start_basepair_atoms)
-        Ax_caps += filter( lambda atom: atom.element.symbol in ('Ax3'),
-                           end_basepair_atoms)
+        Ax_caps = [atom for atom in start_basepair_atoms if atom.element.symbol in ('Ax3')]
+        Ax_caps += [atom for atom in end_basepair_atoms if atom.element.symbol in ('Ax3')]
 
         # Transmute Ax3 caps to Ae3 atoms.
         # Note: this leaves two "killed singlets" hanging around,
@@ -97,10 +95,8 @@ class B_Dna_PAM3_Generator(B_Dna_Generator):
 
         # X_List will contain 6 singlets, 2 of which are killed (non-bonded).
         # The other 4 are the 2 pair of strand open bond singlets.
-        X_List = filter( lambda atom: atom.element.symbol in ('X'),
-                         start_basepair_atoms)
-        X_List += filter( lambda atom: atom.element.symbol in ('X'),
-                          end_basepair_atoms)
+        X_List = [atom for atom in start_basepair_atoms if atom.element.symbol in ('X')]
+        X_List += [atom for atom in end_basepair_atoms if atom.element.symbol in ('X')]
 
         # Adjust the 4 open bond singlets.
         for singlet in X_List:
@@ -141,7 +137,7 @@ class B_Dna_PAM3_Generator(B_Dna_Generator):
         @see: self.make() where this function is called
         @see: self._orient_to_position_first_strandA_base_in_axis_plane()
         """
-        for atm in chunk.atoms.itervalues():
+        for atm in chunk.atoms.values():
             if self.axis_atom_end1 is None:
                 if atm.element.symbol == 'Ax3':
                     self.axis_atom_end1 = atm
@@ -357,7 +353,7 @@ class B_Dna_PAM3_Generator(B_Dna_Generator):
 
         # Build strand and chunk atom lists.
         for m in dnaGroup.members:
-            for atom in m.atoms.values():
+            for atom in list(m.atoms.values()):
                 if atom.element.symbol in ('Ss3'):
                     if atom.getDnaBaseName() == 'a':
                         _strandA_list.append(atom)

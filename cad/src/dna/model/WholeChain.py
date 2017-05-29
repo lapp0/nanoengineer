@@ -142,7 +142,7 @@ class WholeChain(object):
         num_bases = 0
         end0_baseatoms = self._end0_baseatoms = {} # end0 atom key -> rail (aka chain)
         end1_baseatoms = self._end1_baseatoms = {}
-        for rail in dict_of_rails.itervalues():
+        for rail in dict_of_rails.values():
             baseatoms = rail.baseatoms
             assert baseatoms
             num_bases += len(baseatoms)
@@ -180,19 +180,19 @@ class WholeChain(object):
         markers = {} # maps markers found on both atoms to (atom1info, atom2info),
             # but values are later replaced with PositionInWholeChains or discarded
 
-        for marker in markers_1.iterkeys():
+        for marker in markers_1.keys():
             if not marker in markers_2:
                 marker._f_kill_during_move(self, "different wholechains")
             else:
                 markers[marker] = (markers_1[marker], markers_2.pop(marker))
             continue
-        for marker in markers_2.iterkeys(): # note the markers_2.pop above
+        for marker in markers_2.keys(): # note the markers_2.pop above
             marker._f_kill_during_move(self, "different wholechains")
             continue
 
         del markers_1, markers_2
 
-        for marker in markers.keys():
+        for marker in list(markers.keys()):
             # figure out new position and direction,
             # store it in same dict (or remove marker if invalid)
             # LOGIC BUG - des this need _all_markers stored, to use self.yield_... @@@@@
@@ -226,7 +226,7 @@ class WholeChain(object):
         assert self._num_bases > 0 # if this fails, we're being called too early (during __init__), or had some bug during __init__
         return self._num_bases
 
-    def __nonzero__(self):
+    def __bool__(self):
         return True # needed for safety & efficiency, now that we have __len__! @@@@  TODO: same in other things with __len__; __eq__ too?
 
     destroyed = False #bruce 080403
@@ -259,7 +259,7 @@ class WholeChain(object):
         """
         Return all our rails, IN ARBITRARY ORDER (that might be revised)
         """
-        return self._dict_of_rails.values()
+        return list(self._dict_of_rails.values())
 
     def end_rails(self): # bruce 080212; rename?
         """
@@ -346,7 +346,7 @@ class WholeChain(object):
         Assuming we still own all our atoms (not checked),
         return all the DnaMarkers on them.
         """
-        return self._all_markers.keys()
+        return list(self._all_markers.keys())
 
     def own_markers(self):
         """
@@ -360,15 +360,15 @@ class WholeChain(object):
         [As of 080116 this part is not yet needed or done.]
         """
         self._controlling_marker = self._choose_or_make_controlling_marker()
-        for (marker, position_holder) in self._all_markers.items(): # can't be iteritems!
+        for (marker, position_holder) in list(self._all_markers.items()): # can't be iteritems!
 ##            print "debug loop: %r.own_marker %r" % (self, marker)
             controllingQ = (marker is self._controlling_marker)
             ## assert not marker.killed(), \
             # [precaution 080222 - change assert to debug print & bug mitigation:]
             if marker.killed():
-                print "\n***BUG: " \
+                print("\n***BUG: " \
                    "marker %r (our controlling = %r) is killed" % \
-                   ( marker, controllingQ )
+                   ( marker, controllingQ ))
                 # this might fail if they're not yet all in the model,
                 # but we put them there when we make them, and we don't kill them when they
                 # lose atoms, so they ought to be there @@@
@@ -385,8 +385,8 @@ class WholeChain(object):
             # [precaution 080222 - change assert to debug print & bug mitigation:]
             ## assert not marker.killed(), \
             if marker.killed():
-                print "\n***BUG: " \
-                    "marker %r died without telling %r" % (marker, self)
+                print("\n***BUG: " \
+                    "marker %r died without telling %r" % (marker, self))
                 self._f_marker_killed(marker)
             continue
 
@@ -638,13 +638,13 @@ class WholeChain(object):
             necessary_direction_into_rail = - direction_to_next_atom
             if len(rail) == 1:
                 if necessary_direction_into_rail != direction_into_rail:
-                    print "fyi: fixing direction_into_rail to ", necessary_direction_into_rail ### remove when works
+                    print("fyi: fixing direction_into_rail to ", necessary_direction_into_rail) ### remove when works
                 direction_into_rail = necessary_direction_into_rail
             else:
                 ## assert necessary_direction_into_rail == direction_into_rail
                 if necessary_direction_into_rail != direction_into_rail:
-                    print "BUG: necessary_direction_into_rail %d != direction_into_rail %d, rail %r" % \
-                          (necessary_direction_into_rail, direction_into_rail, rail)
+                    print("BUG: necessary_direction_into_rail %d != direction_into_rail %d, rail %r" % \
+                          (necessary_direction_into_rail, direction_into_rail, rail))
                 pass
             pass
         return rail, index_in_rail, direction_into_rail
@@ -719,12 +719,11 @@ class WholeChain(object):
                 # treating this the same way as above. [bruce 080422 bug mitigation]
                 # note: the underlying bug was probably then fixed by a change above,
                 # in the same commit, passing this_atom to _find_end_atom_chain_and_index.
-                print \
-                       "bug: direction got flipped somehow in " \
+                print("bug: direction got flipped somehow in " \
                        "%r.yield_rail_index_direction_counter%r at %r" % \
                        ( self,
                          (pos, counter, countby, relative_direction),
-                         (rail, index, direction, counter) )
+                         (rail, index, direction, counter) ))
                 yield rail, index, direction, counter
                 return
             continue
@@ -863,8 +862,8 @@ class WholeChain(object):
                         # FIX: remove this code once it works, and certainly
                         # before implementing the optim in pos_generator
                         # to return each rail only once.
-                        print "\n*** BUG: not (atom %r is _check_atoms.pop(0) %r), remaining _check_atoms %r, other data %r" % \
-                              (atom, popped, _check_atoms, (marker, pos_holder))
+                        print("\n*** BUG: not (atom %r is _check_atoms.pop(0) %r), remaining _check_atoms %r, other data %r" % \
+                              (atom, popped, _check_atoms, (marker, pos_holder)))
                 # define the wholechain_baseindex of pos to be counter;
                 # from this and direction, infer the index range for rail
                 # and record it, also tracking min and max wholechain indices.

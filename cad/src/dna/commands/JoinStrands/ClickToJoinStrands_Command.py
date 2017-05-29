@@ -138,7 +138,7 @@ class ClickToJoinStrands_Command(Select_Command):
 
                 #Following ensures that the three prime end of <strand> won't be
                 #bonded to the five prime end of the same strand.
-                five_prime_ends = filter(lambda atm: func(atm), raw_five_prime_ends)
+                five_prime_ends = [atm for atm in raw_five_prime_ends if func(atm)]
 
                 #Max radius within which to search for the 'neighborhood' atoms
                 #(five prime ends)

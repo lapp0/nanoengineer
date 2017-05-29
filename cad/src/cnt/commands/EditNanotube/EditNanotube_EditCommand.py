@@ -259,8 +259,8 @@ class EditNanotube_EditCommand(State_preMixin, EditCommand):
         handlePoint1, handlePoint2 = self.struct.nanotube.getEndPoints()
 
         if 0: # Debug prints
-            print "updateHandlePositions(): handlePoint1=", handlePoint1
-            print "updateHandlePositions(): handlePoint2=", handlePoint2
+            print("updateHandlePositions(): handlePoint1=", handlePoint1)
+            print("updateHandlePositions(): handlePoint2=", handlePoint2)
 
         if handlePoint1 is not None and handlePoint2 is not None:
             # (that condition is bugfix for deleted axis segment, bruce 080213)
@@ -406,7 +406,7 @@ class EditNanotube_EditCommand(State_preMixin, EditCommand):
 
         from utilities.debug import print_compact_stack
         print_compact_stack("_modifyStructure_NEW_SEGMENT_RESIZE() not fixed!" )
-        print "Params =", params
+        print("Params =", params)
 
         self.nanotube = params #@
 
@@ -416,9 +416,9 @@ class EditNanotube_EditCommand(State_preMixin, EditCommand):
             print_compact_stack("BUG: length_diff is always ZERO." )
             return
         elif length_diff > 0:
-            print "Nanotube longer by ", length_diff, ", angstroms."
+            print("Nanotube longer by ", length_diff, ", angstroms.")
         else:
-            print "Nanotube shorter by ", length_diff, ", angstroms."
+            print("Nanotube shorter by ", length_diff, ", angstroms.")
 
         return
 

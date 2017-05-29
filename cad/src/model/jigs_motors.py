@@ -85,7 +85,7 @@ class Motor(Jig):
     def recompute_center_axis(self, glpane): #bruce 060120 replaced los arg with glpane re bug 1344
         # try to point in direction of prior axis, or along line of sight if no old axis (self.axis is V(0,0,0) then)
         nears = [self.axis, glpane.lineOfSight, glpane.down]
-        pos = A( map( lambda a: a.posn(), self.atoms ) )
+        pos = A( [a.posn() for a in self.atoms] )
         self.center = sum(pos)/len(pos)
         relpos = pos - self.center
         from geometry.geometryUtilities import compute_heuristic_axis
@@ -378,7 +378,7 @@ class RotaryMotor(Motor):
         axis_times_dots = A(len(dots) * [axis]) * reshape(dots,(len(dots),1)) #k would it be ok to just use axis * ... instead?
         posns -= axis_times_dots
         ##posns = norm(posns) # some exception from this
-        posns = A(map(norm, posns))
+        posns = A(list(map(norm, posns)))
             # assumes no posns are right on the axis! now we think they are on a unit circle perp to the axis...
         # posns are now projected to a plane perp to axis and centered on self.center, and turned into unit-length vectors.
         return posns # (note: in this implem, we did modify the mutable argument posns, but are returning a different object anyway.)
@@ -400,7 +400,7 @@ class RotaryMotor(Motor):
         # - might need to preserve it when we translate or rotate entire jig with its atoms (doing which is NIM for now)
         # - could improve and generalize alg, and/or have sim do it (see comments below for details).
         #
-        posns = A(map( lambda a: a.posn(), self.atoms ))
+        posns = A([a.posn() for a in self.atoms])
         posns -= self.center
         if self._initial_posns is None:
             # (we did this after -= center, so no need to forget posns if we translate the entire jig)
@@ -511,7 +511,7 @@ class RotaryMotor(Motor):
         except:
             #bruce 060208 protect OpenGL stack from exception seen in bug 1445
             print_compact_traceback("exception in RotaryMotor._draw, continuing: ")
-            print "  some info that might be related to that exception: natoms = %d" % len(self.atoms) ###@@@ might not keep this
+            print("  some info that might be related to that exception: natoms = %d" % len(self.atoms)) ###@@@ might not keep this
         glPopMatrix()
         return
 

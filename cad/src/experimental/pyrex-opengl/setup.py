@@ -6,7 +6,7 @@ from distutils.extension import Extension
 try:
     from Pyrex.Distutils import build_ext
 except:
-    print "Problem importing Pyrex"
+    print("Problem importing Pyrex")
     sys.exit(1)
 
 if sys.platform == "darwin":

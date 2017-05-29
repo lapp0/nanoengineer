@@ -115,8 +115,8 @@ def mmp_state_by_scan(archive, assy, exclude_layers = ()):
                     )
 
     if 0 and env.debug():
-        print "debug: didn't bother scanning %d view-related objects:" % \
-              len(viewdict), viewdict.values() # works [060227]; LastView
+        print("debug: didn't bother scanning %d view-related objects:" % \
+              len(viewdict), list(viewdict.values())) # works [060227]; LastView
 
     #e figure out which ones are new or gone? not needed until we're
     # differential, unless this is a good place to be sure the gone ones
@@ -161,8 +161,8 @@ def assy_become_state(self, stateplace, archive):
            "should be a StatePlace: %r" % (stateplace,)
 
     if debug_change_indicators:
-        print "assy_become_state begin, chg ctrs =", \
-              archive.assy.all_change_indicators()
+        print("assy_become_state begin, chg ctrs =", \
+              archive.assy.all_change_indicators())
 
     try:
         assy_become_scanned_state(archive, self, stateplace)
@@ -189,8 +189,8 @@ def assy_become_state(self, stateplace, archive):
     self.o.set_part( self.part) # try to prevent exception in GLPane.py:1637
     self.w.win_update() # precaution; the mt_update might be needed
     if debug_change_indicators:
-        print "assy_become_state end, chg ctrs =", \
-              archive.assy.all_change_indicators()
+        print("assy_become_state end, chg ctrs =", \
+              archive.assy.all_change_indicators())
     return
 
 def assy_clear(self): #bruce 060117 draft
@@ -353,12 +353,12 @@ def mash_attrs( archive, attrdicts, modified, invalmols, differential = False ):
         # (and with the various kinds of setattr/inval replacements too --
         #  maybe even let each attr have its own loop if it wants,
         #  with atoms & bonds an extreme case)
-    for attrcode, dict1 in attrdicts.items():
+    for attrcode, dict1 in list(attrdicts.items()):
         ##e review: items might need to be processed in a specific order
         attr, acode = attrcode
-        might_have_undo_setattr = attrcodes_with_undo_setattr.has_key(attrcode)
+        might_have_undo_setattr = attrcode in attrcodes_with_undo_setattr
             #060404; this matters now (for hotspot)
-        for key, val in dict1.iteritems(): # maps objkey to attrval
+        for key, val in dict1.items(): # maps objkey to attrval
             obj = modified_get(key)
             if obj is None:
                 # first time we're touching this object -- if differential,
@@ -663,9 +663,9 @@ def fix_all_chunk_atomsets( attrdicts, modified):
     # (i.e. only for our, live atoms, if no bugs)
     if 0 and env.debug():
         ###@@@ disable when works; reenable whenever acode scheme changes
-        print "debug: len(moldict) == %d; if this is always 0 we have a bug, " \
-              "but 0 is ok when no atoms in state" % (len(moldict))
-    for atom_objkey, mol in moldict.iteritems():
+        print("debug: len(moldict) == %d; if this is always 0 we have a bug, " \
+              "but 0 is ok when no atoms in state" % (len(moldict)))
+    for atom_objkey, mol in moldict.items():
         mols[id(mol)] = mol
     ######@@@@@@ 060409 BUG in differential case: mols doesn't include
     # chunks that lost atoms but didn't gain any!
@@ -676,7 +676,7 @@ def fix_all_chunk_atomsets( attrdicts, modified):
     #  that we change in mash_attrs? caller could pass that in.)
     # Ok, we're having caller pass in oldmols, for now.
     for badmol in (None, _nullMol):
-        if mols.has_key(id(badmol)):
+        if id(badmol) in mols:
             # should only happen if undoable state contains killed or
             # still-being-born atoms; I don't know if it can
             # (as of 060317 tentative fix to bug 1633 comment #1, it can --
@@ -684,19 +684,19 @@ def fix_all_chunk_atomsets( attrdicts, modified):
             # 060404: this is no longer true, so zap the
             #  ' and badmol is None:' from the following:
             if env.debug():
-                print "debug: why does some atom in undoable state " \
-                      "have .molecule = %r?" % (badmol,)
+                print("debug: why does some atom in undoable state " \
+                      "have .molecule = %r?" % (badmol,))
             del mols[id(badmol)]
             # but we also worry below about the atoms that had it
             # (might not be needed for _nullMol; very needed for None)
-    for mol in mols.itervalues():
+    for mol in mols.values():
         mol.atoms = {}
-    for atom_objkey, mol in moldict.iteritems():
+    for atom_objkey, mol in moldict.items():
         if mol not in (None, _nullMol):
             atom = modified_get(atom_objkey)
             mol.atoms[ atom.key ] = atom # WARNING: this inlines some of
                 # Chunk.addatom; note: atom.key != atom_objkey
-    for mol in mols.itervalues():
+    for mol in mols.values():
         try: # try/except is just for debugging
             mol.invalidate_atom_lists() # inlines some more of Chunk.addatom
         except:
@@ -716,7 +716,7 @@ def _fix_all_chunk_atomsets_differential(invalmols):
                       which has an .atoms dict of the same kind as Chunk.
                       (As of 071114, such a mol is always a Chunk.)
     """
-    for mol in invalmols.itervalues():
+    for mol in invalmols.values():
         if mol is not _nullMol:
             # we exclude _nullMol in case it has an invalidate_atom_lists method
             # that we shouldn't call
@@ -739,7 +739,7 @@ def _fix_all_chunk_atomsets_differential(invalmols):
                     # not worth finding out right now
                 if mol is _UNSET_:
                     # actually i think that's the only one that can happen
-                    print "fyi: mol is _UNSET_ in _fix_all_chunk_atomsets_differential"
+                    print("fyi: mol is _UNSET_ in _fix_all_chunk_atomsets_differential")
                         #bruce 071114 - caller looks like it prevents this, let's find out
                         # (if not, fix the docstrings I just added which imply this!)
                     continue
@@ -775,7 +775,7 @@ def _call_undo_update(modified):
     #   (up to the caller) [this is now implemented as of 060409]
     # - knowing that some classes don't define this method,
     #   and not scanning their instances looking for it
-    for key, obj in modified.iteritems():
+    for key, obj in modified.items():
         ###e zap S_CACHE attrs? or depend on update funcs to
         # zap/inval/update them? for now, the latter. Review this later. ###@@@
         try:
@@ -909,7 +909,7 @@ class Checkpoint:
         self.ver = None # not yet known (??)
         self.complete = False # public for get and set
         if debug_undo2:
-            print "debug_undo2: made cp:", self
+            print("debug_undo2: made cp:", self)
         return
     def store_complete_state(self, state):
         self.state = state # public for get and set and hasattr; won't exist at first
@@ -931,7 +931,7 @@ class Checkpoint:
         self.update_ver_kluge()
         if self.ver is None:
             if debug_flags.atom_debug:
-                print "atom_debug: warning, bug?? self.ver is None in varid_ver() for", self ###@@@
+                print("atom_debug: warning, bug?? self.ver is None in varid_ver() for", self) ###@@@
         return self.varid, self.ver
     def update_ver_kluge(self):
         try:
@@ -1080,12 +1080,12 @@ class SimpleDiff:
         s2 = end_cp.next_history_serno()
         if s2 == -1: #060312 guess for use when current_diff.command_info['n_merged_changes'], and for direction == -1
             if not self.command_info['n_merged_changes'] and env.debug():
-                print "debug: that's weird, command_info['n_merged_changes'] ought to be set in this case"
+                print("debug: that's weird, command_info['n_merged_changes'] ought to be set in this case")
             return "(%d.-now)" % (s1,)
 
         n = s2 - s1
         if n < 0:
-            print "bug in history serno order", s1, s2, self.direction, self
+            print("bug in history serno order", s1, s2, self.direction, self)
             # this 's1,s2 = s2,s1', the only time it happened, just made it more confusing to track down the bug, so zap it [060312]
             pass
 ##            n = -n
@@ -1099,7 +1099,7 @@ class SimpleDiff:
             ## hist = "%d+" % range1 # Undo 18+ bla... dubious... didn't look understandable.
             hist = "(after %d.)" % range1 # Undo (after 18.) bla
             if debug_pref("test unicode one-half in Undo menutext", Choice_boolean_False): #060312
-                hist = u"%d\xbd" % range1 # use unicode "1/2" character instead ( without u"", \xbd error, \x00bd wrong )
+                hist = "%d\xbd" % range1 # use unicode "1/2" character instead ( without u"", \xbd error, \x00bd wrong )
         elif n == 1:
             assert range0 == range1
             hist = "%d." % range1
@@ -1330,7 +1330,7 @@ def fill_checkpoint(cp, state, assy): #e later replace calls to this with cp met
     """
     if not isinstance(state, StatePlace):
         if env.debug():
-            print "likely bug: not isinstance(state, StatePlace) in fill_cp, for", state #060407
+            print("likely bug: not isinstance(state, StatePlace) in fill_cp, for", state) #060407
     env.change_counter_checkpoint() ###k here?? store it??
     assert cp is not None
     assert not cp.complete
@@ -1369,7 +1369,7 @@ class checkpoint_metainfo:
         except:
             self.view = "initial view not yet set - stub, will fail if you undo to this point"
             if env.debug():#060301 - does this ever happen (i doubt it) ###@@@ never happens; someday analyze why not [060407]
-                print "debug:", self.view
+                print("debug:", self.view)
         else:
             self.view = glpane.current_view_for_Undo(assy) # Csys object (for now), with an attribute pointing out the current Part
             ###e should this also save the current mode, considered as part of the view??? [060301]
@@ -1394,10 +1394,10 @@ class checkpoint_metainfo:
     def restore_assy_change_indicators(self, assy):
         #e ... and not say it doesn't if the only change is from a kind that is not normally saved.
         if debug_change_indicators:
-            print "restore_assy_change_indicators begin, chg ctrs =", assy.all_change_indicators()
+            print("restore_assy_change_indicators begin, chg ctrs =", assy.all_change_indicators())
         assy.reset_changed_for_undo( self.assy_change_indicators) # never does env.change_counter_checkpoint() or the other one
         if debug_change_indicators:
-            print "restore_assy_change_indicators end, chg ctrs =", assy.all_change_indicators()
+            print("restore_assy_change_indicators end, chg ctrs =", assy.all_change_indicators())
     pass
 
 # ==
@@ -1495,7 +1495,7 @@ class AssyUndoArchive: # modified from UndoArchive_older and AssyUndoArchive_old
             if subQ:
                 for ourdict in ourdicts:
                     if ourdict:
-                        print "bug: archive's changedict should have been empty but contains:", ourdict
+                        print("bug: archive's changedict should have been empty but contains:", ourdict)
             cd_ods = self._changedicts[:]
             for changedict, ourdict in cd_ods:
                 self.sub_or_unsub_to_one_changedict(subQ, changedict, ourdict)
@@ -1507,7 +1507,7 @@ class AssyUndoArchive: # modified from UndoArchive_older and AssyUndoArchive_old
                 for ourdict in ourdicts:
                     ourdict.clear() # not sure we need this, but if we're unsubbing we're missing future changes
                         # so we might as well miss the ones we were already told about (might help to free old objects?)
-            assert map(id, cd_ods) == map(id, self._changedicts) # since new cds during that loop are not supported properly by it
+            assert list(map(id, cd_ods)) == list(map(id, self._changedicts)) # since new cds during that loop are not supported properly by it
                 # note, this is comparing ids of tuples, but since the point is that we didn't change _changedicts,
                 # that should be ok. We can't use == since when we get to the dicts in the tuples, we have to compare ids.
             self.subbing_to_changedicts_now = subQ
@@ -1610,7 +1610,7 @@ class AssyUndoArchive: # modified from UndoArchive_older and AssyUndoArchive_old
         # or maybe on its extend method. [I ought to verify this is working.]
         changedicts0 = changedicts._changedicts_for_classid[ id(class1) ]
             # maps name to dict, but names are only unique per-class
-        changedicts_list = changedicts0.values() # or .items()?
+        changedicts_list = list(changedicts0.values()) # or .items()?
             # someday we'll want to use the dictnames, i think...
             # for now we don't need them
         ## self._changedicts.extend( changedicts_list ) -- from when ourdict
@@ -1643,7 +1643,7 @@ class AssyUndoArchive: # modified from UndoArchive_older and AssyUndoArchive_old
             # (if this gets inefficient, it's only for developers who often
             #  reload code modules -- I think; review this someday ##k)
         if self.subbing_to_changedicts_now:
-            for name, changedict in changedicts0.items():
+            for name, changedict in list(changedicts0.items()):
                 del name
                 self.sub_or_unsub_to_one_changedict(True, changedict, ourdict)
                     #e Someday, also pass its name, so sub-implem can know what
@@ -1685,7 +1685,7 @@ class AssyUndoArchive: # modified from UndoArchive_older and AssyUndoArchive_old
         """
         #e possible optim: store self.objkey_allocator._key4obj.has_key
         # as a private attr of self
-        return self.objkey_allocator._key4obj.has_key(id(obj))
+        return id(obj) in self.objkey_allocator._key4obj
 
     def new_Atom_oursQ(self, atom): #060405; rewritten 060406
         """
@@ -1733,7 +1733,7 @@ class AssyUndoArchive: # modified from UndoArchive_older and AssyUndoArchive_old
         of an "atom", i.e. an instance of a class whose
         _s_undo_specialcase attribute is UNDO_SPECIALCASE_ATOM.
         """
-        res = self.obj_classifier.dict_of_all_Atom_chunk_attrcodes.has_key(attrcode)
+        res = attrcode in self.obj_classifier.dict_of_all_Atom_chunk_attrcodes
         # make sure this is equivalent to the old hardcoded version (temporary):
         assert res == (attrcode == (ATOM_CHUNK_ATTRIBUTE_NAME, 'Atom'))
             # remove when works -- will become wrong when we add Atom subclasses
@@ -1767,7 +1767,7 @@ class AssyUndoArchive: # modified from UndoArchive_older and AssyUndoArchive_old
         # as ~060407's. self._childobj_dict is stored by caller (several call
         # levels up), then later set to None before it becomes invalid.
         # [060408]
-        return self._childobj_dict.has_key(id(obj))
+        return id(obj) in self._childobj_dict
 
     def trackedobj_liveQ(self, obj):
         """
@@ -2015,11 +2015,11 @@ class AssyUndoArchive: # modified from UndoArchive_older and AssyUndoArchive_old
         # maybe i should clean up the following code sometime...
         debug3 = 0 and env.debug() # for now [060301] if 0 060302; this is here (not at top of file) so runtime env.debug() affects it
         if debug3:
-            print "\ncp", self.assy.all_change_indicators(), env.last_history_serno + 1
+            print("\ncp", self.assy.all_change_indicators(), env.last_history_serno + 1)
         if merge_with_future:
             #060309, partly nim; 060312 late night, might be done!
             if 0 and env.debug():
-                print "debug: skipping undo checkpoint"
+                print("debug: skipping undo checkpoint")
             ### Here's the plan [060309 855pm]:
             # in this case, used when auto-checkpointing is disabled, it's almost like not doing a checkpoint,
             # except for a few things:
@@ -2061,16 +2061,16 @@ class AssyUndoArchive: # modified from UndoArchive_older and AssyUndoArchive_old
             pass
         else:
             if 0 and env.debug():
-                print "debug: NOT skipping undo checkpoint" # can help debug autocp/manualcp issues [060312]
+                print("debug: NOT skipping undo checkpoint") # can help debug autocp/manualcp issues [060312]
             # entire rest of method
             if self.last_cp.assy_change_indicators == self.assy.all_change_indicators():
                 # no change in state; we still keep next_cp (in case ctype or other metainfo different) but reuse state...
                 # in future we'll still need to save current view or selection in case that changed and mmpstate didn't ####@@@@
                 if debug_undo2 or debug3:
-                    print "checkpoint type %r with no change in state" % cptype, self.assy.all_change_indicators(), env.last_history_serno + 1
+                    print("checkpoint type %r with no change in state" % cptype, self.assy.all_change_indicators(), env.last_history_serno + 1)
                     if env.last_history_serno + 1 != self.last_cp.next_history_serno():
-                        print "suspicious: env.last_history_serno + 1 (%d) != self.last_cp.next_history_serno() (%d)" % \
-                              ( env.last_history_serno + 1 , self.last_cp.next_history_serno() )
+                        print("suspicious: env.last_history_serno + 1 (%d) != self.last_cp.next_history_serno() (%d)" % \
+                              ( env.last_history_serno + 1 , self.last_cp.next_history_serno() ))
                 really_changed = False
                 state = self.last_cp.state
                 #060301 808p part of bugfix for "bug 3" [remove this cmt in a few days];
@@ -2086,13 +2086,13 @@ class AssyUndoArchive: # modified from UndoArchive_older and AssyUndoArchive_old
                     msg = "apparent bug in Undo: self.current_diff.assert_no_changes is true, but change_counters were changed "\
                           "from %r to %r" % (self.last_cp.assy_change_indicators, self.assy.all_change_indicators())
                     # we don't yet know if there's a real diff, so if this happens, we might move it later down, inside 'if really_changed'.
-                    print msg
+                    print(msg)
                     from utilities.Log import redmsg # not sure this is ok to do when this module is imported, tho probably it is
                     env.history.message(redmsg(msg))
 
                 if debug_undo2:
-                    print "checkpoint %r at change %r, last cp was at %r" % (cptype, \
-                                    self.assy.all_change_indicators(), self.last_cp.assy_change_indicators)
+                    print("checkpoint %r at change %r, last cp was at %r" % (cptype, \
+                                    self.assy.all_change_indicators(), self.last_cp.assy_change_indicators))
                 if not use_diff:
                     # note [060407]: this old code predates StatePlace, and hasn't been tested recently, so today's initial-state cleanup
                     # might break it, since current_state really returns cursnap, a StateSnapshot, but last_cp.state will be a StatePlace,
@@ -2102,7 +2102,7 @@ class AssyUndoArchive: # modified from UndoArchive_older and AssyUndoArchive_old
                     state = current_state(self, self.assy, **self.format_options) ######@@@@@@ need to optim when only some change_counters changed!
                     really_changed = (state != self.last_cp.state) # this calls StateSnapshot.__ne__ (which calls __eq__) [060227]
                     if not really_changed and env.debug():
-                        print "debug: note: detected lack of really_changed using (state != self.last_cp.state)"
+                        print("debug: note: detected lack of really_changed using (state != self.last_cp.state)")
                             ###@@@ remove when works and no bugs then
                 else:
                     #060228
@@ -2115,14 +2115,14 @@ class AssyUndoArchive: # modified from UndoArchive_older and AssyUndoArchive_old
 ##                        # hmm. we diff against the cp containing the current state! (right?) ### [060301]
                     really_changed = state.really_changed
                     if not really_changed and debug3: # see if this is printed for bug 3, 060301 8pm [it is]
-                        print "debug: note: detected lack of really_changed in diff_and_copy_state"
+                        print("debug: note: detected lack of really_changed in diff_and_copy_state")
                         ###@@@ remove when works and no bugs then
                         # ok, let's get drastic (make debug pref if i keep it for long):
                         ## state.print_everything() IMPLEM  ####@@@@
-                        print "state.lastsnap.attrdicts:", state.lastsnap.attrdicts # might be huge; doesn't contain ids of mutables
+                        print("state.lastsnap.attrdicts:", state.lastsnap.attrdicts) # might be huge; doesn't contain ids of mutables
                     elif debug3: # condition on rarer flag soon,
                         # or have better debug pref for undo stats summary per chgcounter'd cp ###e doit
-                        print "debug: note: real change found by diff_and_copy_state"
+                        print("debug: note: real change found by diff_and_copy_state")
                 if not really_changed and self.current_diff.command_info.get('_offered', False):
                     # [bruce 060326 to fix bug 1733:]
                     ###e should explain; comments elsewhere from this day and bug have some explanation of this
@@ -2214,7 +2214,7 @@ class AssyUndoArchive: # modified from UndoArchive_older and AssyUndoArchive_old
             (If somedict was an immutable dict object of some sort,
             this could just return it directly.)
             """
-            items = somedict.items()
+            items = list(somedict.items())
             items.sort() # a bit silly since in present use there is always just one item, but this won't run super often, i hope
                 # (for that matter, in present use that item's key is always the same...)
             # return items # TypeError: list objects are unhashable
@@ -2235,8 +2235,8 @@ class AssyUndoArchive: # modified from UndoArchive_older and AssyUndoArchive_old
             ndiffs = len(diffs_to_destroy)
             len1 = len(self.stored_ops)
             if env.debug():
-                print "debug: clear_redo_stack found %d diffs to destroy" % ndiffs
-            for diff in diffs_to_destroy.values():
+                print("debug: clear_redo_stack found %d diffs to destroy" % ndiffs)
+            for diff in list(diffs_to_destroy.values()):
                 diff.destroy() #k did I implem this fully?? I hope so, since clear_undo_stack probably uses it too...
                 # the thing to check is whether they remove themselves from stored_ops....
             diffs_to_destroy = None # refdecr them too, before saying we're done (since the timing of that is why we say it)
@@ -2244,10 +2244,10 @@ class AssyUndoArchive: # modified from UndoArchive_older and AssyUndoArchive_old
             len2 = len(self.stored_ops)
             savings = len1 - len2 # always 0 for now, since we don't yet remove them, so don't print non-debug msg when 0 (for now)
             if ndiffs and (savings < 0 or env.debug()):
-                print "  debug: clear_redo_stack finished; removed %d entries from self.stored_ops" % (savings,) ###k bug if 0 (always is)
+                print("  debug: clear_redo_stack finished; removed %d entries from self.stored_ops" % (savings,)) ###k bug if 0 (always is)
         else:
             if 0 and env.debug():
-                print "debug: clear_redo_stack found nothing to destroy"
+                print("debug: clear_redo_stack found nothing to destroy")
         return
 
     def current_command_info(self, *args, **kws): ##e should rename add_... to make clear it's not finding and returning it
@@ -2351,8 +2351,8 @@ class AssyUndoArchive: # modified from UndoArchive_older and AssyUndoArchive_old
             # update, bruce 071025: I routinely see this warning under certain conditions, which I forget.
             # I don't think I experience bugs then, though.
             if self.last_cp.assy_change_indicators != self.assy.all_change_indicators():
-                print "WARNING: find_undoredos sees self.last_cp.assy_change_indicators != self.assy.all_change_indicators()", \
-                      self.last_cp.assy_change_indicators, self.assy.all_change_indicators()
+                print("WARNING: find_undoredos sees self.last_cp.assy_change_indicators != self.assy.all_change_indicators()", \
+                      self.last_cp.assy_change_indicators, self.assy.all_change_indicators())
             pass
 
         if self.current_diff.command_info['n_merged_changes']:
@@ -2373,13 +2373,13 @@ class AssyUndoArchive: # modified from UndoArchive_older and AssyUndoArchive_old
         res = self._raw_find_undoredos( state_version) #060309 split that out, moved its debug code back here & revised it
 
         if not res and debug_undo2 and (self.last_cp is not self.initial_cp):
-            print "why no stored ops for this? (claims to not be initial cp)", state_version # had to get here somehow...
+            print("why no stored ops for this? (claims to not be initial cp)", state_version) # had to get here somehow...
 
         if debug_undo2:
-            print "\nfind_undoredos dump of found ops, before merging:"
+            print("\nfind_undoredos dump of found ops, before merging:")
             for op in res:
-                print op
-            print "end of oplist\n"
+                print(op)
+            print("end of oplist\n")
         # Need to filter out obsolete redos (not sure about undos, but I guess not) ... actually some UIs might want to offer them,
         # so i'd rather let caller do that (plus it has the separated undo/redo lists).
         # But then to save time, let caller discard what it filters out, and let it do the merging only on what's left --
@@ -2394,7 +2394,7 @@ class AssyUndoArchive: # modified from UndoArchive_older and AssyUndoArchive_old
     def _raw_find_undoredos(self, state_version):
         "#doc"
         res = {}
-        for var, ver in state_version.items():
+        for var, ver in list(state_version.items()):
             lis = self.stored_ops.get( (var, ver), () )
             for op in lis: #e optim by storing a dict so we can use update here? doesn't matter for now
                 if not op.destroyed:
@@ -2402,7 +2402,7 @@ class AssyUndoArchive: # modified from UndoArchive_older and AssyUndoArchive_old
                     # but don't bother unstoring them here, it would miss some
                     res[op.key] = op
         # this includes anything that *might* apply... filter it... not needed for now with only one varid in the system. ###@@@
-        return res.values()
+        return list(res.values())
 
     def store_op(self, op):
         assert self._undo_archive_initialized
@@ -2413,7 +2413,7 @@ class AssyUndoArchive: # modified from UndoArchive_older and AssyUndoArchive_old
 
     def _n_stored_vals(self): #060309, unfinished, CALL IT as primitive ram estimate #e add args for variants of what it measures ####@@@@
         res = 0
-        for oplist in self.stored_ops.itervalues():
+        for oplist in self.stored_ops.values():
             for op in oplist:
                 res += op._n_stored_vals() ###IMPLEM
         return res

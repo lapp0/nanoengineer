@@ -265,7 +265,7 @@ class _CoordsysHolder(InstanceOrExpr): # split out of class Highlightable, 07031
         if _DEBUG_SAVED_COORDS:
             # print "_DEBUG_SAVED_COORDS type(old) = %r" % (type(old),) # NoneType or numpy.ndarray
             if not same_vals(old, new):
-                print "_DEBUG_SAVED_COORDS: %r changes saved coords" % self
+                print("_DEBUG_SAVED_COORDS: %r changes saved coords" % self)
 
         # the following comments are about the implem of save_coords --
         # need review -- which are obs and which should be moved? ###
@@ -349,7 +349,7 @@ class _CoordsysHolder(InstanceOrExpr): # split out of class Highlightable, 07031
         # as of initial commit, 061214 359, the crash bug never recurred but neither did I see any prints from this,
         # so it remains untested as a bugfix, tho it's tested as a matrix-loader.
         if matrix is None:
-            print "in %r, saved %s is None, not using it" % (self, name,) # thus perhaps avoiding a crash bug
+            print("in %r, saved %s is None, not using it" % (self, name,)) # thus perhaps avoiding a crash bug
                 # I predict I'll see this where i would have otherwise crashed;
                 ### print until i'm sure the bug is fixed
                 # text searches for this print statement might find it more easily if we add this text to the comment:
@@ -549,8 +549,7 @@ class _CoordsysHolder(InstanceOrExpr): # split out of class Highlightable, 07031
             h = glpane.height
             #e should we add one (or half) to those?? ie is true x range more like 0,w or -0.5, w + 0.5 or 0, w+1??
             # (x,y) might be (in ccw order around the screenrect, starting from botleft to botright):
-            res = map( lambda (wX, wY): A(gluUnProject(wX, wY, depth)),
-                       ((0,0), (w,0), (w,h), (0,h)) )
+            res = [A(gluUnProject(wX_wY[0], wX_wY[1], depth)) for wX_wY in ((0,0), (w,0), (w,h), (0,h))]
             return res # from func
         ran_already_flag, funcres = self.run_OpenGL_in_local_coords( func )
         assert ran_already_flag
@@ -721,15 +720,15 @@ class Highlightable(_CoordsysHolder, DelegatingMixin, DragHandler_API, Selobj_AP
         glpane = self.env.glpane
         self.save_coords_if_safe()
         if self.glname != self.glpane_state.glname:
-            print "bug: in %r, self.glname %r != self.glpane_state.glname %r" % \
-                  (self, self.glname, self.glpane_state.glname)
+            print("bug: in %r, self.glname %r != self.glpane_state.glname %r" % \
+                  (self, self.glname, self.glpane_state.glname))
                     #070213 -- since similar bug was seen for _index_counter in class World
         PushName(self.glname)
         try:
             draw_this = "<not yet set>" # for debug prints
             if self.transient_state.in_drag:
                 if printdraw:
-                    print "pressed_out.draw", self
+                    print("pressed_out.draw", self)
                 draw_this = self.pressed_out #e actually this might depend on mouseover, or we might not draw anything then...
                     # but this way, what we draw when mouse is over is a superset of what we draw in general,
                     # easing eventual use of highlightables inside display lists. See other drawing done later when we're highlighted
@@ -743,8 +742,8 @@ class Highlightable(_CoordsysHolder, DelegatingMixin, DragHandler_API, Selobj_AP
             self.drawkid( draw_this) ## draw_this.draw() # split out draw_this, 070104
         except: ##k someday this try/except might be unneeded due to drawkid
             print_compact_traceback("exception during pressed_out or plain draw, ignored: ")#061120
-            print "fyi: the object we wanted to draw when we got that exception was:",
-            print "%r" % (draw_this,)
+            print("fyi: the object we wanted to draw when we got that exception was:", end=' ')
+            print("%r" % (draw_this,))
             pass # make sure we run the PopName
         PopName(self.glname)
         return
@@ -772,11 +771,11 @@ class Highlightable(_CoordsysHolder, DelegatingMixin, DragHandler_API, Selobj_AP
         try:
             if self.transient_state.in_drag:
                 if printdraw:
-                    print "pressed_in.draw", self
+                    print("pressed_in.draw", self)
                 self.pressed_in.draw() #e actually might depend on mouseover, or might not draw anything then...
             else:
                 if printdraw:
-                    print "highlighted.draw", self
+                    print("highlighted.draw", self)
                 self.highlighted.draw()
         finally:
             #061206 added try/finally as a precaution.
@@ -838,12 +837,12 @@ class Highlightable(_CoordsysHolder, DelegatingMixin, DragHandler_API, Selobj_AP
                 res = False
                 # owner might be None, in theory, but is probably a replacement of self at same ipath
                 # do debug prints
-                print "%r no longer owns glname %r, instead %r does" % (self, glname, owner) # [perhaps never seen as of 061121]
+                print("%r no longer owns glname %r, instead %r does" % (self, glname, owner)) # [perhaps never seen as of 061121]
                 our_ipath = self.ipath
                 owner_ipath = getattr(owner, 'ipath', '<missing>')
                 if our_ipath != owner_ipath:
                     # [perhaps never seen as of 061121]
-                    print "WARNING: ipath for that glname also changed, from %r to %r" % (our_ipath, owner_ipath)
+                    print("WARNING: ipath for that glname also changed, from %r to %r" % (our_ipath, owner_ipath))
                 pass
             pass
             # MORE IS PROBABLY NEEDED HERE: that check above is about whether this selobj got replaced locally;
@@ -851,7 +850,7 @@ class Highlightable(_CoordsysHolder, DelegatingMixin, DragHandler_API, Selobj_AP
             # I think both issues are valid and need addressing in this code or it'll probably cause bugs. [061120 comment] ###BUG
         import foundation.env as env
         if not res and env.debug():
-            print "debug: selobj_still_ok is false for %r" % self ###@@@
+            print("debug: selobj_still_ok is false for %r" % self) ###@@@
         return res # I forgot this line, and it took me a couple hours to debug that problem! Ugh.
             # Caller now prints a warning if it's None.
 
@@ -929,7 +928,7 @@ class Highlightable(_CoordsysHolder, DelegatingMixin, DragHandler_API, Selobj_AP
             # between the mode or glpane seeing the selobj and us testing whether it's us
             if selobj and (selobj is not our_selobj) and getattr(selobj,'ipath','nope') == our_selobj.ipath:
                 assert our_selobj.glname == selobj.glname, "glnames differ" # should be the same, since stored in glpane state at ipath
-                print "kluge, fyi: pretending old selobj %r is our_selobj (self) %r" % (selobj, our_selobj)
+                print("kluge, fyi: pretending old selobj %r is our_selobj (self) %r" % (selobj, our_selobj))
                     # NOTE: our_selobj (self) is OLDER than the "old selobj" (selobj) passed to us!
                     # Evidence: the sernos in this print:
                     ## kluge, fyi: pretending old selobj <Highlightable#2571(i) at 0x10982b30>
@@ -1036,7 +1035,7 @@ class Highlightable(_CoordsysHolder, DelegatingMixin, DragHandler_API, Selobj_AP
         if actions:
             if glpane_bindings: # new feature 061205 - dynamic bindings of specific attrnames in glpane
                 glpane = self.env.glpane
-                for k,v in glpane_bindings.iteritems(): # these k should only be hardcoded in this class, not caller-supplied
+                for k,v in glpane_bindings.items(): # these k should only be hardcoded in this class, not caller-supplied
                     assert not hasattr(glpane, k) #e might revise to let it be a default value in the class, or more
                     setattr(glpane, k, v)
                         #e or could call glpane.somedict.update(glpane_bindings) -- maybe more controlled if it keeps them in a dict
@@ -1045,7 +1044,7 @@ class Highlightable(_CoordsysHolder, DelegatingMixin, DragHandler_API, Selobj_AP
                     action()
             finally:
                 if glpane_bindings:
-                    for k in glpane_bindings.iterkeys():
+                    for k in glpane_bindings.keys():
                         delattr(glpane, k)
         return
 
@@ -1086,7 +1085,7 @@ class Highlightable(_CoordsysHolder, DelegatingMixin, DragHandler_API, Selobj_AP
                     # (###e CLEANUP NEEDED: this should be cleaned up so most cmenu methods don't need to accept and ignore that arg --
                     # maybe it should be stored in dynenv, eg glpane, or maybe make current_event_mousepoint itself dynenv-accessible.)
             except:
-                print "bah" ###e traceback
+                print("bah") ###e traceback
                 print_compact_traceback("exception seen by selobj %r in %r.make_selobj_cmenu_items(): " % (self, obj) )
         else:
             # remove soon, or improve -- classname??
@@ -1115,9 +1114,9 @@ class _UNKNOWN_SELOBJ_class(Selobj_API): #061218
     # this is in case we didn't find one that's needed:
     def __getattr__(self, attr): # in class _UNKNOWN_SELOBJ_class
         if attr.startswith("__"):
-            raise AttributeError, attr
+            raise AttributeError(attr)
         if debug_flags.atom_debug:###
-            print "_UNKNOWN_SELOBJ_class returns noop for attr %r" % attr
+            print("_UNKNOWN_SELOBJ_class returns noop for attr %r" % attr)
         setattr(self, attr, noop) # optim
         return noop # fake bound method
     def __str__(self): #bruce 081211

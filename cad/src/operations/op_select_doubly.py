@@ -167,7 +167,7 @@ class twoconner: #e rename
     def neighbors_except(self, N, priornode): # morally this should be an init param or subclass method (but speed > abstractness here)
         "Return all N's neighbors except priornode (or all of them, if priornode is None) [assume they can be compared using 'is']"
         #e assume N is an atom; this justifies using 'is' and also is why we want to (for speed)
-        return filter( lambda neighbor: neighbor is not priornode, N.realNeighbors() )
+        return [neighbor for neighbor in N.realNeighbors() if neighbor is not priornode]
             #e might optim by chopping monovalent neighbors right here?
             # nontrivial to work out all implications of this... but i bet it's significantly faster,
             # esp. if we'd revise our class atom code to actually store the bonds in separate lists
@@ -237,7 +237,7 @@ def select_doubly_transcloser(atomlist):
     # what about the desire to also apply func to monovalent neighbors?
     # Well, nothing prevents caller's func from doing this on its own!
     # No need to one.destroy() (tho it holds strongrefs to atoms) since no one refers into it, except our localvar.
-    return resdict.values()
+    return list(resdict.values())
 
 def select_doubly_func(atom):
     atom.pick()
@@ -248,7 +248,7 @@ def select_doubly_func(atom):
 
 def select_doubly(atomlist): #e 1st try is slow if you pass it a highly redundant atomlist. Need to track which ones we picked...
     # don't use real picking, in order to be compatible with Selection Filter.
-    map( select_doubly_func, select_doubly_transcloser( atomlist) )
+    list(map( select_doubly_func, select_doubly_transcloser( atomlist) ))
     return
 
 # end

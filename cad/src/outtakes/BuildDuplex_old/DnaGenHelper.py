@@ -146,7 +146,7 @@ class Dna:
 
             for member in mainpart.members:
                 # 'member' is a chunk containing a set of base-pair atoms.
-                for atm in member.atoms.values():
+                for atm in list(member.atoms.values()):
                     atm._posn = tfm(atm._posn) + position
                     if atm.element.symbol in ('Se3', 'Ss3', 'Ss5'):
                         if atm.getDnaBaseName() == "a":
@@ -160,8 +160,8 @@ class Dna:
                                 # letter.
                                 baseLetter = currentBaseLetter
                         if 0:
-                            print "Ss(%r) being set to %r." \
-                                  % (atm.getDnaBaseName(), baseLetter)
+                            print("Ss(%r) being set to %r." \
+                                  % (atm.getDnaBaseName(), baseLetter))
                         atm.setDnaBaseName(baseLetter)
 
                 member.name = currentBaseLetter
@@ -450,9 +450,9 @@ class B_Dna_PAM5(B_Dna):
         # (If we were instead passed all the atoms, we could be correct if we
         # just did this to the first Pe5 and Sh5 we saw, or to both of each if
         # setting the same direction twice is allowed.)
-        atoms = baseList[0].atoms.values()
-        Pe_list = filter( lambda atom: atom.element.symbol in ('Pe5'), atoms)
-        Sh_list = filter( lambda atom: atom.element.symbol in ('Sh5'), atoms)
+        atoms = list(baseList[0].atoms.values())
+        Pe_list = [atom for atom in atoms if atom.element.symbol in ('Pe5')]
+        Sh_list = [atom for atom in atoms if atom.element.symbol in ('Sh5')]
 
         if len(Pe_list) == len(Sh_list) == 1:
             for atom in Pe_list:
@@ -510,16 +510,16 @@ class B_Dna_PAM3(B_Dna_PAM5):
         # Just find those bonds and set the strand directions.
 
         assert len(baseList) >= 2
-        basepair1_atoms = baseList[0].atoms.values() # StartBasePair.MMP
-        basepair2_atoms = baseList[1].atoms.values() # MiddleBasePair or EndBasePair.MMP
-        Se3_list = filter( lambda atom: atom.element.symbol in ('Se3'), basepair1_atoms)
-        Sh3_list = filter( lambda atom: atom.element.symbol in ('Sh3'), basepair1_atoms)
+        basepair1_atoms = list(baseList[0].atoms.values()) # StartBasePair.MMP
+        basepair2_atoms = list(baseList[1].atoms.values()) # MiddleBasePair or EndBasePair.MMP
+        Se3_list = [atom for atom in basepair1_atoms if atom.element.symbol in ('Se3')]
+        Sh3_list = [atom for atom in basepair1_atoms if atom.element.symbol in ('Sh3')]
         # To set the direction of the Se3 -> Ss3 bond, we need the Ss3 atom
         # from the second base-pair (i.e. baseList[1]) that is connected to
         # the Se3 atom in the first base-pair.
         # Ss3_list will have only one Ss3 atom if the duplex is only two
         # base-pairs long. Otherwise, Ss3_list will have two Ss3 atoms.
-        Ss3_list = filter( lambda atom: atom.element.symbol in ('Ss3'), basepair2_atoms)
+        Ss3_list = [atom for atom in basepair2_atoms if atom.element.symbol in ('Ss3')]
         if len(Se3_list) == len(Sh3_list) == 1:
             for atom in Se3_list:
                 assert len(atom.bonds) == 2

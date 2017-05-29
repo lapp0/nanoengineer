@@ -52,6 +52,7 @@ from utilities.prefs_constants import DarkBackgroundContrastColor_prefs_key
 from utilities.prefs_constants import LightBackgroundContrastColor_prefs_key
 
 from geometry.BoundingBox import BBox
+from functools import reduce
 
 def get_selCurve_color(selSense, bgcolor = white):
     """
@@ -163,7 +164,7 @@ class simple_shape_2d:
         Construct the 3d bounding box for the area
         """
         # compute bounding rectangle (2d)
-        self.pt2d = map( self.project_2d, self.ptlist)
+        self.pt2d = list(map( self.project_2d, self.ptlist))
         assert not (None in self.pt2d)
 
         self.bboxhi = reduce(maximum, self.pt2d)
@@ -271,8 +272,8 @@ class curve(simple_shape_2d): # bruce 041214 factored out simple_shape_2d
         simple_shape_2d.__init__( self, shp, ptlist, origin, selSense, opts)
 
         # bounding rectangle, in integers (scaled 8 to the angstrom)
-        ibbhi = array(map(int, ceil(8 * self.bboxhi)+2))
-        ibblo = array(map(int, floor(8 * self.bboxlo)-2))
+        ibbhi = array(list(map(int, ceil(8 * self.bboxhi)+2)))
+        ibblo = array(list(map(int, floor(8 * self.bboxlo)-2)))
         bboxlo = self.bboxlo
 
         # draw the curve in these matrices and fill it
@@ -291,7 +292,7 @@ class curve(simple_shape_2d): # bruce 041214 factored out simple_shape_2d
             if l<0.01: continue
             v=(pt - pt0)/l
             for i in range(1 + int(l)):
-                ij = 2 + array(map(int, floor((pt0 + v * i - bboxlo)*8)))
+                ij = 2 + array(list(map(int, floor((pt0 + v * i - bboxlo)*8))))
                 mat[ij]=1
             pt0 = pt
         mat1 += mat
@@ -324,7 +325,7 @@ class curve(simple_shape_2d): # bruce 041214 factored out simple_shape_2d
                and p[0]<=self.bboxhi[0] and p[1]<=self.bboxhi[1]
         if not in_bbox:
             return False
-        ij = map(int, p * 8)-self.matbase
+        ij = list(map(int, p * 8))-self.matbase
         return not self.matrix[ij]
 
     def xdraw(self):
@@ -352,7 +353,7 @@ class curve(simple_shape_2d): # bruce 041214 factored out simple_shape_2d
         only draws one projection.]
         """
         color = get_selCurve_color(self.selSense)
-        pl = zip(self.ptlist[:-1],self.ptlist[1:])
+        pl = list(zip(self.ptlist[:-1],self.ptlist[1:]))
         for p in pl:
             drawline(color, p[0],p[1])
 
@@ -404,7 +405,7 @@ class shape:
         return c
 
     def __str__(self):
-        return "<Shape of " + `len(self.curves)` + ">"
+        return "<Shape of " + repr(len(self.curves)) + ">"
 
     pass # end of class shape
 
@@ -462,7 +463,7 @@ class SelectionShape(shape): # review: split this into its own file? [bruce 0712
                 if mol.hidden:
                     continue
                 disp = mol.get_dispdef()
-                for a in mol.atoms.itervalues():
+                for a in mol.atoms.values():
                     if c.isin(a.posn()) and a.visible(disp):
                         a.pick()
         elif c.selSense == START_NEW_SELECTION:
@@ -470,13 +471,13 @@ class SelectionShape(shape): # review: split this into its own file? [bruce 0712
                 if mol.hidden:
                     continue
                 disp = mol.get_dispdef()
-                for a in mol.atoms.itervalues():
+                for a in mol.atoms.values():
                     if c.isin(a.posn()) and a.visible(disp):
                         a.pick()
                     else:
                         a.unpick()
         elif c.selSense == SUBTRACT_FROM_SELECTION:
-            for a in assy.selatoms.values():
+            for a in list(assy.selatoms.values()):
                 if a.molecule.hidden:
                     continue #bruce 041214
                 if c.isin(a.posn()) and a.visible():
@@ -487,7 +488,7 @@ class SelectionShape(shape): # review: split this into its own file? [bruce 0712
                 if mol.hidden:
                     continue
                 disp = mol.get_dispdef()
-                for a in mol.atoms.itervalues():
+                for a in mol.atoms.values():
                     if c.isin(a.posn()) and a.visible(disp):
                         if a.is_singlet():
                             continue
@@ -497,7 +498,7 @@ class SelectionShape(shape): # review: split this into its own file? [bruce 0712
                     continue
                 a.kill()
         else:
-            print "Error in shape._atomsSelect(): Invalid selSense =", c.selSense
+            print("Error in shape._atomsSelect(): Invalid selSense =", c.selSense)
             #& debug method. mark 060211.
 
     def _chunksSelect(self, assy):
@@ -520,7 +521,7 @@ class SelectionShape(shape): # review: split this into its own file? [bruce 0712
                 if mol.hidden:
                     continue
                 disp = mol.get_dispdef()
-                for a in mol.atoms.itervalues():
+                for a in mol.atoms.values():
                     if c.isin(a.posn()) and a.visible(disp):
                         a.molecule.pick()
                         break
@@ -530,7 +531,7 @@ class SelectionShape(shape): # review: split this into its own file? [bruce 0712
                 if m.hidden:
                     continue #bruce 041214
                 disp = m.get_dispdef()
-                for a in m.atoms.itervalues():
+                for a in m.atoms.values():
                     if c.isin(a.posn()) and a.visible(disp):
                         m.unpick()
                         break
@@ -541,7 +542,7 @@ class SelectionShape(shape): # review: split this into its own file? [bruce 0712
                 if mol.hidden:
                     continue
                 disp = mol.get_dispdef()
-                for a in mol.atoms.itervalues():
+                for a in mol.atoms.values():
                     #bruce 060405 comment/bugfix: this use of itervalues looked dangerous (since mol was killed inside the loop),
                     # but since the iterator is not continued after that, I suppose it was safe (purely a guess).
                     # It would be safer (or more obviously safe) to build up a todo list of mols to kill after the loop.
@@ -569,17 +570,17 @@ class SelectionShape(shape): # review: split this into its own file? [bruce 0712
                 if mol.hidden:
                     continue
                 disp = mol.get_dispdef()
-                for a in mol.atoms.itervalues():
+                for a in mol.atoms.values():
                     if c.isin(a.posn()) and a.visible(disp):
                             rstMol[id(a.molecule)] = a.molecule
                             break
-           rst.extend(rstMol.itervalues())
+           rst.extend(iter(rstMol.values()))
         else: ##Atoms
            for mol in assy.molecules:
                 if mol.hidden:
                     continue
                 disp = mol.get_dispdef()
-                for a in mol.atoms.itervalues():
+                for a in mol.atoms.values():
                    if c.isin(a.posn()) and a.visible(disp):
                      rst += [a]
         return rst

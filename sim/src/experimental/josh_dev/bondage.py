@@ -175,7 +175,7 @@ def bondsetup(bonds):
     for (a,b,o) in bonds[1:]:
         bondict[a] = bondict.get(a,[]) + [(o,b)]
         bondict[b] = bondict.get(b,[]) + [(o,a)]
-    for (a,lis) in bondict.iteritems():
+    for (a,lis) in bondict.items():
         for i in range(len(lis)-1):
             (ob,b) = lis[i]
             for (oc,c) in lis[i+1:]:

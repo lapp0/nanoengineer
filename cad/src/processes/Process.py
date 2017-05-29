@@ -85,7 +85,7 @@ class Process(QProcess):
             self.standardOutputLine(line)
 
     def read_stderr(self):
-        self.setReadChannel(QProcess.StandardError)
+        self.setReadChannel(QProcess.Exception)
         while (self.bytesAvailable()):
             line = self.readLine() # QByteArray
             line = str(line) ###k
@@ -94,7 +94,7 @@ class Process(QProcess):
     def got_error(self, err):
         # it doesn't seem like Qt ever calls this on Linux
         self.currentError = err
-        print "got error: " + self.processState()
+        print("got error: " + self.processState())
 
     def process_exited(self, exitvalue):
         self.set_stdout(None)
@@ -156,14 +156,14 @@ class Process(QProcess):
             self.stdout.write(bytes)
             self.try_flush(self.stdout)
         if (self.stdoutPassThrough):
-            print "%s: %s" % (self.processName, bytes.rstrip())
+            print("%s: %s" % (self.processName, bytes.rstrip()))
 
     def standardErrorLine(self, bytes):
         if self.stderr is not None:
             self.stderr.write(bytes)
             self.try_flush(self.stderr)
         if (self.stdoutPassThrough):
-            print "%s(stderr): %s" % (self.processName, bytes.rstrip())
+            print("%s(stderr): %s" % (self.processName, bytes.rstrip()))
 
     def try_flush(self, file):
         try:
@@ -277,20 +277,20 @@ class Process(QProcess):
         self.currentError = None
 
         if background:
-            print "\n%s [%s]: starting in the background with args:\n%s" \
-                  % (self.processName, program, args)
+            print("\n%s [%s]: starting in the background with args:\n%s" \
+                  % (self.processName, program, args))
             # Run 'program' as a separate process.
             # startDetached() returns True on success.
             rval = not self.startDetached(program, args)
         else:
-            print "\n%s [%s]: starting in the foreground with args:\n%s" \
-                  % (self.processName, program, args)
+            print("\n%s [%s]: starting in the foreground with args:\n%s" \
+                  % (self.processName, program, args))
             # Run 'program' as a child process.
             self.start(program, args) #k ok that we provide no stdin? #e might need to provide an env here
             rval = self.getExitValue(abortHandler, pollFunction)
 
         if 1:
-            print "%s: started. Return val=%d" % (self.processName, rval)
+            print("%s: started. Return val=%d" % (self.processName, rval))
         return rval
 
     pass
@@ -320,10 +320,10 @@ class ProcessTest(object):
         import sys
         pp = Process()
 
-        print
-        print "program: %s, args: " % program, args
+        print()
+        print("program: %s, args: " % program, args)
         if wd:
-            print "working dir:", wd
+            print("working dir:", wd)
 
         if wd:
             pp.setWorkingDirectory(wd)
@@ -331,7 +331,7 @@ class ProcessTest(object):
         pp.set_stderr(sys.stderr)
         ##pp.setProcessChannelMode(QProcess.ForwardedChannels)
         ec = pp.run(program, args)
-        print "exitcode was", ec
+        print("exitcode was", ec)
 
     def _all_tests(self):
         self._test("ferdisaferd")

@@ -76,7 +76,7 @@ class GamessJob(SimJob):
             server_id = job_parms['Server_id']
             self.server = ServerManager().getServerById(int(server_id))
             if not self.server:
-                raise ValueError, "The server of %d can't be found." % server_id
+                raise ValueError("The server of %d can't be found." % server_id)
 
         SimJob.__init__(self, name, job_parms)
 
@@ -84,7 +84,7 @@ class GamessJob(SimJob):
 
         #Huaicai 7/6/05: try to fix the problem when run a gamess jig coming from mmp file
         #and without opening the jig property windows and save it.
-        if not self.__dict__.has_key('server'):
+        if 'server' not in self.__dict__:
             sManager = ServerManager()
             self.server = sManager.getServers()[0]
         return
@@ -230,10 +230,10 @@ class GamessJob(SimJob):
         self.jobTimer.stop()
 
         if self.process.normalExit():
-            print "The process is done!"
+            print("The process is done!")
             QDialog.accept(self.progressDialog)
         else:
-            print "The process is cancelled!"
+            print("The process is cancelled!")
             QDialog.reject(self.progressDialog)
         return
 
@@ -266,7 +266,7 @@ class GamessJob(SimJob):
         for s in args:
             self.process.addArgument(s)
         ####self.process.setCommunication(QProcess.Stdout)
-        print "The params for the QProcess run are: ", args
+        print("The params for the QProcess run are: ", args)
 
         ####self.fwThread = _FileWriting(self.outputFile)
         self.jobTimer = QTimer(self)
@@ -278,7 +278,7 @@ class GamessJob(SimJob):
         ####self.fwThread.start()
 
         if not self.process.start():
-            print "The process can't be started."
+            print("The process can't be started.")
             return 2
 
         self.connect(self.jobTimer, SIGNAL('timeout()'), self.processTimeout)
@@ -325,7 +325,7 @@ class GamessJob(SimJob):
 
         DATfile = os.path.join(jobDir, "PUNCH")
         if os.path.exists(DATfile): # Remove any previous DAT (PUNCH) file.
-            print "run_pcgamess: Removing DAT file: ", DATfile
+            print("run_pcgamess: Removing DAT file: ", DATfile)
             os.remove(DATfile)
 
         # Hours wasted testing this undocumented tripe.  Here's the deal: When using spawnv
@@ -353,7 +353,7 @@ class GamessJob(SimJob):
         # Blocks for n millisconds until the process has started and started()
         # signal is emitted. Returns true if the process was started successfullly.
         if not process.waitForStarted(2000):
-            print "The process can't be started."
+            print("The process can't be started.")
             return 2
         progressDialog = self.showProgress()
         progressDialog.show()
@@ -424,10 +424,10 @@ class GamessJob(SimJob):
             1)  # Escape (1= Cancel)
 
         if ret == 0: # Confirmed
-            print "CONFIRMED"
+            print("CONFIRMED")
             return True
         else:
-            print "CANCELLED"
+            print("CANCELLED")
             return False
 
     pass # end of class GamessJob
@@ -480,7 +480,7 @@ class JobProgressDialog(QDialog): # review: should any of this be refiled into S
             self.process.tryTerminate()
             QTimer.singleShot( 5000, self.process, SLOT('kill()') )
             #self.process.kill()
-            print "I asked to kill the process."
+            print("I asked to kill the process.")
         return
 
     def getMsgLabel(self):

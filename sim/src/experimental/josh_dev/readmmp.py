@@ -22,7 +22,7 @@ def readmmp(fname):
             m = atompat.match(card)
             atnos[int(m.group(1))] = atnum
             elt += [int(m.group(2))]
-            pos += [map(float, [m.group(3),m.group(4),m.group(5)])]
+            pos += [list(map(float, [m.group(3),m.group(4),m.group(5)]))]
         if key[:4] == 'bond':
             order = ['1','2','3','a','g'].index(key[4])
             bonds += [(atnum,atnos[int(x)],order)

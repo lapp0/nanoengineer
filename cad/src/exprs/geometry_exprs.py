@@ -168,13 +168,13 @@ class Ray: ##e (InstanceOrExpr): #k revise super to something about 3d geom. #e 
             ##k btw what if the lines are parallel, in what way should we fail?
             # and for that matter what if they are *almost* parallel so that we're too sensitive -- do we use an env param
             # to decide whether to fail in that case too? If we're an Instance we could do that from self.env... #e
-            print "closest_pt_params_to_ray: too sensitive, returning None" ###### teach caller to handle this; let 0.01 be option
+            print("closest_pt_params_to_ray: too sensitive, returning None") ###### teach caller to handle this; let 0.01 be option
             return None
         perpn = norm(perp0)
         perpperp = cross(perpn,v2n)
         inter = planeXline(p2, perpperp, p1, v1n) # intersect plane (as plane point and normal) with line (as point and vector)
         if inter is None:
-            print "inter is None (unexpected); data:",p1,v1,p2,v2,perp0
+            print("inter is None (unexpected); data:",p1,v1,p2,v2,perp0)
             return None
         # inter is the retval for a variant which just wants the closest point itself, i.e. closest_pt_to_ray
         return dot(inter - p1, v1n) / vlen(v1)

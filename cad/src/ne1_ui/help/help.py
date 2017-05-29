@@ -125,4 +125,4 @@ class Ne1HelpDialog(QWidget, Ui_HelpDialog):
         elif pagenumber is 2:
             self._setup_selection_shortcuts_page()
         else:
-            print 'Error: Help page unknown: ', pagenumber
+            print('Error: Help page unknown: ', pagenumber)

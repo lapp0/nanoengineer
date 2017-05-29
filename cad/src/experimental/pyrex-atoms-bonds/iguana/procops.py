@@ -52,11 +52,11 @@ class Op:
             r = r + "    self->dspointer++;\n"
         return r + "    return pc;\n}\n\n"
 
-print """#include "Python.h"
+print("""#include "Python.h"
 #include "ighelp.h"
 #define EVILRETURN -1
 extern PyObject *IguanaError;
-"""
+""")
 
 oplist = [ ]
 
@@ -64,15 +64,15 @@ for L in open("ops.b").readlines():
     if len(string.split(L, '#')) > 1:
         op = Op(L)
         oplist.append(op)
-        print op.cfunction()
+        print(op.cfunction())
 
-print """
+print("""
 void add_more_verbs(PyObject *verb_dict)
-{"""
+{""")
 
 for op in oplist:
-    print ("""    PyDict_SetItemString(verb_dict, "%s",
+    print(("""    PyDict_SetItemString(verb_dict, "%s",
                          PyInt_FromLong((long) igverb_%s));"""
-           % (op.name, op.cname))
+           % (op.name, op.cname)))
 
-print "}"
+print("}")

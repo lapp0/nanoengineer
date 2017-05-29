@@ -46,7 +46,7 @@ class SimResultsDataStore:
         for read/write access.
         @return: (0=successful or non-zero error code), (error description)
         """
-        print 'directory=%s' % directory
+        print('directory=%s' % directory)
         return 0
 
 

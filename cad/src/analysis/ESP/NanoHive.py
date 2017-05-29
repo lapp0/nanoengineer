@@ -164,14 +164,14 @@ class NanoHive(QWidget, Ui_NanoHiveDialog):
         """
         Slot for the ESP Image combo box.
         """
-        print "Index = ", indx
+        print("Index = ", indx)
 
         if indx:
             self.esp_image = self.esp_image_list[indx]
-            print "ESP Image Name =", self.esp_image.name
+            print("ESP Image Name =", self.esp_image.name)
         else:
             self.esp_image = None
-            print "ESP Image Name =", self.esp_image
+            print("ESP Image Name =", self.esp_image)
 
     def update_MPQC_GD_options_btn(self, toggle):
         """
@@ -183,7 +183,7 @@ class NanoHive(QWidget, Ui_NanoHiveDialog):
         """
         Show the MPQC Gradient Dynamics Options dialog.
         """
-        print "MPQC Gradient Dynamics Options dialog is not implemented yet."
+        print("MPQC Gradient Dynamics Options dialog is not implemented yet.")
 
     # ==
 

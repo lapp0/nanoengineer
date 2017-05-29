@@ -271,7 +271,7 @@ class PM_ObjectChooser(PM_GroupBox):
         """
         self._listWidget.deleteSelection()
         itemDict = self._listWidget.getItemDictonary()
-        self.command.setSegmentList(itemDict.values())
+        self.command.setSegmentList(list(itemDict.values()))
         self.updateListWidget()
         self.win.win_update()
 

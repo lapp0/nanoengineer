@@ -137,7 +137,7 @@ class _attr_accessor:
         # note: as of 061215 this is never overridden, so the usage-tracking LvalDict2's lvals do for it never tracks usage,
         # but we still need to use Lvals there so we can reset their value. In theory we could use a special kind
         # which didn't have recomputation-usage-tracking code at all. [i guess, as of 061215]
-        raise LvalError_ValueIsUnset, "access to key %r in some lvaldict in %r, before that value was set" % (key,self)
+        raise LvalError_ValueIsUnset("access to key %r in some lvaldict in %r, before that value was set" % (key,self))
             #k [061117 late] use this exception in hopes that it makes hasattr just say an attr is not yet there
             ##e needs more info, so probably make a lambda above to use as valfunc
             # [Update 070109: a certain order of file mods (triggering reload_once, each followed by remaking main instance)
@@ -206,7 +206,7 @@ def set_default_attrs(obj, **kws): #e if this was general, we could refile into 
         mc = changes.begin_disallowing_usage_tracking('set_default_attrs (hasattr/setattr) for %r' % obj)
             # note: the argument is just an explanation for use in error messages ##e OPTIM: don't precompute that arg
         try:
-            for k, v in kws.iteritems():
+            for k, v in kws.items():
                 if not hasattr(obj, k):
                     setattr(obj, k, v)
         finally:
@@ -216,7 +216,7 @@ def set_default_attrs(obj, **kws): #e if this was general, we could refile into 
         mc = changes.begin_disallowing_usage_tracking('set_default_attrs (__setattr_default__) for %r' % obj)
             #e optim: remove this check; it only catches usage tracking, not change tracking (ie inval of something by this), anyway
         try:
-            for k, v in kws.iteritems():
+            for k, v in kws.items():
                 method(k, v) # does its own usage/change-tracking suppression (we assume); this is partially checked (for now)
         finally:
             changes.end_disallowing_usage_tracking(mc)

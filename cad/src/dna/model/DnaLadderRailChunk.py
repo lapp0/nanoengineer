@@ -154,8 +154,8 @@ class DnaLadderRailChunk(Chunk):
             old_chunk = self._old_chunk_we_could_reuse(chain)
             if old_chunk is not None:
                 if _DEBUG_REUSE_CHUNKS():
-                    print "dna updater will reuse %r rather than new %r" % \
-                          (old_chunk, self)
+                    print("dna updater will reuse %r rather than new %r" % \
+                          (old_chunk, self))
                 # to do this, set a flag and return early from __init__
                 # (we have no atoms; caller must kill us, and call
                 #  _f_set_new_ladder on the old chunk it's reusing).
@@ -165,8 +165,8 @@ class DnaLadderRailChunk(Chunk):
                 return
 
             if _DEBUG_REUSE_CHUNKS():
-                print "not reusing an old chunk for %r (will grab %d atoms)" % (self, self._counted_atoms)
-                print " data: atoms were in these old chunks: %r" % (self._counted_chunks.values(),)
+                print("not reusing an old chunk for %r (will grab %d atoms)" % (self, self._counted_atoms))
+                print(" data: atoms were in these old chunks: %r" % (list(self._counted_chunks.values()),))
 
             # Now use the data gathered above to decide how to set some
             # properties in the new chunk. Logically we should do this even if
@@ -180,7 +180,7 @@ class DnaLadderRailChunk(Chunk):
             # use those for self; in some cases some per-atom work by _grab_atom
             # (below) might be needed.
             if self._counted_chunks:
-                old_chunks = self._counted_chunks.values() # 1 or more
+                old_chunks = list(self._counted_chunks.values()) # 1 or more
                 one_old_chunk = old_chunks.pop() # faster than [0] and [1:]
                 # for each property handled here, if all old_chunks same as
                 # one_old_chunk, use that value, otherwise a default value.
@@ -236,11 +236,10 @@ class DnaLadderRailChunk(Chunk):
             # check that it counted correctly vs the atoms we actually grabbed
             ## assert self._counted_atoms == len(self.atoms), \
             if not (self._counted_atoms == len(self.atoms)):
-                print \
-                   "\n*** BUG: self._counted_atoms %r != len(self.atoms) %r" % \
-                   ( self._counted_atoms, len(self.atoms) )
+                print("\n*** BUG: self._counted_atoms %r != len(self.atoms) %r" % \
+                   ( self._counted_atoms, len(self.atoms) ))
                 # should print the missing atoms if we can, but for now print the present atoms:
-                print " present atoms are", self.atoms.values()
+                print(" present atoms are", list(self.atoms.values()))
 
         self.ladder = rail_end_atom_to_ladder( chain.baseatoms[0] )
         self._set_properties_from_grab_atom_info( use_disp, use_picked,
@@ -257,7 +256,7 @@ class DnaLadderRailChunk(Chunk):
         Then properly record the new one.
         """
         if self.ladder and self.ladder.valid:
-            print "bug? but working around it: reusing %r but its old ladder %r was valid" % (self, self.ladder)
+            print("bug? but working around it: reusing %r but its old ladder %r was valid" % (self, self.ladder))
             self.ladder.ladder_invalidate_and_assert_permitted()
         self.ladder = ladder
         # can't do this, no self.chain; could do it if passed the chain:
@@ -280,11 +279,11 @@ class DnaLadderRailChunk(Chunk):
         self._grab_atoms_from_chain(chain, True)
         if len(self._counted_chunks) == 1:
             # all our atoms come from the same old chunk (but are they all of its atoms?)
-            old_chunk = self._counted_chunks.values()[0]
+            old_chunk = list(self._counted_chunks.values())[0]
             assert not old_chunk.killed(), "old_chunk %r should not be killed" % (old_chunk,)
                 # sanity check on old_chunk itself
             if self._counted_atoms == len(old_chunk.atoms):
-                for atom in old_chunk.atoms.itervalues(): # sanity check on old_chunk itself (also valid outside this if, but too slow)
+                for atom in old_chunk.atoms.values(): # sanity check on old_chunk itself (also valid outside this if, but too slow)
                     assert atom.molecule is old_chunk # remove when works - slow - or put under SLOW_ASSERTS (otherfile baseatom check too?)
                 # caller can reuse old_chunk in place of self, if class is correct
                 if self.__class__ is old_chunk.__class__:
@@ -293,7 +292,7 @@ class DnaLadderRailChunk(Chunk):
                     # could reuse, except for class -- common in mmp read
                     # or after dna generator, but could happen other times too.
                     if _DEBUG_REUSE_CHUNKS():
-                        print "fyi: dna updater could reuse, except for class: %r" % old_chunk
+                        print("fyi: dna updater could reuse, except for class: %r" % old_chunk)
                     # todo: OPTIM: it might be a useful optim, for mmp read, to just change that chunk's class and reuse it.
                     # To decide if this would help, look at cumtime of _grab_atoms_from_chain in a profile.
                     # I think this is only safe if Undo never saw it in a snapshot. This should be true after mmp read,
@@ -378,15 +377,15 @@ class DnaLadderRailChunk(Chunk):
         self._counted_chunks[id(chunk)] = chunk
 
         if 0:
-            print "counted atom", atom, "from chunk", chunk
+            print("counted atom", atom, "from chunk", chunk)
 
         bondpoints = atom.singNeighbors()
 
         self._counted_atoms += (1 + len(bondpoints))
 
         if 0 and bondpoints: ### slow & verbose debug code
-            print "counted bondpoints", bondpoints
-            print "their base atom lists are", [bp.neighbors() for bp in bondpoints]
+            print("counted bondpoints", bondpoints)
+            print("their base atom lists are", [bp.neighbors() for bp in bondpoints])
             for bp in bondpoints:
                 assert len(bp.neighbors()) == 1 and bp.neighbors()[0] is atom and bp.molecule is chunk
         return
@@ -417,31 +416,31 @@ class DnaLadderRailChunk(Chunk):
                                                      )
         if self._num_old_atoms_hidden + self._num_old_atoms_not_hidden > len(self.atoms):
             env.history.redmsg("Bug in DNA updater, see console prints")
-            print "Bug in DNA updater: _num_old_atoms_hidden %r + self._num_old_atoms_not_hidden %r > len(self.atoms) %r, for %r" % \
-                  ( self._num_old_atoms_hidden , self._num_old_atoms_not_hidden, len(self.atoms), self )
+            print("Bug in DNA updater: _num_old_atoms_hidden %r + self._num_old_atoms_not_hidden %r > len(self.atoms) %r, for %r" % \
+                  ( self._num_old_atoms_hidden , self._num_old_atoms_not_hidden, len(self.atoms), self ))
 
         if _DEBUG_HIDDEN:
             mixed = not not (self._atoms_were_hidden and self._atoms_were_not_hidden)
             if not len(self._atoms_were_hidden) + len(self._atoms_were_not_hidden) == len(self.atoms) - self._num_extra_bondpoints:
-                print "\n***BUG: " \
+                print("\n***BUG: " \
                    "hidden %d, unhidden %d, sum %d, not equal to total %d - extrabps %d, in %r" % \
                    ( len(self._atoms_were_hidden) , len(self._atoms_were_not_hidden),
                      len(self._atoms_were_hidden) + len(self._atoms_were_not_hidden),
                      len(self.atoms),
                      self._num_extra_bondpoints,
-                     self )
+                     self ))
                 missing_atoms = dict(self.atoms) # copy here, modify this copy below
                 for atom, chunk in self._atoms_were_hidden + self._atoms_were_not_hidden:
                     del missing_atoms[atom.key] # always there? bad bug if not, i think!
-                print "\n *** leftover atoms (including %d extra bondpoints): %r" % \
-                      (self._num_extra_bondpoints, missing_atoms.values())
+                print("\n *** leftover atoms (including %d extra bondpoints): %r" % \
+                      (self._num_extra_bondpoints, list(missing_atoms.values())))
             else:
                 if not ( mixed == (not not (self._num_old_atoms_hidden and self._num_old_atoms_not_hidden)) ):
-                    print "\n*** BUG: mixed = %r but self._num_old_atoms_hidden = %d, len(self.atoms) = %d, in %r" % \
-                          ( mixed, self._num_old_atoms_hidden , len(self.atoms), self)
+                    print("\n*** BUG: mixed = %r but self._num_old_atoms_hidden = %d, len(self.atoms) = %d, in %r" % \
+                          ( mixed, self._num_old_atoms_hidden , len(self.atoms), self))
             if mixed:
-                print "\n_DEBUG_HIDDEN fyi: hidden atoms = %r \n unhidden atoms = %r" % \
-                      ( self._atoms_were_hidden, self._atoms_were_not_hidden )
+                print("\n_DEBUG_HIDDEN fyi: hidden atoms = %r \n unhidden atoms = %r" % \
+                      ( self._atoms_were_hidden, self._atoms_were_not_hidden ))
 
         # display style
         self.display = use_disp
@@ -479,7 +478,7 @@ class DnaLadderRailChunk(Chunk):
             self.wholechain = None
         self.invalidate_ladder_and_assert_permitted() # review: sufficient? set it to None?
         self.ladder = None #bruce 080227 guess, based on comment where class constant default value is assigned
-        for atom in self.atoms.itervalues():
+        for atom in self.atoms.values():
             atom._changed_structure() #bruce 080227 precaution, might be redundant with invalidating the ladder... @@@
         _superclass._undo_update(self)
         return
@@ -531,14 +530,14 @@ class DnaLadderRailChunk(Chunk):
             # Note the debug print was off for bondpoints, that might be why I didn't see it,
             # if there is a bug that causes one to be added... can't think why there would be tho.
             if atom.element.eltnum != 0:
-                print "dna updater, fyi: addatom %r to %r invals_if_not_disabled %r" % (atom, self, self.ladder)
+                print("dna updater, fyi: addatom %r to %r invals_if_not_disabled %r" % (atom, self, self.ladder))
             self.ladder.ladder_invalidate_if_not_disabled()
         return
 
     def delatom(self, atom):
         _superclass.delatom(self, atom)
         if self.ladder and self.ladder.valid:
-            print "dna updater, fyi: delatom %r from %r invals_if_not_disabled %r" % (atom, self, self.ladder)
+            print("dna updater, fyi: delatom %r from %r invals_if_not_disabled %r" % (atom, self, self.ladder))
             self.ladder.ladder_invalidate_if_not_disabled()
         return
 
@@ -551,7 +550,7 @@ class DnaLadderRailChunk(Chunk):
         # _changed_parent_Atoms, which the dna updater is watching
         # for changed_atoms it needs to process. [bruce 080313 comment]
         if debug_flags.DEBUG_DNA_UPDATER:
-            print "dna updater debug: fyi: calling %r.merge(%r)" % (self, other)
+            print("dna updater debug: fyi: calling %r.merge(%r)" % (self, other))
         return _superclass.merge(self, other)
 
     def invalidate_atom_lists(self):
@@ -596,11 +595,11 @@ class DnaLadderRailChunk(Chunk):
         """
         ladder = self.ladder
         if not ladder:
-            print "BUG: %r.get_ladder_rail() but self.ladder is None" % self
+            print("BUG: %r.get_ladder_rail() but self.ladder is None" % self)
             return None
         if not ladder.valid:
-            print "BUG: %r.get_ladder_rail() but self.ladder %r is not valid" % \
-                  (self, ladder)
+            print("BUG: %r.get_ladder_rail() but self.ladder %r is not valid" % \
+                  (self, ladder))
             # but continue and return the rail if you can find it
         for rail in self.ladder.all_rails():
             if rail.baseatoms[0].molecule is self:
@@ -616,8 +615,8 @@ class DnaLadderRailChunk(Chunk):
         # are in them). This might be related to some existing bugs, maybe even undo bugs...
         # so we need to turn them into regular chunks, I think. (Not by class assignment,
         # due to Undo.) [bruce 080405 comment]
-        print "BUG: %r.get_ladder_rail() can't find the rail using self.ladder %r" % \
-              (self, ladder)
+        print("BUG: %r.get_ladder_rail() can't find the rail using self.ladder %r" % \
+              (self, ladder))
         return None
 
     def get_baseatoms(self):
@@ -699,7 +698,7 @@ class DnaLadderRailChunk(Chunk):
                 # un-rendered text.
             out = glpane.out * 3 # bug: 3 is too large
             baseatoms = self.get_baseatoms()
-            for atom, i in zip(baseatoms, range(len(baseatoms))):
+            for atom, i in zip(baseatoms, list(range(len(baseatoms)))):
                 baseLetter = atom.getDnaBaseName() # "" for axis
                 if baseLetter == 'X':
                     baseLetter = ""
@@ -790,30 +789,30 @@ class DnaLadderRailChunk(Chunk):
         dict1 = {} # helps return each atom exactly once
         some_atom_occurred_twice = False
         for atom in initial_atoms:
-            if dict1.has_key(atom.key): #bruce 080516 debug print (to keep)
-                print "\n*** BUG: %r occurs twice in %r.indexed_atoms_in_order(%r)" % \
-                      ( atom, self, mapping)
+            if atom.key in dict1: #bruce 080516 debug print (to keep)
+                print("\n*** BUG: %r occurs twice in %r.indexed_atoms_in_order(%r)" % \
+                      ( atom, self, mapping))
                 if not some_atom_occurred_twice:
-                    print "that entire list is:", initial_atoms
+                    print("that entire list is:", initial_atoms)
                 some_atom_occurred_twice = True
             dict1[atom.key] = atom #e could optim: do directly from list of keys
         if some_atom_occurred_twice: # bruce 080516 bug mitigation
-            print "workaround: remove duplicate atoms (may not work;"
-            print " underlying bug needs fixing even if it works)"
+            print("workaround: remove duplicate atoms (may not work;")
+            print(" underlying bug needs fixing even if it works)")
             newlist = []
             dict1 = {}
             for atom in initial_atoms:
-                if not dict1.has_key(atom.key):
+                if atom.key not in dict1:
                     dict1[atom.key] = atom
                     newlist.append(atom)
                 continue
-            print "changed length from %d to %d" % (len(initial_atoms), len(newlist))
-            print
+            print("changed length from %d to %d" % (len(initial_atoms), len(newlist)))
+            print()
             initial_atoms = newlist
             pass
         res = list(initial_atoms) # extended below
         for atom in all_real_atoms: # in this order
-            if not dict1.has_key(atom.key):
+            if atom.key not in dict1:
                 res.append(atom)
         ## assert len(res) == number_of_atoms, \
             # can fail for ladder.error or atom errors, don't yet know why [080406 1238p];
@@ -821,9 +820,9 @@ class DnaLadderRailChunk(Chunk):
             # in saving 8x21RingB1.mmp after joining the last strand into a ring (I guess);
             # so I'll make it a debug print only [bruce 080516]
         if not ( len(res) == number_of_atoms ):
-            print "\n*** BUG in atoms_in_mmp_file_order for %r: " % self, \
+            print("\n*** BUG in atoms_in_mmp_file_order for %r: " % self, \
                "len(res) %r != number_of_atoms %r" % \
-               (len(res), number_of_atoms)
+               (len(res), number_of_atoms))
         return res
 
     def indexed_atoms_in_order(self, mapping): #bruce 080321
@@ -1117,8 +1116,8 @@ class DnaStrandChunk(DnaLadderRailChunk):
                 if grab_atom2:
                     if atom2.molecule is self:
                         assert not just_count # since that implies no atoms yet in self
-                        print "\n***BUG: dna updater: %r is already in %r" % \
-                              (atom2, self)
+                        print("\n***BUG: dna updater: %r is already in %r" % \
+                              (atom2, self))
                         # since self is new, just now being made,
                         # and since we think only one Ss can want to pull in atom2
                     else:

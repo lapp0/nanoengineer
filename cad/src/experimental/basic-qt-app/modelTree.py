@@ -264,10 +264,10 @@ class MainWindow(QMainWindow):
         self.layout.addWidget(pw, row, col)
 
     def openFile(self):
-        print "Let's pretend we're opening a file"
+        print("Let's pretend we're opening a file")
 
     def saveFile(self):
-        print "Let's pretend we're saving a file"
+        print("Let's pretend we're saving a file")
 
 if __name__ == "__main__":
     import sys

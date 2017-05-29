@@ -185,12 +185,12 @@ class Group(NodeWithAtomContents):
                 self.open = False
                 self.open_specified_by_mmp_file = True
             elif debug_flags.atom_debug:
-                print "atom_debug: maybe not an error: \"info opengroup open\" " \
-                      "ignoring unrecognized val %r" % (val,)
+                print("atom_debug: maybe not an error: \"info opengroup open\" " \
+                      "ignoring unrecognized val %r" % (val,))
         else:
             if debug_flags.atom_debug:
-                print "atom_debug: fyi: info opengroup (in %r) with " \
-                      "unrecognized key %r (not an error)" % (self, key,)
+                print("atom_debug: fyi: info opengroup (in %r) with " \
+                      "unrecognized key %r (not an error)" % (self, key,))
         return
 
     def drag_move_ok(self):
@@ -366,7 +366,7 @@ class Group(NodeWithAtomContents):
             msg = "Bug: self has _encoded_classifications %r (discarded) " \
                 "in kluge_change_class to %r: %r" % \
                 (self._encoded_classifications(), subclass.__name__, self)
-            print msg
+            print(msg)
             env.history.message( redmsg(quote_html(msg)) )
             pass # but continue anyway
         new = subclass(self.name, self.assy, self.dad) # no members yet
@@ -452,7 +452,7 @@ class Group(NodeWithAtomContents):
 
     def addchild(self,
                  newchild,
-                 _guard_ = 050201,
+                 _guard_ = 0o50201,
                  top = False,
                  after = None,
                  before = None ):
@@ -493,7 +493,7 @@ class Group(NodeWithAtomContents):
         # not committed until 050206 (after Alpha out); most dates
         # 050201-050202 below are date of change at home.
         #bruce 050201 added _guard_, after, before
-        assert _guard_ == 050201
+        assert _guard_ == 0o50201
         if newchild is None:
             #bruce 050201 comment: sometimes newchild was the number 0,
             # since Group.copy returned that as a failure code!!!
@@ -516,9 +516,9 @@ class Group(NodeWithAtomContents):
         assert self.assy is not None, "%r has no .assy in addchild" % self
         ## assert self.assy is newchild.assy, \
         if not (self.assy is newchild.assy):
-            print "\nBUG***: " \
+            print("\nBUG***: " \
                   "%r.addchild(%r) assy mismatch: %r is not %r" % \
-                  (self, newchild, self.assy, newchild.assy)
+                  (self, newchild, self.assy, newchild.assy))
 
         #bruce 050205: adding several safety checks (and related new feature
         #of auto-delmember) for help with MT DND; they're a good idea anyway.
@@ -543,9 +543,9 @@ class Group(NodeWithAtomContents):
             #bruce 050205 adding this for safety (should prevent DND-move
             #cycles as a last resort, tho might lose moved nodes) (this msg
             #covers newchild is self too, since that's a length-1 cycle)
-            print "\nBUG: addchild refusing to form a cycle, " \
+            print("\nBUG: addchild refusing to form a cycle, " \
                   "doing nothing; this indicates a bug in the caller:", \
-                  self, newchild
+                  self, newchild)
             return
         if newchild.dad:
             # first cleanly remove newchild from its prior home. (Callers not
@@ -810,7 +810,7 @@ class Group(NodeWithAtomContents):
             continue
 
         if any_is_unpicked and self.picked:
-            print "\n*** BUG: %r is picked but apparently has unpicked content" % self
+            print("\n*** BUG: %r is picked but apparently has unpicked content" % self)
 
         if has_glpane_content and not any_is_unpicked:
             # note: we might add arguments which modify when this behavior
@@ -1313,10 +1313,10 @@ class Group(NodeWithAtomContents):
         return
 
     def dumptree(self, depth = 0): # just for debugging
-        print depth * "...", self.name
+        print(depth * "...", self.name)
         for x in self.members:
             if x.dad is not self:
-                print "bad thread:", x, self, x.dad
+                print("bad thread:", x, self, x.dad)
             x.dumptree(depth + 1)
         return
 

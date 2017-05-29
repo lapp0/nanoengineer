@@ -195,7 +195,7 @@ def merge_dynamic_into_static_transform(nodes):
     # see which statics straddle the boundary of our set of nodes
     # (since we'll need to split each of them in two)
     straddlers = {}
-    for st, count in statics.iteritems():
+    for st, count in statics.items():
         # count is the number of nodes which have st;
         # does that cover all of st's nodes?
         if st is not None:
@@ -215,9 +215,9 @@ def merge_dynamic_into_static_transform(nodes):
         if len(new_TCs) < want_TCs:
             # There are not enough new TCs to split all the straddlers,
             # so merge some statics as needed, transforming their CSDL primitives
-            print "fyi: want %d new TransformControls, only %d available; merging" % \
-                  (len(new_TCs), want_TCs)
-            print "THIS IS NIM, BUGS WILL ENSUE"
+            print("fyi: want %d new TransformControls, only %d available; merging" % \
+                  (len(new_TCs), want_TCs))
+            print("THIS IS NIM, BUGS WILL ENSUE")
             assert 0
             # (We're hoping that we'll find a way to allocate as many TCs as needed,
             #  so we never need to write this code. OTOH, initially we might need to
@@ -228,7 +228,7 @@ def merge_dynamic_into_static_transform(nodes):
         # (this matters if one of them is a "permanent identity StaticTransform")
 
         if _DEBUG:
-            print "splitting %d straddlers" % want_TCs
+            print("splitting %d straddlers" % want_TCs)
 
         replacements = {} # map old to new, for use on nodes
         for straddler, tc in zip(straddlers, new_TCs):
@@ -241,7 +241,7 @@ def merge_dynamic_into_static_transform(nodes):
                 node.set_static_transform(replacements[st]) ### IMPLEM: inval that field but not the overall transform...
 
     # now push the data from dt into each (owned or new) static transform
-    for st in statics.keys():
+    for st in list(statics.keys()):
         if st in replacements:
             st = replacements[st]
         st.applyDataFrom(dt)

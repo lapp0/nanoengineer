@@ -45,7 +45,7 @@ def interpret_dispName(dispname, defaultValue = diDEFAULT, atom = True):
     #bruce 080324
     def _return(res):
         "(how to return res from interpret_dispName)"
-        if res > diTUBES and atom and remap_atom_dispdefs.has_key(res):
+        if res > diTUBES and atom and res in remap_atom_dispdefs:
             # note: the initial res > diTUBES is an optimization kluge
             return defaultValue
         return res

@@ -41,12 +41,12 @@ class unused_methods_in_class_MT_View: #removed from it, bruce 081216
             for node in nodes:
                 where = self._painted.get(node) # (x, y) or None
                 if where:
-                    print "mt debug fyi: repainting %r" % (node,) #### remove when works
+                    print("mt debug fyi: repainting %r" % (node,)) #### remove when works
                     x, y = where
                     _paintnode(node, painter, x, y, self.palette_widget,
                                option_holder = self)
                 else:
-                    print "mt debug fyi: NOT repainting %r" % (node,) #### remove when works
+                    print("mt debug fyi: NOT repainting %r" % (node,)) #### remove when works
                 continue
         finally:
             painter.end()

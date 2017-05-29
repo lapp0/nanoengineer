@@ -117,10 +117,10 @@ class History_QTextEdit(hte_super, m_super):
                 after = event.stateAfter()
             except:
                 after = "<no stateAfter>" # needed for Wheel events, at least [code copied from GLPane.py]
-            print "fyi: hte event %r; stateAfter = %r" % (event, after)
+            print("fyi: hte event %r; stateAfter = %r" % (event, after))
         res = hte_super.event(self, event)
         if debug:
-            print " (event done, res = %r)" % res
+            print(" (event done, res = %r)" % res)
         #e now if it was a paintevent, try painting something else over it... or try implementing the method for catching those...
         #e watch out for being outside the scrollview.
         return res
@@ -130,7 +130,7 @@ class History_QTextEdit(hte_super, m_super):
             return
         return hte_super.contentsMousePressEvent(self, event)
     def repaint(self, *args):
-        print "repaint, %r" % args # this is not being called, even though we're getting PaintEvents above.
+        print("repaint, %r" % args) # this is not being called, even though we're getting PaintEvents above.
         return hte_super.repaint(*args)
     def debug_menu_items(self):
         """
@@ -271,7 +271,7 @@ class HistoryWidget:
                     mkdirs_in_filename(filename)
                 ff = open(filename, "a")
             except:
-                print "bug warning: couldn't make history file %r; printing to sys.__stderr__ instead" % filename
+                print("bug warning: couldn't make history file %r; printing to sys.__stderr__ instead" % filename)
                 self.filename = "sys.__stderr__"
                 self.file = sys.__stderr__
             else:
@@ -279,7 +279,7 @@ class HistoryWidget:
                 self.file = ff
         elif debug_flags.atom_debug:
             # developer wants it saved, but program thinks user doesn't
-            print "atom_debug: printing history to sys.__stderr__"
+            print("atom_debug: printing history to sys.__stderr__")
             self.filename = "sys.__stderr__"
             self.file = sys.__stderr__
         else:
@@ -291,7 +291,7 @@ class HistoryWidget:
             file_msg = "(saving history in file \"%s\")" % self.filename
         else:
             file_msg = "(history is not being saved in any file)"
-        print file_msg #e remove this soon
+        print(file_msg) #e remove this soon
         return file_msg
 
     def _debug_init(self):
@@ -348,7 +348,7 @@ class HistoryWidget:
         msg = m1.widget_html() # widget_text() or widget_html()
         self._append(msg) ##e need to pass the message object, since also puts it into the file, but text might be different! ###@@@
         if 0 and debug_flags.atom_debug: # this is redundant with __stderr__ in _append, so we no longer do it.
-            print "(history:)", msg
+            print("(history:)", msg)
         return
 
     # helpers for the message objects inside us
@@ -549,7 +549,7 @@ class HistoryWidget:
         (in the present implem of this deferred summary message scheme),
         and can also be called externally at any time.
         """
-        items = self._deferred_summary_messages.items() # (format, count) pairs
+        items = list(self._deferred_summary_messages.items()) # (format, count) pairs
         self._deferred_summary_messages = {}
         items.sort() # use format string as sorting key.
             # TODO: use order in which messages first arrived (since last emitted).
@@ -608,7 +608,7 @@ class HistoryWidget:
             ## sbar.repaint()
             ##   #k will this help extrude show its transient msgs upon entry?
             # so do this instead:
-            print msg_text
+            print(msg_text)
         return
 
     def progress_msg(self, msg_text): # Bug 1343, wware 060310
@@ -643,7 +643,7 @@ class HistoryWidget:
         self._print_msg(msg)
         if options:
             msg2 = "fyi: bug: widget_msg got unsupported options: %r" % options
-            print msg2 # too important to only print in the history file --
+            print(msg2) # too important to only print in the history file --
                 # could indicate that not enough info is being saved there
             self._print_msg(msg2)
         return

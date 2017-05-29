@@ -201,7 +201,7 @@ class Plane(ReferenceGeometry):
         if attr == 'members':
             return None # Mark 2007-08-15
         else:
-            raise AttributeError, 'Plane has no attr "%s"' % attr
+            raise AttributeError('Plane has no attr "%s"' % attr)
 
     def __computeBBox(self):
         """
@@ -334,7 +334,7 @@ class Plane(ReferenceGeometry):
         @rtype:  str
         """
 
-        gridColor = map(int, A(self.gridColor)*255)
+        gridColor = list(map(int, A(self.gridColor)*255))
 
         #This value is used in method mmp_record  of class Jig
         dataline = "%.2f %.2f (%f, %f, %f) (%f, %f, %f, %f) " %\
@@ -1059,7 +1059,7 @@ class Plane(ReferenceGeometry):
 
         # Write plane "info" record.
         # Ninad 2008-06-25: Added support for various grid attrs.
-        gridColor = map(int, A(self.gridColor)*255)
+        gridColor = list(map(int, A(self.gridColor)*255))
         gridColorString = "%d %d %d"%(gridColor[0] , gridColor[1] , gridColor[2])
 
         line = "info plane gridColor = " + gridColorString + "\n"
@@ -1096,10 +1096,9 @@ class Plane(ReferenceGeometry):
             gridColorString = val
             gridColor = gridColorString.split()
 
-            self.gridColor = map(lambda (x): int(x) / 255.0, [int(gridColor[0]),
+            self.gridColor = [int(x) / 255.0 for x in [int(gridColor[0]),
                                                               int(gridColor[1]),
-                                                              int(gridColor[2])]
-                                 )
+                                                              int(gridColor[2])]]
         elif key[0] == "gridLineType":
             self.gridLineType = int(val)
         elif key[0] == "gridXSpacing":

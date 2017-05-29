@@ -87,11 +87,11 @@ class PM_FontComboBox( QFontComboBox ):
         """
 
         if 0: # Debugging code
-            print "PM_FontComboBox.__init__():"
-            print "  label        =", label
-            print "  selectFont  =", selectFont
-            print "  setAsDefault =", setAsDefault
-            print "  spanWidth    =", spanWidth
+            print("PM_FontComboBox.__init__():")
+            print(("  label        =", label))
+            print(("  selectFont  =", selectFont))
+            print(("  setAsDefault =", setAsDefault))
+            print(("  spanWidth    =", spanWidth))
 
         QFontComboBox.__init__(self)
 

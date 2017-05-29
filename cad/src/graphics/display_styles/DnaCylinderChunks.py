@@ -111,7 +111,7 @@ try:
     from OpenGL.GLE import TUBE_CONTOUR_CLOSED
     from OpenGL.GLE import TUBE_JN_CAP
 except:
-    print "DNA Cylinder: GLE module can't be imported. Now trying _GLE"
+    print("DNA Cylinder: GLE module can't be imported. Now trying _GLE")
     from OpenGL._GLE import glePolyCone
     from OpenGL._GLE import gleGetNumSides
     from OpenGL._GLE import gleSetNumSides
@@ -250,10 +250,10 @@ def get_all_available_dna_base_orientation_indicators(chunk,
             # and the vector towards the viewer
             a = angleBetween(vz, v2)
             if abs(a) < indicators_angle:
-                if not reference_indicator_dict.has_key(id(atom1)):
+                if id(atom1) not in reference_indicator_dict:
                     all_indicators_dict[id(atom1)] = atom1
             if abs(a) > (180.0 - indicators_angle):
-                if not reference_indicator_dict.has_key(id(atom1)):
+                if id(atom1) not in reference_indicator_dict:
                     all_indicators_dict[id(atom1)] = atom1
 
     return all_indicators_dict
@@ -305,12 +305,12 @@ def get_dna_base_orientation_indicator_dict(chunk,
             # and the vector towards the viewer
             a = angleBetween(vz, v2)
             if abs(a) < indicators_angle:
-                if not reference_indicator_dict.has_key(id(atom1)) and \
-                   not reference_inv_indicator_dict.has_key(id(atom1)):
+                if id(atom1) not in reference_indicator_dict and \
+                   id(atom1) not in reference_inv_indicator_dict:
                     indicators_dict[id(atom1)] = atom1
             if abs(a) > (180.0 - indicators_angle):
-                if not reference_indicator_dict.has_key(id(atom1)) and \
-                   not reference_inv_indicator_dict.has_key(id(atom1)):
+                if id(atom1) not in reference_indicator_dict and \
+                   id(atom1) not in reference_inv_indicator_dict:
                     inv_indicators_dict[id(atom1)] = atom1
 
     return (indicators_dict, inv_indicators_dict)
@@ -1372,7 +1372,7 @@ class DnaCylinderChunks(ChunkDisplayMode):
                     dx, dy = _realTextSize(label_text, fm)
                     # disable lighting
                     glDisable(GL_LIGHTING)
-                    for atom in chunk.atoms.itervalues():
+                    for atom in chunk.atoms.values():
                         # pre-compute atom position
                         if not highlighted:
                             textpos = chunk.abs_to_base(atom.posn()) + 3.0 * glpane.out

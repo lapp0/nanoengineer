@@ -200,10 +200,10 @@ if usePyrexAtomsAndBonds(): #bruce 080220 revised this
     class AtomDict(AtomDictBase):
         def __init__(self):
             AtomDictBase.__init__(self)
-            self.key = atKey.next()
+            self.key = next(atKey)
             return
         pass
-    print "Using atombase.pyx in chem.py"
+    print("Using atombase.pyx in chem.py")
     _using_pyrex_atoms = True
 else:
     def AtomDict():
@@ -212,7 +212,7 @@ else:
         def __init__(self):
             pass
         def __getattr__(self, attr): # in class AtomBase
-            raise AttributeError, attr
+            raise AttributeError(attr)
         pass
     pass
 
@@ -255,7 +255,7 @@ def _undo_update_Atom_jigs(archive, assy):
         # In both cases there could be API superclasses for these
         # aspects of Nodehood.
     for m in mols:
-        for a in m.atoms.itervalues():
+        for a in m.atoms.values():
             if a.jigs:
                 _changed_structure_Atoms[a.key] = a
                     #bruce 060322; try to only do this to atoms that need it
@@ -698,7 +698,7 @@ class Atom( PAM_Atom_methods, AtomBase, InvalMixin, StateMixin, Selobj_API):
             # new behavior as of 060409, needed to interact well with
             # differential mash_attrs... i'm not yet fully comfortable with
             # this (maybe we really need _nullMol in here??) ###@@@
-            print "bug (ignored): _undo_update on dead atom", self
+            print("bug (ignored): _undo_update on dead atom", self)
             return
         #bruce 060224 conservative guess -- invalidate everything we can find
         #any other code in this file invalidating
@@ -749,7 +749,7 @@ class Atom( PAM_Atom_methods, AtomBase, InvalMixin, StateMixin, Selobj_API):
         # note: it's not necessary to track changes to self's attrs (in e.g.
         # _changed_parent_Atoms) during __init__. [bruce 060322]
         AtomBase.__init__(self)
-        self.key = atKey.next()
+        self.key = next(atKey)
             # unique key for hashing and/or use as a dict key;
             # also used in str(self)
         _changed_parent_Atoms[self.key] = self
@@ -882,9 +882,9 @@ class Atom( PAM_Atom_methods, AtomBase, InvalMixin, StateMixin, Selobj_API):
 
         # leave old assy, if any
         if self._f_assy is not None:
-            print "%r._f_set_assy: leaving old assy %r, for new one %r. " \
+            print("%r._f_set_assy: leaving old assy %r, for new one %r. " \
                   "Implem of this case is untested." % \
-                  (self, self._f_assy, assy)
+                  (self, self._f_assy, assy))
             self._f_assy.dealloc_my_glselect_name( self, self._glname)
 
         # join new assy
@@ -935,7 +935,7 @@ class Atom( PAM_Atom_methods, AtomBase, InvalMixin, StateMixin, Selobj_API):
         # there. (That's only true because we fix or don't save invalid
         # _hotspots, since those can be killed bondpoints.)
         mol = self.molecule
-        return archive.childobj_liveQ(mol) and mol.atoms.has_key(self.key)
+        return archive.childobj_liveQ(mol) and self.key in mol.atoms
 
     def _f_jigs_append(self, jig, changed_structure = True):
         """
@@ -1038,7 +1038,7 @@ class Atom( PAM_Atom_methods, AtomBase, InvalMixin, StateMixin, Selobj_API):
         testing = False
         if testing:
             input['C'] = ['Si'] # works
-        for fromSymbol in input.keys():
+        for fromSymbol in list(input.keys()):
             fromElement = PeriodicTable.getElement(fromSymbol)
             # don't disallow "from" a deprecated element --
             # it might help users fix their input errors!
@@ -1049,14 +1049,14 @@ class Atom( PAM_Atom_methods, AtomBase, InvalMixin, StateMixin, Selobj_API):
                 if toElement.deprecated_to:
                     continue
                 if testing:
-                    print "\nfyi: retaining transmute entry: %r -> %r" % (fromSymbol, toSymbol)
+                    print("\nfyi: retaining transmute entry: %r -> %r" % (fromSymbol, toSymbol))
                 output.setdefault(fromSymbol, [])
                 output[fromSymbol].append(toSymbol)
                 continue
             continue
         self.__class__._transmuteContextMenuEntries_for_dna_updater = output
         if testing:
-            print "\nfyi: _transmuteContextMenuEntries_for_dna_updater =", output
+            print("\nfyi: _transmuteContextMenuEntries_for_dna_updater =", output)
         return
     def make_selobj_cmenu_items(self, menu_spec):
         """
@@ -1079,7 +1079,7 @@ class Atom( PAM_Atom_methods, AtomBase, InvalMixin, StateMixin, Selobj_API):
                 assert transmute_entries is not None
             pass
         fromSymbol = self.element.symbol
-        if (transmute_entries.has_key(fromSymbol)):
+        if (fromSymbol in transmute_entries):
             #bruce 070412 (enhancing EricM's recent new feature):
             # If unpicked, do it for just this atom;
             # If picked, do it for all picked atoms,
@@ -1089,7 +1089,7 @@ class Atom( PAM_Atom_methods, AtomBase, InvalMixin, StateMixin, Selobj_API):
             if self.picked:
                 selatoms = self.molecule.assy.selatoms # there ought to be more direct access to this
                 doall = True
-                for atom in selatoms.itervalues():
+                for atom in selatoms.values():
                     if atom.element.symbol != fromSymbol:
                         doall = False
                         break
@@ -1630,8 +1630,8 @@ class Atom( PAM_Atom_methods, AtomBase, InvalMixin, StateMixin, Selobj_API):
                     if debug_pref("report bond_geometry_error_string set or clear?",
                                   Choice_boolean_False,
                                   prefs_key = True ):
-                        print "fyi: check_bond_geometry(%r) set or cleared error string %r" % \
-                              (self, error_string)
+                        print("fyi: check_bond_geometry(%r) set or cleared error string %r" % \
+                              (self, error_string))
                 self.bond_geometry_error_string = error_string
             pass
         if self.bond_geometry_error_string:
@@ -1743,8 +1743,8 @@ class Atom( PAM_Atom_methods, AtomBase, InvalMixin, StateMixin, Selobj_API):
             # self._f_set_assy(). [bruce 080220]
             assert self._f_assy is None
             if glpane.assy is not self.molecule.assy:
-                print "\nbug?: glpane %r .assy %r is not %r.molecule %r .assy %r" % \
-                      (glpane, glpane.assy, self, self.molecule, self.molecule.assy )
+                print("\nbug?: glpane %r .assy %r is not %r.molecule %r .assy %r" % \
+                      (glpane, glpane.assy, self, self.molecule, self.molecule.assy ))
             assy = glpane.assy
                 # todo: in principle we'd prefer self.molecule.assy if it's always set;
                 # but unless we add code to look for it carefully and fall back to
@@ -2166,7 +2166,7 @@ class Atom( PAM_Atom_methods, AtomBase, InvalMixin, StateMixin, Selobj_API):
             drawsphere(sphereColor, pos, drawrad, level)
         else:
             if style:
-                print "bug (ignored): unknown _draw_atom_style return value for %r: %r" % (self, style,)
+                print("bug (ignored): unknown _draw_atom_style return value for %r: %r" % (self, style,))
             if 0: #### experiment, unfinished [bruce 080917]
                 verts = [b.center for b in self.bonds]
                 if len(verts) == 4:
@@ -2947,7 +2947,7 @@ class Atom( PAM_Atom_methods, AtomBase, InvalMixin, StateMixin, Selobj_API):
                 bl.append(oa_code)
                 if b._direction:
                     bonds_with_direction.append(b)
-        bondrecords = bldict.items()
+        bondrecords = list(bldict.items())
         bondrecords.sort() # by valence
         for valence, atomcodes in bondrecords:
             assert len(atomcodes) > 0
@@ -2975,9 +2975,9 @@ class Atom( PAM_Atom_methods, AtomBase, InvalMixin, StateMixin, Selobj_API):
                 # (todo: find_atomtype ought to have a different API, so a
                 #  real error could be distinguished from not finding val.)
                 if debug_flags.atom_debug:
-                    print "atom_debug: fyi: " \
+                    print("atom_debug: fyi: " \
                           "info atom atomtype (in class Atom) with " \
-                          "unrecognized atomtype %r (not an error)" % (val,)
+                          "unrecognized atomtype %r (not an error)" % (val,))
                 pass
             else:
                 self.set_atomtype_but_dont_revise_singlets( atype)
@@ -2988,10 +2988,10 @@ class Atom( PAM_Atom_methods, AtomBase, InvalMixin, StateMixin, Selobj_API):
         elif key == ['dnaBaseName']: # Mark 2007-08-16
             try:
                 self.setDnaBaseName(val)
-            except Exception, e:
+            except Exception as e:
                 #bruce 080304 revised printed error, added history summary
-                print "Error in mmp record, info atom dnaBaseName: %s" \
-                      " (continuing)" % (e,)
+                print("Error in mmp record, info atom dnaBaseName: %s" \
+                      " (continuing)" % (e,))
                 msg = "Error: illegal DNA base name on [N] atom(s) " \
                       "(see console prints for details)"
                 summary_format = redmsg( msg )
@@ -3007,10 +3007,10 @@ class Atom( PAM_Atom_methods, AtomBase, InvalMixin, StateMixin, Selobj_API):
                 #@see: self.getDnaStrandId_for_generators() for comments
                 #about this attr
                 self.setDnaStrandId_for_generators(val)
-            except Exception, e:
+            except Exception as e:
                 #bruce 080304 revised printed error, added history summary
-                print "Error in mmp record, info atom dnaStrandId_for_generators: %s" \
-                      " (continuing)" % (e,)
+                print("Error in mmp record, info atom dnaStrandId_for_generators: %s" \
+                      " (continuing)" % (e,))
                 msg = "Error: illegal DNA strand id (used by dna generator) on [N] atom(s) " \
                       "(see console prints for details)"
                 summary_format = redmsg( msg )
@@ -3026,12 +3026,12 @@ class Atom( PAM_Atom_methods, AtomBase, InvalMixin, StateMixin, Selobj_API):
                 if debug_flags.atom_debug:
                     print_compact_traceback( msg + ": ")
                 else:
-                    print msg
+                    print(msg)
                 pass
         else:
             if debug_flags.atom_debug:
-                print "atom_debug: fyi: info atom (in class Atom) with "\
-                      "unrecognized key %r (not an error)" % (key,)
+                print("atom_debug: fyi: info atom (in class Atom) with "\
+                      "unrecognized key %r (not an error)" % (key,))
         return
 
     def writepov(self, file, dispdef, col):
@@ -3137,8 +3137,8 @@ class Atom( PAM_Atom_methods, AtomBase, InvalMixin, StateMixin, Selobj_API):
         # By Chris Phoenix and Mark for John Burch [04-12-03]
         color = col or self.drawing_color()
         disp, radius = self.howdraw(dispdef)
-        xyz = map(float, A(self.posn()))
-        rgb = map(int,A(color)*255)
+        xyz = list(map(float, A(self.posn())))
+        rgb = list(map(int,A(color)*255))
         atnum = len(alist) # current atom number
         alist.append([xyz, radius, rgb])
 
@@ -3516,7 +3516,7 @@ class Atom( PAM_Atom_methods, AtomBase, InvalMixin, StateMixin, Selobj_API):
         # this class, these would only need to be copied in the subclass
         # corresponding to PAM_Atom_methods. [bruce 080523]
         if not self._f_Pl_posn_is_definitive:
-            print "bug? copying %r in which ._f_Pl_posn_is_definitive is not set" % self
+            print("bug? copying %r in which ._f_Pl_posn_is_definitive is not set" % self)
         if self._PAM3plus5_Pl_Gv_data is not None:
             nuat._PAM3plus5_Pl_Gv_data = copy_val(self._PAM3plus5_Pl_Gv_data)
 
@@ -3621,8 +3621,8 @@ class Atom( PAM_Atom_methods, AtomBase, InvalMixin, StateMixin, Selobj_API):
                 else:
                     # I don't recall ever seeing this otherwise, but it's good
                     # to keep checking for it [bruce 080413]
-                    print "fyi: bug: unbond on a singlet %r finds unexpected " \
-                          " bonds left over in it, %r" % (self, self.bonds)
+                    print("fyi: bug: unbond on a singlet %r finds unexpected " \
+                          " bonds left over in it, %r" % (self, self.bonds))
             return None
         if not make_bondpoint:
             #bruce 070601 new feature
@@ -3648,17 +3648,17 @@ class Atom( PAM_Atom_methods, AtomBase, InvalMixin, StateMixin, Selobj_API):
             # if we're being killed right now, don't make a new bondpoint
             if self._f_will_kill == Utility._will_kill_count:
                 if DEBUG_1779:
-                    print "DEBUG_1779: self._f_will_kill %r == Utility._will_kill_count %r" % \
-                      ( self._f_will_kill , Utility._will_kill_count )
+                    print("DEBUG_1779: self._f_will_kill %r == Utility._will_kill_count %r" % \
+                      ( self._f_will_kill , Utility._will_kill_count ))
                 return None
         if self.__killed:
             #bruce 080208 new debug print (should never happen)
             msg = "bug: killed atom %r still had bond %r, being unbonded now" % \
                   ( self, b )
-            print msg
+            print(msg)
             return None
         if DEBUG_1779:
-            print "DEBUG_1779: Atom.unbond on %r is making X" % self
+            print("DEBUG_1779: Atom.unbond on %r is making X" % self)
         x = Atom('X', b.ubp(self), self.molecule) # invals mol as needed
         bond_copied_atoms( self, x, b, self) # copies bond type from old bond
         return x
@@ -3708,20 +3708,20 @@ class Atom( PAM_Atom_methods, AtomBase, InvalMixin, StateMixin, Selobj_API):
         """
         return a list of all atoms (including singlets) bonded to this one
         """
-        return map((lambda b: b.other(self)), self.bonds)
+        return list(map((lambda b: b.other(self)), self.bonds))
 
     def realNeighbors(self):
         """
         return a list of the real atoms (not singlets) bonded to this atom
         """
-        return filter(lambda atom: atom.element is not Singlet, self.neighbors())
+        return [atom for atom in self.neighbors() if atom.element is not Singlet]
 
     def singNeighbors(self):
         # todo: rename to singletNeighbors or bondpointNeighbors
         """
         return a list of the singlets bonded to this atom
         """
-        return filter(lambda atom: atom.element is Singlet, self.neighbors())
+        return [atom for atom in self.neighbors() if atom.element is Singlet]
 
     def baggage_and_other_neighbors(self): #bruce 051209
         """
@@ -3804,7 +3804,7 @@ class Atom( PAM_Atom_methods, AtomBase, InvalMixin, StateMixin, Selobj_API):
                 # this is unsupported; if we support it it would require
                 # moving this atom to its neighbor atom's chunk, too [btw we
                 # *do* permit self.element is Singlet before we change it]
-                print "atom_debug: fyi, bug?: mvElement changing %r to a singlet" % self
+                print("atom_debug: fyi, bug?: mvElement changing %r to a singlet" % self)
         if self.atomtype_iff_set() is atomtype:
             assert self.element is elt # i.e. assert that self.element and self.atomtype were consistent
             if debug_flags.atom_debug: #bruce 050509
@@ -3859,8 +3859,8 @@ class Atom( PAM_Atom_methods, AtomBase, InvalMixin, StateMixin, Selobj_API):
             if (not not better_alive_answer) != (not self.__killed):
                 #bruce 060414 re bug 1779, but it never printed for it (worth keeping in for other bugs)
                 #bruce 071018 fixed typo of () after debug_flags.atom_debug -- could that be why it never printed it?!?
-                print "debug: better_alive_answer is %r but (not self.__killed) is %r" % \
-                      (better_alive_answer , not self.__killed)
+                print("debug: better_alive_answer is %r but (not self.__killed) is %r" % \
+                      (better_alive_answer , not self.__killed))
         return res
 
     def killed_with_debug_checks(self): # renamed by bruce 050702; was called killed(); by bruce 041029
@@ -3916,7 +3916,7 @@ class Atom( PAM_Atom_methods, AtomBase, InvalMixin, StateMixin, Selobj_API):
          will immediately kill themselves.)
         """
         if DEBUG_1779:
-            print "DEBUG_1779: Atom.kill on %r" % self
+            print("DEBUG_1779: Atom.kill on %r" % self)
         if self.__killed:
             if not self.element is Singlet:
                 print_compact_stack("fyi: atom %r killed twice; ignoring:\n" % self)
@@ -3977,7 +3977,7 @@ class Atom( PAM_Atom_methods, AtomBase, InvalMixin, StateMixin, Selobj_API):
         for b in self.bonds[:]:
             other = b.other(self)
             if DEBUG_1779:
-                print "DEBUG_1779: Atom.kill on %r is calling unbond on %r" % (self, b)
+                print("DEBUG_1779: Atom.kill on %r is calling unbond on %r" % (self, b))
             if other.molecule is not selfmol: #bruce 080701
                 other.molecule._f_lost_externs = True
                 selfmol._f_lost_externs = True
@@ -3996,7 +3996,7 @@ class Atom( PAM_Atom_methods, AtomBase, InvalMixin, StateMixin, Selobj_API):
             selfmol.delatom(self)
                 # delatom also kills our chunk (self.molecule) if it becomes empty
         except KeyError:
-            print "fyi: Atom.kill: atom %r not in its molecule (killed twice?)" % self
+            print("fyi: Atom.kill: atom %r not in its molecule (killed twice?)" % self)
             pass
         return # from Atom.kill
 
@@ -4215,9 +4215,9 @@ class Atom( PAM_Atom_methods, AtomBase, InvalMixin, StateMixin, Selobj_API):
             # on which element of baggage is chosen to be moveme)
         if want_length < min_bond_length:
             if debug_flags.atom_debug:
-                print "fyi, in move_closest_baggage_to: " \
+                print("fyi, in move_closest_baggage_to: " \
                       "ideal_bond_length(%r, %r) == %r < min_bond_length == %r" % \
-                      (self, moveme, want_length, min_bond_length)
+                      (self, moveme, want_length, min_bond_length))
             want_length = min_bond_length
             pass
         fixed_newpos = selfpos + newpos_direction * want_length
@@ -4327,7 +4327,7 @@ class Atom( PAM_Atom_methods, AtomBase, InvalMixin, StateMixin, Selobj_API):
             self._modified_valence = False
                 # do this first, so exceptions in the following only happen once
             if _debug:
-                print "atom_debug: update_valence starting to updating it for", self
+                print("atom_debug: update_valence starting to updating it for", self)
             # the only easy part is to kill bondpoints with illegal valences,
             # and warn if those were not 0.
             zerokilled = badkilled = 0
@@ -4342,9 +4342,9 @@ class Atom( PAM_Atom_methods, AtomBase, InvalMixin, StateMixin, Selobj_API):
                     sing.kill()
                     badkilled += 1
             if _debug:
-                print "atom_debug: update_valence %r killed %d " \
+                print("atom_debug: update_valence %r killed %d " \
                       "zero-valence and %d bad-valence bondpoints" % \
-                      (self, zerokilled, badkilled)
+                      (self, zerokilled, badkilled))
             ###e now fix things up... not sure exactly under what conds, or
             ###using what code (but see existing code mentioned above)
             #bruce 050702 working on bug 121, here is a guess: change atomtype
@@ -4365,10 +4365,10 @@ class Atom( PAM_Atom_methods, AtomBase, InvalMixin, StateMixin, Selobj_API):
             #remake bondpoints or change atomtype when they don't agree:
             if len(self.bonds) != self.atomtype.numbonds and not dont_revise_valid_bondpoints:
                 if _debug:
-                    print "atom_debug: update_valence %r calling remake_bondpoints"
+                    print("atom_debug: update_valence %r calling remake_bondpoints")
                 self.remake_bondpoints()
         elif _debug:
-            print "atom_debug: update_valence thinks it doesn't need to update it for", self
+            print("atom_debug: update_valence thinks it doesn't need to update it for", self)
         return
 
     def adjust_atomtype_to_numbonds(self, dont_revise_bondpoints = False):
@@ -4454,7 +4454,7 @@ class Atom( PAM_Atom_methods, AtomBase, InvalMixin, StateMixin, Selobj_API):
             # the best atomtype has numbonds == nbonds. Next best, nbonds+1,
             # +2, etc. Next best, -1,-2, etc.
         items = []
-        for i, atype in zip(range(len(atomtypes)), atomtypes):
+        for i, atype in zip(list(range(len(atomtypes))), atomtypes):
             if atype is atype_now:
                 # (if atype_now is None or is not for elt, this is a legal
                 # comparison and is always False)
@@ -4553,9 +4553,9 @@ class Atom( PAM_Atom_methods, AtomBase, InvalMixin, StateMixin, Selobj_API):
         debugging method -- remove self from its chunk, then add it back
         """
         if len(self.molecule.atoms) <= 1:
-            print "warning: invalidate_everything on the lone " \
-                  "atom %r in chunk %r does nothing" % (self, self.molecule)
-            print " since otherwise it might kill that chunk as a side effect!"
+            print("warning: invalidate_everything on the lone " \
+                  "atom %r in chunk %r does nothing" % (self, self.molecule))
+            print(" since otherwise it might kill that chunk as a side effect!")
         else:
             # note: delatom invals self.bonds,
             # and kills the chunk if it becomes empty!
@@ -4699,7 +4699,7 @@ class Atom( PAM_Atom_methods, AtomBase, InvalMixin, StateMixin, Selobj_API):
         """
         #bruce 070412; could use review for appropriate level, error handling, etc
         selatoms = self.molecule.assy.selatoms
-        atoms = selatoms.values() # not itervalues, too dangerous
+        atoms = list(selatoms.values()) # not itervalues, too dangerous
         for atom in atoms:
             atom.Transmute(elt)
         return
@@ -5055,8 +5055,8 @@ class Atom( PAM_Atom_methods, AtomBase, InvalMixin, StateMixin, Selobj_API):
                 # [bruce 050716 comment: one time this can happen is when we
                 #  change atomtype of some C in graphite to sp3]
                 if debug_flags.atom_debug:
-                    print "atom_debug: fyi: self at center of its neighbors " \
-                          "(more or less) while making singlet", self, self.bonds
+                    print("atom_debug: fyi: self at center of its neighbors " \
+                          "(more or less) while making singlet", self, self.bonds)
                 dir = norm(cross(s1pos - pos, s2pos - pos))
                     # that assumes s1 and s2 are not opposite each other;
                     #e it would be safer to pick best of all 3 pairs

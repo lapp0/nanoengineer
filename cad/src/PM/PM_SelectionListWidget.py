@@ -186,7 +186,7 @@ class PM_SelectionListWidget(PM_ListWidget):
         self._itemDictionary)
         """
         for key in self.selectedItems():
-            assert self._itemDictionary.has_key(key)
+            assert key in self._itemDictionary
             del self._itemDictionary[key]
 
     def getItemDictonary(self):
@@ -256,7 +256,7 @@ class PM_SelectionListWidget(PM_ListWidget):
             return
 
 
-        if self._itemDictionary.has_key(item):
+        if item in self._itemDictionary:
             val = self._itemDictionary[item]
 
             #Check if the 'val' (obj which this widgetitem represents) has an
@@ -423,7 +423,7 @@ class PM_SelectionListWidget(PM_ListWidget):
             #Note: method selectedItems() is inherited from QListWidget
             #see: U{<http://doc.trolltech.com/4.2/qlistwidget.html>} for details
             for key in self.selectedItems():
-                assert self._itemDictionary.has_key(key)
+                assert key in self._itemDictionary
                 item = self._itemDictionary[key]
                 if isinstance(item, self.win.assy.DnaSegment):
                     end1, end2 = item.getAxisEndPoints()
@@ -447,7 +447,7 @@ class PM_SelectionListWidget(PM_ListWidget):
         Deprecated as of 2008-03-18. See a comment in self.tagItems
         """
 
-        for item in self._itemDictionary.values():
+        for item in list(self._itemDictionary.values()):
             if item.picked:
                 item.unpick()
 
@@ -457,7 +457,7 @@ class PM_SelectionListWidget(PM_ListWidget):
         also select (pick) them from the glpane(3D workspace)
         """
         for key in self.selectedItems():
-            assert self._itemDictionary.has_key(key)
+            assert key in self._itemDictionary
             item = self._itemDictionary[key]
             if not item.picked:
                 item.pick()
@@ -483,7 +483,7 @@ class PM_SelectionListWidget(PM_ListWidget):
         #updated.
         self._suppress_itemSelectionChanged_signal = True
 
-        for key, value in self._itemDictionary.iteritems():
+        for key, value in list(self._itemDictionary.items()):
             if value in selectedItemList:
                 if not key.isSelected():
                     key.setSelected(True)

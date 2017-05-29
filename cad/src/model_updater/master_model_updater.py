@@ -167,9 +167,9 @@ def _run_bond_updater(warn_if_needed = False): #bruce 080210 split this out
         # whichever user event handler made these changes forgot to call
         # this function when it was done!
         # [as of 071115 warn_if_needed is never true; see docstring]
-        print "atom_debug: _master_model_updater should have been called " \
+        print("atom_debug: _master_model_updater should have been called " \
               "before this call (since the most recent model changes), " \
-              "but wasn't!" #e use print_compact_stack??
+              "but wasn't!") #e use print_compact_stack??
         pass # (other than printing this, we handle unreported changes normally)
 
     # handle and clear all changes since the last call

@@ -69,13 +69,13 @@ class Delegating_GraphicsMode(GraphicsMode_interface): #bruce 090307
                 # may raise AttributeError
             else:
                 # parentCommand has no graphicsMode [never yet seen]
-                print "%r has no graphicsMode!" % self.command.parentCommand
-                raise AttributeError, attr
+                print("%r has no graphicsMode!" % self.command.parentCommand)
+                raise AttributeError(attr)
             pass
         else:
             # self.command has no parentCommand [never yet seen]
-            print "%r has no parentCommand!" % self.command
-            raise AttributeError, attr
+            print("%r has no parentCommand!" % self.command)
+            raise AttributeError(attr)
         pass
     pass
 
@@ -137,7 +137,7 @@ class GraphicsMode_API(GraphicsMode_interface):
 
     def Draw(self):
         # this should never happen as of bruce 090311
-        print "bug: old code is calling %r.Draw(): " % self
+        print("bug: old code is calling %r.Draw(): " % self)
         return
 
     def Draw_preparation(self):

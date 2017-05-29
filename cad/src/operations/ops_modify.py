@@ -29,7 +29,7 @@ class modifySlotsMixin:
         Adjust the current selection.
         """
         if debug_flags.atom_debug:
-            print "debug: reloading sim_commandruns on each use, for development"
+            print("debug: reloading sim_commandruns on each use, for development")
             import simulation.sim_commandruns as sim_commandruns
             reload_once_per_event(sim_commandruns)
         from simulation.sim_commandruns import Minimize_CommandRun
@@ -42,7 +42,7 @@ class modifySlotsMixin:
         Adjust all atoms.
         """
         if debug_flags.atom_debug:
-            print "debug: reloading sim_commandruns on each use, for development"
+            print("debug: reloading sim_commandruns on each use, for development")
             import simulation.sim_commandruns as sim_commandruns
             reload_once_per_event(sim_commandruns)
         from simulation.sim_commandruns import Minimize_CommandRun

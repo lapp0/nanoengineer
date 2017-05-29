@@ -220,9 +220,9 @@ def getRulerDrawingParameters(width, height, aspect,
 
     _DEBUG = False
     if _DEBUG:
-        print "hr ticks=", num_horz_ticks, "vr ticks=", num_vert_ticks
-        print "tickmark_spacing=", tickmark_spacing, "viewHeight=", viewHeight
-        print "units_scale=", units_scale, "unit_label_inc=", unit_label_inc
+        print("hr ticks=", num_horz_ticks, "vr ticks=", num_vert_ticks)
+        print("tickmark_spacing=", tickmark_spacing, "viewHeight=", viewHeight)
+        print("units_scale=", units_scale, "unit_label_inc=", unit_label_inc)
 
     # Compute ruler width based on font size, which should be a user pref
     # for far-sighted users that need larger unit text in rulers.

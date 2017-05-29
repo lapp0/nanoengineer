@@ -114,7 +114,7 @@ def str_or_unicode(qstring): #bruce 080529
     try:
         return str(qstring)
     except UnicodeEncodeError:
-        return unicode(qstring)
+        return str(qstring)
     pass
 
 def genKey(start = 1):
@@ -144,7 +144,7 @@ def _fix_gensym_prefix(prefix): #bruce 070604
     """
     [private helper function for gensym and relatives]
     """
-    assert type(prefix) in (type(""), type(u""))
+    assert type(prefix) in (type(""), type(""))
     if prefix and prefix[-1].isdigit():
         # This special behavior guarantees that every name gensym returns is
         # unique. As of bruce 070603, I think it never happens, based on the
@@ -253,7 +253,7 @@ def common_prefix( seq1, *moreseqs ):
     for seq2 in moreseqs:
         if len(seq2) < length_ok:
             length_ok = len(seq2)
-        for i in xrange(length_ok):
+        for i in range(length_ok):
             if seq1[i] != seq2[i]:
                 length_ok = i
                 break
@@ -736,7 +736,7 @@ try:
 except:
     # CAD_SRC_PATH can't be determined (by the present code)
     # (does this ever happen?)
-    print "can't determine CAD_SRC_PATH"
+    print("can't determine CAD_SRC_PATH")
     CAD_SRC_PATH = None
 else:
     CAD_SRC_PATH = os.path.dirname(__file__)

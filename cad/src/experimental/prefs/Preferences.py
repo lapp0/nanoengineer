@@ -231,6 +231,7 @@ from utilities.constants import diBALL, diTUBES, diDNACYLINDER
 
 from utilities.constants import black, white, gray
 from widgets.prefs_widgets import connect_doubleSpinBox_with_pref
+import collections
 # =
 # Preferences widgets constants. I suggest that these be moved to another
 # file (i.e. prefs_constants.py or another file). Discuss with Bruce. -Mark
@@ -427,7 +428,7 @@ class Preferences(PreferencesDialog):
  #       self.assy = assy
         self.pagenameList = self.getPagenameList()
         if DEBUG:
-            print self.pagenameList
+            print(self.pagenameList)
         self.changeKey = 0
         # Start of dialog setup.
         self._setupDialog_TopLevelWidgets()
@@ -1302,17 +1303,17 @@ class Preferences(PreferencesDialog):
             _fname = "enable_%s" % _pluginFunctionName
             if hasattr(self, _fname):
                 fcall = getattr(self, _fname)
-                if callable(fcall):
+                if isinstance(fcall, collections.Callable):
                     if DEBUG:
-                        print "method defined: %s" % _fname
+                        print("method defined: %s" % _fname)
                     self.connect(self.checkboxes[name], \
                                                  SIGNAL("toggled(bool)"), \
                                                  fcall)
                 else:
-                    print "Attribute %s exists, but is not a callable method."
+                    print("Attribute %s exists, but is not a callable method.")
             else:
                 if DEBUG:
-                    print "method missing: %s" % _fname
+                    print("method missing: %s" % _fname)
             #_fname = "set_%s_path" % _pluginFunctionName
             #if hasattr(self, _fname):
                 #fcall = getattr(self, _fname)
@@ -1747,7 +1748,7 @@ class Preferences(PreferencesDialog):
 
     def povdir_lineedit_textChanged(self, *args): #bruce 060710
         if debug_povdir_signals():
-            print "povdir_lineedit_textChanged",args
+            print("povdir_lineedit_textChanged",args)
             # this happens on programmatic changes, such as when the page is shown or the choose button slot sets the text
         try:
             # note: Ideally we'd only do this when return was pressed, mouse was clicked elsewhere (with that also removing keyfocus),
@@ -1756,7 +1757,7 @@ class Preferences(PreferencesDialog):
             # (This even runs on programmatic sets of the text. Hope that's ok.)
             env.prefs[povdir_path_prefs_key] = path = str_or_unicode( self.povdir_lineedit.text() ).strip()
             if debug_povdir_signals():
-                print "debug fyi: set pov include dir to [%s]" % (path,)
+                print("debug fyi: set pov include dir to [%s]" % (path,))
         except:
             if env.debug():
                 print_compact_traceback("bug, ignored: ")
@@ -1989,12 +1990,12 @@ class Preferences(PreferencesDialog):
             env.prefs[displayFont_prefs_key] = font_family
             env.prefs[displayFontPointSize_prefs_key] = fontsize
             if debug_flags.atom_debug:
-                print "set_font(): Using selected font: ", font.family(), ", size=", font.pointSize()
+                print("set_font(): Using selected font: ", font.family(), ", size=", font.pointSize())
 
         else: # Use default font
 #            font = self.w.defaultFont
             if debug_flags.atom_debug:
-                print "set_font(): Using default font: ", font.family(), ", size=", font.pointSize()
+                print("set_font(): Using default font: ", font.family(), ", size=", font.pointSize())
 
         # Set font
 #        self.w.setFont(font)
@@ -2020,9 +2021,9 @@ class Preferences(PreferencesDialog):
         self.set_font_widgets(setFontFromPrefs = True) # Also sets the current display font.
 
         if debug_flags.atom_debug:
-            print "change_selected_font_to_default_font(): " \
+            print("change_selected_font_to_default_font(): " \
                   "Button clicked. Default font: ", font.family(), \
-                  ", size=", font.pointSize()
+                  ", size=", font.pointSize())
         return
 
     def set_font_widgets(self, setFontFromPrefs = True):
@@ -2036,7 +2037,7 @@ class Preferences(PreferencesDialog):
         """
 
         if debug_flags.atom_debug:
-            print "set_font_widgets(): Here!"
+            print("set_font_widgets(): Here!")
 
         if env.prefs[displayFont_prefs_key] == "defaultFont":
             # Set the font and point size prefs to the application's default font.
@@ -2053,9 +2054,9 @@ class Preferences(PreferencesDialog):
             env.prefs[displayFont_prefs_key] = font_family
             env.prefs[displayFontPointSize_prefs_key] = font_size
             if debug_flags.atom_debug:
-                print "set_font_widgets(): No prefs db. " \
+                print("set_font_widgets(): No prefs db. " \
                       "Using default font: ", font.family(), \
-                      ", size=", font.pointSize()
+                      ", size=", font.pointSize())
 
         else:
             font_family = env.prefs[displayFont_prefs_key]

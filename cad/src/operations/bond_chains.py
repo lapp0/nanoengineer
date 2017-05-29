@@ -92,24 +92,24 @@ def next_directional_bond_in_chain(bond, atom):
         else:
             # error -- REVIEW: how should we report it? not sure, so print them for now.
             # anyway, stop propogating the chain on any error (ie return None).
-            print "error or bug: atom %r has directional bond %r reaching chain containing %r and %r" % \
-                  (atom, bond, bond1, bond2)
+            print("error or bug: atom %r has directional bond %r reaching chain containing %r and %r" % \
+                  (atom, bond, bond1, bond2))
             return None
         pass
     elif statuscode == DIRBOND_CHAIN_END:
         assert bond1
         assert bond2 is None
         if bond is not bond1:
-            print "error or bug: atom %r has directional bond %r different than chain-end bond %r" % \
-                  (atom, bond, bond1)
+            print("error or bug: atom %r has directional bond %r different than chain-end bond %r" % \
+                  (atom, bond, bond1))
         return None
     elif statuscode == DIRBOND_NONE:
-        print "bug: atom %r has directional bond %r but directional_bond_chain_status of DIRBOND_NONE" % \
-              (atom, bond)
+        print("bug: atom %r has directional bond %r but directional_bond_chain_status of DIRBOND_NONE" % \
+              (atom, bond))
         return None
     elif statuscode == DIRBOND_ERROR:
-        print "error: atom %r with directional bond %r has directional_bond_chain_status of DIRBOND_ERROR" % \
-              (atom, bond)
+        print("error: atom %r with directional bond %r has directional_bond_chain_status of DIRBOND_ERROR" % \
+              (atom, bond))
         return None
     else:
         assert 0, "bug: atom %r with directional bond %r has unrecognized directional_bond_chain_status %r" % \
@@ -135,7 +135,7 @@ def arbitrary_item(dict1):
     If dict1 is not empty, efficiently return an arbitrary item
     (key, value pair) from it. Otherwise return None.
     """
-    for item in dict1.iteritems():
+    for item in dict1.items():
         return item
     return None
 
@@ -316,7 +316,7 @@ class abstract_bond_chain_analyzer:
         if 0 and 'debug, but REMOVE WHEN WORKS, very slow':
             for i in range(len(listb)):
                 assert find_bond(lista[i] , lista[(i-1) % len(lista)]) is listb[i]
-            print "remove when works! in _found_ring len %d" % len(lista)
+            print("remove when works! in _found_ring len %d" % len(lista))
         return self.make_ring(listb, lista)
     def make_ring(self, listb, lista):
         """

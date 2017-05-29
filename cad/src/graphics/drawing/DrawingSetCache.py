@@ -50,7 +50,7 @@ class DrawingSetCache(object,
         return
 
     def destroy(self):
-        for dset in self._dsets.values():
+        for dset in list(self._dsets.values()):
             dset.destroy()
         self._dsets = {}
         self.saved_change_indicator = None
@@ -99,7 +99,7 @@ class DrawingSetCache(object,
         #   add; try to optimize for no change; try to do removals first,
         #   to save RAM in case cache updates during add are immediate
 
-        for intent, dset in dsets.items(): # not iteritems!
+        for intent, dset in list(dsets.items()): # not iteritems!
             if intent not in intent_to_csdls:
                 # this intent is not needed at all for this frame
                 dset.destroy()
@@ -117,10 +117,10 @@ class DrawingSetCache(object,
         #    incrementally) or all intents (when used non-incrementally):
         #    make new DrawingSets for whatever intents remain in intent_to_csdls
 
-        for intent, csdls in intent_to_csdls.items():
+        for intent, csdls in list(intent_to_csdls.items()):
             del intent_to_csdls[intent]
                 # (this might save temporary ram, depending on python optims)
-            dset = DrawingSet(csdls.itervalues())
+            dset = DrawingSet(iter(csdls.values()))
             dsets[intent] = dset
                 # always store them here; remove them later if non-incremental
             del intent, csdls, dset
@@ -143,17 +143,17 @@ class DrawingSetCache(object,
         """
 
         if debug:
-            print
-            print env.redraw_counter ,
-            print "  cache %r%s" % (self.cachename,
-                                     self.temporary and " (temporary)" or "") ,
-            print "  (for phase %r)" % glpane.drawing_phase
+            print()
+            print(env.redraw_counter, end=' ')
+            print("  cache %r%s" % (self.cachename,
+                                     self.temporary and " (temporary)" or ""), end=' ')
+            print("  (for phase %r)" % glpane.drawing_phase)
             pass
 
-        for intent, dset in self._dsets.items():
+        for intent, dset in list(self._dsets.items()):
             if debug:
-                print "drawing dset, intent %r, %d items" % \
-                      (intent, len(dset.CSDLs), )
+                print("drawing dset, intent %r, %d items" % \
+                      (intent, len(dset.CSDLs), ))
                 pass
             options = intent_to_options_func(intent)
             dset.draw(**options)

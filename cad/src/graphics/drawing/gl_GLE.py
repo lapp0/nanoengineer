@@ -14,7 +14,7 @@ russ 080523: Factored out duplicate code from CS_draw_primitives.py,
 try:
     from OpenGL.GLE import glePolyCone, gleGetNumSides, gleSetNumSides
 except:
-    print "GLE module can't be imported. Now trying _GLE"
+    print("GLE module can't be imported. Now trying _GLE")
     from OpenGL._GLE import glePolyCone, gleGetNumSides, gleSetNumSides
 
 # Check if the gleGet/SetNumSides function is working on this install, and if
@@ -29,7 +29,7 @@ except:
 # Brian said this is only an issue on Macs.
 if not bool(gleGetNumSides):
     # russ 080522: Replaced no-op functions with a patch.
-    print "fyi: Patching gleGetNumSides to call gleGetNumSlices instead."
+    print("fyi: Patching gleGetNumSides to call gleGetNumSlices instead.")
     from graphics.drawing.gleNumSides_patch import gleGetNumSides
     from graphics.drawing.gleNumSides_patch import gleSetNumSides
 
@@ -37,8 +37,8 @@ if not bool(gleGetNumSides):
     try:
         gleGetNumSides()
     except:
-        print "fyi: Neither gleGetNumSides nor gleGetNumSlices is supported."
-        print "fyi: No-ops will be used for gleGetNumSides and gleSetNumSides."
+        print("fyi: Neither gleGetNumSides nor gleGetNumSlices is supported.")
+        print("fyi: No-ops will be used for gleGetNumSides and gleSetNumSides.")
         gleGetNumSides = int
         gleSetNumSides = int
         pass

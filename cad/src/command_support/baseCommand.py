@@ -187,9 +187,9 @@ class baseCommand(object):
         if res.propMgr:
             ## assert res.propMgr.command is res, \
             if not (res.propMgr.command is res):
-                print "\n*** BUG: " \
+                print("\n*** BUG: " \
                    "%r.PM %r has wrong .command %r, found from %r" % \
-                   (res, res.propMgr, res.propMgr.command, self)
+                   (res, res.propMgr, res.propMgr.command, self))
         return res
 
     # == exit-related methods (see also CommandSequencer.exit_all_commands)
@@ -282,7 +282,7 @@ class baseCommand(object):
     def _command_ok_to_exit(self): # only in this file so far, 080826
         ask = self.command_exit_should_ask_user()
         if ask:
-            print "asking is nim" # put up dialog with 3 choices (or more?)
+            print("asking is nim") # put up dialog with 3 choices (or more?)
                 # call method on self to put it up? or determine choices anyway? (yes)
                 # also, if ok to exit but only after some side effects, do those side effects.
                 # (especially likely if self.commandSequencer.exit_is_forced is true; ### TODO: put this in some docstring)
@@ -363,7 +363,7 @@ class baseCommand(object):
         pop self from the top of the command stack
         """
         if DEBUG_USE_COMMAND_STACK:
-            print "_command_do_exit:", self
+            print("_command_do_exit:", self)
         assert self is self.commandSequencer._f_currentCommand, \
                "can't pop %r since it's not currentCommand %r" % \
                (self, self.commandSequencer._f_currentCommand)
@@ -456,7 +456,7 @@ class baseCommand(object):
         push self on command stack
         """
         if DEBUG_USE_COMMAND_STACK:
-            print "_command_do_enter:", self
+            print("_command_do_enter:", self)
         assert self._parentCommand is None
         self._parentCommand = self.commandSequencer._f_currentCommand
         self.commandSequencer._f_set_currentCommand( self)
@@ -861,15 +861,15 @@ class baseCommand(object):
                 self.flyoutToolbar = None
             return parentCommand
         else:
-            print "fyi: _init_gui_flyout_action in %r found wrong kind " \
-                  "of parent command" % self # not sure if this ever happens; might be a bug if so
+            print("fyi: _init_gui_flyout_action in %r found wrong kind " \
+                  "of parent command" % self) # not sure if this ever happens; might be a bug if so
             return None
         pass
 
     # == other methods
 
     def _command_log(self, msg):
-        print msg
+        print(msg)
 
     pass
 

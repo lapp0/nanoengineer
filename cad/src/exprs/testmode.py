@@ -40,6 +40,7 @@ from utilities.debug import print_compact_traceback
 from utilities.debug_prefs import Choice_boolean_True
 from utilities.debug_prefs import Choice_boolean_False
 from utilities.debug_prefs import debug_pref
+import imp
 
 
 annoyers = ['editToolbar', 'fileToolbar', 'helpToolbar', 'modifyToolbar',
@@ -196,7 +197,7 @@ class testmode_GM(_superclass_for_GM):
             # they'd also do so in leftDown, in case of a missing (or buggily overidden) leftUp call.
             # (Or GLPane would, so not every mode class has to. Or it'd just call leftDoubleUp or so.)
         if self.drag_handler is not None:
-            print "fyi: testmode passing leftDouble to drag_handler = %r" % (self.drag_handler,) ####
+            print("fyi: testmode passing leftDouble to drag_handler = %r" % (self.drag_handler,)) ####
             # This works: it's a highlightable or a _background_object if we double-clicked on one,
             # and otherwise false (presumably None).
             # So when it's there, let's pass this event to it for handling, and not to the superclass.
@@ -206,7 +207,7 @@ class testmode_GM(_superclass_for_GM):
             if method is not None:
                 method(event, self) #e protect from exceptions?
         else:
-            print "fyi: testmode passing leftDouble to superclass (since no drag_handler)" ####
+            print("fyi: testmode passing leftDouble to superclass (since no drag_handler)") ####
             _superclass_for_GM.leftDouble(self, event)
         return
 
@@ -237,7 +238,7 @@ class testmode_GM(_superclass_for_GM):
             res = self.command._background_object # usually None, sometimes set during draw to something else [070322]
             if res is not None:
                 if not hasattr(res, 'leftClick'):
-                    print "bug: testmode._background_object %r has no leftClick, will be ineffective" % (res,)
+                    print("bug: testmode._background_object %r has no leftClick, will be ineffective" % (res,))
         return res
 
     def emptySpaceLeftDown(self, event):
@@ -381,7 +382,7 @@ class testmode(_superclass_C):
         import exprs.testdraw as testdraw
         #bruce 070611 bugfix for release builds: add try/except
         try:
-            reload(testdraw)
+            imp.reload(testdraw)
         except ImportError:
             pass # print "testdraw reload ImportError, ignoring"
         return
@@ -398,8 +399,8 @@ class testmode(_superclass_C):
         # were desirable. [bruce 080929 comment, and 'if 0']
 
         def Enter(self):
-            print
-            print "entering testmode again", time.asctime()
+            print()
+            print("entering testmode again", time.asctime())
             self.reload()
     ##        self.assy = self.w.assy # [now done by basicCommand]
             self.o.pov = V(0,0,0)
@@ -423,7 +424,7 @@ class testmode(_superclass_C):
                     except AttributeError: # someone might rename one of them
                         ## import __main__
                         if 0: ## __main__.USING_Qt3: # most of them are not defined in Qt4 so don't bother printing this then [bruce 070123]
-                            print "testmode: fyi: toolbar missing: %s" % tbname # someone might rename one of them
+                            print("testmode: fyi: toolbar missing: %s" % tbname) # someone might rename one of them
                     else:
                         if tb.isVisible(): # someone might make one not visible by default
                             tb.hide()

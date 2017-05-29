@@ -41,7 +41,7 @@ def flipmor(r):
 
 for i in range(600):
     x=i*0.001 + .9
-    print x, flp(x), fmo(x)
+    print(x, flp(x), fmo(x))
 #    print x, lippmor(x)
 
 #    print x, flipmor(x),(flipmor(x+0.001)-flipmor(x-0.001))*1e3

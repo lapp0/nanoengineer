@@ -283,7 +283,7 @@ class ops_motion_Mixin:
 
         movables = self.assy.getSelectedMovables()
         for m in movables:
-            print "movable =", m.name
+            print("movable =", m.name)
         numMovables = len(movables)
         if len(movables) < 2:
             msg = redmsg("Need two or more selected chunks to align")

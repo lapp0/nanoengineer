@@ -38,8 +38,9 @@ class MapListToExpr(DelegatingInstanceOrExpr): #e rename? should this be what ma
         exprhead = self.exprhead
         index = '_C__delegate'
         # compute the expr we need (see comment above for why we need a new one each time)
-        elts = map( function, elements)
-        def func2((elt, subindex)): #070320
+        elts = list(map( function, elements))
+        def func2(xxx_todo_changeme): #070320
+            (elt, subindex) = xxx_todo_changeme
             if is_expr_Instance(elt):
                 res = elt
             elif is_pure_expr(elt):
@@ -51,7 +52,7 @@ class MapListToExpr(DelegatingInstanceOrExpr): #e rename? should this be what ma
                 assert is_expr_Instance(elt) or is_pure_expr(elt) #e message
             assert is_expr_Instance(res) # sanity check, can remove when works
             return res
-        elts = map( func2, zip(elts, range(len(elts))))
+        elts = list(map( func2, list(zip(elts, list(range(len(elts)))))))
         expr = exprhead(*elts)
         # do we need to eval expr first? in theory i forget, but I think we do.
         # in practice it's very likely to eval to itself, so it doesn't matter for now. ###k

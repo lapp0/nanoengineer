@@ -45,7 +45,7 @@ if False:
 def countElements(mol, d):
     """In a molecule, verify the numbers of atoms with given element names.
     """
-    for name in d.keys():
+    for name in list(d.keys()):
         expectedCount = d[name]
         count = 0
         for a in mol.atlist:

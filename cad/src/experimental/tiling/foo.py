@@ -79,10 +79,10 @@ def minimize(f, v, g=None, debug=False):
     Newton's method instead."""
     localMin = (g == None)
     if localMin:
-        if debug: print "finding local minimum"
+        if debug: print("finding local minimum")
         g = -v.gradient(f)
     else:
-        if debug: print "1D minimize"
+        if debug: print("1D minimize")
     x = f(v)
     p = 3.0
     s = 0.0
@@ -96,13 +96,13 @@ def minimize(f, v, g=None, debug=False):
                 evals += 1
                 if y < x:
                     s += ds
-                    if debug: print "new good s", s, y
+                    if debug: print("new good s", s, y)
                     x = y
                     if localMin:
                         v = v + g.scale(s)
                         g = -v.gradient(f)
         p *= 0.7
-    if debug: print evals, "evals"
+    if debug: print(evals, "evals")
     if localMin:
         return v
     else:
@@ -150,14 +150,14 @@ def makeRing(f, x0, side=1.42):
     x1 = distances([ (x0, side) ], x1)
     x2 = extendRing(x0, x1)
     x3 = extendRing(x1, x0, x2)
-    print f(x1), abs(x0 - x1)
-    print f(x2), abs(x2 - x0), abs(x2 - x1)
-    print f(x3), abs(x3 - x0), abs(x3 - x1)
+    print(f(x1), abs(x0 - x1))
+    print(f(x2), abs(x2 - x0), abs(x2 - x1))
+    print(f(x3), abs(x3 - x0), abs(x3 - x1))
     x4 = extendRing(x2, x0, x1)
     x5 = extendRing(x3, x1, x0)
-    print f(x4), abs(x4 - x0), abs(x4 - x3)
-    print f(x5), abs(x5 - x1), abs(x5 - x2)
-    print abs(x5 - x4) / side
+    print(f(x4), abs(x4 - x0), abs(x4 - x3))
+    print(f(x5), abs(x5 - x1), abs(x5 - x2))
+    print(abs(x5 - x4) / side)
 
 ######################
 
@@ -222,7 +222,7 @@ class Buckets:
                 for zdiff in range(-1, 2):
                     diff = Vector(xdiff, ydiff, zdiff)
                     key = (ipos + diff).tuple()
-                    if self.buckets.has_key(key):
+                    if key in self.buckets:
                         lst2 = self.buckets[key]
                         for atm2 in lst2:
                             lst.append(atm2)
@@ -255,28 +255,28 @@ class Tiling:
         tiling.add(Atom(x1))
         self.inferBonds()
     def moveAtom(self, atm, newpos):
-        print "moveAtom"
+        print("moveAtom")
         key1 = bucketKey(atm.pos)
         key2 = bucketKey(newpos)
         self.buckets.remove(atm)
         atm.pos = newpos
         self.buckets.add(atm)
     def __neighborhood(self, pos):
-        ipos = apply(Vector, bucketKey(pos))
+        ipos = Vector(*bucketKey(pos))
         lst = [ ]
         for xdiff in range(-1, 2):
             for ydiff in range(-1, 2):
                 for zdiff in range(-1, 2):
                     diff = Vector(xdiff, ydiff, zdiff)
                     key = (ipos + diff).tuple()
-                    if self.buckets.has_key(key):
+                    if key in self.buckets:
                         lst2 = self.buckets[key]
                         for atm2 in lst2:
                             lst.append(atm2)
         return lst
     def grow(self, f):
         while self.growLayer(f) > 0:
-            print "layer"
+            print("layer")
         #for i in range(9):
         #    self.growLayer(f)
         #    print "layer"
@@ -286,7 +286,7 @@ class Tiling:
             def dist(v, pt=atm.pos, distsq=BONDLEN**2):
                 return (v - pt).magsq() - distsq
             if len(atm.bonds) == 0:
-                print "no bonds " + repr(a)
+                print("no bonds " + repr(a))
                 return [ ]
             elif len(atm.bonds) == 1:
                 g = atm.pos.gradient(f)
@@ -340,11 +340,11 @@ class Tiling:
             self.add(a)
         return len(self.atoms) - oldsize
     def add(self, atm):
-        print 'add', atm
+        print('add', atm)
         self.atoms.append(atm)
         self.buckets.add(atm)
     def remove(self, atm):
-        print 'remove', atm
+        print('remove', atm)
         self.atoms.remove(atm)
         self.buckets.remove(atm)
     def closestAtom(self, pos):

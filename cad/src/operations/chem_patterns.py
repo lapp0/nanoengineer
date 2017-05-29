@@ -34,8 +34,8 @@ def compile_patterns():
         other_eltnums[o1e] = o1e
         root_eltnums[ae] = ae
         other_eltnums[o2e] = o2e
-    root_eltnums = root_eltnums.values() # a list might be faster to search than a dict, since the list is so short (I don't know)
-    other_eltnums = other_eltnums.values()
+    root_eltnums = list(root_eltnums.values()) # a list might be faster to search than a dict, since the list is so short (I don't know)
+    other_eltnums = list(other_eltnums.values())
     return bad_patterns_dict, root_eltnums, other_eltnums
 
 def select_bad_atoms_cmd(widget): #bruce 060615 demo of simple "spelling checker" with hardcoded rules
@@ -74,7 +74,7 @@ def select_bad_atoms_cmd(widget): #bruce 060615 demo of simple "spelling checker
         pass
     # 3. Do the search.
     bad_triples = [] # list of bad triples of atoms (perhaps with overlap)
-    for a in atoms.itervalues():
+    for a in atoms.values():
         ae = a.element.eltnum
         if ae not in root_eltnums:
             continue
@@ -86,8 +86,8 @@ def select_bad_atoms_cmd(widget): #bruce 060615 demo of simple "spelling checker
                 checkbonds.append((o,oe))
         nbonds = len(checkbonds)
         if nbonds > 1: #e we could easily optimize the following loop for fixed nbonds like 2,3,4... or code it in pyrex.
-            for i in xrange(nbonds-1):
-                for j in xrange(i+1,nbonds):
+            for i in range(nbonds-1):
+                for j in range(i+1,nbonds):
                     if (checkbonds[i][1], ae, checkbonds[j][1]) in bad_patterns_dict:
                         # gotcha!
                         bad_triples.append((checkbonds[i][0], a, checkbonds[j][0]))
@@ -103,7 +103,7 @@ def select_bad_atoms_cmd(widget): #bruce 060615 demo of simple "spelling checker
         bad_atoms[a2.key] = a2
         bad_atoms[a3.key] = a3
     reallypicked = 0
-    for a in bad_atoms.itervalues():
+    for a in bad_atoms.values():
         a.pick()
         reallypicked += (not not a.picked) # check for selection filter effect
     env.history.message(orangecmd + fix_plurals(

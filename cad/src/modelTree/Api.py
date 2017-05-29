@@ -37,7 +37,7 @@ class Api(object):
         for legacy in _inheritance_chains(myclass, Api):
             assert len(legacy) >= 3
             api = legacy[-2]
-            print api, api.__dict__
+            print(api, api.__dict__)
             for method in api.__dict__:
                 if not method.startswith("__"):
                     assert type(getattr(api, method)) is MethodType
@@ -47,7 +47,7 @@ class Api(object):
                         if method in ancestor.__dict__:
                             this_method_ok = True
                     if not this_method_ok:
-                        print myclass, 'does not implement', method, 'from', api
+                        print(myclass, 'does not implement', method, 'from', api)
                         ouch = True
         if ouch:
             raise Exception('Class does not comply with its API')

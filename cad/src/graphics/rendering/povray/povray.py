@@ -203,18 +203,18 @@ def include_dir_ok(include_dir):
     Is this include_dir acceptable (or maybe acceptable)? Return (0, "") or (errorcode, errortext).
     """
     if env.debug():
-        print "debug: include_dir_ok(include_dir = %r)" % (include_dir,)
+        print("debug: include_dir_ok(include_dir = %r)" % (include_dir,))
     if os.path.isdir(include_dir):
         # ok, but warn if transforms.inc is not inside it
         if not os.path.exists(os.path.join(include_dir, "transforms.inc")):
             msg = "Warning: transforms.inc not present in POV include directory [%s]; rendering might not work" % (include_dir,)
             env.history.message(orangemsg(msg))
         if env.debug():
-            print "debug: include_dir_ok returns 0 (ok)"
+            print("debug: include_dir_ok returns 0 (ok)")
         return 0, "" # ok
     else:
         if env.debug():
-            print "debug: include_dir_ok returns 1 (Not found or not a directory)"
+            print("debug: include_dir_ok returns 1 (Not found or not a directory)")
         return 1, "POV include directory: Not found or not a directory" #e pathname might be too long for a dialog
     pass
 
@@ -256,7 +256,7 @@ def write_povray_ini_file(ini, pov, out, info, width, height, output_type = 'png
         # output_ext is only needed for this debug warning; remove when works
         base, ext = os.path.splitext(rel_pov)
         if rel_out != base + output_ext:
-            print "possible bug introduced in 060711 code cleanup: %r != %r" % (rel_out , base + output_ext)
+            print("possible bug introduced in 060711 code cleanup: %r != %r" % (rel_out , base + output_ext))
         pass
 
     f = open(ini,'w') # Open POV-Ray INI file.
@@ -308,8 +308,8 @@ def launch_povray_or_megapov(win, info, povray_ini): #bruce 060707/11 revised th
             args += [exit]
         if env.debug():
             ## use env.history.message(_graymsg(msg)) ?
-            print "debug: Launching %s: \n" % program_nickname,\
-                  "working directory=",workdir,"\n  program_path=", program_path,  "\n  args are %r" % (args,)
+            print("debug: Launching %s: \n" % program_nickname,\
+                  "working directory=",workdir,"\n  program_path=", program_path,  "\n  args are %r" % (args,))
 
         arguments = QStringList()
         for arg in args:
@@ -379,7 +379,7 @@ def launch_povray_or_megapov(win, info, povray_ini): #bruce 060707/11 revised th
             exitcode = -1
             msg = "Abnormal exit (or failure to launch)"
         if exitcode or env.debug():
-            print msg
+            print(msg)
         env.history.statusbar_msg(msg)
 ##        if env.debug():
 ##            env.history.message(_graymsg(msg)) # not needed, caller prints it

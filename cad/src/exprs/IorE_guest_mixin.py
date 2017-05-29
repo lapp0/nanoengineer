@@ -48,7 +48,7 @@ kluge070119 = True # this is permanent for now, but don't clean up the associate
 
 debug070120 = False # some debug prints, useful if bugs come up again in stuff related to the above
 
-class IorE_guest_mixin(Expr): #bruce 070815 split this out of its InstanceOrExpr subclass
+class IorE_guest_mixin(Expr, metaclass=ExprsMeta): #bruce 070815 split this out of its InstanceOrExpr subclass
     """
     @note: This class will be renamed and probably further split.
            For most doc, see our InstanceOrExpr subclass.
@@ -60,7 +60,6 @@ class IorE_guest_mixin(Expr): #bruce 070815 split this out of its InstanceOrExpr
     but not expr customization by __init__ or __call__, or _e_make_in,
     or drawing-specific things -- for those see InstanceOrExpr.
     """
-    __metaclass__ = ExprsMeta
 
     transient_state = StatePlace('transient') # state which matters during a drag; scroll-position state; etc
 
@@ -134,7 +133,7 @@ class IorE_guest_mixin(Expr): #bruce 070815 split this out of its InstanceOrExpr
         if debug070120:
             #070120 debug code for _5x ER kluge070119 bug
             env = self.env
-            print "%r.env has _self %r" % (self, getattr(env, '_self', '<none>'))
+            print("%r.env has _self %r" % (self, getattr(env, '_self', '<none>')))
             assert self.env_for_formulae._self is self # remove when works -- inefficient (forces it to be made even if not needed)
         pass
 
@@ -225,7 +224,7 @@ class IorE_guest_mixin(Expr): #bruce 070815 split this out of its InstanceOrExpr
                 #k guess 061105
         else:
             if _lvalue_flag:
-                print "SHOULD NEVER HAPPEN: saw _lvalue_flag: _i_instance(index = %r, expr = %r), self = %r" % (index,expr,self)
+                print("SHOULD NEVER HAPPEN: saw _lvalue_flag: _i_instance(index = %r, expr = %r), self = %r" % (index,expr,self))
             # new behavior 070118; might be needed to fix "bug: expr or lvalflag for instance changed" in testexpr_9fx4 click,
             # or might just be hiding an underlying bug which will show up for pure exprs in If clauses -- not yet sure. #####k
             #   (Note that its only effects are an optim and to remove some error messages -- what's unknown is whether the detected
@@ -260,7 +259,7 @@ class IorE_guest_mixin(Expr): #bruce 070815 split this out of its InstanceOrExpr
             oldstuff = expr, env, ipath
             expr, env, ipath = expr._e_burrow_for_find_or_make(env, ipath)
             if debug070120 and (expr, env, ipath) != oldstuff:
-                print "fyi EVAL_REFORM kluge070119: worked, %r => %r" % (oldstuff, (expr, env, ipath))
+                print("fyi EVAL_REFORM kluge070119: worked, %r => %r" % (oldstuff, (expr, env, ipath)))
             index = ipath
             del ipath
             self._i_instance_decl_env[index] = env
@@ -299,8 +298,8 @@ class IorE_guest_mixin(Expr): #bruce 070815 split this out of its InstanceOrExpr
                     self._i_instance_CVdict.inval_at_key(index)
                     # print "fyi: made use of permit_expr_to_vary for index = %r, expr = %r" % (index, expr) # remove when works
                 else:
-                    print "bug: expr or lvalflag for instance changed: self = %r, index = %r, new data = %r, old data = %r" % \
-                          (self,index,newdata,olddata) #e more info? i think this is an error and should not happen normally
+                    print("bug: expr or lvalflag for instance changed: self = %r, index = %r, new data = %r, old data = %r" % \
+                          (self,index,newdata,olddata)) #e more info? i think this is an error and should not happen normally
                         # update 070122: it usually indicates an error, but it's a false alarm in the latest bugfixed testexpr_21g,
                         # since pure-expr equality should be based on formal structure, not pyobj identity. ###e
                     ####e need to print a diff of the exprs, so we see what the problem is... [070321 comment; happens with ArgList]
@@ -318,7 +317,7 @@ class IorE_guest_mixin(Expr): #bruce 070815 split this out of its InstanceOrExpr
             if 0 and (not skip_expr_compare) and olddata[0] is not expr:
                 # this print worked, but it's not usually useful (not enough is printed) so I disabled it
                 # they're only equal because __eq__ is working on non-identical exprs [implemented in Expr late 070122]
-                print "fyi: non-identical exprs compared equal (did we get it right?): %r and %r" % (olddata[0], expr) ### remove sometime
+                print("fyi: non-identical exprs compared equal (did we get it right?): %r and %r" % (olddata[0], expr)) ### remove sometime
             pass
         res = self._i_instance_CVdict[index] # takes care of invals in making process? or are they impossible? ##k [see above]
         self._debug_i_instance_retval( res) #070212
@@ -337,7 +336,7 @@ class IorE_guest_mixin(Expr): #bruce 070815 split this out of its InstanceOrExpr
 ##            assert res.__class__.__name__ != 'lexenv_ipath_Expr', "should not be returned from _i_instance: %r" % (res,)
             assert not is_pure_expr(res), "pure exprs should not be returned from _i_instance: %r" % (res,)
         except:
-            print "bug: exception in _debug_i_instance_retval for this res (reraising): %s" % safe_repr(res)
+            print("bug: exception in _debug_i_instance_retval for this res (reraising): %s" % safe_repr(res))
             raise
         return
 
@@ -383,7 +382,7 @@ class IorE_guest_mixin(Expr): #bruce 070815 split this out of its InstanceOrExpr
         else:
             # EVAL_REFORM case 070117
             if not (is_pure_expr(expr) and is_Expr_pyinstance(expr)):
-                print "this should never happen as of 070118 since we handle it above: non pure expr %r in _CV__i_instance_CVdict" % (expr,)
+                print("this should never happen as of 070118 since we handle it above: non pure expr %r in _CV__i_instance_CVdict" % (expr,))
                 ## print "FYI: EVAL_REFORM: _CV__i_instance_CVdict is identity on %r" % (expr,)
                 # this is routine on e.g. None, small ints, colors, other tuples... and presumably Instances (not tested)
                 assert not lvalflag # see comments at start of _i_instance
@@ -410,8 +409,8 @@ class IorE_guest_mixin(Expr): #bruce 070815 split this out of its InstanceOrExpr
                     # 061105 bug3, if bug2 was in held_dflt_expr and bug1 was 'dflt 10'
             except:
                 # we expect caller to exit now, so we might as well print this first: [061114]
-                print "following exception concerns self = %r, index = %r in _CV__i_instance_CVdict calling _e_compute_method" % \
-                      (self, index)
+                print("following exception concerns self = %r, index = %r in _CV__i_instance_CVdict calling _e_compute_method" % \
+                      (self, index))
                 raise
         else:
             # EVAL_REFORM case, 070117
@@ -466,8 +465,8 @@ class IorE_guest_mixin(Expr): #bruce 070815 split this out of its InstanceOrExpr
             res = call_but_discard_tracked_usage( computer) # see also docstring of eval_and_discard_tracked_usage
                 # res is the same as if we did res = computer(), but that would track usage into caller which it doesn't want invals from
         except:
-            print "following exception concerns self = %r, index = %r in *** _i_eval_dfltval_expr *** calling _e_compute_method" % \
-                  (self, index)
+            print("following exception concerns self = %r, index = %r in *** _i_eval_dfltval_expr *** calling _e_compute_method" % \
+                  (self, index))
             raise
         return res
 
@@ -479,13 +478,13 @@ class IorE_guest_mixin(Expr): #bruce 070815 split this out of its InstanceOrExpr
         if debug:
             print_compact_stack( "_i_grabarg called with ( self %r, attr %r, argpos %r, dflt_expr %r, _arglist %r): " % \
                                  (self, attr, argpos, dflt_expr, _arglist) )
-            print " and the data it grabs from is _e_kws = %r, _e_args = %r" % (self._e_kws, self._e_args)
+            print(" and the data it grabs from is _e_kws = %r, _e_args = %r" % (self._e_kws, self._e_args))
         #k below should not _e_eval or canon_expr without review -- should return an arg expr or dflt expr, not its value
         # (tho for now it also can return None on error -- probably causing bugs in callers)
         assert is_pure_expr(dflt_expr), "_i_grabarg dflt_expr should be an expr, not %r" % (dflt_expr,) #061105 - or use canon_expr?
         assert self._e_is_instance
         if not self._e_has_args:
-            print "warning: possible bug: not self._e_has_args in _i_grabarg%r in %r" % ((attr, argpos), self)
+            print("warning: possible bug: not self._e_has_args in _i_grabarg%r in %r" % ((attr, argpos), self))
         assert attr is None or isinstance(attr, str)
         assert argpos is None or (isinstance(argpos, int) and argpos >= 0)
         assert _arglist in (False, True)
@@ -496,8 +495,8 @@ class IorE_guest_mixin(Expr): #bruce 070815 split this out of its InstanceOrExpr
             index = attr or argpos #k I guess, for now [070105 stub -- not always equal to index in ipath, esp for ArgOrOption]
             env_for_arg = self.env_for_arg(index) # revised 070105
             if debug070120:
-                print "grabarg %r in %r is wrapping %r with %r containing _self %r" % \
-                      ((attr, argpos), self, res0,  env_for_arg, getattr(env_for_arg,'_self','<none>'))
+                print("grabarg %r in %r is wrapping %r with %r containing _self %r" % \
+                      ((attr, argpos), self, res0,  env_for_arg, getattr(env_for_arg,'_self','<none>')))
             res = lexenv_Expr(env_for_arg, res0) ##k lexenv_Expr is guess, 061110 late, seems confirmed; env_for_args 061114
             #e possible good optim: use self.env instead, unless res0 contains a use of _this;
             # or we could get a similar effect (slower when this runs, but better when the arg instance is used) by simplifying res,
@@ -518,7 +517,7 @@ class IorE_guest_mixin(Expr): #bruce 070815 split this out of its InstanceOrExpr
         ###k ARE THERE any other accesses of _e_args or _e_kws that need similar protection? Worry about this if I add
         # support for iterating specific args (tho that might just end up calling _i_grabarg and being fine).
         if debug:
-            print "_i_grabarg returns %r" % (res,)
+            print("_i_grabarg returns %r" % (res,))
         return res
 
     def env_for_arg(self, index): # 070105 experiment -- for now, it only exists so we can override it in certain primitive subclasses
@@ -576,8 +575,8 @@ class IorE_guest_mixin(Expr): #bruce 070815 split this out of its InstanceOrExpr
         else:
             required = False
             if isinstance(dflt_expr, _E_REQUIRED_ARG_.__class__) and dflt_expr._e_name.startswith("_E_"):
-                print "possible bug: dflt_expr for arg %r in %r is a Symbol %r named _E_* (suspicious internal symbol??)" % \
-                      ( (attr, argpos), self, dflt_expr )
+                print("possible bug: dflt_expr for arg %r in %r is a Symbol %r named _E_* (suspicious internal symbol??)" % \
+                      ( (attr, argpos), self, dflt_expr ))
                 # kluge sanity check for _E_ATTR or other internal symbols [revised 070131]
         if attr is not None and argpos is not None:
             printnim("should assert that no expr gets same arg twice (positionally and as named option)")###e
@@ -612,8 +611,8 @@ class IorE_guest_mixin(Expr): #bruce 070815 split this out of its InstanceOrExpr
         else:
             # ordinary arg was not provided -- error or use dflt_expr
             if required:
-                print "error: required arg %r or %r not provided to %r. [#e Instance-maker should have complained!] Using None." % \
-                      (attr, argpos, self)
+                print("error: required arg %r or %r not provided to %r. [#e Instance-maker should have complained!] Using None." % \
+                      (attr, argpos, self))
                 # Note: older code returned literally None, not an expr, which caused a bug in caller which tried to _e_eval the result.
                 # Once we've printed the above, we might as well be easier to debug and not cause that bug right now,
                 # so we'll return a legal expr -- in some few cases this will not cause an error, making this effectively a warning,

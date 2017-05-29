@@ -464,7 +464,7 @@ class Residue:
         For a given PDB atom, return a corresponding atom name.
         """
         if atom.pdb_info and \
-           atom.pdb_info.has_key('atom_name'):
+           'atom_name' in atom.pdb_info:
             return atom.pdb_info['atom_name']
         else:
             return None
@@ -521,7 +521,7 @@ class Residue:
         atom = self.get_first_atom()
         if atom and \
            atom.pdb_info:
-            if atom.pdb_info.has_key('residue_name'):
+            if 'residue_name' in atom.pdb_info:
                 return atom.pdb_info['residue_name'][:3]
 
         return "   "
@@ -534,7 +534,7 @@ class Residue:
         @note: see docstring in get_three_letter_code
 
         """
-        if AA_3_TO_1.has_key(self.get_three_letter_code()):
+        if self.get_three_letter_code() in AA_3_TO_1:
             return AA_3_TO_1[self.get_three_letter_code()]
 
         return "X"
@@ -553,7 +553,7 @@ class Residue:
         atom = self.get_first_atom()
 
         if atom.pdb_info:
-            if atom.pdb_info.has_key('residue_id'):
+            if 'residue_id' in atom.pdb_info:
                 return atom.pdb_info['residue_id']
 
         raise Exception("Residue has no ID")
@@ -584,7 +584,7 @@ class Residue:
 
         @return: True if the atom belongs to self, False otherwise
         """
-        if atom in self.atoms.values():
+        if atom in list(self.atoms.values()):
             return True
         else:
             return False
@@ -622,7 +622,7 @@ class Residue:
         @return: atom or None
         @rtype: Atom
         """
-        if self.atoms.has_key(name):
+        if name in self.atoms:
             return self.atoms[name]
         else:
             return None
@@ -715,7 +715,7 @@ class Residue:
         """
         if which in range(4):
             residue_name = self.get_three_letter_code()
-            if CHI_ANGLES.has_key(residue_name):
+            if residue_name in CHI_ANGLES:
                 chi_list = CHI_ANGLES[residue_name]
                 if chi_list[which]:
                     chi_atom_names = chi_list[which]
@@ -742,7 +742,7 @@ class Residue:
 
         if which in range(4):
             residue_name = self.get_three_letter_code()
-            if CHI_EXCLUSIONS.has_key(residue_name):
+            if residue_name in CHI_EXCLUSIONS:
                 chi_ex_list = CHI_EXCLUSIONS[residue_name]
                 oxt_atom = self.get_atom_by_name("OXT")
                 if oxt_atom:

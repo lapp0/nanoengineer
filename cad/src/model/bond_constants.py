@@ -181,13 +181,13 @@ def btype_from_v6(v6): #bruce 050705
         return bond_type_names[v6]
     except KeyError:
         if debug_flags.atom_debug:
-            print "atom_debug: illegal bond v6 %r, calling it 'unknown'" % (v6,)
+            print("atom_debug: illegal bond v6 %r, calling it 'unknown'" % (v6,))
         return 'unknown' #e stub for this error return; should it be an error word like this, or single, or closest legal value??
     pass
 
 def invert_dict(dict1): #bruce 050705
     res = {}
-    for key, val in dict1.items():
+    for key, val in list(dict1.items()):
         res[val] = key
     return res
 
@@ -318,8 +318,8 @@ def _compute_bond_params(atomtype1, atomtype2, v6): #bruce 080405 revised this
     rcovsum = rcov1 + rcov2 # ideal length according to our .rcovalent tables,
         # used as a fallback if we can't get a better length
     if not rcovsum:
-        print "error: _compute_bond_params for nonsense bond:", \
-              atomtype1, atomtype2, v6
+        print("error: _compute_bond_params for nonsense bond:", \
+              atomtype1, atomtype2, v6)
         rcov1 = rcov2 = 0.5 # arbitrary
         rcovsum = rcov1 + rcov2
     # now adjust rcov1 and rcov2 to make their sum the equilibrium bond length

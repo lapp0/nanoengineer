@@ -90,7 +90,7 @@ class Elem(IdentityCopyMixin):
         self.role = role
         self.deprecated_to = deprecated_to
         if not deprecated_to and deprecated_to is not None:
-            print "WARNING: we don't yet know what element %r should be deprecated_to" % sym
+            print("WARNING: we don't yet know what element %r should be deprecated_to" % sym)
         self.atomtypes = []
         ## self.bonds = bn # not needed anymore, I hope
 #         if not bn: # e.g. Helium

@@ -99,8 +99,8 @@ class NeighborhoodGenerator:
                 for z in range(z0 - 1, z0 + 2):
                     # keys are 12-byte strings, see rationale above
                     key = _pack('lll', x, y, z)
-                    if buckets.has_key(key):
-                        lst += filter(closeEnough, buckets[key])
+                    if key in buckets:
+                        lst += list(filter(closeEnough, buckets[key]))
         return lst
 
     def remove(self, atom):

@@ -715,7 +715,7 @@ class GLPane_minimal(QGLWidget, GLPane_drawingset_methods, object): #bruce 07091
         if restore_current_part:
             if type(namedView) == type(""):
                 if env.debug():
-                    print "debug: fyi: cys == '' still happens"
+                    print("debug: fyi: cys == '' still happens")
                         # does it? ###@@@ 060314 remove if seen, or if not seen
                 current_selgroup_index = 0
             else:

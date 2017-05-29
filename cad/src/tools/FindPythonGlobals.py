@@ -102,9 +102,9 @@ def printToken(tok, level):
        @type level: string
     """
     if (token.ISTERMINAL(tok)):
-        print level + token.tok_name[tok]
+        print(level + token.tok_name[tok])
     else:
-        print level + symbol.sym_name[tok]
+        print(level + symbol.sym_name[tok])
 
 def printParseTree(tree, level):
     """
@@ -121,7 +121,7 @@ def printParseTree(tree, level):
         if (isinstance(element, list)):
             printParseTree(element, level + ".")
         else:
-            print level + repr(element)
+            print(level + repr(element))
 #    print level + "end"
 
 def lookAt(tree):
@@ -159,14 +159,14 @@ def lookAt(tree):
     # What we're actually looking for: def, class, and atoms.
     elif (nodeType == symbol.funcdef):
         functionName = tree[2]
-        print functionName[1] + ": " + s_fileName
+        print(functionName[1] + ": " + s_fileName)
     elif (nodeType == symbol.classdef):
         className = tree[2]
-        print className[1] + ": " + s_fileName
+        print(className[1] + ": " + s_fileName)
     elif (nodeType == symbol.atom):
         atomName = tree[1]
         if (atomName[0] == token.NAME):
-            print atomName[1] + ": " + s_fileName
+            print(atomName[1] + ": " + s_fileName)
 
     elif (verbose):
         printToken(nodeType, "ignoring: ")

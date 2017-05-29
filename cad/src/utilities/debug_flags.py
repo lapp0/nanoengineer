@@ -57,7 +57,7 @@ except:
     atom_debug = not not atom_debug
 
 if atom_debug:
-    print "fyi: user has requested ATOM_DEBUG feature; extra debugging code enabled; might be slower"
+    print("fyi: user has requested ATOM_DEBUG feature; extra debugging code enabled; might be slower")
 
 # ==
 

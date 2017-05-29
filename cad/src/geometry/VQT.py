@@ -314,7 +314,7 @@ class Q(DataMixin):
 
     def __getattr__(self, attr): # in class Q
         if attr.startswith('_'):
-            raise AttributeError, attr #bruce 060228 optim (also done at end)
+            raise AttributeError(attr) #bruce 060228 optim (also done at end)
         if attr == 'w':
             return self.vec[0]
         elif attr in ('x', 'i'):
@@ -354,7 +354,7 @@ class Q(DataMixin):
                      2.0 * (y*z - x*w),
                      1.0 - 2.0 * (y**2 + x**2)]])
             return mat
-        raise AttributeError, 'No %r in Quaternion' % (attr,)
+        raise AttributeError('No %r in Quaternion' % (attr,))
 
     #bruce 060209 defining __eq__ and __ne__ for efficient state comparisons
     # given presence of __getattr__ (desirable for Undo).
@@ -398,7 +398,7 @@ class Q(DataMixin):
         return self
 
     def __reset(self):
-        if self.__dict__.has_key('matrix'):
+        if 'matrix' in self.__dict__:
             del self.__dict__['matrix']
 
     def __setattr__(self, attr, value):
@@ -477,7 +477,7 @@ class Q(DataMixin):
             nq.setangle(n * self.angle)
             return nq
         else:
-            raise ValueError, "can't multiply %r by %r" % (self, n) #bruce 070619 revised this (untested)
+            raise ValueError("can't multiply %r by %r" % (self, n)) #bruce 070619 revised this (untested)
 
     def __imul__(self, n):
         #bruce 051107 bugfix (untested): replace arg q2 with n, since body used n (old code must have never been tested either)
@@ -486,7 +486,7 @@ class Q(DataMixin):
             self.__reset()
             return self
         else:
-            raise ValueError, "can't multiply %r by %r" % (self, n) #bruce 070619 revised this (untested)
+            raise ValueError("can't multiply %r by %r" % (self, n)) #bruce 070619 revised this (untested)
 
     def __div__(self, q2):
         """
@@ -615,11 +615,11 @@ def cat(a, b):
     # So I added some debug code to warn us if this happens.
     if not a:
         if (_DEBUG_QUATS or debug_flags.atom_debug):
-            print "_DEBUG_QUATS: cat(a, b) with false a -- is it right?", a
+            print("_DEBUG_QUATS: cat(a, b) with false a -- is it right?", a)
         return b
     if not b:
         if (_DEBUG_QUATS or debug_flags.atom_debug):
-            print "_DEBUG_QUATS: cat(a, b) with false b -- is it right?", b
+            print("_DEBUG_QUATS: cat(a, b) with false b -- is it right?", b)
         return a
     r1 = Numeric.shape(a)
     r2 = Numeric.shape(b)
@@ -659,7 +659,7 @@ def check_floats_near(f1, f2, msg = ""): #bruce, circa 040924
     else:
         fmt = "not near:"
     # fmt is not a format but a prefix
-    print fmt, f1, f2
+    print(fmt, f1, f2)
     return False # means bad
 
 def check_posns_near(p1, p2, msg=""): #bruce, circa 040924
@@ -684,11 +684,11 @@ def check_quats_near(q1, q2, msg=""): #bruce, circa 040924
 # == test code [bruce 070227]
 
 if __name__ == '__main__':
-    print "tests started"
+    print("tests started")
     q1 = Q(1, 0, 0, 0)
-    print q1, `q1`
+    print(q1, repr(q1))
     q2 = Q(V(0.6, 0.8, 0), 1)
-    print q2, `q2`
+    print(q2, repr(q2))
     assert not (q1 == q2), "different quats equal!" # this bug was fixed on 070227
     assert q1 != V(0, 0, 0) # this did print_compact_traceback after that was fixed; now that's fixed too
     # can't work yet: assert q2 * 2 == 2 * q2
@@ -697,6 +697,6 @@ if __name__ == '__main__':
     from utilities.Comparison import same_vals
     q3 = Q(1, 0, 0, 0)
     assert same_vals( q1, q3 ), "BUG: not same_vals( Q(1,0,0,0), Q(1,0,0,0) )"
-    print "tests done"
+    print("tests done")
 
 # end

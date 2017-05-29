@@ -217,7 +217,7 @@ class AssyUndoManager(UndoManager):
             want_cp = (typeflag != 'beginrec')
             if not want_cp:
                 if 0 and env.debug():
-                    print "debug: skipping cp as we enter or leave recursive event processing"
+                    print("debug: skipping cp as we enter or leave recursive event processing")
                 return # this might be problematic, see above comment [tho it seems to work for now, for Minimize All anyway];
                     # if it ever is, then instead of returning here, we'll pass want_cp to checkpoint routines below
         if beginflag:
@@ -298,22 +298,22 @@ class AssyUndoManager(UndoManager):
         #bruce 080314 update: that does happen, so that print is useless and verbose,
         # so disable it for now. Retain the other ones.
         if assy is None or node is None:
-            print "\n*** BUG: node_departing_assy(%r, %r, %r) sees assy or node is None" % \
-                  (self, node, assy)
+            print("\n*** BUG: node_departing_assy(%r, %r, %r) sees assy or node is None" % \
+                  (self, node, assy))
             return
         if self.assy is None:
             # this will happen for now when the conditions that caused today's bug reoccur,
             # until we fix the dna updater to never run inside a closed assy (desirable)
             # [bruce 080219]
             if 0: #bruce 080314
-                print "\nbug (harmless?): node_departing_assy(%r, %r, %r), but " \
+                print("\nbug (harmless?): node_departing_assy(%r, %r, %r), but " \
                       "self.assy is None (happens when self's file is closed)" % \
-                      (self, node, assy)
+                      (self, node, assy))
             return
         if not (assy is self.assy):
-            print "\n*** BUG: " \
+            print("\n*** BUG: " \
                "node_departing_assy(%r, %r, %r) sees wrong self.assy = %r" % \
-               (self, node, assy, self.assy)
+               (self, node, assy, self.assy))
             # assy is self.assy has to be true (given that neither is None),
             # since we were accessed as assy.undo_manager.
         return
@@ -351,7 +351,7 @@ class AssyUndoManager(UndoManager):
             for obs_redo in lis[:-1]:
                 if undo_archive.debug_undo2 or env.debug():
                     #060309 adding 'or env.debug()' since this should never happen once clear_redo_stack() is implemented in archive
-                    print "obsolete redo:", obs_redo
+                    print("obsolete redo:", obs_redo)
                 pass #e discard it permanently? ####@@@@
         return undos, redos
 
@@ -398,7 +398,7 @@ class AssyUndoManager(UndoManager):
         # so just hardcode it as edit menu for now. We'll need to connect & disconnect this when created/finished,
         # and get passed the menu (or list of them) from the caller, which is I guess assy.__init__.
         if undo_archive.debug_undo2:
-            print "debug_undo2: running remake_UI_menuitems (could be direct call or signal)"
+            print("debug_undo2: running remake_UI_menuitems (could be direct call or signal)")
         global _disable_UndoRedo
         disable_reasons = list(_disable_UndoRedo) # avoid bugs if it changes while this function runs (might never happen)
         if disable_reasons:
@@ -524,17 +524,17 @@ class AssyUndoManager(UndoManager):
             op = self._current_main_menu_ops.get(optype)
             if op:
                 undo_xxx = op.menu_desc() # note: menu_desc includes history sernos
-                env.history.message(u"%s" % undo_xxx) #e say Undoing rather than Undo in case more msgs?? ######@@@@@@ TEST u"%s"
+                env.history.message("%s" % undo_xxx) #e say Undoing rather than Undo in case more msgs?? ######@@@@@@ TEST u"%s"
                 self.archive.do_op(op)
                 self.assy.w.update_select_mode() #bruce 060227 try to fix bug 1576
                 self.assy.w.win_update() #bruce 060227 not positive this isn't called elsewhere, or how we got away without it if not
             else:
                 if not disabled:
-                    print "no op to %r; not sure how this slot was called, since it should have been disabled" % optype
+                    print("no op to %r; not sure how this slot was called, since it should have been disabled" % optype)
                     env.history.message(redmsg("Nothing to %s (and it's a bug that its menu item or tool button was enabled)" % optype))
                 else:
-                    print "no op to %r; autocp disabled (so ops to offer were recomputed just now; before that, op_was_available = %r); "\
-                          "see code comments for more info" % ( optype, op_was_available)
+                    print("no op to %r; autocp disabled (so ops to offer were recomputed just now; before that, op_was_available = %r); "\
+                          "see code comments for more info" % ( optype, op_was_available))
                     if op_was_available:
                         env.history.message(redmsg("Nothing to %s (possibly due to a bug)" % optype))
                     else:
@@ -562,13 +562,13 @@ def fix_tooltip(qaction, text): #060126
        OR if the tooltip doesn't end with ')', just replace the entire thing with text, plus a space if text ends with ')'
     (to avoid a bug the next time -- not sure if that kluge will work).
     """
-    whole = unicode(qaction.toolTip()) # str() on this might have an exception
+    whole = str(qaction.toolTip()) # str() on this might have an exception
     try:
         #060304 improve the alg to permit parens in text to remain; assume last '( ' is the one before the accel keys;
         # also permit no accel keys
         if whole[-1] == ')':
             # has accel keys (reasonable assumption, not unbreakably certain)
-            sep = u' ('
+            sep = ' ('
             parts = whole.split(sep)
             parts = [text, parts[-1]]
             whole = sep.join(parts)
@@ -766,7 +766,7 @@ def _do_whycode_disable( reasons_list_val, whycode, whymsg):
     """
     [private helper function for maintaining whycode,whymsg lists]
     """
-    res = filter( lambda (code, msg): code != whycode , reasons_list_val ) # zap items with same whycode
+    res = [code_msg for code_msg in reasons_list_val if code_msg[0] != whycode] # zap items with same whycode
     if len(res) < len(reasons_list_val) and env.debug():
         print_compact_stack("debug fyi: redundant call of _do_whycode_disable, whycode %r msg %r, preserved reasons %r" % \
                             ( whycode, whymsg, res ) )
@@ -777,7 +777,7 @@ def _do_whycode_reenable( reasons_list_val, whycode):
     """
     [private helper function for maintaining whycode,whymsg lists]
     """
-    res = filter( lambda (code, msg): code != whycode , reasons_list_val ) # zap items with same whycode
+    res = [code_msg1 for code_msg1 in reasons_list_val if code_msg1[0] != whycode] # zap items with same whycode
     if len(res) == len(reasons_list_val) and env.debug():
         print_compact_stack("debug fyi: redundant call of _do_whycode_reenable, whycode %r, remaining reasons %r" % \
                             ( whycode, res ) )

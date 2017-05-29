@@ -135,9 +135,9 @@ class B_Dna_PAM5_Generator(B_Dna_Generator):
         # (If we were instead passed all the atoms, we could be correct if we
         # just did this to the first Pe5 and Sh5 we saw, or to both of each if
         # setting the same direction twice is allowed.)
-        atoms = baseList[0].atoms.values()
-        Pe_list = filter( lambda atom: atom.element.symbol in ('Pe5'), atoms)
-        Sh_list = filter( lambda atom: atom.element.symbol in ('Sh5'), atoms)
+        atoms = list(baseList[0].atoms.values())
+        Pe_list = [atom for atom in atoms if atom.element.symbol in ('Pe5')]
+        Sh_list = [atom for atom in atoms if atom.element.symbol in ('Sh5')]
 
         if len(Pe_list) == len(Sh_list) == 1:
             for atom in Pe_list:
@@ -186,7 +186,7 @@ class B_Dna_PAM5_Generator(B_Dna_Generator):
         _axis_list     =  []
         # Build strand and chunk atom lists.
         for m in dnaGroup.members:
-            for atom in m.atoms.values():
+            for atom in list(m.atoms.values()):
                 if atom.element.symbol in ('Pl5', 'Pe5'):
                     if atom.getDnaStrandId_for_generators() == 'Strand1':
                         _strandA_list.append(atom)

@@ -107,7 +107,7 @@ class sim_aspect:
         or via part.assy. For now [050406] none are emitted.
         """
         if debug_sim_aspect: #bruce 051115 added this
-            print "making sim_aspect for %d atoms (maybe this only counts real atoms??)" % len(atoms) ###@@@ only counts real atoms??
+            print("making sim_aspect for %d atoms (maybe this only counts real atoms??)" % len(atoms)) ###@@@ only counts real atoms??
         self.part = part
         self.cmdname_for_messages = cmdname_for_messages
         # (note: the following atomdicts are only used in this method
@@ -136,14 +136,14 @@ class sim_aspect:
             # (the other boundary dicts are left empty;
             #  they are used in later code but this causes no harm)
             for mol in part.molecules:
-                for atom in mol.atoms.itervalues():
+                for atom in mol.atoms.values():
                     if atom.key not in self._moving_atoms:
                         # no need to check whether it's already in _boundary1_atoms
                         self._boundary1_atoms[atom.key] = atom
             pass
         else:
             # now find the boundary1 of the _moving_atoms
-            for moving_atom in self._moving_atoms.values():
+            for moving_atom in list(self._moving_atoms.values()):
                 for atom2 in moving_atom.realNeighbors():
                     # (not covering singlets is just an optim, since they're already in _moving_atoms)
                     # (in fact, it's probably slower than excluding them here! I'll leave it in, for clarity.)
@@ -152,7 +152,7 @@ class sim_aspect:
             # now find the boundary2 of the _boundary1_atoms;
             # treat singlets of boundary1 as ordinary boundary2 atoms (unlike when we found boundary1);
             # no need to re-explore moving atoms since we already covered their real and singlet neighbors
-            for b1atom in self._boundary1_atoms.values():
+            for b1atom in list(self._boundary1_atoms.values()):
                 for atom2 in b1atom.neighbors():
                     if (atom2.key not in self._moving_atoms) and \
                        (atom2.key not in self._boundary1_atoms):
@@ -160,7 +160,7 @@ class sim_aspect:
             # now find the boundary3 of the boundary2 atoms
             # (not just PAM atoms, since even regular atoms might need this due to torsion terms)
             # [finding boundary3 is a bugfix, bruce 080507]
-            for b2atom in self._boundary2_atoms.values():
+            for b2atom in list(self._boundary2_atoms.values()):
                 for atom3 in b2atom.neighbors():
                     if (atom3.key not in self._moving_atoms) and \
                        (atom3.key not in self._boundary1_atoms) and \
@@ -175,7 +175,7 @@ class sim_aspect:
             Remove atoms from dict1 which are bondpoints we want to leave out
             of this minimization or simulation.
             """
-            for atom in dict1.values():
+            for atom in list(dict1.values()):
                 if atom.element is Singlet:
                     policy = bondpoint_policy(atom, True)
                     if policy == BONDPOINT_LEFT_OUT:
@@ -201,10 +201,10 @@ class sim_aspect:
         # Finally, come up with a global atom order, and enough info to check our validity later if the Part changes.
         # We include all atoms (real and singlet, moving and boundary) in one list, sorted by atom key,
         # so later singlet<->H conversion by user wouldn't affect the order.
-        items = self._moving_atoms.items() + \
-                self._boundary1_atoms.items() + \
-                self._boundary2_atoms.items() + \
-                self._boundary3_atoms.items()
+        items = list(self._moving_atoms.items()) + \
+                list(self._boundary1_atoms.items()) + \
+                list(self._boundary2_atoms.items()) + \
+                list(self._boundary3_atoms.items())
         items.sort()
         self._atoms_list = [atom for key, atom in items]
             # make that a public attribute? nah, use an access method
@@ -212,7 +212,7 @@ class sim_aspect:
             assert self._atoms_list[i-1] is not self._atoms_list[i]
             # since it's sorted, that proves no atom or singlet appears twice
         # anchored_atoms alone (for making boundary jigs each time we write them out)
-        items = self._boundary1_atoms.items() + self._boundary2_atoms.items() + self._boundary3_atoms.items()
+        items = list(self._boundary1_atoms.items()) + list(self._boundary2_atoms.items()) + list(self._boundary3_atoms.items())
         items.sort()
         self.anchored_atoms_list = [atom for key, atom in items]
         #e validity checking info is NIM, except for the atom lists themselves
@@ -231,7 +231,7 @@ class sim_aspect:
         """
         return number of singlets to be written as H for the sim
         """
-        singlets = filter( lambda atom: atom.is_singlet(), self._atoms_list )
+        singlets = [atom for atom in self._atoms_list if atom.is_singlet()]
         return len(singlets)
 
     def nsinglets_leftout(self):
@@ -299,15 +299,15 @@ class sim_aspect:
         nfixed = len(atoms)
         max_per_jig = 20
         for i in range(0, nfixed, max_per_jig): # starting indices of jigs for fixed atoms
-            indices = range( i, min( i + max_per_jig, nfixed ) )
+            indices = list(range( i, min( i + max_per_jig, nfixed )))
             if debug_sim_aspect:
-                print "debug_sim_aspect: writing Anchor for these %d indices: %r" % (len(indices), indices)
+                print("debug_sim_aspect: writing Anchor for these %d indices: %r" % (len(indices), indices))
             # now write a fake Anchor which has just the specified atoms
             these_atoms = [atoms[i] for i in indices]
             line = fake_Anchor_mmp_record( these_atoms, mapping) # includes \n at end
             mapping.write(line)
             if debug_sim_aspect:
-                print "debug_sim_aspect: wrote %r" % (line,)
+                print("debug_sim_aspect: wrote %r" % (line,))
         return
 
     def write_minimize_enabled_jigs(self, mapping): # Mark 051006
@@ -321,7 +321,7 @@ class sim_aspect:
             if isinstance(nn, Jig) and nn.enable_minimize:
                 #bruce 051031 comment: should we exclude the ones written by write_anchors?? doesn't matter for now. ####@@@@
                 if debug_sim_aspect:
-                    print "The jig [", nn.name, "] was written to minimize MMP file.  It is enabled for minimize."
+                    print("The jig [", nn.name, "] was written to minimize MMP file.  It is enabled for minimize.")
                 nn.writemmp(mapping)
             return # from func_write_jigs only
 

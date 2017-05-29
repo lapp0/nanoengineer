@@ -12,15 +12,15 @@ import base64, sys
 
 if (__name__ == '__main__'):
     R = base64.encodestring(sys.stdin.read())
-    lines = filter(lambda x: x, R.split('\n'))
-    lines = map(lambda x: "    "+x, lines)
+    lines = [x for x in R.split('\n') if x]
+    lines = ["    "+x for x in lines]
     lines[0] = lines[0][:4] + "<logo>" + lines[0][4:]
     lines[-1] += "</logo>"
-    print """  <sponsor>
+    print("""  <sponsor>
         <name>Sponsor name</name>
-        <keywords>KeyWord</keywords>"""
+        <keywords>KeyWord</keywords>""")
     for L in lines:
-        print L
-    print """    <text>Text, including a URL</text>
-        </sponsor>"""
+        print(L)
+    print("""    <text>Text, including a URL</text>
+        </sponsor>""")
 

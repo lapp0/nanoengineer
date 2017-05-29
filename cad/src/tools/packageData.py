@@ -684,8 +684,8 @@ packageMapping_for_files = {
 
 # now combine those into one dict for use by current code in packageDependency.py
 
-for package_name in packageMapping_for_packages.keys():
-    assert not packageMapping_for_files.has_key( package_name)
+for package_name in list(packageMapping_for_packages.keys()):
+    assert package_name not in packageMapping_for_files
 
 packageMapping = dict( packageMapping_for_files)
 

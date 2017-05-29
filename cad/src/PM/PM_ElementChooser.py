@@ -198,7 +198,7 @@ class PM_ElementChooser( PM_MolecularModelingKit ):
         """
         currentElementNumber = self.getElementNumber()
 
-        if ELEMENT_ATOM_TYPES.has_key(currentElementNumber):
+        if currentElementNumber in ELEMENT_ATOM_TYPES:
             elementAtomTypes = ELEMENT_ATOM_TYPES[currentElementNumber]
         else:
             # Selected element has no hybrids.

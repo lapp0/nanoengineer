@@ -75,17 +75,17 @@ class nullGraphicsMode(GraphicsMode_API):
 
     def noop_method(self, *args, **kws):
         if debug_flags.atom_debug:
-            print "fyi: atom_debug: nullGraphicsMode noop method called -- probably ok; ignored"
+            print("fyi: atom_debug: nullGraphicsMode noop method called -- probably ok; ignored")
         return None #e print a warning?
     def __getattr__(self, attr): # in class nullGraphicsMode
         # note: this is not inherited by other GraphicsMode classes,
         # since we are not their superclass
         if not attr.startswith('_'):
             if debug_flags.atom_debug:
-                print "fyi: atom_debug: nullGraphicsMode.__getattr__(%r) -- probably ok; returned noop method" % attr
+                print("fyi: atom_debug: nullGraphicsMode.__getattr__(%r) -- probably ok; returned noop method" % attr)
             return self.noop_method
         else:
-            raise AttributeError, attr #e args?
+            raise AttributeError(attr) #e args?
 
     # GraphicsMode-specific null methods
 
@@ -312,7 +312,7 @@ class basicGraphicsMode(GraphicsMode_API):
                 if method(wX, wY):
                     return self._ccinstance
             elif debug_flags.atom_debug:
-                print "atom_debug: fyi: ccinstance %r with no want_event_position method" % (self._ccinstance,)
+                print("atom_debug: fyi: ccinstance %r with no want_event_position method" % (self._ccinstance,))
         return None
 
     # ==
@@ -667,11 +667,11 @@ class basicGraphicsMode(GraphicsMode_API):
                         ##e it might be better to require selobj's to return a part, compare that here,
                         # then call this for further conditions
                     if res is None:
-                        print "likely bug: %r.selobj_still_ok(glpane) returned None, "\
-                              "should return boolean (missing return statement?)" % (selobj,)
+                        print("likely bug: %r.selobj_still_ok(glpane) returned None, "\
+                              "should return boolean (missing return statement?)" % (selobj,))
                     return res
             if debug_flags.atom_debug:
-                print "debug: selobj_still_ok doesn't recognize %r, assuming ok" % (selobj,)
+                print("debug: selobj_still_ok doesn't recognize %r, assuming ok" % (selobj,))
             return True
         except:
             if debug_flags.atom_debug:
@@ -799,7 +799,7 @@ class basicGraphicsMode(GraphicsMode_API):
             # should never happen (unless a bad choice of perp is passed in),
             # but use old code as a last resort (it makes sense, and might even be equivalent for default perp)
             if env.debug(): #bruce 060316 added debug print; it should remain indefinitely if we rarely see it
-                print "debug: fyi: dragto planeXline failed, fallback to ptonline", point, perp, p1, p2
+                print("debug: fyi: dragto planeXline failed, fallback to ptonline", point, perp, p1, p2)
             point2 = ptonline(point, p1, norm(p2-p1))
         return point2
 
@@ -1186,7 +1186,7 @@ class basicGraphicsMode(GraphicsMode_API):
                 open_wiki_help_dialog( featurename)
             pass
         elif 0 and debug_flags.atom_debug:#bruce 051201 -- might be wrong depending on how subclasses call this, so disabled for now
-            print "atom_debug: fyi: glpane keyPress ignored:", key
+            print("atom_debug: fyi: glpane keyPress ignored:", key)
         return
 
     def keyPressAutoRepeating(self, key): #bruce 060416
@@ -1235,7 +1235,7 @@ class basicGraphicsMode(GraphicsMode_API):
         elif self.o.button == 'RMB':
             self.update_cursor_for_RMB()
         else:
-            print "basicMode.update_cursor() button ignored:", self.o.button
+            print("basicMode.update_cursor() button ignored:", self.o.button)
         return
 
     def update_cursor_for_no_MB(self): # mark 060228
@@ -1266,7 +1266,7 @@ class basicGraphicsMode(GraphicsMode_API):
         elif self.o.modkeys == 'Shift+Control':
             self.o.setCursor(self.w.ZoomPovCursor)
         else:
-            print "Error in update_cursor_for_MMB(): Invalid modkey=", self.o.modkeys
+            print("Error in update_cursor_for_MMB(): Invalid modkey=", self.o.modkeys)
         return
 
     def update_cursor_for_RMB(self): # mark 060228
@@ -1285,7 +1285,7 @@ class basicGraphicsMode(GraphicsMode_API):
         """
         color = get_selCurve_color(self.selSense, self.o.backgroundColor)
 
-        pl = zip(self.selCurve_List[:-1], self.selCurve_List[1:])
+        pl = list(zip(self.selCurve_List[:-1], self.selCurve_List[1:]))
         for pp in pl: # Draw the selection curve (lasso).
             drawline(color, pp[0], pp[1])
 
@@ -1295,7 +1295,7 @@ class basicGraphicsMode(GraphicsMode_API):
 
         if debug_flags.atom_debug and 0: # (keep awhile, might be useful)
             # debug code bruce 041214: also draw back of selection curve
-            pl = zip(self.o.selArea_List[:-1], self.o.selArea_List[1:])
+            pl = list(zip(self.o.selArea_List[:-1], self.o.selArea_List[1:]))
             for pp in pl:
                 drawline(color, pp[0], pp[1])
 

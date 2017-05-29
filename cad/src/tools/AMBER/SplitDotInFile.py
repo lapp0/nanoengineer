@@ -71,9 +71,9 @@ def parseInFile(fileName):
             r = float(columns[7])
             theta = float(columns[8])
             phi = float(columns[9])
-            print >>out, "%3d %4s %2s %s %3d %3d %3d %10.3f %10.3f %10.3f" % (nextIndex, igraph, isymbl, itree, na, nb, nc, r, theta, phi)
+            print("%3d %4s %2s %s %3d %3d %3d %10.3f %10.3f %10.3f" % (nextIndex, igraph, isymbl, itree, na, nb, nc, r, theta, phi), file=out)
             if (index != nextIndex and not warned):
-                print "%s %s index not sequential" % (fileName, newFileName)
+                print("%s %s index not sequential" % (fileName, newFileName))
                 warned = True
             nextIndex = nextIndex + 1
 

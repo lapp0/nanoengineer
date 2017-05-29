@@ -80,7 +80,7 @@ def canonicalize_featurename( featurename, warn = False):
     if warn and featurename != featurename0:
         msg = "developer warning: featurename %r was canonicalized to %r" % \
               ( featurename0, featurename )
-        print msg
+        print(msg)
 
     return featurename
 
@@ -208,7 +208,7 @@ def _determine_FeatureDescriptor( thing):
         return None
 
     if clas in _feature_class_tuple:
-        print "\n*** possible bug: %r probably ought to define __abstract_command_class = True" % short_name
+        print("\n*** possible bug: %r probably ought to define __abstract_command_class = True" % short_name)
             # if not true, after review, revise this print [bruce 080905]
         return None
 
@@ -243,14 +243,14 @@ def _determine_FeatureDescriptor( thing):
         # make it unique
         featurename = canonicalize_featurename( featurename, warn = True)
         featurename = featurename + " " + short_name
-        print
-        print "developer warning: auto-extending inherited featurename to make it unique:", featurename
-        print "    involved classes: %r and its subclass %r" % \
+        print()
+        print("developer warning: auto-extending inherited featurename to make it unique:", featurename)
+        print("    involved classes: %r and its subclass %r" % \
               ( short_class_name( inherited_from),
-                short_class_name( clas) )
-        print "    likely fixes: either add %r to _KLUGE_PERMIT_INHERITED_CLASSNAMES," % ( short_name, )
-        print "    or define a featurename class constant for it,"
-        print "    or declare it as abstract by defining __abstract_command_class = True in it."
+                short_class_name( clas) ))
+        print("    likely fixes: either add %r to _KLUGE_PERMIT_INHERITED_CLASSNAMES," % ( short_name, ))
+        print("    or define a featurename class constant for it,")
+        print("    or declare it as abstract by defining __abstract_command_class = True in it.")
         pass # use new featurename to make a new description, below
 
     else:
@@ -267,12 +267,12 @@ def _determine_FeatureDescriptor( thing):
 
     # warn if featurename is duplicated (but return it anyway)
 
-    if _descriptor_for_featurename.has_key( featurename):
-        print "developer warning: duplicate featurename %r for %r and %r" % \
+    if featurename in _descriptor_for_featurename:
+        print("developer warning: duplicate featurename %r for %r and %r" % \
               ( featurename,
                 _descriptor_for_featurename[ featurename ].thing,
                 descriptor.thing
-               )
+               ))
     else:
         _descriptor_for_featurename[ featurename] = descriptor
 
@@ -288,7 +288,7 @@ def _choose_descriptor_constructor( subclass):
     if more than one matches, return the most specific (or error if we can't).
     """
     candidates = [(feature_class, descriptor_constructor)
-                  for feature_class, descriptor_constructor in _feature_classes.iteritems()
+                  for feature_class, descriptor_constructor in _feature_classes.items()
                   if issubclass( subclass, feature_class )
                  ]
     assert candidates
@@ -324,7 +324,7 @@ def command_package_part_of_module_name(name):
     if 'commands' in name_parts:
         where = name_parts.index('commands')
         if where not in (0, 1):
-            print "unusual location for 'commands' in module name:", name
+            print("unusual location for 'commands' in module name:", name)
         if where < len(name_parts) - 1:
             command_package = '.'.join(name_parts[0:where+2])
     return command_package
@@ -352,8 +352,8 @@ class otherCommandPackage_Descriptor( CommandDescriptor):
         return ( 0, self.command_package )
 
     def print_plain(self):
-        print "command_package:", self.command_package
-        print "type: command package (no command found)"
+        print("command_package:", self.command_package)
+        print("type: command package (no command found)")
     pass
 
 
@@ -399,20 +399,20 @@ class basicCommand_Descriptor( CommandDescriptor): # refile with basicCommand?
             # porting_status is temporary code during the port to USE_COMMAND_STACK
         fully_ported = not porting_status
         if fully_ported:
-            print "featurename: <b>%s</b>" % self.featurename
+            print("featurename: <b>%s</b>" % self.featurename)
         else:
-            print "featurename:", self.featurename
-        print "classname:", short_class_name( self.command_class)
-        print "command_package:", self.command_package
-        print "type:", self.feature_type
+            print("featurename:", self.featurename)
+        print("classname:", short_class_name( self.command_class))
+        print("command_package:", self.command_package)
+        print("type:", self.feature_type)
         if self.command_class.is_fixed_parent_command():
             # note: it works to call this classmethod directly on the class
-            print "level:", self.command_class.command_level, \
-                  "(%s)" % (self.command_class.command_parent or "no command_parent")
+            print("level:", self.command_class.command_level, \
+                  "(%s)" % (self.command_class.command_parent or "no command_parent"))
         else:
-            print "level:", self.command_class.command_level
+            print("level:", self.command_class.command_level)
         if not fully_ported:
-            print "porting status:", porting_status
+            print("porting status:", porting_status)
         # todo: more
         return
 

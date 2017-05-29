@@ -102,14 +102,14 @@ class PM_ListWidget( QListWidget ):
         """
 
         if 0: # Debugging code
-            print "PM_ListWidget.__init__():"
-            print "  label        = ", label
-            print "  labelColumn  = ", labelColumn
-            print "  items        = ", items
-            print "  defaultRow   = ", defaultRow
-            print "  setAsDefault = ", setAsDefault
-            print "  heightByRows = ", heightByRows
-            print "  spanWidth    = ", spanWidth
+            print("PM_ListWidget.__init__():")
+            print(("  label        = ", label))
+            print(("  labelColumn  = ", labelColumn))
+            print(("  items        = ", items))
+            print(("  defaultRow   = ", defaultRow))
+            print(("  setAsDefault = ", setAsDefault))
+            print(("  heightByRows = ", heightByRows))
+            print(("  spanWidth    = ", spanWidth))
 
         QListWidget.__init__(self)
 
@@ -153,7 +153,7 @@ class PM_ListWidget( QListWidget ):
         in the widget. <row> is ignored. This is considered a bug.
         -- Mark 2007-06-04
         """
-        if row <> 0:
+        if row != 0:
             msg = "PM_ListWidget.insertItems(): <row> must be zero."\
                 "See docstring for details:"
             print_compact_traceback(msg)

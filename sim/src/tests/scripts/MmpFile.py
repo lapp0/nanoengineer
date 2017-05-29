@@ -78,11 +78,11 @@ class MmpFile:
         lines = Atom.FileLineIterator(lines.split(os.linesep))
         try:
             while True:
-                line = lines.next()
+                line = next(lines)
                 atm = MmpFile._AtomHolder(self)
                 if atm.fromMmp(line):
                     self.lines.append(atm)
-                    line = lines.next()
+                    line = next(lines)
                     if atm.mmpBonds(line):
                         x = MmpFile._Line()
                         x.fromMmp(line)
@@ -133,7 +133,7 @@ if __name__ == "__main__":
         outf.close()
     if False:
         for a in m.atoms:
-            print a.bonds
+            print(a.bonds)
     outf = os.popen("diff -u - %s" % input, "w")
     m.write(outf)
     outf.close()

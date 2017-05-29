@@ -76,7 +76,7 @@ def fix_atom_classes( changed_atoms): #e rename, real_atom; call differently, se
     and/or killed atoms.
     (Also patch changed_atoms with replaced atoms if necessary.)
     """
-    for atom in changed_atoms.itervalues():
+    for atom in changed_atoms.values():
         if not atom.killed() and not atom.is_singlet():
             old_class = atom.__class__
             ## new_class = atom._f_desired_class ### IMPLEM, maybe revise details

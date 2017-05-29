@@ -119,10 +119,10 @@ class PlotTool(QWidget, Ui_PlotToolDialog):
         del traceLines
 
         if debug_plottool:
-            print "columns_lineno (0-based) =", columns_lineno
-            print "  that line is:", headerLines[columns_lineno]
-            print "number_of_columns =", number_of_columns
-            print "field_to_content = %r" % (field_to_content,)
+            print("columns_lineno (0-based) =", columns_lineno)
+            print("  that line is:", headerLines[columns_lineno])
+            print("number_of_columns =", number_of_columns)
+            print("field_to_content = %r" % (field_to_content,))
 
         # figure out column headers all at once
         column_header = {}
@@ -130,7 +130,7 @@ class PlotTool(QWidget, Ui_PlotToolDialog):
             column_header[i] = headerLines[columns_lineno + 1 + i][2:-1]
                 # strip off "# " and final newline (would .strip be better or worse??)
             if debug_plottool:
-                print "column header %d is %r" % (i, column_header[i],)
+                print("column header %d is %r" % (i, column_header[i],))
             pass
 
         # use the parsed header
@@ -311,10 +311,10 @@ class PlotTool(QWidget, Ui_PlotToolDialog):
                     pass
                 pass
         except: # We had an exception.
-            print"exception in GNUplot; continuing: "
+            print("exception in GNUplot; continuing: ")
             if plotProcess:
-                print ">>> %d" % plotProcess.error()
-                print "Killing process"
+                print(">>> %d" % plotProcess.error())
+                print("Killing process")
                 plotProcess.kill()
                 plotProcess = None
 

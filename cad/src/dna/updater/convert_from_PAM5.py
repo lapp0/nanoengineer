@@ -44,7 +44,7 @@ def convert_from_PAM5( changed_atoms): # might be misnamed, if it turns out it d
 
     pam5_atoms = [] #k needed? not yet used, might not be useful until we have ladders... ###
 
-    for atom in changed_atoms.itervalues():
+    for atom in changed_atoms.values():
         chunk = atom.molecule
         if chunk is None or atom.key not in chunk.atoms:
             continue # don't touch nonlive atoms
@@ -228,7 +228,7 @@ def _convert_Pl5(atom):
 # ==
 
 def _save_Pl_info( sugar, direction_to_Pl, Pl_posn ):
-    print "_save_Pl_info is nim: %r" % ((sugar, direction_to_Pl, Pl_posn),)
+    print("_save_Pl_info is nim: %r" % ((sugar, direction_to_Pl, Pl_posn),))
 
 
 # end

@@ -74,10 +74,10 @@ def process_found(found):
     """
     @type found: dict mapping identifier names to their kind
     """
-    items = found.items()
+    items = list(found.items())
     items.sort()
     for name, kind in items:
-        print _PREFIX_FOR_KIND[kind], name
+        print(_PREFIX_FOR_KIND[kind], name)
     return
 
 def py_tokenize(filename_in):
@@ -88,7 +88,7 @@ def py_tokenize(filename_in):
     g = generate_tokens(file_in.readline)
     li = list(g)
     file_in.close()
-    li2 = map(process_token, li)
+    li2 = list(map(process_token, li))
     del li2
     return
 
@@ -105,7 +105,7 @@ def run():
         dofiles(filenames)
     else:
         dofiles([None]) # None means use stdin
-    print
+    print()
     process_found(_found)
     _found = None
     return

@@ -48,7 +48,7 @@ class Comment(SimpleCopyMixin, Node):
         return
 
     def assert_valid_line(self, line): #bruce 070502
-        assert type(line) in (type(""), type(u"")), "invalid type for line = %r, with str = %s" % (line, line)
+        assert type(line) in (type(""), type("")), "invalid type for line = %r, with str = %s" % (line, line)
         return
 
     def set_text(self, text):
@@ -57,7 +57,7 @@ class Comment(SimpleCopyMixin, Node):
         to the lines in the given str or unicode python string, or QString.
         """
         oldlines = self.lines
-        if type(text) in (type(""), type(u"")):
+        if type(text) in (type(""), type("")):
             # this (text.split) works for str or unicode text;
             # WARNING: in Qt4 it would also work for QString, but produces QStrings,
             # so we have to do the explicit type test rather than try/except like in Qt3.
@@ -66,11 +66,11 @@ class Comment(SimpleCopyMixin, Node):
             lines = text.split('\n')
         else:
             # it must be a QString
-            text = unicode(text)
+            text = str(text)
             ## self.text = text # see if edit still works after this -- it does
             lines = text.split('\n')
             # ok that they are unicode but needn't be? yes.
-        map( self.assert_valid_line, lines)
+        list(map( self.assert_valid_line, lines))
         self.lines = lines
         if oldlines != lines:
             self.changed()
@@ -80,7 +80,7 @@ class Comment(SimpleCopyMixin, Node):
         """
         return our text (perhaps as a unicode string, whether or not unicode is needed)
         """
-        return u'\n'.join(self.lines) #bruce 070502 bugfix: revert Qt4 porting error which broke this for unicode
+        return '\n'.join(self.lines) #bruce 070502 bugfix: revert Qt4 porting error which broke this for unicode
 
     def _add_line(self, line, encoding = 'ascii'):
         """
@@ -92,7 +92,7 @@ class Comment(SimpleCopyMixin, Node):
             line = line.decode(encoding)
         else:
             if encoding != 'ascii':
-                print "Comment._add_line treating unknown encoding as if ascii:", encoding
+                print("Comment._add_line treating unknown encoding as if ascii:", encoding)
             # no need to decode
         self.assert_valid_line(line)
         self.lines.append(line)
@@ -144,7 +144,7 @@ class Comment(SimpleCopyMixin, Node):
             except:
                 return 'utf-8', line.encode('utf-8') # needed if it contains unicode characters
             # in future we might have more possibilities, e.g. html or images or links...
-        encodedlines = map( encodeline, lines)
+        encodedlines = list(map( encodeline, lines))
         encoding1, line1 = encodedlines[0] # this works even if the comment is empty (1 line, length 0)
         mapping.write("comment (" + mapping.encode_name(self.name) + ") %s %s\n" % (encoding1, line1))
         for encoding1, line1 in encodedlines[1:]:

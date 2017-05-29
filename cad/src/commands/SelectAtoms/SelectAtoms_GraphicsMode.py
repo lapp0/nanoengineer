@@ -304,8 +304,8 @@ class SelectAtoms_basicGraphicsMode(Select_basicGraphicsMode):
         if selobj.atom1.is_singlet() or selobj.atom2.is_singlet():
             # this should never happen, since singlet-bond is part of
             # singlet for selobj purposes [bruce 050708]
-            print "bug: selobj is a bond to a bondpoint, should have " \
-                  "borrowed glname from that bondpoint", selobj
+            print("bug: selobj is a bond to a bondpoint, should have " \
+                  "borrowed glname from that bondpoint", selobj)
             return None # precaution
         else:
             if self.only_highlight_singlets:
@@ -665,8 +665,8 @@ class SelectAtoms_basicGraphicsMode(Select_basicGraphicsMode):
             # and since higher than needed values would be basically ok anyway.
             #[bruce 060316]
             if env.debug(): # leave this in until we see it printed sometime
-                print "debug: fyi: atomSetup dragpoint try1 was bad, %r "\
-                      "for %r, reverting to ptonline" % (dragpoint, apos0)
+                print("debug: fyi: atomSetup dragpoint try1 was bad, %r "\
+                      "for %r, reverting to ptonline" % (dragpoint, apos0))
             p1, p2 = self.o.mousepoints(event)
             dragpoint = ptonline(apos0, p1, norm(p2-p1))
             del p1,p2
@@ -1045,8 +1045,8 @@ class SelectAtoms_basicGraphicsMode(Select_basicGraphicsMode):
             # to False. [bruce 070413]
             return self.OLD_get_dragatoms_and_baggage()
 
-        print "fyi: using experimental code for get_dragatoms_and_baggage;"\
-              "smooth_reshaping_drag = %r" % self.smooth_reshaping_drag
+        print("fyi: using experimental code for get_dragatoms_and_baggage;"\
+              "smooth_reshaping_drag = %r" % self.smooth_reshaping_drag)
             # Remove this print after FNANO when this code becomes standard,
             #at least for non-smooth_reshaping_drag case.
             # But consider changing the Undo cmdname, drag -> smooth drag or
@@ -1135,7 +1135,7 @@ class SelectAtoms_basicGraphicsMode(Select_basicGraphicsMode):
                       #nonbaggage neighbor) to themselves
         ## unselected = {} # maps an unselected nonbaggage atom
         ##(next to one or more selected ones) to an arbitrary selected one
-        for atom in selatoms.itervalues():
+        for atom in selatoms.values():
             baggage, nonbaggage = atom.baggage_and_other_neighbors()
             for b in baggage:
                 monovalents[b] = atom # note: b (I mean b.key) might
@@ -1154,7 +1154,7 @@ class SelectAtoms_basicGraphicsMode(Select_basicGraphicsMode):
         #    are in it, to those neighbors
         #     (removing them from that set) (permitting cycles, which are
         #     always length 2 -- handled later ###DOIT)
-        for atom in atoms_todo.itervalues():
+        for atom in atoms_todo.values():
             if len(atom.bonds) == 1:
                 bond = atom.bonds[0]
                 if bond.atom1.key in atoms_todo and bond.atom2.key in atoms_todo:
@@ -1203,7 +1203,7 @@ class SelectAtoms_basicGraphicsMode(Select_basicGraphicsMode):
             # note that we can't say "it's atoms_todo", since that maps atom
             #keys to atoms.
             # (perhaps a mistake.)
-        for atom in atoms_todo.itervalues():
+        for atom in atoms_todo.values():
             unconnected[atom] = atom
         ## del atoms_todo
             ## SyntaxError: can not delete variable 'atoms_todo' referenced
@@ -1215,7 +1215,7 @@ class SelectAtoms_basicGraphicsMode(Select_basicGraphicsMode):
 
         assert len(monovalents) + len(layers_union) + len(unconnected) == \
                len_total
-        assert len(layers_union) == sum(map(len, layers.values()))
+        assert len(layers_union) == sum(map(len, list(layers.values())))
 
         # Warning: most sets at this point map atoms to themselves, but
         # monovalents maps them to their neighbors
@@ -1277,14 +1277,14 @@ class SelectAtoms_basicGraphicsMode(Select_basicGraphicsMode):
         del unconnected
 
         assert max_counter in layers
-        for N, layer in layers.iteritems():
+        for N, layer in layers.items():
             assert N <= max_counter
             for atom in layer:
                 labels[atom] = N
         N = layer = None
         del N, layer
 
-        for m, n in monovalents.iteritems():
+        for m, n in monovalents.items():
             where = labels[n]
             labels[m] = where
             layers[where][m] = m
@@ -1301,7 +1301,7 @@ class SelectAtoms_basicGraphicsMode(Select_basicGraphicsMode):
         fastatoms = layers.pop(max_counter)
 
         slowatoms = {}
-        for layer in layers.itervalues():
+        for layer in layers.values():
             slowatoms.update(layer)
         layer = None
         del layer
@@ -1331,10 +1331,10 @@ class SelectAtoms_basicGraphicsMode(Select_basicGraphicsMode):
             doit(at)
         dragatoms = []
         dragchunks = []
-        for atomset in atomsets.itervalues():
+        for atomset in atomsets.values():
             assert atomset
             mol = None # to detect bugs
-            for key, at in atomset.iteritems():
+            for key, at in atomset.items():
                 mol = at.molecule
                 break # i.e. pick an arbitrary item... is there an easier way?
                       #is this way efficient?
@@ -1346,7 +1346,7 @@ class SelectAtoms_basicGraphicsMode(Select_basicGraphicsMode):
                 ##e soon we can optimize this case too by separating those
                 ##atoms into a temporary chunk,
                 # but for now, just drag them individually as before:
-                dragatoms.extend(atomset.itervalues())
+                dragatoms.extend(iter(atomset.values()))
                     #k itervalues ok here? Should be, and seems to work ok.
                     #Faster than .values? Might be, in theory; not tested.
             continue
@@ -1354,7 +1354,7 @@ class SelectAtoms_basicGraphicsMode(Select_basicGraphicsMode):
         assert len(fastatoms) == \
                len(dragatoms) + sum([len(chunk.atoms) for chunk in dragchunks])
 
-        res = (dragatoms, slowatoms.values(), dragchunks) # these are all lists
+        res = (dragatoms, list(slowatoms.values()), dragchunks) # these are all lists
 
         return res # from (NEW) get_dragatoms_and_baggage
 
@@ -1399,7 +1399,7 @@ class SelectAtoms_basicGraphicsMode(Select_basicGraphicsMode):
         # selected atoms if a selected atom is another selected atom's baggage.
         # BTW, it is not possible for an atom to end up in self.baggage twice.
 
-        for at in selatoms.itervalues():
+        for at in selatoms.values():
             bag, nbag_junk = at.baggage_and_other_neighbors()
             baggage.extend(bag) # the baggage we'll keep.
 
@@ -1410,7 +1410,7 @@ class SelectAtoms_basicGraphicsMode(Select_basicGraphicsMode):
         # It is critical that dragatoms does not contain any baggage atoms or
         #they
         # will be moved twice in drag_selected_atoms(), so we remove them here.
-        for key, at in selatoms.iteritems():
+        for key, at in selatoms.items():
             if key not in bagdict: # no baggage atoms in dragatoms.
                 dragatoms.append(at)
 
@@ -1446,10 +1446,10 @@ class SelectAtoms_basicGraphicsMode(Select_basicGraphicsMode):
         dragatoms = []
         baggage = [] # no longer used
         dragchunks = []
-        for atomset in atomsets.itervalues():
+        for atomset in atomsets.values():
             assert atomset
             mol = None # to detect bugs
-            for key, at in atomset.iteritems():
+            for key, at in atomset.items():
                 mol = at.molecule
                 break # i.e. pick an arbitrary item... is there an easier way?
                       #is this way efficient?
@@ -1461,7 +1461,7 @@ class SelectAtoms_basicGraphicsMode(Select_basicGraphicsMode):
                 ##e soon we can optimize this case too by separating those atoms
                 ##into a temporary chunk,
                 # but for now, just drag them individually as before:
-                dragatoms.extend(atomset.itervalues())
+                dragatoms.extend(iter(atomset.values()))
                     #k itervalues ok here? Should be, and seems to work ok.
                     #Faster than .values? Might be, in theory; not tested.
             continue
@@ -1690,7 +1690,7 @@ class SelectAtoms_basicGraphicsMode(Select_basicGraphicsMode):
             if self.smooth_reshaping_drag:
                 # figure out a modified offset by averaging the offset-ratio for
                 #this jig's atoms
-                ratio = average_value(map(self.offset_ratio, j.atoms),
+                ratio = average_value(list(map(self.offset_ratio, j.atoms)),
                                       default = 1.0)
                 offset = offset * ratio # not *=, since it's a mutable Numeric
                                         #array!
@@ -1781,8 +1781,8 @@ class SelectAtoms_basicGraphicsMode(Select_basicGraphicsMode):
         elif self.o.modkeys == 'Shift+Control':
             self.o.setCursor(self.w.DeleteCursor)
         else:
-            print "Error in update_cursor_for_no_MB():"\
-                  "Invalid modkey = ", self.o.modkeys
+            print("Error in update_cursor_for_no_MB():"\
+                  "Invalid modkey = ", self.o.modkeys)
         return
 
     def update_cursor_for_no_MB_selection_filter_enabled(self):
@@ -1799,8 +1799,8 @@ class SelectAtoms_basicGraphicsMode(Select_basicGraphicsMode):
             # Fixes bug 1604. mark 060303.
             self.o.setCursor(self.w.DeleteAtomsFilterCursor)
         else:
-            print "Error in update_cursor_for_no_MB(): "\
-                  "Invalid modkey = ", self.o.modkeys
+            print("Error in update_cursor_for_no_MB(): "\
+                  "Invalid modkey = ", self.o.modkeys)
         return
 
     def rightShiftDown(self, event):
@@ -1911,9 +1911,9 @@ class SelectAtoms_basicGraphicsMode(Select_basicGraphicsMode):
         if selatom is not None:
             if selobj is not selatom:
                 if debug_flags.atom_debug:
-                    print "atom_debug: selobj %r not consistent with" \
+                    print("atom_debug: selobj %r not consistent with" \
                          "selatom %r -- using selobj = selatom" % (selobj,
-                                                                   selatom)
+                                                                   selatom))
                 selobj = selatom # just for our return value, not changed in
                                  #GLPane (self.o)
         else:

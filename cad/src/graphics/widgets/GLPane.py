@@ -211,11 +211,11 @@ class GLPane(
             msg = ("Warning: your graphics hardware did not provide an OpenGL stencil buffer.\n"
                    "This will slow down some graphics operations.")
             ## env.history.message( regmsg( msg)) -- too early for that to work (need to fix that sometime, to queue the msg)
-            print msg
+            print(msg)
             if debug_flags.atom_debug:
-                print "atom_debug: details of lack of stencil bits: " \
+                print("atom_debug: details of lack of stencil bits: " \
                       "self.format().stencil() = %r, glGetInteger(GL_STENCIL_BITS) = %r" % \
-                      ( self.format().stencil() , glGetInteger(GL_STENCIL_BITS) )
+                      ( self.format().stencil() , glGetInteger(GL_STENCIL_BITS) ))
                     # Warning: these values can be False, None -- I don't know why, since None is not an int!
                     # But see above for a guess. [bruce 050610]
             pass
@@ -370,8 +370,8 @@ class GLPane(
 
 
         if debug_print_paintGL_calls:
-            print
-            print "calling paintGL"
+            print()
+            print("calling paintGL")
 
         #bruce 081230 part of a fix for bug 2964
         # (statusbar not updated by hover highlighted object, on Mac OS 10.5.5-6)
@@ -390,11 +390,11 @@ class GLPane(
 
         if painted_anything:
             if debug_print_paintGL_calls:
-                print " it painted (redraw %d)" % env.redraw_counter
+                print(" it painted (redraw %d)" % env.redraw_counter)
             pass
         else:
             if debug_print_paintGL_calls:
-                print " it didn't paint ***"
+                print(" it didn't paint ***")
                     # note: not seen during zoom to area (nor is painted); maybe no gl_update then?
             if no_swapBuffers_when_nothing_painted:
                 want_swapBuffers = False
@@ -415,7 +415,7 @@ class GLPane(
         else:
             self.setAutoBufferSwap(False)
             if debug_print_paintGL_calls:
-                print " (not doing autoBufferSwap)"
+                print(" (not doing autoBufferSwap)")
 
         # note: before the above code was added, we could test the default state
         # like this:
@@ -455,9 +455,9 @@ class GLPane(
         """
         if verify:
             # record pixels, change colors to make buffers differ, compare later
-            print "verify is nim" ###
+            print("verify is nim") ###
         if use_CopyPixels:
-            print "use_CopyPixels is nim, no swapBuffers is occurring" ### Q: does this prevent all drawing??
+            print("use_CopyPixels is nim, no swapBuffers is occurring") ### Q: does this prevent all drawing??
         else:
             self.swapBuffers()
         if verify:
@@ -600,8 +600,8 @@ class GLPane(
             # Accordingly, we only complain, we don't close it.
             # Callers should close it before calling this method.
             if not self.assy.assy_closed:
-                print "\nlikely bug: GLPane %r .setAssy(%r) but old assy %r " \
-                      "was not closed" % (self, assy, self.assy)
+                print("\nlikely bug: GLPane %r .setAssy(%r) but old assy %r " \
+                      "was not closed" % (self, assy, self.assy))
             ##e should previous self.assy be destroyed, or at least
             # made to no longer point to self? [bruce 051227 question]
             pass
@@ -656,11 +656,11 @@ class GLPane(
 
         if self.selatom is not None: #bruce 050612 precaution (scheme could probably be cleaned up #e)
             if debug_flags.atom_debug:
-                print "atom_debug: update_after_new_graphicsMode storing None over self.selatom", self.selatom
+                print("atom_debug: update_after_new_graphicsMode storing None over self.selatom", self.selatom)
             self.selatom = None
         if self.selobj is not None: #bruce 050612 bugfix; to try it, in Build drag selatom over Select Atoms toolbutton & press it
             if debug_flags.atom_debug:
-                print "atom_debug: update_after_new_graphicsMode storing None over self.selobj", self.selobj
+                print("atom_debug: update_after_new_graphicsMode storing None over self.selobj", self.selobj)
             self.set_selobj(None)
 
         # event handlers
@@ -1029,7 +1029,7 @@ class GLPane(
                         #bruce 070203 added this print; not if 1 in case it's too verbose due as mouse moves
                         print_compact_traceback(msg + ': ')
                     else:
-                        print "bug: %s; use ATOM_DEBUG to see details" % msg
+                        print("bug: %s; use ATOM_DEBUG to see details" % msg)
             else:
                 msg = " "
 
@@ -1108,7 +1108,7 @@ class GLPane(
                 method = selobj.nodes_containing_selobj
             except AttributeError:
                 # should never happen, since Selobj_API defines this method
-                print "bug: no method nodes_containing_selobj in %r" % (selobj,)
+                print("bug: no method nodes_containing_selobj in %r" % (selobj,))
                 pass
             else:
                 try:

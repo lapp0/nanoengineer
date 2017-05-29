@@ -204,7 +204,7 @@ class PM_DnaSearchResultTable(PM_TableWidget):
             else:
                 row = self.row(key)
                 actual_key = self.item(row, 0)
-            assert self._itemDictionary.has_key(actual_key)
+            assert actual_key in self._itemDictionary
             item = self._itemDictionary[actual_key]
             if not item.picked:
                 item.pick()
@@ -230,7 +230,7 @@ class PM_DnaSearchResultTable(PM_TableWidget):
         #updated.
         self._suppress_itemSelectionChanged_signal = True
 
-        for key, value in self._itemDictionary.iteritems():
+        for key, value in list(self._itemDictionary.items()):
             if value in selectedItemList:
                 if not key.isSelected():
                     key.setSelected(True)

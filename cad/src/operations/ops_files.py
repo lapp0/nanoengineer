@@ -70,7 +70,7 @@ from utilities.constants import str_or_unicode
 
 from ne1_ui.FetchPDBDialog import FetchPDBDialog
 from PyQt4.Qt import SIGNAL
-from urllib import urlopen
+from urllib.request import urlopen
 
 debug_babel = False   # DO NOT COMMIT with True
 
@@ -366,7 +366,7 @@ class fileSlotsMixin: #bruce 050907 moved these methods out of class MWsemantics
                     env.history.message(msg)
 
                 else:
-                    print "Open Babel had problem converting ", import_filename, "->", mmpfile
+                    print("Open Babel had problem converting ", import_filename, "->", mmpfile)
                     env.history.message(cmd + redmsg("File translation failed."))
 
             self.glpane.scale = self.assy.bbox.scale()
@@ -397,7 +397,7 @@ class fileSlotsMixin: #bruce 050907 moved these methods out of class MWsemantics
         else:
             #Its a clipboard part, probably a chunk or a jig not contained in
             #a group.
-            print "No support for clipboard at this time"
+            print("No support for clipboard at this time")
             return
 
         if numberOfMembers == 0:
@@ -447,11 +447,11 @@ class fileSlotsMixin: #bruce 050907 moved these methods out of class MWsemantics
         else:
             #Its a clipboard part, probably a chunk or a jig not contained in
             #a group.
-            print "No support for clipboard at this time"
+            print("No support for clipboard at this time")
             return
 
         if numberOfMembers == 0:
-            print "Nothing to export"
+            print("Nothing to export")
             return
 
         currentFilename = self.getCurrentFilename()
@@ -490,7 +490,7 @@ class fileSlotsMixin: #bruce 050907 moved these methods out of class MWsemantics
 
         if debug_flags.atom_debug:
             linenum()
-            print "start fileOpenBabelExport()"
+            print("start fileOpenBabelExport()")
 
         cmd = greenmsg("Export File: ")
 
@@ -589,7 +589,7 @@ class fileSlotsMixin: #bruce 050907 moved these methods out of class MWsemantics
             env.history.message(cmd + "Cancelled")
             if debug_flags.atom_debug:
                 linenum()
-                print "fileOpenBabelExport cancelled because user cancelled"
+                print("fileOpenBabelExport cancelled because user cancelled")
             return
         export_filename = str(export_filename)
 
@@ -602,7 +602,7 @@ class fileSlotsMixin: #bruce 050907 moved these methods out of class MWsemantics
 
         if debug_flags.atom_debug:
             linenum()
-            print "export_filename", repr(export_filename)
+            print("export_filename", repr(export_filename))
 
         dir, fil, ext = _fileparse(export_filename)
         if ext == ".mmp":
@@ -618,14 +618,14 @@ class fileSlotsMixin: #bruce 050907 moved these methods out of class MWsemantics
             dir, fil, ext = _fileparse(export_filename)
             if debug_flags.atom_debug:
                 linenum()
-                print "dir, fil, ext :", repr(dir), repr(fil), repr(ext)
+                print("dir, fil, ext :", repr(dir), repr(fil), repr(ext))
 
             tmpdir = find_or_make_Nanorex_subdir('temp')
             tmp_mmp_filename = os.path.join(tmpdir, fil + ".mmp")
 
             if debug_flags.atom_debug:
                 linenum()
-                print "tmp_mmp_filename :", repr(tmp_mmp_filename)
+                print("tmp_mmp_filename :", repr(tmp_mmp_filename))
 
             # We simply want to save a copy of the MMP file, not its Part Files, too.
             # savePartFiles = False does this. Mark 2007-06-05
@@ -637,18 +637,18 @@ class fileSlotsMixin: #bruce 050907 moved these methods out of class MWsemantics
             if result and os.path.exists(export_filename):
                 if debug_flags.atom_debug:
                     linenum()
-                    print "file translation OK"
+                    print("file translation OK")
                 env.history.message( cmd + "File exported: [ " + export_filename + " ]" )
             else:
                 if debug_flags.atom_debug:
                     linenum()
-                    print "file translation failed"
-                print "Problem translating ", tmp_mmp_filename, '->', export_filename
+                    print("file translation failed")
+                print("Problem translating ", tmp_mmp_filename, '->', export_filename)
                 env.history.message(cmd + redmsg("File translation failed."))
 
         if debug_flags.atom_debug:
             linenum()
-            print "finish fileOpenBabelExport()"
+            print("finish fileOpenBabelExport()")
 
     def launch_ne1_openbabel(self, in_format, infile, out_format, outfile):
         """
@@ -677,19 +677,19 @@ class fileSlotsMixin: #bruce 050907 moved these methods out of class MWsemantics
             program = os.path.normpath('/usr/bin/babel')
 
         if not os.path.exists(program):
-            print "Babel program not found here: ", program
+            print("Babel program not found here: ", program)
             return False # failure
 
         # Will (Ware) had this debug arg for our version of Open Babel, but
         # I've no idea if it works now or what it does. Mark 2007-06-05.
         if debug_flags.atom_debug:
             debugvar = "WWARE_DEBUG=1"
-            print "debugvar =", debugvar
+            print("debugvar =", debugvar)
         else:
             debugvar = None
 
         if debug_flags.atom_debug:
-            print "program =", program
+            print("program =", program)
 
         infile = os.path.normpath(infile)
         outfile = os.path.normpath(outfile)
@@ -703,7 +703,7 @@ class fileSlotsMixin: #bruce 050907 moved these methods out of class MWsemantics
             if not arg:
                 continue # For debugvar.
             if debug_flags.atom_debug:
-                print "argument", i, " :", repr(arg)
+                print("argument", i, " :", repr(arg))
             i += 1
             arguments.append(arg)
 
@@ -727,7 +727,7 @@ class fileSlotsMixin: #bruce 050907 moved these methods out of class MWsemantics
             babelLibPath = babelLibPath + '/openbabel'
             os.environ['BABEL_LIBDIR'] = babelLibPath
 
-        print "launching openbabel:", program, [str_or_unicode(arg) for arg in arguments]
+        print("launching openbabel:", program, [str_or_unicode(arg) for arg in arguments])
 
         proc = QProcess()
         proc.start(program, arguments) # Mark 2007-06-05
@@ -735,7 +735,7 @@ class fileSlotsMixin: #bruce 050907 moved these methods out of class MWsemantics
         if not proc.waitForFinished (100000):
             # Wait for 100000 milliseconds (100 seconds)
             # If not done by then, return an error.
-            print "openbabel timeout (100 sec)"
+            print("openbabel timeout (100 sec)")
             return False # failure
 
         exitStatus = proc.exitStatus()
@@ -744,12 +744,12 @@ class fileSlotsMixin: #bruce 050907 moved these methods out of class MWsemantics
         stderr2 = stderr2.strip()
         success = (exitStatus == 0 and stderr2 == "1 molecule converted")
         if not success or debug_flags.atom_debug:
-            print "exit status:", exitStatus
-            print "stderr says:", stderr
-            print "stderr2 says:"%stderr2
-            print "'success' is:", success
-            print "stderr2 == str(1 molecule converted)?" , (stderr2 == "1 molecule converted")
-            print "finish launch_ne1_openbabel(%s, %s)" % (repr(infile), repr(outfile))
+            print("exit status:", exitStatus)
+            print("stderr says:", stderr)
+            print("stderr2 says:"%stderr2)
+            print("'success' is:", success)
+            print("stderr2 == str(1 molecule converted)?" , (stderr2 == "1 molecule converted"))
+            print("finish launch_ne1_openbabel(%s, %s)" % (repr(infile), repr(outfile)))
         return success
 
     def fileInsertMmp(self):
@@ -1593,7 +1593,7 @@ class fileSlotsMixin: #bruce 050907 moved these methods out of class MWsemantics
                 #   might need some code cleanups. what's done to it? worry about saver code reset_changed on it...
                 msg = "Save Selection: not yet fully implemented; saved MMP file lacks viewpoint and gives warnings when read."
                 # in fact, it lacks chunk/group structure and display modes too, and gets hydrogenated as if for sim!
-                print msg
+                print(msg)
                 env.history.message( orangemsg(msg) )
             elif ext == ".pdb": #bruce 050927; for now, only used by Save Selection
                 type = "PDB"
@@ -1783,7 +1783,7 @@ class fileSlotsMixin: #bruce 050907 moved these methods out of class MWsemantics
                         env.history.h_update() # needed, since following op doesn't processEvents and might take a long time
                 try:
                     shutil.rmtree(newPartFilesDir)
-                except Exception, e:
+                except Exception as e:
                     set_waitcursor(False)
                     return 1, ("Problem removing an existing part files directory [%s]" % newPartFilesDir
                                + " - ".join(map(str, e.args)))
@@ -1797,7 +1797,7 @@ class fileSlotsMixin: #bruce 050907 moved these methods out of class MWsemantics
 
         try:
             shutil.copytree(oldPartFilesDir, newPartFilesDir)
-        except Exception, e:
+        except Exception as e:
             eic.handle_exception() # BUG: Undefined variable eic (fyi, no handle_exception method is defined in NE1)
             set_waitcursor(False)
             return 1, ("Problem copying files to the new parts file directory " + newPartFilesDir
@@ -1848,7 +1848,7 @@ class fileSlotsMixin: #bruce 050907 moved these methods out of class MWsemantics
             "&Save", "&Discard", "Cancel",
             0,      # Enter == button 0
             2 )     # Escape == button 2
-        print "fyi: dialog choice =", ["Save", "Discard", "Cancel"][rc] # leave this in until changes fully tested [bruce 070618]
+        print("fyi: dialog choice =", ["Save", "Discard", "Cancel"][rc]) # leave this in until changes fully tested [bruce 070618]
 
         if rc == 0: # Save (save file and exit)
             isFileSaved = self.fileSave()
@@ -1923,7 +1923,7 @@ class fileSlotsMixin: #bruce 050907 moved these methods out of class MWsemantics
             # but accept or ignore it the same as for the first one (based on self.__exiting).
             duplicate = True
             shouldExit = self.__exiting # from prior event
-            print "fyi: ignoring duplicate closeEvent (exiting = %r)" % shouldExit
+            print("fyi: ignoring duplicate closeEvent (exiting = %r)" % shouldExit)
                 # leave this print statement in place until changes fully tested [bruce 070618]
         else:
             # normal case
@@ -1933,7 +1933,7 @@ class fileSlotsMixin: #bruce 050907 moved these methods out of class MWsemantics
         if shouldExit:
             self.__exiting = True
             if not duplicate:
-                print "exiting" # leave this in until changes fully tested [bruce 070618]
+                print("exiting") # leave this in until changes fully tested [bruce 070618]
                 self.cleanUpBeforeExiting()
 
             #Not doing the following in 'cleanupBeforeExiting?

@@ -25,7 +25,7 @@ __author__ = "Will" # see README for more info
 import types
 
 def isnumber(x):
-    if type(x) in (types.IntType, types.FloatType):
+    if type(x) in (int, float):
         return 1
     return 0
 
@@ -45,7 +45,7 @@ class Quantity:
         except AttributeError:
             pass
         str = str + '%g' % self.coeff
-        for k in self.units.keys():
+        for k in list(self.units.keys()):
             str = str + ' ' + k
             if self.units[k] != 1:
                 str = str + '^' + repr(self.units[k])
@@ -75,7 +75,7 @@ class Quantity:
         if isinstance(other, Quantity):
             c = 1. * self.coeff * other.coeff
             u = self.multUnits(other, 1)
-            if u.keys() == [ ]:
+            if list(u.keys()) == [ ]:
                 return c
             else:
                 return Quantity(c, u)
@@ -98,13 +98,13 @@ class Quantity:
             return 1. / self.__pow__(-n)
         newcoeff = self.coeff ** n
         newunits = { }
-        for k in self.units.keys():
+        for k in list(self.units.keys()):
             newunits[k] = self.units[k] * n
         return Quantity(newcoeff, newunits)
     def reciprocal(self):
         a = 1. / self.coeff
         b = self.units.copy()
-        for k in b.keys():
+        for k in list(b.keys()):
             b[k] = -b[k]
         return Quantity(a, b)
     def inTermsOf(self, other):
@@ -117,19 +117,19 @@ class Quantity:
     def multUnits(self,other,n):
         units1 = self.units.copy()
         units2 = other.units.copy()
-        for k in units1.keys():
-            if k in units2.keys():
+        for k in list(units1.keys()):
+            if k in list(units2.keys()):
                 units1[k] = units1[k] + n * units2[k]
-        for k in units2.keys():
-            if k not in units1.keys():
+        for k in list(units2.keys()):
+            if k not in list(units1.keys()):
                 units1[k] = n * units2[k]
-        for k in units1.keys():
+        for k in list(units1.keys()):
             if units1[k] == 0:
                 del units1[k]
         return units1
     def unitsMatch(self,other):
-        otherkeys = other.units.keys()
-        for k in self.units.keys():
+        otherkeys = list(other.units.keys())
+        for k in list(self.units.keys()):
             if k not in otherkeys:
                 raise UnitsMismatch
             if k != "coeff" and self.units[k] != other.units[k]:
@@ -332,18 +332,18 @@ if __name__ == "__main__":
                     ]
                   ]
         for lst in lists:
-            print "----- " + lst.pop(0) + " -----"
+            print("----- " + lst.pop(0) + " -----")
             for i in range(len(lst)):
                 for j in range(len(lst)):
                     if i != j:
-                        print "one %s is %s" % (lst[i].name,
-                                                lst[i].inTermsOf(lst[j]))
-            print
+                        print("one %s is %s" % (lst[i].name,
+                                                lst[i].inTermsOf(lst[j])))
+            print()
 
     def test2():
         charge = mA * hour
         time = 1390.0 * second
-        print charge / time
+        print(charge / time)
 
     test1()
 

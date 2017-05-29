@@ -219,7 +219,7 @@ class DnaOrCnt_PropertyManager(EditCommand_PM):
 
         if self._specifyReferencePlane_radioButton.isChecked():
             itemDict = self.referencePlaneListWidget.getItemDictonary()
-            planeList = itemDict.values()
+            planeList = list(itemDict.values())
             if len(planeList) == 1:
                 return True
 
@@ -238,7 +238,7 @@ class DnaOrCnt_PropertyManager(EditCommand_PM):
             self.referencePlaneListWidget.resetColor()
         else:
             itemDict = self.referencePlaneListWidget.getItemDictonary()
-            planeList = itemDict.values()
+            planeList = list(itemDict.values())
             if len(planeList) == 0:
                 self.referencePlaneListWidget.setColor(lightgreen_2)
             else:
@@ -257,7 +257,7 @@ class DnaOrCnt_PropertyManager(EditCommand_PM):
 
         if self._specifyReferencePlane_radioButton.isChecked():
             itemDict = self.referencePlaneListWidget.getItemDictonary()
-            planeList = itemDict.values()
+            planeList = list(itemDict.values())
 
             if len(planeList) == 1:
                 return False

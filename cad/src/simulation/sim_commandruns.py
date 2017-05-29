@@ -162,10 +162,10 @@ def _capitalize_first_word(words): #bruce 060705
     res = words[0].upper() + words[1:]
     if res == words:
         if env.debug():
-            print "debug warning: %r did not change in _capitalize_first_word" % (words,)
+            print("debug warning: %r did not change in _capitalize_first_word" % (words,))
     return res
 
-_MIN_ALL, _LOCAL_MIN, _MIN_SEL = range(3) # internal codes for minimize command subtypes (bruce 051129)
+_MIN_ALL, _LOCAL_MIN, _MIN_SEL = list(range(3)) # internal codes for minimize command subtypes (bruce 051129)
     # this is a kluge compared to using command-specific subclasses, but better than testing something else like cmdname
 
 class Minimize_CommandRun(CommandRun):
@@ -369,9 +369,9 @@ class Minimize_CommandRun(CommandRun):
             #
             # wware 060410 bug 1240
             atoms = selection.selatoms
-            for atom in atoms.values():
+            for atom in list(atoms.values()):
                 # enumerate the monovalents bonded to atom
-                for atom2 in filter(lambda atom: not atom.is_singlet(), atom.baggageNeighbors()):
+                for atom2 in [atom for atom in atom.baggageNeighbors() if not atom.is_singlet()]:
                     atoms[atom2.key] = atom2
 
         else:
@@ -491,8 +491,8 @@ class Minimize_CommandRun(CommandRun):
         # update_cond itself? so it is None or False if we won't update.
         # this is now attempted...
         if env.debug():
-            print "debug fyi: runSim/sim_commandruns watch_motion update_cond computed here " \
-                  "(even if not watching motion)" #bruce 060705
+            print("debug fyi: runSim/sim_commandruns watch_motion update_cond computed here " \
+                  "(even if not watching motion)") #bruce 060705
         try:
             # Only the client code knows where to find the correct realtime
             # update settings widgets (or someday, knows whether these values
@@ -510,7 +510,7 @@ class Minimize_CommandRun(CommandRun):
         except:
             ## print_compact_traceback("bug ...: ")
             if env.debug():
-                print "debug: fyi: sim_commandruns grabbing userPrefs data"
+                print("debug: fyi: sim_commandruns grabbing userPrefs data")
             # For A8, this is normal, since only (at most) Minimize Energy sets self.kws['update_cond'] itself.
             # This will be used routinely in A8 by Adjust All and Adjust Selection, and maybe Adjust Atoms (not sure).
             #
@@ -559,7 +559,7 @@ class Minimize_CommandRun(CommandRun):
                 elif update_units == 'hours':
                     update_cond = ( lambda simtime, pytime, nframes, _timelimit = update_number * 3600:  simtime + pytime >= _timelimit )
                 else:
-                    print "don't know how to set update_cond from (%r, %r)" % (update_number, update_units)
+                    print("don't know how to set update_cond from (%r, %r)" % (update_number, update_units))
                     update_cond = None
                 # new as of 060705, in this old code
                 if not env.prefs[Adjust_watchRealtimeMinimization_prefs_key]:
@@ -647,7 +647,7 @@ class CheckAtomTypes_CommandRun(CommandRun):
             return
         for chunk in self.part.molecules:
             if (chunk.atoms):
-                for atom in chunk.atoms.itervalues():
+                for atom in chunk.atoms.values():
                     atom.setOverlayText("?")
                 chunk.showOverlayText = True
 

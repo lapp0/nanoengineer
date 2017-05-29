@@ -13,7 +13,7 @@ from xml.dom.minidom import DOMImplementation
 from xml.dom import EMPTY_NAMESPACE, XML_NAMESPACE, XMLNS_NAMESPACE
 from dna.model.DnaLadderRailChunk import DnaStrandChunk
 from dna.model.DnaLadder import DnaLadder
-from printFunc import PrettyPrint
+from .printFunc import PrettyPrint
 import os, string, sys
 from xml.dom.minidom import parse
 from xml.parsers.expat import ExpatError
@@ -442,7 +442,7 @@ def exportToIOSFormat(assy, fileName):
     """
 
     if fileName == '':
-        print "No file selected to export"
+        print("No file selected to export")
         return
     d = DOMImplementation()
     #create doctype
@@ -773,6 +773,6 @@ def getHybridizationInfo(fileName2):
             tempStrandSeq = tempStrandSeq + tempBaseString
         strandSeqList.append(tempStrandSeq)
 
-    strandNameSeqDict = dict(zip(strandNameList, strandSeqList))
+    strandNameSeqDict = dict(list(zip(strandNameList, strandSeqList)))
 
     return strandNameSeqDict

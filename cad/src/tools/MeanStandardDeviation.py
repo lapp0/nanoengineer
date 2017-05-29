@@ -21,9 +21,9 @@ def main():
     if (samples < 2):
         variance = 0
     else:
-        sampleVariance = map(lambda x: (x - mean) * (x - mean), numbers)
+        sampleVariance = [(x - mean) * (x - mean) for x in numbers]
         variance = sum(sampleVariance) / (samples - 1)
-    print "samples: %d, mean: %f, standardDeviation: %f" % (samples, mean, sqrt(variance))
+    print("samples: %d, mean: %f, standardDeviation: %f" % (samples, mean, sqrt(variance)))
 
 if (__name__ == '__main__'):
     main()

@@ -25,7 +25,7 @@ def subAll(pattern, repl, str):
             return str
         str = s
 
-print '# Automatically generated dependencies from procdeps.py'
+print('# Automatically generated dependencies from procdeps.py')
 
 for obj in objs:
     # Generate the source file for this object file, and put it in SRCDIR.
@@ -34,8 +34,8 @@ for obj in objs:
     # Put this object file in OBJDIR.
     obj = re.sub(objdir + '/', '$(OBJDIR)/', obj)
     # Print a dependency line.
-    print obj + ': ' + src
-    print '\t$(CXX) $(CXXFLAGS) -c -o %s %s' % (obj, src)
+    print((obj + ': ' + src))
+    print(('\t$(CXX) $(CXXFLAGS) -c -o %s %s' % (obj, src)))
 
 for L in sys.stdin.readlines():
     L = L.rstrip()
@@ -48,4 +48,4 @@ for L in sys.stdin.readlines():
         # Put the header files in SRCDIR.
         hfiles = subAll(srcdir + '/', '$(SRCDIR)/', hfiles)
         # Print the modified dependency line.
-        print obj + ':' + hfiles
+        print((obj + ':' + hfiles))

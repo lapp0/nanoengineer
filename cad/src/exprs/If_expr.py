@@ -104,7 +104,7 @@ def If_kluge(*args):###e zap or rename
         res2 = res = If_expr(*args)
         assert isinstance(res, If_expr)
         msg = "bug: If() gave you %r instead of this If_expr %r I think you wanted (which I'll use)" % (res1, res2)
-        print msg
+        print(msg)
         assert 0, msg #061121
     return res
 
@@ -119,10 +119,10 @@ def If(cond, _then, _else = None):
         return If_expr(cond, _then, _else)
             #e maybe this will typecheck cond someday (in a way that would complain if it was a pyclass)
     elif condval:
-        print "using then immediately"### leave these in awhile, since they're rare and might indicate a bug
+        print("using then immediately")### leave these in awhile, since they're rare and might indicate a bug
         return _then ##k whether or not it's an expr?? (I think so... this is then a primitive form of expr-simplification, I guess)
     else:
-        print "using else immediately; it's", _else ### print_compact_stack()? yes for temporarily###
+        print("using else immediately; it's", _else) ### print_compact_stack()? yes for temporarily###
         print_compact_stack("using else immediately: ")
         return _else
     pass

@@ -77,7 +77,7 @@ class GLPane_drawingset_methods(object):
             # in current code, the following prints before we finish printing
             # whatever print statement had the exception partway through, if one did
             print_compact_traceback("\nfollowing exception is *really* this one, inside __get_csdl_collector: ")
-            print
+            print()
             raise
         pass
 
@@ -266,7 +266,7 @@ class GLPane_drawingset_methods(object):
             # (kluge: knows how calling code uses value)
             # leave this in until we've tested the performance of movie playing
             # for both prefs values; it's not verbose
-            print "fyi: setting _remake_display_lists = %r" % remake_now
+            print("fyi: setting _remake_display_lists = %r" % remake_now)
         return remake_now
 
     def _movie_is_playing(self): #bruce 090224 split this out of ChunkDrawer
@@ -615,14 +615,14 @@ class GLPane_drawingset_methods(object):
             cache_after = self._choose_drawingset_cache_policy() # chosen now
             ## assert cache_after == cache_before
             if not (cache_after == cache_before):
-                print "bug: _choose_drawingset_cache_policy differs: before %r vs after %r" % \
-                      (cache_before, cache_after)
+                print("bug: _choose_drawingset_cache_policy differs: before %r vs after %r" % \
+                      (cache_before, cache_after))
             dset_cache = self._find_or_make_dset_cache_to_use( cache_before)
         else:
             # not incremental:
             # destroy all old caches (matters after runtime prefs change)
             if self._dset_caches:
-                for cachename, cache in self._dset_caches.items():
+                for cachename, cache in list(self._dset_caches.items()):
                     cache.destroy()
                 self._dset_caches = None
                 pass

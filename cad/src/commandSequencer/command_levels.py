@@ -66,12 +66,12 @@ _apl[ CL_VIEW_CHANGE ] = \
     (CL_GLOBAL_PROPERTIES,) + _apl[ CL_GLOBAL_PROPERTIES ]
 
 # request command rule is added last, since it refers to all keys added so far:
-_apl[ CL_REQUEST ] = tuple( [CL_REQUEST] + _apl.keys() ) # not sorted, should be ok
+_apl[ CL_REQUEST ] = tuple( [CL_REQUEST] + list(_apl.keys()) ) # not sorted, should be ok
 
 
 # public constants constructed from the above private ones
 
-LEGAL_COMMAND_LEVELS = _ALLOWED_PARENT_LEVELS.keys()
+LEGAL_COMMAND_LEVELS = list(_ALLOWED_PARENT_LEVELS.keys())
 
 FIXED_PARENT_LEVELS = [level
                        for level in LEGAL_COMMAND_LEVELS
@@ -84,8 +84,7 @@ _IGNORE_FLYOUT_LEVELS = (
         CL_UNUSED,
  )
 
-AFFECTS_FLYOUT_LEVELS = filter( lambda level: level not in _IGNORE_FLYOUT_LEVELS,
-                                LEGAL_COMMAND_LEVELS )
+AFFECTS_FLYOUT_LEVELS = [level for level in LEGAL_COMMAND_LEVELS if level not in _IGNORE_FLYOUT_LEVELS]
 
 def allowed_parent( want, parent ): #bruce 080815
     """

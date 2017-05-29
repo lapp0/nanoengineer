@@ -858,7 +858,7 @@ class EditResidues_PropertyManager(Command_PropertyManager):
         self.current_protein = self.win.assy.getSelectedProteinChunk()
 
         if self.current_protein is self.previous_protein:
-            print "_update_UI_do_updates(): DO NOTHING."
+            print("_update_UI_do_updates(): DO NOTHING.")
             return
 
         # NOTE: Changing the display styles of the protein chunks can take some
@@ -866,7 +866,7 @@ class EditResidues_PropertyManager(Command_PropertyManager):
         # before returning.
 
         # Update all PM widgets that need to be since something has changed.
-        print "_update_UI_do_updates(): UPDATING the PMGR."
+        print("_update_UI_do_updates(): UPDATING the PMGR.")
         self.update_name_field()
         self.sequenceEditor.update()
         self.update_residue_combobox()

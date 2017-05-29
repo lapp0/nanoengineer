@@ -56,12 +56,12 @@ def touch_job_id_status_file(job_id, Status = 'Queued'):
 
     # Make sure the directory exists
     if not os.path.exists(job_id_dir):
-        print "touch_job_id_status_file error: The directory ", job_id_dir, " does not exist."
+        print("touch_job_id_status_file error: The directory ", job_id_dir, " does not exist.")
         return 1
 
     # Make sure Status is valid.
     if Status not in ('Queued', 'Running', 'Completed', 'Suspended', 'Failed'):
-        print "touch_job_id_status_file error: Status is invalid: ", Status
+        print("touch_job_id_status_file error: Status is invalid: ", Status)
         return 2
 
     # Remove any status files (i.e. Status-Running in the directory)
@@ -161,7 +161,7 @@ class JobManager(QWidget, Ui_JobManagerDialog):
     def cell_clicked(self, row, col, button, mouse):
         """
         """
-        print "row =", row, ", column =", col, ", button =", button
+        print("row =", row, ", column =", col, ", button =", button)
 
         # Enable/disable the buttons in the Job Manager based on the Status field.
         jobStatus = self.jobInfoList[row][0]['Status']
@@ -292,7 +292,7 @@ class JobManager(QWidget, Ui_JobManagerDialog):
                 jobs += [(jobParas, batFile, outputFile)]
            return jobs
         except:
-           print "Exception: build job lists failed. check the directory/files."
+           print("Exception: build job lists failed. check the directory/files.")
            return None
 
     def __createJobs(self, jobInfoList):

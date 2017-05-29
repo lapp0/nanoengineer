@@ -288,7 +288,7 @@ class SimSetup(QDialog, Ui_SimSetupDialog): # before 050325 this class was calle
                 #bruce 060530 use new watch_motion rate parameters
                 self.movie.watch_motion = self.watch_motion_groupbox.isChecked() # [deprecated for setattr as of 060705]
                 if env.debug():
-                    print "debug fyi: sim setup watch_motion = %r" % (self.movie.watch_motion,)
+                    print("debug fyi: sim setup watch_motion = %r" % (self.movie.watch_motion,))
                 # This code works, but I'll try to replace it with calls to common code (above). [bruce 060705]
                 # first grab them from the UI
                 update_as_fast_as_possible_data = self.watch_motion_groupbox.selectedId() # 0 means yes, 1 means no (for now)
@@ -331,7 +331,7 @@ class SimSetup(QDialog, Ui_SimSetupDialog): # before 050325 this class was calle
                 elif update_units == 'hours':
                     update_cond = ( lambda simtime, pytime, nframes, _timelimit = update_number * 3600:  simtime + pytime >= _timelimit )
                 else:
-                    print "don't know how to set update_cond from (%r, %r)" % (update_number, update_units)
+                    print("don't know how to set update_cond from (%r, %r)" % (update_number, update_units))
                     update_cond = None
                 # revision in this old code, 060705:
                 if not self.movie.watch_motion:

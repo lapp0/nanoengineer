@@ -165,7 +165,7 @@ def ChoiceColumn( nchoices, dflt = 0, **kws): ##e should be an InstanceMacro, no
     return Apply(
         lambda stateref_expr, nchoices = nchoices, dflt = dflt, kws = kws:
             SimpleRow( # stateref_expr will be a Symbol when this lambda is run, to produce an expr, once only
-                SimpleColumn( * map( ChoiceButton(choiceref = stateref_expr, **kws), range(nchoices) ) ), # choose
+                SimpleColumn( * list(map( ChoiceButton(choiceref = stateref_expr, **kws), list(range(nchoices)) )) ), # choose
                 TextRect( format_Expr( "choice is %%r (default %s)" % dflt, stateref_expr.value ), 1, 30) # show choice
             ),
         LocalVariable_StateRef(int, dflt)
@@ -180,7 +180,7 @@ def ChoiceRow( nchoices, dflt = 0, **kws): ##e should be an InstanceMacro, not a
     return Apply(
         lambda stateref_expr, nchoices = nchoices, dflt = dflt, kws = kws:
             SimpleRow( # stateref_expr will be a Symbol when this lambda is run, to produce an expr, once only
-                SimpleRow( * map( ChoiceButton(choiceref = stateref_expr, **kws), range(nchoices) ) ), # choose
+                SimpleRow( * list(map( ChoiceButton(choiceref = stateref_expr, **kws), list(range(nchoices)) )) ), # choose
                 TextRect( format_Expr( "choice is %%r (default %s)" % dflt, stateref_expr.value ), 1, 30) # show choice
             ),
         LocalVariable_StateRef(int, dflt)
@@ -421,7 +421,7 @@ class ActionButton(DelegatingInstanceOrExpr): # 070104 quick prototype
                     # (for now assume it's always very fast, so just delay a fixed amount using time.sleep)
                     time.sleep(1.0/3/4) # 1/3 sec, spread over 4 sleeps
             self.draw_incrementally( self.incr_drawable_doing ) # this method runs in the Highlightable made in delegate
-            print "ActionButton: doing %r for %r" % (self.text, self) ### remove self?
+            print("ActionButton: doing %r for %r" % (self.text, self)) ### remove self?
                 ##e optim note: this shows self is a different obj each time (at least for make dna cyl button)...
                 # I guess this is due to dna_ribbon_view_toolcorner_expr_maker being a function that makes an expr
                 # which runs again at least on every use of the button (maybe more -- not sure exactly how often).
@@ -430,14 +430,14 @@ class ActionButton(DelegatingInstanceOrExpr): # 070104 quick prototype
             self.draw_incrementally( self.incr_drawable_done )
             pass
         else:
-            print "ActionButton: not enabled, so not doing %r for %r" % (self.text, self) # remove when works [reenabled 070307 ####]
+            print("ActionButton: not enabled, so not doing %r for %r" % (self.text, self)) # remove when works [reenabled 070307 ####]
             pass
         return
     def do_action(self):
         "#doc -- public, also used internally; see doit comment for doc, for now"
         res = self.command()
         if res is not None:
-            print "unexpected: %r cmd %r retval was not None: %r" % (self, self.text, res,) #e remove if happens legitimately
+            print("unexpected: %r cmd %r retval was not None: %r" % (self, self.text, res,)) #e remove if happens legitimately
         return
     ###e refile these:
     def draw_incrementally( self, thing):#070307 #e refile (as for next method below)

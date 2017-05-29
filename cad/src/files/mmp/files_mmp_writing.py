@@ -141,7 +141,7 @@ class writemmp_mapping: #bruce 050322, to help with minimize selection and other
         """
         memos = self._memos
         self._memos = {}
-        for memo in memos.itervalues():
+        for memo in memos.values():
             memo.destroy() # need exception protection?
         #e more?
         return
@@ -261,7 +261,7 @@ class writemmp_mapping: #bruce 050322, to help with minimize selection and other
         not all callers will necessarily add the same separators.
         """
         x, y, z = posn
-        return map( self.encode_atom_coordinate, (x, y, z))
+        return list(map( self.encode_atom_coordinate, (x, y, z)))
 
     def encode_atom_coordinate( self, angstroms ):
         """
@@ -317,7 +317,7 @@ class writemmp_mapping: #bruce 050322, to help with minimize selection and other
             # assume we're writing the whole assy, so in this case, write it no sooner than just inside the shelf group.
             after_these = list(after_these) + [self.assy.shelf] # for a group, being after it means being after its "begin record"
         try:
-            afterposns = map( lambda node1: node_position(node1, root), after_these)
+            afterposns = [node_position(node1, root) for node1 in after_these]
         except:
             #bruce 080325
             msg = "ignoring exception in map of node_position; won't write forwarded %r: " % node
@@ -456,7 +456,7 @@ def writemmpfile_part(part, filename, **mapping_options):
     assert part is node.part
     part.assy.update_parts() #bruce 050325 precaution
     if part is not node.part and debug_flags.atom_debug:
-        print "atom_debug: bug?: part changed during writemmpfile_part, using new one"
+        print("atom_debug: bug?: part changed during writemmpfile_part, using new one")
     part = node.part
     assy = part.assy
     #e assert node is tree or shelf member? is there a method for that already? is_topnode?

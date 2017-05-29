@@ -181,5 +181,5 @@ def glGetActiveUniformARB(program, index):
         gl_type = arrays.GLuintArray.zeros( (1,))
         base_glGetActiveUniformARB(program, index, length, None, size, gl_type, name)
         return name.value, size[0], gl_type[0]
-    raise IndexError, 'Index %s out of range 0 to %i' % (index, max_index - 1, )
+    raise IndexError('Index %s out of range 0 to %i' % (index, max_index - 1, ))
 glGetActiveUniformARB.wrappedOperation = base_glGetActiveUniformARB

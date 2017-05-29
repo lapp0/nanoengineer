@@ -12,8 +12,7 @@ for i in range(3):
         break
     icons = '../' + icons
 
-iconlist = map(lambda x: x[:-1],
-               os.popen("/bin/ls " + icons + " | grep -v CVS").readlines())
+iconlist = [x[:-1] for x in os.popen("/bin/ls " + icons + " | grep -v CVS").readlines()]
 
 #iconlist = filter(lambda x: x.startswith("MainWindowUI"), iconlist)
 

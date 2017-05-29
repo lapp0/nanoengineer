@@ -52,4 +52,4 @@ for df in damianFiles:
     outf.write("TYPE struct\n")
     outf.close()
 
-    print "Test input files generated for " + testPrefix
+    print("Test input files generated for " + testPrefix)

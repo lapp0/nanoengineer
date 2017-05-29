@@ -51,7 +51,7 @@ def nextJobNumber():
     except IOError:
         n = 0
     f = open(nextFileName, 'w')
-    print >>f, "%d" % (n + 1)
+    print("%d" % (n + 1), file=f)
     return "%05d" % n
 
 def ask(question, default):
@@ -60,13 +60,13 @@ def ask(question, default):
       Return their answer or the default if they just entered a blank
       line.
     """
-    print
-    print "%s [%s]? " % (question, default), # suppress newline
+    print()
+    print("%s [%s]? " % (question, default), end=' ') # suppress newline
     try:
         reply = sys.stdin.readline()
     except KeyboardInterrupt:
-        print
-        print "Aborted"
+        print()
+        print("Aborted")
         sys.exit(1)
     if (reply.isspace()):
         return default
@@ -79,8 +79,8 @@ def askInt(question, default):
             result = int(reply)
             return result
         except ValueError:
-            print
-            print "reply was not an integer: " + reply.strip()
+            print()
+            print("reply was not an integer: " + reply.strip())
 
 def askFloat(question, default):
     while (True):
@@ -89,8 +89,8 @@ def askFloat(question, default):
             result = float(reply)
             return result
         except ValueError:
-            print
-            print "reply was not a float: " + reply.strip()
+            print()
+            print("reply was not a float: " + reply.strip())
 
 def runJob(jobNumber):
     queuePath = os.path.join(QUEUE, jobNumber)
@@ -113,7 +113,7 @@ def runJob(jobNumber):
     for command in run:
         status = os.system(command)
         if (status):
-            print >>sys.stderr, "command: %s\nexited with status: %d" % (command, status)
+            print("command: %s\nexited with status: %d" % (command, status), file=sys.stderr)
             break
 
     os.close(0)
@@ -135,7 +135,7 @@ def processQueue():
         if (jobNumber.isdigit()):
             jobPath = os.path.join(CURRENT, jobNumber)
             failed = open(os.path.join(jobPath, "FAILED"), 'w')
-            print >>failed, "The queue processor exited without completing this job."
+            print("The queue processor exited without completing this job.", file=failed)
             failed.close()
             os.rename(jobPath, os.path.join(OUTPUT, jobNumber))
 
@@ -181,7 +181,7 @@ def scanInput():
     for fileName in fileList:
         if (fileName.endswith(".mmp")):
             baseName = fileName[:-4]
-            print "processing " + baseName
+            print("processing " + baseName)
 
             dirInQueue = os.path.join(QUEUE, nextJobNumber())
             os.mkdir(dirInQueue)
@@ -205,11 +205,11 @@ def scanInput():
                         neighborSearching = 1
                     else:
                         neighborSearching = 0
-                    print >>runFile, "simulator -m --min-threshold-end-rms=%f --trace-file %s-trace.txt --write-gromacs-topology %s --path-to-cpp /usr/bin/cpp --system-parameters %s/control/sim-params.txt --vdw-cutoff-radius %f --neighbor-searching %d %s" \
-                          % (end_rms, baseName, baseName, baseDirectory, vdwCutoffRadius, neighborSearching, fileName)
+                    print("simulator -m --min-threshold-end-rms=%f --trace-file %s-trace.txt --write-gromacs-topology %s --path-to-cpp /usr/bin/cpp --system-parameters %s/control/sim-params.txt --vdw-cutoff-radius %f --neighbor-searching %d %s" \
+                          % (end_rms, baseName, baseName, baseDirectory, vdwCutoffRadius, neighborSearching, fileName), file=runFile)
 
-                    print >>runFile, "grompp -f %s.mdp -c %s.gro -p %s.top -n %s.ndx -o %s.tpr -po %s-out.mdp" \
-                          % (baseName, baseName, baseName, baseName, baseName, baseName)
+                    print("grompp -f %s.mdp -c %s.gro -p %s.top -n %s.ndx -o %s.tpr -po %s-out.mdp" \
+                          % (baseName, baseName, baseName, baseName, baseName, baseName), file=runFile)
 
                     if (hasPAM):
                         tableFile = "%s/control/yukawa.xvg" % baseDirectory
@@ -217,29 +217,29 @@ def scanInput():
                     else:
                         table = ""
 
-                    print >>runFile, "mdrun -s %s.tpr -o %s.trr -e %s.edr -c %s.xyz-out.gro -g %s.log %s" \
-                          % (baseName, baseName, baseName, baseName, baseName, table)
+                    print("mdrun -s %s.tpr -o %s.trr -e %s.edr -c %s.xyz-out.gro -g %s.log %s" \
+                          % (baseName, baseName, baseName, baseName, baseName, table), file=runFile)
                 else:
-                    print >>runFile, "simulator -m --system-parameters %s/control/sim-params.txt --output-format-3 --min-threshold-end-rms=%f --trace-file %s-trace.txt %s" \
-                          % (baseDirectory, end_rms, baseName, fileName)
+                    print("simulator -m --system-parameters %s/control/sim-params.txt --output-format-3 --min-threshold-end-rms=%f --trace-file %s-trace.txt %s" \
+                          % (baseDirectory, end_rms, baseName, fileName), file=runFile)
             else:
                 temp = askInt("Temperature in Kelvins", 300)
                 stepsPerFrame = askInt("Steps per frame", 10)
                 frames = askInt("Frames", 900)
-                print
-                print "temp %d steps %d frames %d" % (temp, stepsPerFrame, frames)
+                print()
+                print("temp %d steps %d frames %d" % (temp, stepsPerFrame, frames))
 
-                print >>runFile, "simulator  --system-parameters %s/control/sim-params.txt --temperature=%d --iters-per-frame=%d --num-frames=%d --trace-file %s-trace.txt %s" \
-                      % (baseDirectory, temp, stepsPerFrame, frames, baseName, fileName)
+                print("simulator  --system-parameters %s/control/sim-params.txt --temperature=%d --iters-per-frame=%d --num-frames=%d --trace-file %s-trace.txt %s" \
+                      % (baseDirectory, temp, stepsPerFrame, frames, baseName, fileName), file=runFile)
         else:
-            print "ignoring " + os.path.join(INPUT, fileName)
+            print("ignoring " + os.path.join(INPUT, fileName))
 
 def showOneJob(dirName, jobNumber):
     fileList = os.listdir(dirName)
     fileList.sort()
     for fileName in fileList:
         if (fileName.endswith(".mmp")):
-            print "    %s %s" % (jobNumber, fileName)
+            print("    %s %s" % (jobNumber, fileName))
 
 def showJobsInDirectory(dirName, header):
     gotOne = False
@@ -248,7 +248,7 @@ def showJobsInDirectory(dirName, header):
     for jobNumber in fileList:
         if (jobNumber.isdigit()):
             if (not gotOne):
-                print header
+                print(header)
                 gotOne = True
             showOneJob(os.path.join(dirName, jobNumber), jobNumber)
 
@@ -262,15 +262,15 @@ def showStatus():
     for process in ps:
         if (process.find("simulator") > 0 or process.find("grompp") > 0 or process.find("mdrun") > 0):
             if (not gotProcess):
-                print
-                print "Currently running simulator processes:"
-                print
-                print header.strip()
+                print()
+                print("Currently running simulator processes:")
+                print()
+                print(header.strip())
                 gotProcess = True
-            print process.strip()
+            print(process.strip())
     if (not gotProcess):
-        print
-        print "No simulator processes running."
+        print()
+        print("No simulator processes running.")
 
 def makeDirectory(path):
     if (os.access(path, os.W_OK)):
@@ -285,11 +285,11 @@ def main():
     if (len(sys.argv) > 1 and sys.argv[1] == '--run-queue'):
         runQueue()
     else:
-        print
+        print()
         scanInput()
         runQueue()
         showStatus()
-        print
+        print()
 
 if (__name__ == '__main__'):
     main()

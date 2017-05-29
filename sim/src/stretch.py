@@ -90,8 +90,8 @@ def printBond(a1, bond, a2, parameters):
     else:
         e1 = a1
         e2 = a2
-    print '  addInitialBondStretch(%7.2f,%7.2f,%7.4f,%7.4f,%7.2f,'%(ks,r0,de,bt,r),
-    print '%5d, %3d, "%s-%s-%s");'%(quality, quadratic, e1, bontyp[bond], e2)
+    print('  addInitialBondStretch(%7.2f,%7.2f,%7.4f,%7.4f,%7.2f,'%(ks,r0,de,bt,r), end=' ')
+    print('%5d, %3d, "%s-%s-%s");'%(quality, quadratic, e1, bontyp[bond], e2))
 
 
 if __name__ == "__main__":
@@ -105,7 +105,7 @@ if __name__ == "__main__":
         # find RCSID
         m = idPattern.search(lin)
         if m:
-            print '#define RCSID_BONDS_H "Generated from: ' + m.group(1) + '"'
+            print('#define RCSID_BONDS_H "Generated from: ' + m.group(1) + '"')
             continue
 
         # ignore comments and blank lines
@@ -133,10 +133,10 @@ if __name__ == "__main__":
             if m:
                 if not headerPrinted:
                     headerPrinted = True
-                    print '//                        ks      r0       de    beta  inflectionR qual quad bondName'
+                    print('//                        ks      r0       de    beta  inflectionR qual quad bondName')
                 printBond(m.group(1), m.group(2), m.group(3), parameters)
             else:
-                print >> sys.stderr, 'malformed bond: ' + bond
+                print('malformed bond: ' + bond, file=sys.stderr)
             continue
         else:
-            print >> sys.stderr, 'unrecognized line: "' + lin + '"'
+            print('unrecognized line: "' + lin + '"', file=sys.stderr)

@@ -227,7 +227,7 @@ class EditCommand(Select_Command):
         This is used in isinstance test.
         @see: self.hasValidStructure()
         """
-        print "bug: EditCommand._getStructureType not overridden in a subclass"
+        print("bug: EditCommand._getStructureType not overridden in a subclass")
         raise AbstractMethod()
 
 

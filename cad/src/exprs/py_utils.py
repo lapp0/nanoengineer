@@ -29,7 +29,7 @@ def interleave(elts, gaps):
             return elts[i / 2]
         else:
             return gaps[int(i / 2)]
-    return map(elt_or_gap, range(len(elts) + len(gaps)))
+    return list(map(elt_or_gap, list(range(len(elts) + len(gaps)))))
 
 def interleave_by_func(elts, gapfunc):
     gaps = [gapfunc(e1,e2) for e1,e2 in zip(elts[:-1],elts[0:])]
@@ -37,13 +37,13 @@ def interleave_by_func(elts, gapfunc):
 
 def dict_ordered_values(d1): ##e rename (this name 'dict_ordered_values' is completely unrecallable) #e see also sorted_items
     "Return the values of the given dict, sorted by their key in the dict. [see also sorted_items]"
-    items = d1.items()
+    items = list(d1.items())
     items.sort()
     return [v for (k,v) in items]
 
 def sorted_items(d1): #070312
     "Return a list of all (key, value) pairs in the given dict, sorted by dict key. [see also dict_ordered_values]"
-    items = d1.items()
+    items = list(d1.items())
     items.sort()
     return items
 
@@ -67,7 +67,7 @@ def printonce(msg, constpart = None):
     """
     constpart = constpart or msg
     if not seen_before(constpart):
-        print msg
+        print(msg)
     return
 
 printnim_enabled = False # 061114 -> False; turn on again when I feel like cleaning a lot of them up

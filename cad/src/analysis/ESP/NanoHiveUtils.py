@@ -178,7 +178,7 @@ def run_nh_simulation(assy, sim_id, sim_parms, sims_to_run, results_to_save):
         r = start_nh() # Start Nano-Hive server (instance).
 
         if r:
-            print "Nano-Hive startup aborted."
+            print("Nano-Hive startup aborted.")
 
         # It may take a second or two to connect to the new Nano-Hive instance.
         # Keep trying until we get a socket.  Give up if we haven't connected within 4 seconds.
@@ -208,7 +208,7 @@ def run_nh_simulation(assy, sim_id, sim_parms, sims_to_run, results_to_save):
 
     success, response = nh_socket.sendCommand(cmd) # Send "load" command.
     if not success:
-        print success, response
+        print(success, response)
         exit_nh(nh_socket, kill_nh)
         return 6 # "load" command failed
 
@@ -217,7 +217,7 @@ def run_nh_simulation(assy, sim_id, sim_parms, sims_to_run, results_to_save):
 
     success, response = nh_socket.sendCommand(cmd) # Send "run" command.
     if not success:
-        print success, response
+        print(success, response)
         exit_nh(nh_socket, kill_nh)
         return 7 # "run" command failed
 
@@ -287,8 +287,8 @@ def verify_program(program, version_flag, vstring):
         if arg != "":
             arguments.append(arg)
 
-    print
-    print "arguments:", arguments
+    print()
+    print("arguments:", arguments)
 
     p = Process()
     p.start(program, arguments)
@@ -441,7 +441,7 @@ class NH_Connection:
             self.connectionHandle.connect((hostIP, port))
             self.connectionHandle.settimeout(serverTimeout)
 
-        except socket.error, errorMessage:
+        except socket.error as errorMessage:
             return 0, errorMessage
 
         return 1, ""
@@ -477,7 +477,7 @@ class NH_Connection:
         try:
             self.connectionHandle.send(command)
 
-        except socket.error, errorMessage:
+        except socket.error as errorMessage:
             success = 0
 
         # Read response length
@@ -485,7 +485,7 @@ class NH_Connection:
             try:
                 responseLengthChars = self.connectionHandle.recv(4)
 
-            except socket.error, errorMessage:
+            except socket.error as errorMessage:
                 success = 0
 
         if success:
@@ -498,7 +498,7 @@ class NH_Connection:
             try:
                 response = self.connectionHandle.recv(responseLength)
 
-            except socket.error, errorMessage:
+            except socket.error as errorMessage:
                 success = 0
 
         if success:

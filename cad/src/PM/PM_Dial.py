@@ -187,7 +187,7 @@ class PM_Dial( QDial ):
                                         debug_metainfo)
         ###widget_connectWithState( self, stateref,
         ###                        QDoubleSpinBox_ConnectionWithState)
-        print "PM_Dial.connectWithState: not yet implemented" #bruce 080811 added this line
+        print("PM_Dial.connectWithState: not yet implemented") #bruce 080811 added this line
         return
 
     def hide( self ):

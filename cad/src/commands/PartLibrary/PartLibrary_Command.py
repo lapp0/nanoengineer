@@ -234,7 +234,7 @@ class PartLibrary_Command(PasteFromClipboard_Command):
                 # orig-copy correspondence here.
             if not newnodes:
                 if newnodes is None:
-                    print "bug: newnodes should not be None; nodes was %r (saved in debug._bugnodes)" % (nodes,)
+                    print("bug: newnodes should not be None; nodes was %r (saved in debug._bugnodes)" % (nodes,))
                         # TODO: This might be possible, for arbitrary partlib
                         # contents, just not for legitimate ones...
                         # but partlib will probably be (or is) user-expandable,

@@ -71,7 +71,7 @@ class DnaGenerator(DnaGeneratorPropertyManager, GeneratorBaseClass):
 
     def change_random_seed(self):
         if 0:
-            print "change_random_seed() called."
+            print("change_random_seed() called.")
         self._random_data  =  []
 
     def _random_data_for_index(self, inIndex):
@@ -257,15 +257,15 @@ class DnaGenerator(DnaGeneratorPropertyManager, GeneratorBaseClass):
         rawOffset = b * scalar
 
         if 0: # Debugging code.
-            print ""
-            print "uVector  a = ", a
-            print "uVector  b = ", b
-            print "cross(a,b) =", axis
-            print "theta      =", theta
-            print "baserise   =", self.dna.getBaseRise()
-            print "seqLength  =", self.getSequenceLength()
-            print "scalar     =", scalar
-            print "rawOffset  =", rawOffset
+            print("")
+            print("uVector  a = ", a)
+            print("uVector  b = ", b)
+            print("cross(a,b) =", axis)
+            print("theta      =", theta)
+            print("baserise   =", self.dna.getBaseRise())
+            print("seqLength  =", self.getSequenceLength())
+            print("scalar     =", scalar)
+            print("rawOffset  =", rawOffset)
 
         if theta == 0.0 or theta == 180.0:
             axis = V(0, 1, 0)
@@ -340,7 +340,7 @@ class DnaGenerator(DnaGeneratorPropertyManager, GeneratorBaseClass):
         currentSequence  =  str(self.getPlainSequence(inOmitSymbols = True))
 
         for ch in currentSequence:
-            if ch in cdict.keys():  #'CGATN':
+            if ch in list(cdict.keys()):  #'CGATN':
                 properties = cdict[ch]
                 if ch == 'N': ###e soon: or any other letter indicating a random base
                     if resolve_random: #bruce 070518 new feature
@@ -476,7 +476,7 @@ class DnaGenerator(DnaGeneratorPropertyManager, GeneratorBaseClass):
         Pe_count = 0
         tempList      =  []
 
-        for atm in startBasePair.atoms.values():
+        for atm in list(startBasePair.atoms.values()):
             if atm.element.symbol in startAtoms:
                 tempList.append(atm)
                 atomList = self.win.assy.getConnectedAtoms(tempList)
@@ -527,7 +527,7 @@ class DnaGenerator(DnaGeneratorPropertyManager, GeneratorBaseClass):
 
         """
         if not atomList:
-            print "bug in creating chunks from the given atom list"
+            print("bug in creating chunks from the given atom list")
             return
 
         newChunk = Chunk(self.win.assy, gensym("Chunk", self.win.assy))

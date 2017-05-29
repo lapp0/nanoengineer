@@ -478,7 +478,7 @@ class InsertDna_EditCommand(EditCommand):
             elif dnaModel == 'PAM5':
                 dna = B_Dna_PAM5_Generator()
             else:
-                print "bug: unknown dnaModel type: ", dnaModel
+                print("bug: unknown dnaModel type: ", dnaModel)
         else:
             raise PluginBug("Unsupported DNA Form: " + dnaForm)
 

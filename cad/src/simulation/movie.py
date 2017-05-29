@@ -297,7 +297,7 @@ class Movie(IdentityCopyMixin): #bruce 080321 bugfix: added IdentityCopyMixin
                 return not not self.update_cond
             except:
                 return False
-        raise AttributeError, attr
+        raise AttributeError(attr)
 
     def destroy(self): #bruce 050325
         # so far this is only meant to be called before the file has been made
@@ -407,8 +407,8 @@ class Movie(IdentityCopyMixin): #bruce 080321 bugfix: added IdentityCopyMixin
                 #  we should make this conditional on the format, or do it in a callback provided to alist_and_moviefile ###@@@]
                 if self.currentFrame:
                     # should never happen once bug 1297 fix is completed
-                    print "warning: making ref_frame from nonzero currentFrame %d" % self.currentFrame
-                self.ref_frame = ( self.currentFrame, A(map(lambda a: a.sim_posn(), self.alist)) )
+                    print("warning: making ref_frame from nonzero currentFrame %d" % self.currentFrame)
+                self.ref_frame = ( self.currentFrame, A([a.sim_posn() for a in self.alist]) )
             else:
                 # Client code supplied ref_frame, and that would be the fastest frame to start playing,
                 # but we should not change currentFrame to match it since it should match actual atom posns,
@@ -418,7 +418,7 @@ class Movie(IdentityCopyMixin): #bruce 080321 bugfix: added IdentityCopyMixin
                 # and which frame that was (presumably the reference frame). ###@@@ [bruce 060112]
                 pass ## self.currentFrame = self.ref_frame[0]
             if len(self.ref_frame[1]) != len(self.alist):
-                print "apparent bug: len(self.ref_frame[1]) != len(self.alist)" # should never happen, add %d if it does
+                print("apparent bug: len(self.ref_frame[1]) != len(self.alist)") # should never happen, add %d if it does
             if self.currentFrame != 0:
                 # As of 060111, this can happen (due to fixing bug 1273) if we moved atoms in realtime while creating movie.
                 # Even after the complete fix of bug 1297 (just done, 060112) it will still happen unless we decide to
@@ -478,7 +478,7 @@ class Movie(IdentityCopyMixin): #bruce 080321 bugfix: added IdentityCopyMixin
         # - history info: if hflag: self._info()
         # - self.startFrame = self.currentFrame
         if _DEBUG1:
-            print "movie.cueMovie() called. filename = [" + self.filename + "]"
+            print("movie.cueMovie() called. filename = [" + self.filename + "]")
 
         self.propMgr = propMgr
 
@@ -582,7 +582,7 @@ class Movie(IdentityCopyMixin): #bruce 080321 bugfix: added IdentityCopyMixin
         self.alist_and_moviefile.close_file() #bruce 050427
         self.isOpen = False #bruce 050425 guess: see if this fixes some bugs
         if _DEBUG1:
-            print "self.isOpen = False #bruce 050425 guess: see if this fixes some bugs" ###@@@
+            print("self.isOpen = False #bruce 050425 guess: see if this fixes some bugs") ###@@@
         ## self.movend() # Unfreeze atoms.
         if self.startFrame != self.currentFrame:
             self.assy.changed()
@@ -598,7 +598,7 @@ class Movie(IdentityCopyMixin): #bruce 080321 bugfix: added IdentityCopyMixin
         #bruce 050427 comment: not changing this much
 
         if _DEBUG0:
-            print "movie._play() called.  Direction = ", playDirection[ direction ]
+            print("movie._play() called.  Direction = ", playDirection[ direction ])
 
         if not self.isOpen: #bruce 050428 not sure if this is the best condition to use here ###@@@
             if (not self.might_be_playable()) and 0: ## self.why_not_playable:
@@ -693,7 +693,7 @@ class Movie(IdentityCopyMixin): #bruce 080321 bugfix: added IdentityCopyMixin
         @type  hflag: boolean
         """
         if _DEBUG0:
-            print "movie._continue() called. Direction = ", playDirection[ self.playDirection ]
+            print("movie._continue() called. Direction = ", playDirection[ self.playDirection ])
 
         # In case the movie is already playing (usually the other direction).
         self._pause(0)
@@ -743,7 +743,7 @@ class Movie(IdentityCopyMixin): #bruce 080321 bugfix: added IdentityCopyMixin
         # since it's the only place certain state variables gets reinitialized to default
         # values (e.g. showEachFrame to False). This should be analyzed and documented.
         if _DEBUG0:
-            print "movie._pause() called"
+            print("movie._pause() called")
         self.debug_dump("_pause called, not done")
         # bruce 050427 comment: no isOpen check, hope that's ok (this has several calls)
         self.isPaused = True
@@ -761,11 +761,11 @@ class Movie(IdentityCopyMixin): #bruce 080321 bugfix: added IdentityCopyMixin
         if not _DEBUG_DUMP:
             return # disable when not needed -- but it's useful and nicelooking output, so keep it around as an example
         if heading:
-            print "\n  %s:" % heading
-        print "    movie_is_playing = %r, isPaused = %r, showEachFrame = %r, moveToEnd = %r, totalFramesActual = %r, currentFrame = %r, playDirection = %r" \
-              % (self.win.movie_is_playing, self.isPaused, self.showEachFrame, self.moveToEnd, self.totalFramesActual, self.currentFrame, self.playDirection )
+            print("\n  %s:" % heading)
+        print("    movie_is_playing = %r, isPaused = %r, showEachFrame = %r, moveToEnd = %r, totalFramesActual = %r, currentFrame = %r, playDirection = %r" \
+              % (self.win.movie_is_playing, self.isPaused, self.showEachFrame, self.moveToEnd, self.totalFramesActual, self.currentFrame, self.playDirection ))
         if kws:
-            print "  other args: %r" % kws
+            print("  other args: %r" % kws)
         print_compact_stack("    stack at that time: ", skip_innermost_n = 1) # skips this lineno and all internal ones
 
     def _playToFrame(self, fnum, from_slider = False):
@@ -786,7 +786,7 @@ class Movie(IdentityCopyMixin): #bruce 080321 bugfix: added IdentityCopyMixin
         # whether the diffs are correct.
 
         if _DEBUG0:
-            print "movie._playToFrame() called: from fnum = ", fnum, ", to currentFrame =", self.currentFrame
+            print("movie._playToFrame() called: from fnum = ", fnum, ", to currentFrame =", self.currentFrame)
 
         #bruce 050427 comment: added an isOpen check, in case of bugs in callers (this has lots of calls)
         if not self.isOpen:
@@ -807,7 +807,7 @@ class Movie(IdentityCopyMixin): #bruce 080321 bugfix: added IdentityCopyMixin
 
         # Don't let movie run out of bounds.
         if fnum < 0 or fnum > self.totalFramesActual:
-            print "Warning: Slider or other fnum out of bounds.  fnum value =",fnum,", Number of frames =", self.totalFramesActual
+            print("Warning: Slider or other fnum out of bounds.  fnum value =",fnum,", Number of frames =", self.totalFramesActual)
             self.isPaused = True # May not be needed.  Doing it anyway.
             self.win.movie_is_playing = False # May not be needed.  Doing it anyway. Mark 051209.
             self.debug_dump("fnum out of range so paused", fnum = fnum)
@@ -834,7 +834,7 @@ class Movie(IdentityCopyMixin): #bruce 080321 bugfix: added IdentityCopyMixin
                 try:
                     env.mainwindow().fileOpen(self.origfile)
                 except:
-                    print 'cannot open original file'
+                    print('cannot open original file')
                     raise
 
         # "inc" is the frame increment (FWD = 1, REV = -1) .
@@ -883,7 +883,7 @@ class Movie(IdentityCopyMixin): #bruce 080321 bugfix: added IdentityCopyMixin
             QApplication.setOverrideCursor( QCursor(Qt.WaitCursor) )
 
         if _DEBUG0:
-            print "BEGIN LOOP: fnum = ", fnum, ", currentFrame =", self.currentFrame, ", inc =",inc
+            print("BEGIN LOOP: fnum = ", fnum, ", currentFrame =", self.currentFrame, ", inc =",inc)
 
         # This is the main loop to compute atom positions from the current frame to "fnum".
         # After this loop completes, we paint the model -- but also during it.
@@ -913,7 +913,7 @@ class Movie(IdentityCopyMixin): #bruce 080321 bugfix: added IdentityCopyMixin
             ## self.currentFrame += inc -- doing this below [bruce 050427]
 
             if _DEBUG0:
-                print "IN LOOP1: fnum = ", fnum, ", currentFrame =", self.currentFrame, ", inc =",inc
+                print("IN LOOP1: fnum = ", fnum, ", currentFrame =", self.currentFrame, ", inc =",inc)
 
             #bruce 050427 totally revised the following in implem (not in behavior).
             # Note that we needn't worry about valid range of frames, since both currentFrame and fnum should be within range.
@@ -970,10 +970,10 @@ class Movie(IdentityCopyMixin): #bruce 080321 bugfix: added IdentityCopyMixin
         if 1: ## if not from_slider:
             #bruce 050428 always do this, since Mark agrees it'd be good for moving the slider to pause the movie
             if _DEBUG0:
-                print "movie._playToFrame(): Calling _pause"
+                print("movie._playToFrame(): Calling _pause")
             self._pause(0) # Force pause. Takes care of variable and dashboard maintenance.
             if _DEBUG0:
-                print "movie._playToFrame(): BYE!"
+                print("movie._playToFrame(): BYE!")
 
         return # from _playToFrame
 
@@ -985,7 +985,7 @@ class Movie(IdentityCopyMixin): #bruce 080321 bugfix: added IdentityCopyMixin
         """
 
         if _DEBUG0:
-            print "movie._playSlider() called: fnum = ", fnum, ", currentFrame =", self.currentFrame
+            print("movie._playSlider() called: fnum = ", fnum, ", currentFrame =", self.currentFrame)
         self.debug_dump("_playSlider", fnum = fnum)
         self._playToFrame(fnum, from_slider = True) #bruce 050427 merged _playSlider into _playToFrame method, using from_slider arg
 
@@ -995,7 +995,7 @@ class Movie(IdentityCopyMixin): #bruce 080321 bugfix: added IdentityCopyMixin
         Resets the movie to the beginning (frame 0).
         """
         if _DEBUG0:
-            print "movie._reset() called"
+            print("movie._reset() called")
         if self.currentFrame == 0:
             return
 
@@ -1016,7 +1016,7 @@ class Movie(IdentityCopyMixin): #bruce 080321 bugfix: added IdentityCopyMixin
         """
         """
         if _DEBUG0:
-            print "movie._moveToEnd() called"
+            print("movie._moveToEnd() called")
         if self.currentFrame == self.totalFramesActual:
             return
 
@@ -1035,7 +1035,7 @@ class Movie(IdentityCopyMixin): #bruce 080321 bugfix: added IdentityCopyMixin
         Print info about movie to the history widget.
         """
         if _DEBUG0:
-            print "movie._info() called."
+            print("movie._info() called.")
         if not self.filename:
             env.history.message("No movie file loaded.")
             return
@@ -1107,8 +1107,8 @@ class Movie(IdentityCopyMixin): #bruce 080321 bugfix: added IdentityCopyMixin
             #bruce 060108: it can come out for realtime minimize if you edit the model. hopefully we'll fix that soon.
             msg = "moveAtoms: The number of atoms from XYZ file (%d) is not matching with that of the current model (%d)" % \
                 (len(newPositions), len(self.alist))
-            print msg
-            raise ValueError, msg
+            print(msg)
+            raise ValueError(msg)
                 #bruce 060108 reviewed/revised all 2 calls, added this exception to preexisting noop/errorprint (untested)
         move_atoms_and_normalize_bondpoints(self.alist, newPositions) #bruce 051221 fixed bug 1239 in this function, then split it out
         self.glpane.gl_update()
@@ -1164,7 +1164,7 @@ class MovableAtomList: #bruce 050426 splitting this out of class Movie... except
         # of a known number, and pass it to the movie object along with the "current frame number", for use instead of the array
         # returned by this method. For now, I won't bother with that, hoping this fix is good enough until we move to the new
         # DPB file format. ####@@@@
-        res = map( lambda a: a.sim_posn(), self.alist )
+        res = [a.sim_posn() for a in self.alist]
         return A(res)
 
     def set_posns(self, newposns):
@@ -1376,7 +1376,7 @@ def _checkMovieFile(part, filename): #bruce 050913 removed history arg since all
     print_errors = True
 
     if _DEBUG1:
-        print "movie._checkMovieFile() function called. filename = ", filename
+        print("movie._checkMovieFile() function called. filename = ", filename)
 
     assert filename #bruce 050324
     if not os.path.exists(filename):
@@ -1418,7 +1418,7 @@ def _checkMovieFile(part, filename): #bruce 050913 removed history arg since all
         return 0
     else:
         if debug_flags.atom_debug:
-            print "atom_debug: not natoms == part.natoms, %d %d" % (natoms, part.natoms)
+            print("atom_debug: not natoms == part.natoms, %d %d" % (natoms, part.natoms))
         if print_errors:
             msg = redmsg("Movie file [" + filename + "] not valid for the current part.")
             env.history.message(msg)

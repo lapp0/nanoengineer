@@ -135,14 +135,14 @@ class GLPane_image_methods(object):
         Note: this modifies the OpenGL raster position.
         """
         if not self._conf_corner_bg_image_data:
-            print "self._conf_corner_bg_image_data not yet assigned"
+            print("self._conf_corner_bg_image_data not yet assigned")
         else:
             subwidth, subheight, width, height, gl_format, gl_type, image = self._conf_corner_bg_image_data
             if width != self.width or height != self.height:
                 # I don't know if this can ever happen; if it can, caller might need
                 # to detect this itself and do a full redraw.
                 # (Or we might make this method return a boolean to indicate it.)
-                print "can't draw self._conf_corner_bg_image_data -- glpane got resized" ###
+                print("can't draw self._conf_corner_bg_image_data -- glpane got resized") ###
             else:
                 if pos is None:
                     pos = (width - subwidth, height - subheight)
@@ -189,13 +189,13 @@ class GLPane_image_methods(object):
             # This doesn't matter much, but indicates that re-initing the matrices would be
             # a better solution if we could be sure the projection stack depth was sufficient
             # (or if we reset the standard projection when done, rather than using push/pop).
-            print "bug: not glGetBooleanv(GL_CURRENT_RASTER_POSITION_VALID); pos =", x, y
+            print("bug: not glGetBooleanv(GL_CURRENT_RASTER_POSITION_VALID); pos =", x, y)
                 # if this happens, the subsequent effect is that glDrawPixels draws nothing
         else:
             # verify correct raster position
             px, py, pz, pw = glGetFloatv(GL_CURRENT_RASTER_POSITION)
             if not (0 <= px - x < 0.4) and (0 <= py - y < 0.4): # change to -0.4 < px - x ??
-                print "LIKELY BUG: glGetFloatv(GL_CURRENT_RASTER_POSITION) = %s" % [px, py, pz, pw]
+                print("LIKELY BUG: glGetFloatv(GL_CURRENT_RASTER_POSITION) = %s" % [px, py, pz, pw])
                 # seems to be in window coord space, but with float values,
                 # roughly [0.1, 0.1, 0.1, 1.0] but depends on viewpoint, error about 10**-5
             pass
@@ -265,7 +265,7 @@ class GLPane_image_methods(object):
         # - or by more platform-specific ways, e.g. pbuffer.
         # [bruce 081002]
 
-        print "_capture_saved_bg_image", self._print_data()
+        print("_capture_saved_bg_image", self._print_data())
         sys.stdout.flush()
 
         if 1:
@@ -283,14 +283,14 @@ class GLPane_image_methods(object):
         ## image = glReadPixels( 0, 0, w, h, GL_DEPTH_COMPONENT, _GL_TYPE_FOR_DEPTH )
         image = glReadPixelsf(0, 0, w, h, GL_DEPTH_COMPONENT) #####
         self._cached_bg_depth_image = image
-        print "grabbed depth at 0,0:", image[0][0]######
+        print("grabbed depth at 0,0:", image[0][0])######
 
         return
 
     def _draw_saved_bg_image(self):
         """
         """
-        print "_draw_saved_bg_image", self._print_data()
+        print("_draw_saved_bg_image", self._print_data())
         sys.stdout.flush()
 
         assert self._cached_bg_color_image is not None
@@ -323,7 +323,7 @@ class GLPane_image_methods(object):
             # fixes bug where this glDrawPixels replaced all colors with blue
             # (reference doc for glDrawPixels explains why - it makes fragments
             #  using current color and depths from image, draws them normally)
-        print "depth_image[0][0] being written now:", depth_image[0][0] #####
+        print("depth_image[0][0] being written now:", depth_image[0][0]) #####
             ## depth_image[0][0] being written now: 0.0632854178548
 
         ## glDrawPixels(w, h, GL_DEPTH_COMPONENT, _GL_TYPE_FOR_DEPTH, depth_image)
@@ -339,12 +339,12 @@ class GLPane_image_methods(object):
         self._set_raster_pos(0, 0) # precaution (untested)
 
         if 1: # confirm if possible
-            print "readback of depth at 0,0:", glReadPixels( 0, 0, 1, 1, GL_DEPTH_COMPONENT, _GL_TYPE_FOR_DEPTH )[0][0] ######
+            print("readback of depth at 0,0:", glReadPixels( 0, 0, 1, 1, GL_DEPTH_COMPONENT, _GL_TYPE_FOR_DEPTH )[0][0]) ######
                 ## BUG: readback of depth at 0,0: 1.0
 ##            import Numeric
 ##            print "min depth:" , Numeric.minimum( glReadPixels( 0, 0, w, h, GL_DEPTH_COMPONENT, _GL_TYPE_FOR_DEPTH ) ) #### 6 args required
 ##            ## ValueError: invalid number of arguments
-            print
+            print()
 
         glEnable(GL_LIGHTING)
         glEnable(GL_DEPTH_TEST)

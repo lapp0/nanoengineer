@@ -32,8 +32,8 @@ displayIndexes = [diLINES, diTUBES, diBALL, diTrueCPK, diDNACYLINDER, diPROTEIN]
 displayNames   = ["Lines", "Tubes", "Ball and Stick", "CPK", "DNA Cylinder", "Protein"]
 displayIcons   = ["Lines", "Tubes", "Ball_and_Stick", "CPK", "DNACylinder", "Protein"]
 
-displayIconsDict = dict(zip(displayNames, displayIcons))
-displayNamesDict = dict(zip(displayIndexes, displayNames))
+displayIconsDict = dict(list(zip(displayNames, displayIcons)))
+displayNamesDict = dict(list(zip(displayIndexes, displayNames)))
 
 class GlobalDisplayStylesComboBox(QComboBox):
     """

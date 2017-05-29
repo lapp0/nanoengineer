@@ -91,7 +91,7 @@ class Node_as_MT_DND_Target( MT_DND_Target_API):
             for node in nodes:
                 if (node is not self.node and node.is_ascendant(self.node)) or \
                    (node is self.node and node.MT_DND_can_drop_inside()):
-                    print "fyi: refusing drag-move since it would form a cycle"
+                    print("fyi: refusing drag-move since it would form a cycle")
                     whynot = "would form a cycle"
                     return ( False, whynot )
         return ( True, None)

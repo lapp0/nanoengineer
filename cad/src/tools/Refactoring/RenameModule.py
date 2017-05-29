@@ -152,7 +152,7 @@ class _OutputStream(object):
         """
         Identifies the file and line number where the message occurred.
         """
-        print "%s:%d: %s" % (self._fileName, self._lineNumber, message)
+        print("%s:%d: %s" % (self._fileName, self._lineNumber, message))
 
     def fileChanged(self):
         """
@@ -228,16 +228,16 @@ class _OutputStream(object):
         if (self._changedTwo):
             if (self._commaOne != ""):
                 self._write(self._newLineOne + "\n")
-                print self._newLineOne
+                print(self._newLineOne)
                 if (DryRun):
                     self._lineNumber = self._lineNumber - 1
             self._write(self._newLineTwo + trailer)
-            print self._newLineTwo + trailer
+            print(self._newLineTwo + trailer)
             self.fileChanged()
         else:
             if (self._changedOne):
                 self._write(self._newLineOne + trailer)
-                print self._newLineOne + trailer
+                print(self._newLineOne + trailer)
                 self.fileChanged()
             else:
                 self.writeLine(originalLine)
@@ -248,7 +248,7 @@ class _OutputStream(object):
         written, tagged by whichAction.
         """
         if (self._fileChanged):
-            print "%s: changed renaming %s" % (self._fileName, whichAction)
+            print("%s: changed renaming %s" % (self._fileName, whichAction))
             if (not DryRun):
                 newFile = open(self._fileName, 'w')
                 newFile.write(self._contents)
@@ -423,10 +423,10 @@ def renameModule(oldPackage, oldModule, newPackage, newModule):
         out.close(whichAction)
 
 def usage():
-    print >>sys.stderr, "usage: %s old/path.py new/pathname.py" % sys.argv[0]
-    print >>sys.stderr, " --dry-run disables writing changed files"
-    print >>sys.stderr, " --ignore-bare-module disables substituting a module"
-    print >>sys.stderr, "      without accompanying package name"
+    print("usage: %s old/path.py new/pathname.py" % sys.argv[0], file=sys.stderr)
+    print(" --dry-run disables writing changed files", file=sys.stderr)
+    print(" --ignore-bare-module disables substituting a module", file=sys.stderr)
+    print("      without accompanying package name", file=sys.stderr)
     sys.exit(1)
 
 def findOption(optionString):
@@ -450,7 +450,7 @@ if (__name__ == '__main__'):
     SubstituteBareModule = not findOption("--ignore-bare-module")
 
     if (len(sys.argv) != 3):
-        print "len(sys.argv): %d" % len(sys.argv)
+        print("len(sys.argv): %d" % len(sys.argv))
         usage()
     oldPath = sys.argv[1]
     newPath = sys.argv[2]
@@ -458,7 +458,7 @@ if (__name__ == '__main__'):
     (newPackage, newModule) = separatePath(pathToModule(newPath))
 
     if (oldModule == ""):
-        print >>sys.stderr, "old module name is missing"
+        print("old module name is missing", file=sys.stderr)
         usage()
     if (oldPackage == ""):
         pass
@@ -467,7 +467,7 @@ if (__name__ == '__main__'):
             #usage()
     else:
         if (os.path.isdir(moduleToPath(oldPackage + "." + oldModule))):
-            print >>sys.stderr, "old module path is a package"
+            print("old module path is a package", file=sys.stderr)
             usage()
 
     if (newPackage == ""):
@@ -483,7 +483,7 @@ if (__name__ == '__main__'):
             newModule = oldModule
 
     if (oldPackage == newPackage and oldModule == newModule):
-        print >>sys.stderr, "old and new modules are the same"
+        print("old and new modules are the same", file=sys.stderr)
         usage()
 
     renameModule(oldPackage, oldModule, newPackage, newModule)

@@ -72,8 +72,8 @@ class GLPane_mixin_for_DisplayListChunk(object):
            debug_pref("GLPane: print nested displist compiles?",
                       Choice_boolean_False,
                       prefs_key = True):
-            print "debug: fyi: displist %r is compiling a call to displist %r" % \
-                  (self.compiling_displist, listname)
+            print("debug: fyi: displist %r is compiling a call to displist %r" % \
+                  (self.compiling_displist, listname))
         assert listname # redundant with following?
         glCallList(listname)
         return
@@ -104,7 +104,7 @@ class GLPane_mixin_for_DisplayListChunk(object):
             dict1.update( direct_sublists_dict )
         seen = transclose(  toscan, collector )
         # now, for each dlist_owner we saw, tell it its drawing effects are valid.
-        for dlist_owner in seen.itervalues():
+        for dlist_owner in seen.values():
             dlist_owner._your_drawing_effects_are_valid()
                 # Q: this resets flags which cause inval propogation... does it retain consistency?
                 # A: it does it in reverse logic dir and reverse arrow dir (due to transclose) as inval prop, so it's ok.

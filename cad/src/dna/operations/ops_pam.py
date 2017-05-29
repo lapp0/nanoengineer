@@ -103,7 +103,7 @@ class ops_pam_Mixin:
         ladders = {}
         ghost_bases = {} # initially only holds PAM5 ghost bases
 
-        for atom in atoms.itervalues():
+        for atom in atoms.values():
             try:
                 ladder = atom.molecule.ladder
             except AttributeError: # for .ladder
@@ -163,7 +163,7 @@ class ops_pam_Mixin:
             # conceivable that for some ladders we never hit them;
             # for now, warn but skip them in that case
             if not index_set:
-                print "unexpected: scanned %r but found nothing to convert (only Pls selected??)" % ladder # env.history?
+                print("unexpected: scanned %r but found nothing to convert (only Pls selected??)" % ladder) # env.history?
             else:
                 if len(ladder.strand_rails) == 2:
                     number_of_basepairs_to_convert += len(index_set)
@@ -176,7 +176,7 @@ class ops_pam_Mixin:
                         # initially, this test rules out free floating single strands;
                         # later we might be able to do this for them, which is why
                         # we do the test using that method rather than directly.
-                        ladders_needing_ghost_bases[ladder] = (ladder, index_set.values())
+                        ladders_needing_ghost_bases[ladder] = (ladder, list(index_set.values()))
                 # see related code in _cmd_convert_to_pam method
                 # in DnaLadder_pam_conversion.py
                 ladders_to_inval[ladder] = ladder
@@ -223,8 +223,8 @@ class ops_pam_Mixin:
             msg = "%d atom(s) skipped, since not in valid, error-free DnaLadders"
             env.history.message( orangemsg("Warning: " + fix_plurals(msg)))
 
-        print "%s will convert %d atoms, touching %d ladders" % \
-              ( commandname, len(atoms_to_convert), len(ladders_to_inval) )
+        print("%s will convert %d atoms, touching %d ladders" % \
+              ( commandname, len(atoms_to_convert), len(ladders_to_inval) ))
 
         # make ghost bases as needed for this conversion (if enabled -- not by default since not yet working ####)
         # (this must not delete any baseatoms in atoms, or run the dna updater
@@ -232,7 +232,7 @@ class ops_pam_Mixin:
         #  atoms in new chunks, as it does)
 
         if debug_pref_enable_pam_convert_sticky_ends():
-            for ladder, index_list in ladders_needing_ghost_bases.itervalues():
+            for ladder, index_list in ladders_needing_ghost_bases.values():
                 baseatoms = ladder.make_ghost_bases(index_list) # note: index_list is not sorted; that's ok
                     # note: this makes them in a separate chunk, and returns them
                     # as an atom list, but doesn't add the new chunk to the ladder.
@@ -254,10 +254,10 @@ class ops_pam_Mixin:
 
         # run the dna updater explicitly
 
-        print "about to run dna updater for", commandname
+        print("about to run dna updater for", commandname)
         self.assy.update_parts() # not a part method
             # (note: this catches dna updater exceptions and turns them into redmsgs.)
-        print "done with dna updater for", commandname
+        print("done with dna updater for", commandname)
 
         if debug_pref_remove_ghost_bases_from_pam3():
             # note: in commented out calling code above, this was a flag
@@ -267,7 +267,7 @@ class ops_pam_Mixin:
             # actually we only remove the ones we noticed as PAM5 above,
             # and succeeded in converting to PAM3.
             good = bad = 0
-            for atom in ghost_bases.values(): # must not be itervalues
+            for atom in list(ghost_bases.values()): # must not be itervalues
                 if atom.element.pam == MODEL_PAM3:
                     good += 1
                     for n in atom.neighbors():
@@ -278,22 +278,22 @@ class ops_pam_Mixin:
                     del ghost_bases[atom.key]
                 continue
             if good:
-                print "removing %d ghost base(s) we converted to PAM3" % good
+                print("removing %d ghost base(s) we converted to PAM3" % good)
             if bad:
-                print "leaving %d ghost base(s) we didn't convert to PAM3" % bad
+                print("leaving %d ghost base(s) we didn't convert to PAM3" % bad)
             if not bool(good) == bool(ghost_bases): # should never happen
-                print "bug: bool(good) != bool(ghost_bases), for", good, ghost_bases
+                print("bug: bool(good) != bool(ghost_bases), for", good, ghost_bases)
             del good, bad
             if ghost_bases:
-                for atom in ghost_bases.itervalues():
+                for atom in ghost_bases.values():
                     atom.kill()
                     # todo: probably should use prekill code to avoid
                     # intermediate bondpoint creation, even though there
                     # are not usually a lot of atoms involved at once
                     continue
-                print "about to run dna updater 2nd time for", commandname
+                print("about to run dna updater 2nd time for", commandname)
                 self.assy.update_parts()
-                print "done with dna updater 2nd time for", commandname
+                print("done with dna updater 2nd time for", commandname)
             pass
 
         env.history.message( greenmsg( commandname + ": " + "Done." ))

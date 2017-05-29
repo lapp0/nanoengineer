@@ -159,7 +159,7 @@ class World(InstanceOrExpr): #070205 revised, public nodelist -> private _nodese
         """
         type_predicate = model_type_predicate( model_type) # this permits model_type to be an IorE subclass (or its name)
             ###BAD: not enough kinds of type exprs can be passed, and error checking on model_type (not being garbage) is nim
-        return filter( type_predicate, self._sorted_objects ) ##e optim: filter first (or keep them already type-separated), then sort
+        return list(filter( type_predicate, self._sorted_objects )) ##e optim: filter first (or keep them already type-separated), then sort
 
     def _append_node(self, index, node):#070201 new feature ###e SHOULD RENAME [070205]
         "not sure if this should be private... API revised 070205, ought to rename it more (and #doc it)"
@@ -183,7 +183,7 @@ class World(InstanceOrExpr): #070205 revised, public nodelist -> private _nodese
         """compute private self._sorted_objects (a list, ordered by something not yet decided,
          probably creation time; probably should be the same order used by list_all_objects_of_type)
         """
-        res = self._nodeset.values()
+        res = list(self._nodeset.values())
         res = sorted_by( res, lambda obj: obj._e_serno )
             ###KLUGE: use _e_serno in place of .creation_order, not yet defined --
             # works now, but wrong in general due to potential objects or moved-from-elsewhere objects.
@@ -204,7 +204,7 @@ class World(InstanceOrExpr): #070205 revised, public nodelist -> private _nodese
                 # which if necessary adds the pos which only we see -- we'd want this if one Vertex could be in two Worlds at diff posns.
                 # (Which is likely, due to Configuration Management.)
             if 0 and node is self._sorted_objects[-1]:
-                print "drew last node in list, %r, ipath[0] %r, pos %r" % (node, node.ipath[0], node.pos)
+                print("drew last node in list, %r, ipath[0] %r, pos %r" % (node, node.ipath[0], node.pos))
         ###e see comment above: "maybe World needs to wrap all it draws with glue to add looks and behavior to it"
         return
 
@@ -337,7 +337,7 @@ class World(InstanceOrExpr): #070205 revised, public nodelist -> private _nodese
     _cmd_Clear_tooltip = "clear all objects" # a command button or menu item could use this as its tooltip ###e is this client-specific??
 
     def _cmd_Make(self):
-        print "world make is nim" ###
+        print("world make is nim") ###
     _cmd_Make_tooltip = "make something [nim]" ###e when we know the source of what to make, it can also tell us this tooltip
 
     pass # end of class World

@@ -316,10 +316,10 @@ class cc_MouseEventHandler(MouseEventHandler_API): #e rename # an instance can b
         optim for the rest of the GLPane content is operative or not).
         """
         if 0:
-            print "draw CC for cctype %r and state %r, %r" \
+            print("draw CC for cctype %r and state %r, %r" \
                   % (self._cctype,
                      self._pressed_button,
-                     self._last_button_position)
+                     self._last_button_position))
 
         # figure out what image expr to draw
 
@@ -445,7 +445,7 @@ class cc_MouseEventHandler(MouseEventHandler_API): #e rename # an instance can b
         self._last_button_position = bc # this is for knowing when our appearance might change
         self._pressed_button = bc # this and glpane.in_drag serve as our state variables
         if not bc:
-            print "bug: not bc in meh.mousePressEvent" # should never happen; if it does, do nothing
+            print("bug: not bc in meh.mousePressEvent") # should never happen; if it does, do nothing
         else:
             self._update_drawing()
         return
@@ -464,7 +464,7 @@ class cc_MouseEventHandler(MouseEventHandler_API): #e rename # an instance can b
         wX, wY = self.glpane._last_event_wXwY
         bc = self._button_region_for_event_position(wX, wY)
         if self._last_button_position != bc:
-            print "unexpected: self._last_button_position != bc in meh.mouseReleaseEvent (should be harmless)" ###
+            print("unexpected: self._last_button_position != bc in meh.mouseReleaseEvent (should be harmless)") ###
         self._last_button_position = bc
         if self._pressed_button and self._pressed_button == bc:
             #e in future: if action might take time, maybe change drawing appearance to indicate we're "doing it"
@@ -520,7 +520,7 @@ class cc_MouseEventHandler(MouseEventHandler_API): #e rename # an instance can b
         else:
             button = cancel_button
         if not button:
-            print "bug (ignored): %r trying to do action for nonexistent %r button" % (self, buttoncode) #e more info?
+            print("bug (ignored): %r trying to do action for nonexistent %r button" % (self, buttoncode)) #e more info?
         else:
             try:
                 # print "\nabout to click %r button == %r" % (buttoncode, button)

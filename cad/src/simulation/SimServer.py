@@ -57,7 +57,7 @@ class SimServer:
             self.parms['platform'] = 'Mac Os'
             self.parms['engine'] = 'GAMESS'
 
-        self.parms.keys().sort() # Sort parms.
+        list(self.parms.keys()).sort() # Sort parms.
 
         ### WARNING: Bugs will be caused if any of SimJob's own methods or
         # instance variables had the same name as any of the parameter ('k') values.

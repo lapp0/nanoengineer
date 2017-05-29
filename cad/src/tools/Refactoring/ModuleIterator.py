@@ -72,7 +72,7 @@ class _Iterator(object):
     def __init__(self, initialList):
         self._remaining = initialList
 
-    def next(self):
+    def __next__(self):
         if (len(self._remaining) > 0):
             path = self._remaining[0]
             self._remaining = self._remaining[1:]
@@ -87,4 +87,4 @@ class _Iterator(object):
 
 if (__name__ == '__main__'):
     for (fileName, moduleName) in ModuleIterator():
-        print "file: %s, module: %s" % (fileName, moduleName)
+        print("file: %s, module: %s" % (fileName, moduleName))

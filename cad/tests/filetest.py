@@ -62,7 +62,7 @@ class FileTest(unittest.TestCase):
     def countLines(self, searchterm, fileExt, expected):
         n = len(self.getLines(searchterm, fileExt))
         if n != expected:
-            print "EXPECTED", expected, "GOT", n
+            print("EXPECTED", expected, "GOT", n)
         assert n == expected
 
     def testOpenFile(self):

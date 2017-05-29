@@ -135,7 +135,7 @@ def update_PAM_atoms_and_bonds(changed_atoms):
 
         if new_atoms:
             if debug_flags.DEBUG_DNA_UPDATER:
-                print "dna_updater: will scan %d new changes from delete_bare_atoms" % len(new_atoms)
+                print("dna_updater: will scan %d new changes from delete_bare_atoms" % len(new_atoms))
             changed_atoms.update( new_atoms )
 
     # ==
@@ -164,7 +164,7 @@ def update_PAM_atoms_and_bonds(changed_atoms):
 
     if new_atoms:
         if debug_flags.DEBUG_DNA_UPDATER:
-            print "dna_updater: will scan %d new changes from fix_local_bond_directions" % len(new_atoms)
+            print("dna_updater: will scan %d new changes from fix_local_bond_directions" % len(new_atoms))
         changed_atoms.update( new_atoms )
 
     # ==

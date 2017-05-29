@@ -143,4 +143,4 @@ class Drawable(Selobj_API):
         self.glname = self.assy.alloc_my_glselect_name(self) # or self.glpane, or ... #bruce 080917 revised
 
     def draw_in_abs_coords(self, glpane, color):
-        raise Exception, 'abstract method, must be overloaded'
+        raise Exception('abstract method, must be overloaded')

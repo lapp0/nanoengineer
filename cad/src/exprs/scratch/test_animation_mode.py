@@ -293,7 +293,7 @@ AttributeError: ascii
 #unfixed bug in arrow key bindings -- due to event.ascii ### BUG: not available in Qt4 [070811]
 
 keynames = {}
-for keyname in filter(lambda s: s.startswith('Key'), dir(Qt)):
+for keyname in [s for s in dir(Qt) if s.startswith('Key')]:
     keynames[getattr(Qt, keyname)] = keyname
 
 def keyname(key):#070812
@@ -425,7 +425,7 @@ class myTrackball:
     pass
 
 def hacktrack(glpane):
-    print "hacking trackball, permanently"
+    print("hacking trackball, permanently")
     glpane.trackball = myTrackball(10, 10)
     glpane.trackball.rescale(glpane.width, glpane.height)
 
@@ -435,7 +435,7 @@ def showquat(label, quat, where = V(0,0,0)):
     quats_to_show[label] = (Q(quat), + where)
 
 def draw_debug_quats(glpane):
-    for quat, where in quats_to_show.values():
+    for quat, where in list(quats_to_show.values()):
         drawquat(glpane, quat, where)
 
 def drawquat(glpane, quat, where):
@@ -490,7 +490,7 @@ def novertigo(glpane):
     return
 
 def printvec(label, vec):
-    print label, "(%03f, %03f, %03f)" % (vec[0], vec[1], vec[2]) # why does it print with 6 digits? Y (-0.003402, 0.696759, 0.717297)
+    print(label, "(%03f, %03f, %03f)" % (vec[0], vec[1], vec[2])) # why does it print with 6 digits? Y (-0.003402, 0.696759, 0.717297)
 
 register_debug_menu_command("novertigo", novertigo_cmd) # will only work in glpane debug menu
 
@@ -588,8 +588,8 @@ class DebugNode(Node):
         replace self with an updated version using the latest code, for self *and* self's data!
         """
         name = self.__class__.__name__
-        print "name is",name # "DebugNode"
-        print self.__class__.__module__ # "test_animation_mode"
+        print("name is",name) # "DebugNode"
+        print(self.__class__.__module__) # "test_animation_mode"
         #e rest is nim; like copy_val but treats instances differently, maps them through an upgrader
     pass
 
@@ -646,7 +646,7 @@ class makedot(DrawableStuff):
 class makevecs(DrawableStuff):
     def process_args(self):
         self.origin, self.vecs, self.colors = self.args[0:3]
-        self.vecs_colors = zip(self.vecs, self.colors)
+        self.vecs_colors = list(zip(self.vecs, self.colors))
     def draw(self, glpane):
         for vec, color in self.vecs_colors:
             drawline(color, self.origin, self.origin + vec)
@@ -705,7 +705,7 @@ class shelvable_graphic:
         storage[key] = self.state()
     def state(self):
         res = {}
-        for k in self.__dict__.keys(): # not dir(self), that includes class methods...
+        for k in list(self.__dict__.keys()): # not dir(self), that includes class methods...
             if not (k.startswith('_') or k in ['space','stuff']): ###@@@ see also "snaps.py" which I started writing...
                 #k don't exclude stuff... need pickle methods to turn objs into refs to them or their snapshot then.
                 res[k] = self.__dict__[k]
@@ -714,7 +714,7 @@ class shelvable_graphic:
         """
         other objs whose state is sometimes considered part of ours, but not in self.state()
         """
-        return self.stuff.values()
+        return list(self.stuff.values())
     def load(self, storage, key):
         """
         change our state to match what's in the storage
@@ -845,7 +845,7 @@ class guy(shelvable_graphic):
         drawline(light(black, 0.2), pos, pos * V(1,0,1) - V(0, 6, 0))
         #e and a line between them
         deads = []
-        for thing in self.stuff.itervalues():
+        for thing in self.stuff.values():
             #e move to superclass? ... well, they need to notice our shadow hitting them! be transparent? fog?
             # i bet transparent is not super hard to do... note that for cubes (or any convex solids)
             # it's easy to know back to front order...
@@ -910,7 +910,7 @@ class guy(shelvable_graphic):
         elif chrkey == '.': # '>'
             self.space.rotleft(-0.05) ###@@@ subr is wrong at the moment
         else:
-            print "test_animation_mode received key:", keyname(event.key()) ## "(%r)" % event.key()
+            print("test_animation_mode received key:", keyname(event.key())) ## "(%r)" % event.key()
         self.save()
     def save(self):
         pass # save the state! just store our dict at a key... but turn values from objs to refs... ask the objs for those. ###@@@
@@ -1174,10 +1174,7 @@ from exprs.ExprsMeta import ExprsMeta
 from exprs.StatePlace import StatePlace
 from exprs.IorE_guest_mixin import IorE_guest_mixin # REVIEW: can we use State_preMixin here?
 
-class test_animation_mode(_superclass, IorE_guest_mixin): # list of supers might need object if it doesn't have IorE_guest_mixin; see also __init__
-    __metaclass__ = ExprsMeta # this seems to cause no harm.
-        # Will it let us define State in here (if we generalize the implem)??
-        # probably not just yet, but we'll try it and see what errors we get.
+class test_animation_mode(_superclass, IorE_guest_mixin, metaclass=ExprsMeta): # list of supers might need object if it doesn't have IorE_guest_mixin; see also __init__
     transient_state = StatePlace('transient') # see if this makes State work... it's not enough --
         # it is a formula with a compute method, and Exprs.py:273 asserts self._e_is_instance before
         # proceeding with that. I predict self would need a lot of IorE to work here...
@@ -1260,7 +1257,7 @@ class test_animation_mode(_superclass, IorE_guest_mixin): # list of supers might
 
         if TESTING_KLUGES:
             self._clear_command_state() ###### FOR TESTING
-            print "_clear_command_state in init, testing kluge"####
+            print("_clear_command_state in init, testing kluge")####
 
         return
 
@@ -1270,7 +1267,7 @@ class test_animation_mode(_superclass, IorE_guest_mixin): # list of supers might
         """
         self.cmd_Stop()
         if TESTING_KLUGES:
-            print "KLUGE FOR TESTING: set cannonWidth in cmd_Stop"
+            print("KLUGE FOR TESTING: set cannonWidth in cmd_Stop")
             self.cannonWidth = 2.0 ########### DOES IT FIX THE BUG? THEN ZAP.
         return
 
@@ -1287,8 +1284,8 @@ class test_animation_mode(_superclass, IorE_guest_mixin): # list of supers might
         return
 
     def _command_enter_effects(self):
-        print
-        print "entering test_animation_mode again", time.asctime()
+        print()
+        print("entering test_animation_mode again", time.asctime())
 ##        self.assy = self.w.assy # [AttributeError: can't set attribute -- property?]
         hacktrack(self.glpane)
         hack_standard_repaint_0(self.glpane, self.graphicsMode.pre_repaint)
@@ -1297,12 +1294,12 @@ class test_animation_mode(_superclass, IorE_guest_mixin): # list of supers might
             # need to find those and decide when to call a method like that.
         self.glpane.pov = V(0, 0, 0)
         self.glpane.quat = Q(1,0,0,0) + Q(V(1,0,0),10.0 * pi/180)
-        print "self.glpane.scale =", self.glpane.scale # 10 -- or 10.0?
+        print("self.glpane.scale =", self.glpane.scale) # 10 -- or 10.0?
         self.glpane.scale = 20.0 #### 070813 # note: using 20 (int not float) may have caused AssertionError:
             ## in GLPane.py 3473 in typecheckViewArgs
             ## assert isinstance(s2, float)
 
-        print "self.glpane.scale changed to", self.glpane.scale
+        print("self.glpane.scale changed to", self.glpane.scale)
         self.right = V(1,0,0) ## self.glpane.right
         self.up = V(0,1,0)
         self.left = - self.right
@@ -1382,10 +1379,10 @@ class test_animation_mode(_superclass, IorE_guest_mixin): # list of supers might
         if SILLY_TEST:
             self.cannonWidth = 5.0 - self.cannonWidth # test whether pm gets updated -- it doesn't (bug)
         if self._in_loop:
-            print "cmd_Start: already in loop, ignoring"
+            print("cmd_Start: already in loop, ignoring")
             #e future: increase the time remaining
             return
-        print "cmd_Start: starting loop"
+        print("cmd_Start: starting loop")
         glpane = self.glpane
         starttime = self._loop_start_time = time.time()
         start_simtime = self.simtime
@@ -1420,10 +1417,10 @@ class test_animation_mode(_superclass, IorE_guest_mixin): # list of supers might
 
     def cmd_Stop(self):
         if self._in_loop:
-            print "cmd_Stop: exiting loop"
+            print("cmd_Stop: exiting loop")
             self._please_exit_loop = True
         else:
-            print "cmd_Stop: not in loop, ignoring" #e show this msg in PM somewhere?
+            print("cmd_Stop: not in loop, ignoring") #e show this msg in PM somewhere?
         return
 
     pass # end of class test_animation_mode

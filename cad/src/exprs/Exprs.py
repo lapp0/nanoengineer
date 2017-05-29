@@ -35,7 +35,7 @@ EVAL_REFORM = True
     # [bruce 070115 & 071102]
 
 if not EVAL_REFORM:
-    print "EVAL_REFORM is %r" % EVAL_REFORM
+    print("EVAL_REFORM is %r" % EVAL_REFORM)
 
 # == utilities #e refile
 
@@ -45,7 +45,7 @@ def map_dictvals(func, dict1):
     i.e. it makes a new dict whose values v are replaced by func(v).
     [If you wish func also depended on k, see map_dictitems.]
     """
-    return dict([(k,func(v)) for k,v in dict1.iteritems()])
+    return dict([(k,func(v)) for k,v in dict1.items()])
 
 def map_dictitems(func, dict1):
     """
@@ -55,7 +55,7 @@ def map_dictitems(func, dict1):
     Often k2 is k, but this is not required.
     If the new items have overlapping keys, the result is... I don't know what. #k
     """
-    return dict(map(func, dict1.iteritems()))
+    return dict(list(map(func, iter(dict1.items()))))
 
 # == serial numbers (along with code in Expr.__init__)
 
@@ -217,8 +217,8 @@ class Expr(object): # notable subclasses: SymbolicExpr (OpExpr or Symbol), Insta
         if self.__class__.__name__ != other.__class__.__name__:
             return False #e this might change someday when comparing proxies -- see comment below
         if self.__class__ is not other.__class__:
-            print "warning: exprs passed to __eq__, sernos %r and %r, have different classes with same name %s -- reload issue?" % \
-                  (self._e_serno, other._e_serno, self.__class__.__name__)
+            print("warning: exprs passed to __eq__, sernos %r and %r, have different classes with same name %s -- reload issue?" % \
+                  (self._e_serno, other._e_serno, self.__class__.__name__))
             return False # this is safest (e.g. it lets us assume other is an Expr in the remaining code)
         if self._e_is_instance or other._e_is_instance: # this is not safe to ask unless we know other is an Expr
             return False # Instances are only equal if identical, for now (and an Instance can't equal a non-Instance);
@@ -264,7 +264,7 @@ class Expr(object): # notable subclasses: SymbolicExpr (OpExpr or Symbol), Insta
         """
         assert self._e_is_symbolic
         assert not self._e_is_instance #k probably implied by _e_is_symbolic
-        return filter( lambda name: not (name.startswith('_e_') or name.startswith('__')) , dir(self) )
+        return [name for name in dir(self) if not (name.startswith('_e_') or name.startswith('__'))]
     def __call__(self, *args, **kws):
         assert 0, "subclass %r of Expr must implement __call__" % self.__class__.__name__
     # note: for __getattr__, see also the subclasses; for __getitem__ see below
@@ -287,8 +287,8 @@ class Expr(object): # notable subclasses: SymbolicExpr (OpExpr or Symbol), Insta
         if obj is None:
             return self
         #e following error message text needs clarification -- when it comes out of the blue it's hard to understand
-        print "__get__ is nim in the Expr", self, ", which is assigned to some attr in", obj ####@@@@ NIM; see above for how [061023 or 24]
-        print "this formula needed wrapping by ExprsMeta to become a compute rule...:", self ####@@@@
+        print("__get__ is nim in the Expr", self, ", which is assigned to some attr in", obj) ####@@@@ NIM; see above for how [061023 or 24]
+        print("this formula needed wrapping by ExprsMeta to become a compute rule...:", self) ####@@@@
         return
     def _e_compute_method(self, instance, index, _lvalue_flag = False):
         """
@@ -485,7 +485,7 @@ class SymbolicExpr(Expr): # Symbol or OpExpr
     def __getattr__(self, attr): # in class SymbolicExpr
         if attr.startswith('__'):
             # be very fast at not finding special python attrs like __repr__
-            raise AttributeError, attr
+            raise AttributeError(attr)
         # the code after this happens when constructing exprs, not when using them,
         # so a bit of slowness should be ok.
         assert not self._e_is_instance # (should never happen I think; if it can be legal, change to raise attrerror)
@@ -493,7 +493,7 @@ class SymbolicExpr(Expr): # Symbol or OpExpr
             # [this special case might be evidence that _e_sym_constant should imply something like _e_is_instance --
             #  both of them mean "eval to self", "instantiate to self". Maybe they should even be merged...
             #  idea not reviewed. Should check whether other special cases for _e_is_instance apply to _e_sym_constant. ###e 070131]
-            raise AttributeError, "no attr %r in %s" % (attr, safe_repr(self))
+            raise AttributeError("no attr %r in %s" % (attr, safe_repr(self)))
         if attr.startswith('_i_'):
             assert self._e_is_instance, \
                    "safety rule: automatic formation of getattr_Expr not allowed for attrs starting _i_, as in %r.%s" % \
@@ -510,7 +510,7 @@ class SymbolicExpr(Expr): # Symbol or OpExpr
             # 061203: also exclude _attr__xxx since it might be name-mangled. Needed to exclude _ExprsMeta__set_attr.
             # [Not confident this exclusion is always good -- maybe what we really need is a variant of hasattr
             # which turns off or detects and ignores the effect of this __getattr__. ###k]
-            raise AttributeError, "no attr %r in %s" % (attr, safe_repr(self))
+            raise AttributeError("no attr %r in %s" % (attr, safe_repr(self)))
         return getattr_Expr(self, attr)
     pass
 
@@ -530,7 +530,7 @@ class OpExpr(SymbolicExpr):
         if debug:
             # activate some debug prints for self (only used by some subclasses)
             self._e_debug = True
-        assert not kws, "unexpected keyword args for %s: %r" % (self.__class__.__name__, kws.keys())
+        assert not kws, "unexpected keyword args for %s: %r" % (self.__class__.__name__, list(kws.keys()))
         self._e_init()
         return
     def _e_init(self):
@@ -552,7 +552,7 @@ class OpExpr(SymbolicExpr):
         try:
             res = arg._e_eval(env, (i,ipath))
         except:
-            print "following exception concerns arg._e_eval(...) where arg = %r" % (arg,) #070228 (guess: arg is class World itself)
+            print("following exception concerns arg._e_eval(...) where arg = %r" % (arg,)) #070228 (guess: arg is class World itself)
             raise
         return res
     def _e_kwval(self, k, env,ipath):
@@ -585,7 +585,7 @@ class OpExpr(SymbolicExpr):
             # Not doing that caused the "tuple_Expr bug" (see cvs for details).
             # Another solution would have been to grab the funcs only out of
             # the class's __dict__. Using staticmethod seems clearer.
-        res = apply(func, [self._e_argval(i,env,ipath) for i in range(len(self._e_args))])
+        res = func(*[self._e_argval(i,env,ipath) for i in range(len(self._e_args))])
         return res
     def _e_eval_lval(self, env,ipath):
         """
@@ -594,7 +594,7 @@ class OpExpr(SymbolicExpr):
         assert env #061110
         assert not self._e_kws #e remove when done with devel -- just checks that certain subclasses overrode us -- or, generalize this
         func = self._e_eval_lval_function
-        res = apply(func, [self._e_argval(i,env,ipath) for i in range(len(self._e_args))])
+        res = func(*[self._e_argval(i,env,ipath) for i in range(len(self._e_args))])
         return res
     pass # end of class OpExpr
 
@@ -632,7 +632,7 @@ class call_Expr(OpExpr): # note: superclass is OpExpr, not SymbolicExpr, even th
         # So, just eval it as a call, I think.
         argvals = [self._e_argval(i,env,ipath) for i in range(len(self._e_args))] # includes value of callee as argvals[0]
         # the following assumes _e_call_kws is a subset of (or the same as) _e_kws (with its items using the same keys).
-        kwvals = map_dictitems( lambda (k,v): (k,self._e_kwval(k,env,ipath)), self._e_call_kws )
+        kwvals = map_dictitems( lambda k_v: (k_v[0],self._e_kwval(k_v[0],env,ipath)), self._e_call_kws )
         printnim('###e optim: precede by "self._e_call_kws and"') # in 2 places
         return argvals[0] ( *argvals[1:], **kwvals )
     pass
@@ -651,7 +651,7 @@ class LvalueFromObjAndAttr(object): #061204 for _e_eval_lval and LvalueArg, like
         try:
             setattr( self.obj, self.attr, val)
         except:
-            print "following exception in setattr( self.obj, self.attr, val) concerns self = %r" % (self,)
+            print("following exception in setattr( self.obj, self.attr, val) concerns self = %r" % (self,))
             raise
         pass
     # 070312 conform to StateRefInterface
@@ -669,7 +669,7 @@ class getattr_Expr(OpExpr):
         msg = "error: getattr exprs are not callable: " \
               "explicit call_Expr needed, instead of direct call " \
               "of %r with:" % self, args, kws #bruce 080528 revised msg
-        print msg
+        print(msg)
         assert 0, msg
     def _e_init(self):
         assert len(self._e_args) in (2,3) #e kind of useless and slow #e should also check types? #070203 permit 3-arg form
@@ -760,7 +760,7 @@ class list_Expr(OpExpr): #k not well reviewed, re how it should be used, esp. in
 def printfunc(*args, **kws): #e refile, maybe rename dprint; compare to same-named *cannib*.py func
     prefix = kws.pop('prefix', '')
     assert not kws
-    print "printfunc %s: %r" % (prefix, args)
+    print("printfunc %s: %r" % (prefix, args))
     return args[0]
 
 class tuple_Expr(OpExpr): #k not well reviewed, re how it should be used, esp. in 0-arg case
@@ -786,7 +786,7 @@ class tuple_Expr(OpExpr): #k not well reviewed, re how it should be used, esp. i
         # (is_constant_for_instantiation, no caching) and review it later. WARNING: things like SimpleColumn
         # which declared each arg separately used to be able to cache them individually -- so THIS IS ######WRONG.
         # It'll work, I think, but be a slowdown.
-        mades = [self._e_make_argval(argval, env, i, ipath) for (i,argval) in zip(range(len(self._e_args)), self._e_args)]
+        mades = [self._e_make_argval(argval, env, i, ipath) for (i,argval) in zip(list(range(len(self._e_args))), self._e_args)]
         return tuple(mades)
     def _e_make_argval(self, argval, env, i, ipath):
         """
@@ -1051,7 +1051,7 @@ class eval_to_lval_Expr(internal_Expr):#070119, needed only when EVAL_REFORM
         # print "fyi (routine): %r l-evals it to %r" % (self, res) # remove when works
         return res
     def _e_eval_lval(self, env, ipath):
-        print "fyi or bug? %r didn't expect to have its _e_eval_lval called; just passing it through" % (self,)
+        print("fyi or bug? %r didn't expect to have its _e_eval_lval called; just passing it through" % (self,))
             ## if that happens much and is not an error, remove the print once i understand why -- probably harmless
         return self._e_eval(env, ipath)
     pass
@@ -1241,8 +1241,8 @@ class eval_Expr(OpExpr):
                 # update 070122: but it doesn't yet solve it for testexpr_21e or _21g, in which an ad-hoc function returns an expr
                 # based on a passed argument (according to a guess at the bug cause). See discussion near testexpr_21g.
         except:
-            print "following exception concerns argval.%s(...) where argval is %r and came from evalling %r" % \
-                  (whatever, argval, arg) #061118, revised 070109 & 070117
+            print("following exception concerns argval.%s(...) where argval is %r and came from evalling %r" % \
+                  (whatever, argval, arg)) #061118, revised 070109 & 070117
             raise
         ## print "eval_Expr eval%s goes from %r to %r to %r" % (_e_eval_lval and "_lval" or "", arg, argval, res) #untested since lval
         return res
@@ -1400,19 +1400,19 @@ class Symbol(SymbolicExpr):
         if self == val:
             # return self (perhaps wrapped), after perhaps printing a warning
             if self is not val:
-                print "warning: %r and %r are two different Symbols with same name, thus equal" % (self, val)
+                print("warning: %r and %r are two different Symbols with same name, thus equal" % (self, val))
             if EVAL_REFORM:#070117
                 if not self._e_sym_constant: #070131 added this cond (and attr)
-                    print "warning: Symbol(%r) evals to itself [perhaps wrapped by _e_eval_to_expr]" % self._e_name
+                    print("warning: Symbol(%r) evals to itself [perhaps wrapped by _e_eval_to_expr]" % self._e_name)
                 return self._e_eval_to_expr(env, ipath, self)
             else:
                 if not self._e_sym_constant: #070131 added this cond (and attr)
-                    print "warning: Symbol(%r) evals to itself" % self._e_name
+                    print("warning: Symbol(%r) evals to itself" % self._e_name)
                 return self
         # reached only when self != val
         assert self != val # remove when works
         if self._e_name not in ('_self', '_my', '_app'): #k Q: does this also happen for a thisname, _this_<classname> ?
-            print "warning: _e_eval of a symbol other than _self or _my is not well-reviewed or yet well-understood:", self._e_name
+            print("warning: _e_eval of a symbol other than _self or _my is not well-reviewed or yet well-understood:", self._e_name)
                 # e.g. what should be in env? what if it's an expr with free vars incl _self -- are they in proper context?
                 # see docstring for more info [061105]
         ## pre-061105 code did: return val._e_eval(env, ipath)

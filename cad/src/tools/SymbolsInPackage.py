@@ -16,10 +16,10 @@ if (__name__ == '__main__'):
     for line in sys.stdin:
         package = line.strip()
         try:
-            exec "import " + package
+            exec("import " + package)
             globalSymbols = eval("dir(%s)" % package)
             for sym in globalSymbols:
                 if (not sym.startswith("_")):
-                    print "%s: %s" % (sym, package)
+                    print("%s: %s" % (sym, package))
         except:
-            print >>sys.stderr, "Failed to process " + package
+            print("Failed to process " + package, file=sys.stderr)

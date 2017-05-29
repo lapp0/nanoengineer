@@ -44,7 +44,7 @@ def drawPeptideTrace(alphaCarbonProteinChunk):
 
     if alphaCarbonProteinChunk and alphaCarbonProteinChunk.atoms:
         last_pos = None
-        atomitems = alphaCarbonProteinChunk.atoms.items()
+        atomitems = list(alphaCarbonProteinChunk.atoms.items())
         atomitems.sort()
         alphaCarbonAtomsList = [atom for (key, atom) in atomitems]
 

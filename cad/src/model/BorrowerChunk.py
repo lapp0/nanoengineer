@@ -93,7 +93,7 @@ class BorrowerChunk(Chunk):
         if not name:
             name = "(borrower of %d atoms, id %#x)" % (len(atomset), id(self)) #e __repr__ also incls this info
         self.name = name # no use for prior value of self.name #k is there a set_name we should be using??
-        atoms = atomset.values() #e could optim this -- only use is to let us pick one arbitrary atom
+        atoms = list(atomset.values()) #e could optim this -- only use is to let us pick one arbitrary atom
         egatom = atoms[0]
         egmol = egatom.molecule # do this now, since we're going to change it in the loop
         del atoms, egatom
@@ -108,11 +108,11 @@ class BorrowerChunk(Chunk):
         self.origmols = origmols
         self.harmedmols = harmedmols
         # self.atoms was initialized to {} in Chunk.__init__, or restored to that in self.demolish()
-        for key, atom in atomset.iteritems():
+        for key, atom in atomset.items():
             mol = atom.molecule
             assert mol is not self
             if isinstance(mol, self.__class__):
-                print "%r: borrowing %r from another borrowerchunk %r is not supported" % (self, atom, mol)
+                print("%r: borrowing %r from another borrowerchunk %r is not supported" % (self, atom, mol))
                     # whether it might work, I have no idea
             harmedmols[id(mol)] = mol
             # inline part of mol.delatom(atom):
@@ -130,10 +130,10 @@ class BorrowerChunk(Chunk):
             # remember where atom came from:
             origmols[key] = mol
         # do what we saved for later in the inlined delatom and addatom calls:
-        for mol in harmedmols.itervalues():
+        for mol in harmedmols.values():
             natoms = len(mol.atoms)
             if not natoms:
-                print "bug: BorrowerChunk stole all atoms from %r; potential for harm is not yet known" % mol
+                print("bug: BorrowerChunk stole all atoms from %r; potential for harm is not yet known" % mol)
             mol.invalidate_atom_lists()
         self.invalidate_atom_lists()
 
@@ -142,8 +142,8 @@ class BorrowerChunk(Chunk):
             part.add(self) ###e not 100% sure this is ok; need to call part.remove too (and we do)
             assert part is self.part # Part.add should do this (if it was not already done)
         except:
-            print "data from following exception: egmol = %r, its part = %r, self.part = %r" % \
-                  ( egmol, part, self.part )
+            print("data from following exception: egmol = %r, its part = %r, self.part = %r" % \
+                  ( egmol, part, self.part ))
             raise
 
         return # from take_atomset
@@ -175,13 +175,13 @@ class BorrowerChunk(Chunk):
         """
         #e this has bugs if we added atoms to self -- that's not supported (#e could override addatom to support it)
         origmols = self.origmols
-        for key, atom in self.atoms.iteritems():
+        for key, atom in self.atoms.items():
             _changed_parent_Atoms[key] = atom
             origmol = origmols[key]
             atom.molecule = origmol
             atom.index = -1 # illegal value
             origmol.atoms[key] = atom
-        for mol in self.harmedmols.itervalues():
+        for mol in self.harmedmols.values():
             mol.invalidate_atom_lists()
         self.atoms = {}
         self.origmols = {}
@@ -258,7 +258,7 @@ def divide_atomlist_by_chunk(atomlist): # only used in this file as of 080314, b
     for at in atomlist:
         chunk = at.molecule
         resdict.setdefault(id(chunk), []).append(at)
-    return [(atlist[0].molecule, atlist) for atlist in resdict.itervalues()]
+    return [(atlist[0].molecule, atlist) for atlist in resdict.values()]
 
 def debug_make_BorrowerChunk(target):
     """
@@ -279,7 +279,7 @@ def debug_make_BorrowerChunk_raw(do_addmol = True):
         env.history.message(redmsg("Need selected atoms to make a BorrowerChunk (for debugging only)"))
     else:
         atomset = dict(atomset) # copy it, since we shouldn't really add singlets to assy.selatoms...
-        for atom in atomset.values(): # not itervalues, we're changing it in the loop!
+        for atom in list(atomset.values()): # not itervalues, we're changing it in the loop!
             # BTW Python is nicer about this than I expected:
             # exceptions.RuntimeError: dictionary changed size during iteration
             for bp in atom.singNeighbors(): # likely bugs if these are not added into the set!

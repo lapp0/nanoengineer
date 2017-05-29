@@ -253,9 +253,9 @@ class SelectChunks_basicGraphicsMode(Select_basicGraphicsMode):
         strandOrSegment = a_chunk.parent_node_of_class(
             self.win.assy.DnaStrandOrSegment)
         if 0:
-            print "debug fyi: chunk %r .picked %r is in DnaStrandOrSegment %r .picked %r" % \
+            print("debug fyi: chunk %r .picked %r is in DnaStrandOrSegment %r .picked %r" % \
               (a_chunk, a_chunk.picked,
-               strandOrSegment, strandOrSegment.picked) ###### @@@@@@ bruce 080430 debug code
+               strandOrSegment, strandOrSegment.picked)) ###### @@@@@@ bruce 080430 debug code
                     ##### for 'rapid click selects subset of strand chunks' bug
         if strandOrSegment is not None:
             m = strandOrSegment
@@ -383,7 +383,7 @@ class SelectChunks_basicGraphicsMode(Select_basicGraphicsMode):
         #such as 'what if the object under mouse is a Jig or something else'
         #there is some code that already exists which needs to use this new
         #method (and this method needs to take care of that) . -- Ninad
-        print "parentNodesOfObjUnderMouse =", parentNodesOfObjUnderMouse
+        print("parentNodesOfObjUnderMouse =", parentNodesOfObjUnderMouse)
         obj = self.get_obj_under_cursor(event)
         self._do_leftShiftCntlUp_delete_operations(
             event,
@@ -911,8 +911,8 @@ class SelectChunks_basicGraphicsMode(Select_basicGraphicsMode):
             if time_since_wheel_event < env.prefs[mouseWheelTimeoutInterval_prefs_key]:
                 if DEBUG_BAREMOTION:
                     #bruce 080129 re highlighting bug 2606 reported by Paul
-                    print "debug fyi: ignoring %r.bareMotion since time_since_wheel_event is only %r " % \
-                          (self, time_since_wheel_event)
+                    print("debug fyi: ignoring %r.bareMotion since time_since_wheel_event is only %r " % \
+                          (self, time_since_wheel_event))
                 return True
 
         #Turn the highlighting back on if it was suppressed during,
@@ -945,8 +945,8 @@ class SelectChunks_basicGraphicsMode(Select_basicGraphicsMode):
         elif self.o.modkeys == 'Shift+Control':
             self.o.setCursor(self.w.DeleteCursor)
         else:
-            print "Error in update_cursor_for_no_MB(): " \
-                  "Invalid modkey=", self.o.modkeys
+            print("Error in update_cursor_for_no_MB(): " \
+                  "Invalid modkey=", self.o.modkeys)
         return
 
     def drawHighlightedChunk(self, glpane, selobj, hicolor, hicolor2):
@@ -987,7 +987,7 @@ class SelectChunks_basicGraphicsMode(Select_basicGraphicsMode):
         #highlighted and one for highlight colors. Easy to change to that
         #implementation if we need to.
 
-        for obj, color in highlightObjectDict.iteritems():
+        for obj, color in highlightObjectDict.items():
             #obj = object to be drawn highlighted
             #color = highlight color
             if hasattr( obj, 'draw_highlighted'):

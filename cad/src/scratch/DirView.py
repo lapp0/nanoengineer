@@ -339,7 +339,7 @@ class DirView(QTreeWidget):
     def partChanged(self, item):
         if isinstance(item, FileItem):
             fi = item.getFileObj()
-            print "The selected file is: ", str(fi)
+            print("The selected file is: ", str(fi))
 
 
 
@@ -382,7 +382,7 @@ if False and __name__ == '__main__':
         roots = QDir("/download")
         fiList = roots.entryInfoList()
         for drv in fiList:
-            print "The file path is: ", str(drv.absFilePath())
+            print("The file path is: ", str(drv.absFilePath()))
         a.exec_()
 
 # end

@@ -5,8 +5,7 @@ import sys
 import MmpFile
 import XyzFile
 
-damianFiles = filter(lambda x: x,
-                     os.popen("ls C*.mmp").read().split("\n"))
+damianFiles = [x for x in os.popen("ls C*.mmp").read().split("\n") if x]
 
 for df in damianFiles:
     prefix = df[:df.index(".")]
@@ -35,4 +34,4 @@ for df in damianFiles:
     outf.write("TYPE struct\n")
     outf.close()
 
-    print "Test input files generated for " + testPrefix
+    print("Test input files generated for " + testPrefix)

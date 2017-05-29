@@ -284,7 +284,7 @@ class DnaSegment(DnaStrandOrSegment):
         allAtomList = []
         for member in self.members:
             if isinstance(member, DnaAxisChunk):
-                allAtomList.extend(member.atoms.values())
+                allAtomList.extend(list(member.atoms.values()))
 
         return allAtomList
 
@@ -314,8 +314,7 @@ class DnaSegment(DnaStrandOrSegment):
         """
         strand_atoms = self.get_all_content_strand_rail_end_baseatoms()
 
-        three_prime_end_atoms = filter(lambda atm: atm.isThreePrimeEndAtom(),
-                                       strand_atoms)
+        three_prime_end_atoms = [atm for atm in strand_atoms if atm.isThreePrimeEndAtom()]
 
         return three_prime_end_atoms
 
@@ -329,8 +328,7 @@ class DnaSegment(DnaStrandOrSegment):
         """
         strand_atoms = self.get_all_content_strand_rail_end_baseatoms()
 
-        five_prime_end_atoms = filter(lambda atm: atm.isFivePrimeEndAtom(),
-                                       strand_atoms)
+        five_prime_end_atoms = [atm for atm in strand_atoms if atm.isFivePrimeEndAtom()]
 
         return five_prime_end_atoms
 
@@ -515,7 +513,7 @@ class DnaSegment(DnaStrandOrSegment):
         endAtomList = []
         for member in self.members:
             if isinstance(member, Chunk) and member.isAxisChunk():
-                for atm in member.atoms.itervalues():
+                for atm in member.atoms.values():
                     if atm.element.symbol == 'Ae3':
                         endAtomList.append(atm)
 

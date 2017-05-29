@@ -234,8 +234,8 @@ class Jig(NodeWith3DContents, Selobj_API):
         self.atoms = list(atomList) # copy the list
         for atom in atomList:
             if self in atom.jigs:
-                print "bug: %r is already in %r.jigs, just before we want" \
-                      " to add it" % (self, atom)
+                print("bug: %r is already in %r.jigs, just before we want" \
+                      " to add it" % (self, atom))
             else:
                 atom._f_jigs_append(self,
                             changed_structure = self._affects_atom_structure )
@@ -555,7 +555,7 @@ class Jig(NodeWith3DContents, Selobj_API):
             mol = atom.molecule
             if id(mol) not in mols:
                 mols[id(mol)] = mol
-        return mols.values()
+        return list(mols.values())
 
     def writemmp(self, mapping): #bruce 050322 revised interface to use mapping
         """
@@ -611,7 +611,7 @@ class Jig(NodeWith3DContents, Selobj_API):
             # [bruce 050422 comment: this code looks weird, but i guess it undoes pick effect on color]
         else:
             c = self.color
-        color = map(int, A(c)*255)
+        color = list(map(int, A(c)*255))
         mmprectype_name_color = "%s (%s) (%d, %d, %d)" % (self.mmp_record_name, name,
                                                                color[0], color[1], color[2])
         return mmprectype_name_color
@@ -737,7 +737,7 @@ class Jig(NodeWith3DContents, Selobj_API):
                 # But warn in the file if this looks like a bug.
                 if self.needs_atoms_to_survive():
                     # untested?
-                    print "bug? %r being written with no atoms, but needs them" % self
+                    print("bug? %r being written with no atoms, but needs them" % self)
                     lastpart += "# bug? no atoms, but needs them"
                 # now use lastpart in return value as usual
                 pass
@@ -1050,10 +1050,10 @@ def fake_Anchor_mmp_record(atoms, mapping): #bruce 050404 utility for Minimize S
     """
     ndix = mapping.atnums
     c = black
-    color = map(int,A(c)*255)
+    color = list(map(int,A(c)*255))
     # Change to "anchor" for A7.  Mark 051104.
     s = "ground (%s) (%d, %d, %d) " % ("name", color[0], color[1], color[2])
-    nums = map((lambda a: ndix[a.key]), atoms)
+    nums = list(map((lambda a: ndix[a.key]), atoms))
     return s + " ".join(map(str,nums)) + "\n"
 
 # == Stat and Thermo
@@ -1089,11 +1089,11 @@ class Jig_onChunk_by1atom(Jig):
         atom = self.atoms[0]
         if ndix:
             # for mmp file -- return numbers of first, last, and defining atom
-            atomkeys = [atom.key] + atom.molecule.atoms.keys() # arbitrary order except first list element
+            atomkeys = [atom.key] + list(atom.molecule.atoms.keys()) # arbitrary order except first list element
                 # first key occurs twice, that's ok (but that it's first matters)
                 # (this is just a kluge so we don't have to process it thru ndix separately)
             try:
-                nums = map((lambda ak: ndix[ak]), atomkeys)
+                nums = list(map((lambda ak: ndix[ak]), atomkeys))
             except KeyError:
                 # too soon to write this jig -- would require forward ref to an atom, which mmp format doesn't support
                 if return_partial_list:
@@ -1102,7 +1102,7 @@ class Jig_onChunk_by1atom(Jig):
             nums = [min(nums), max(nums), nums[0]] # assumes ndix contains numbers, not number-strings [bruce 051031 comment]
         else:
             # for __repr__ -- in this case include only our defining atom, and return key rather than atnum
-            nums = map((lambda a: a.key), self.atoms)
+            nums = list(map((lambda a: a.key), self.atoms))
         return nums
     pass
 

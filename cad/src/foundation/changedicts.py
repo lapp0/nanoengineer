@@ -54,7 +54,7 @@ class changedict_processor:
         subscribe dictlike (which needs a dict-compatible .update method)
         to self.changedict [#doc more?]
         """
-        assert not self.subscribers.has_key(key)
+        assert key not in self.subscribers
         self.subscribers[key] = dictlike
             # note: it's ok if it overrides some other sub at same key,
             # since we assume caller owns key
@@ -77,11 +77,11 @@ class changedict_processor:
             # but 'subdict' would be an unclear name for a
             # local variable (imho)
         if DEBUG_CHANGEDICTS:
-            print "DEBUG_CHANGEDICTS: %r has %d subscribers" % (self, len(sublist))
+            print("DEBUG_CHANGEDICTS: %r has %d subscribers" % (self, len(sublist)))
         changedict = self.changedict
         changedict_name = self.changedict_name
         len1 = len(changedict)
-        for subkey, sub in sublist.items():
+        for subkey, sub in list(sublist.items()):
             try:
                 unsub = sub.update( changedict)
                     # kluge: this API is compatible with dict.update()
@@ -100,8 +100,8 @@ class changedict_processor:
             len2 = len(changedict)
             if len1 != len2:
                 #e reword the name in this? include %r for self, with id?
-                print "bug: some sub (key %r) in %s apparently changed " \
-                      "its length from %d to %d!" % (subkey, changedict_name, len1, len2)
+                print("bug: some sub (key %r) in %s apparently changed " \
+                      "its length from %d to %d!" % (subkey, changedict_name, len1, len2))
                 len1 = len2
             continue
         changedict.clear()
@@ -153,7 +153,7 @@ def register_class_changedicts( class1, changedicts ):
     # make sure class1 never passed to us before; this method is only
     # legitimate since we know these classes will be kept forever
     # (by register_postinit_item below), so id won't be recycled
-    assert not _changedicts_for_classid.has_key(classid), \
+    assert classid not in _changedicts_for_classid, \
            "register_class_changedicts was passed the same class " \
            "(or a class with the same id) twice: %r" % (class1,)
     assert not hasattr(changedicts, 'get'), \

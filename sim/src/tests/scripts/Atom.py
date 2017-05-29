@@ -48,7 +48,7 @@ class Atom:
     def clone(self):
         "permit deep cloning of structure files"
         a = Atom()
-        for key in self.__dict__.keys():
+        for key in list(self.__dict__.keys()):
             setattr(a, key, getattr(self, key))
         return a
     def mmpBonds(self, line):
@@ -76,7 +76,7 @@ class FileLineIterator:
     def __init__(self, lines):
         self.lines = lines
         self.pointer = 0
-    def next(self):
+    def __next__(self):
         pointer = self.pointer
         lines = self.lines
         if pointer >= len(lines):
@@ -86,5 +86,5 @@ class FileLineIterator:
     def backup(self):
         pointer = self.pointer
         if pointer <= 0:
-            raise Exception, "can't back up"
+            raise Exception("can't back up")
         self.pointer = pointer - 1

@@ -29,10 +29,10 @@ def intersect_sequences(s1, s2):
     Return the intersection of two sequences. If they are sorted
     in a compatible way, so will be the result.
     """
-    return filter( lambda s: s in s2, s1)
+    return [s for s in s1 if s in s2]
 
 def complement_sequences(big, little):
-    return filter( lambda s: s not in little, big)
+    return [s for s in big if s not in little]
 
 def possible_bond_types(bond):
     """
@@ -53,15 +53,15 @@ def possible_bond_types(bond):
     s2 = bond.atom2.atomtype.permitted_v6_list
     s12 = intersect_sequences( s1, s2 ) # order comes from s1; we depend on its coming from one of them or the other
         #e could be faster (since these lists are prefixes of a standard order), but doesn't need to be
-    return map( btype_from_v6, s12)
+    return list(map( btype_from_v6, s12))
 
 def possible_bond_types_for_elements(bond):
     "#doc, incl details of what's permitted"
     permitted1 = bond.atom1.permitted_btypes_for_bond(bond) # dict from v6 to atomtypes which permit it
     permitted2 = bond.atom2.permitted_btypes_for_bond(bond)
-    poss_v6 = intersect_sequences(permitted1.keys(), permitted2.keys()) # arbitrary order
+    poss_v6 = intersect_sequences(list(permitted1.keys()), list(permitted2.keys())) # arbitrary order
     poss_v6.sort() # smallest bond order first
-    poss2 = map( btype_from_v6, poss_v6)
+    poss2 = list(map( btype_from_v6, poss_v6))
     return poss2, permitted1, permitted2
 
 #partly-obs comment:
@@ -149,7 +149,7 @@ def _bond_type_menu_section(bond): #bruce 050716; replaces bond_type_submenu_spe
     types = list(poss)
     for btype in poss1:
         if btype not in types:
-            print "should never happen: %r not in %r" % (btype, poss) # intentional: "not in types" above, "not in poss" here
+            print("should never happen: %r not in %r" % (btype, poss)) # intentional: "not in types" above, "not in poss" here
             types.append(btype)
     if btype_now not in types:
         types.append(btype_now) # put this one last, since it's illegal; warning for it is computed later
@@ -353,7 +353,7 @@ def apply_btype_to_bond(btype,
                 if atom.is_singlet():
                     # should never happen
                     if env.debug:
-                        print "debug: bug: %r is bondpoint but user is advised to change its atomtype" % atom
+                        print("debug: bug: %r is bondpoint but user is advised to change its atomtype" % atom)
                 if not unless:
                     unless = "change atomtype of %s to %s" % (atom, atype.name)
                 else:

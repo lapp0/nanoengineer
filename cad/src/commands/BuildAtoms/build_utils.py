@@ -133,7 +133,7 @@ class AtomTypeDepositionTool(DepositionTool):
                         real = s.singlet_neighbor()
                     except:
                         print_compact_traceback("bug 372 caught red-handed: ")
-                        print "bug 372-related data: mol = %r, mol.singlets = %r" % (mol, mol.singlets)
+                        print("bug 372-related data: mol = %r, mol.singlets = %r" % (mol, mol.singlets))
                         continue
                     if real not in rl and atype.can_bond_to(real, s, auto = True):
                         # checking can_bond_to is bruce 080502 new feature

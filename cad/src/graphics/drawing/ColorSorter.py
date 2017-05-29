@@ -216,7 +216,7 @@ class ColorSorter:
         state = _attrholder()
 
         if len(ColorSorter._gl_name_stack) > 1:
-            print "fyi: name stack is non-null when suspended -- bug?", ColorSorter._gl_name_stack #####
+            print("fyi: name stack is non-null when suspended -- bug?", ColorSorter._gl_name_stack) #####
 
         state.sorting = ColorSorter.sorting
         state._sorted = ColorSorter._sorted
@@ -347,8 +347,8 @@ class ColorSorter:
         Internal function for developers to call to print stats on number of
         sorted and immediately-called objects.
         """
-        print ("Since previous 'stats', %d sorted, %d immediate: " %
-               (ColorSorter._sorted, ColorSorter._immediate))
+        print(("Since previous 'stats', %d sorted, %d immediate: " %
+               (ColorSorter._sorted, ColorSorter._immediate)))
         ColorSorter._sorted = 0
         ColorSorter._immediate = 0
 
@@ -362,7 +362,7 @@ class ColorSorter:
         """
         ColorSorter._sorted += 1
         color = tuple(color)
-        if not ColorSorter.sorted_by_color.has_key(color):
+        if color not in ColorSorter.sorted_by_color:
             ColorSorter.sorted_by_color[color] = []
         ColorSorter.sorted_by_color[color].append(
             (func, params, ColorSorter._gl_name_stack[-1]))
@@ -434,8 +434,8 @@ class ColorSorter:
         appropriate.
         """
         if _DEBUG and ColorSorter._parent_csdl and ColorSorter._parent_csdl.reentrant:
-            print "bare_prim sphere:", ColorSorter._gl_name_stack[-1], \
-                  color, pos, radius, ColorSorter._debug_transforms()
+            print("bare_prim sphere:", ColorSorter._gl_name_stack[-1], \
+                  color, pos, radius, ColorSorter._debug_transforms())
 
         if ColorSorter._parent_csdl and ColorSorter._parent_csdl.reentrant:
             # todo: use different flag than .reentrant
@@ -453,8 +453,7 @@ class ColorSorter:
             # over here, and use the last one for the render
             if (ColorSorter.sphereLevel > -1 and
                 ColorSorter.sphereLevel != detailLevel):
-                raise ValueError, \
-                      "unexpected different sphere LOD levels within same frame"
+                raise ValueError("unexpected different sphere LOD levels within same frame")
             ColorSorter.sphereLevel = detailLevel
             pass
         else:
@@ -500,8 +499,8 @@ class ColorSorter:
         appropriate.
         """
         if _DEBUG and ColorSorter._parent_csdl and ColorSorter._parent_csdl.reentrant:
-            print "bare_prim wiresphere:", ColorSorter._gl_name_stack[-1], \
-                  color, pos, radius, ColorSorter._debug_transforms()
+            print("bare_prim wiresphere:", ColorSorter._gl_name_stack[-1], \
+                  color, pos, radius, ColorSorter._debug_transforms())
 
         if ColorSorter._parent_csdl and ColorSorter._parent_csdl.reentrant:
             # todo: use different flag than .reentrant
@@ -555,8 +554,8 @@ class ColorSorter:
         radius = float(radius)
 
         if _DEBUG and ColorSorter._parent_csdl and ColorSorter._parent_csdl.reentrant:
-            print "bare_prim cylinder:", ColorSorter._gl_name_stack[-1], \
-                  color, pos1, pos2, radius, capped, ColorSorter._debug_transforms()
+            print("bare_prim cylinder:", ColorSorter._gl_name_stack[-1], \
+                  color, pos1, pos2, radius, capped, ColorSorter._debug_transforms())
 
         if ColorSorter._parent_csdl and ColorSorter._parent_csdl.reentrant:
             # todo: use different flag than .reentrant
@@ -628,11 +627,11 @@ class ColorSorter:
             that called it.
         """
         #bruce 090225 made this by copying and modifying schedule_cylinder.
-        r1, r2 = map(float, radius)
+        r1, r2 = list(map(float, radius))
 
         if _DEBUG and ColorSorter._parent_csdl and ColorSorter._parent_csdl.reentrant:
-            print "bare_prim tapered cylinder:", ColorSorter._gl_name_stack[-1], \
-                  color, pos1, pos2, radius, capped, ColorSorter._debug_transforms()
+            print("bare_prim tapered cylinder:", ColorSorter._gl_name_stack[-1], \
+                  color, pos1, pos2, radius, capped, ColorSorter._debug_transforms())
 
         if ColorSorter._parent_csdl and ColorSorter._parent_csdl.reentrant:
             # todo: use different flag than .reentrant
@@ -837,7 +836,7 @@ class ColorSorter:
         ColorSorter._initial_transforms = list(glpane.transforms)
         ColorSorter._permit_shaders = glpane and glpane.permit_shaders
         if _DEBUG:
-            print "CS.initial transforms:", ColorSorter._debug_transforms()
+            print("CS.initial transforms:", ColorSorter._debug_transforms())
 
         if csdl is not None:
             csdl.start(pickstate)
@@ -908,8 +907,8 @@ class ColorSorter:
                 # 20060314 grantham - yes, has to come after
                 # quux.shapeRendererInit .
                 enabled = quux.shapeRendererGetInteger(quux.IS_VBO_ENABLED)
-                print ("using C renderer: VBO %s enabled" %
-                       (('is NOT', 'is')[enabled]))
+                print(("using C renderer: VBO %s enabled" %
+                       (('is NOT', 'is')[enabled])))
             quux.shapeRendererSetUseDynamicLOD(0)
             if ColorSorter.sphereLevel != -1:
                 quux.shapeRendererSetStaticLODLevels(ColorSorter.sphereLevel, 1)
@@ -925,7 +924,7 @@ class ColorSorter:
 
         else:
             if debug_which_renderer:
-                print "using Python renderer"
+                print("using Python renderer")
 
             if parent_csdl is None:
                 # Either all in one display list, or immediate-mode drawing.
@@ -968,7 +967,7 @@ class ColorSorter:
 
         glEnable(GL_LIGHTING)
 
-        for color, funcs in sorted_by_color.iteritems():
+        for color, funcs in sorted_by_color.items():
 
             opacity = color[3]
             if opacity == -1:

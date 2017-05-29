@@ -122,8 +122,8 @@ class Craft(CruftDialog.CruftDialog):
     def __init__(self, parent=None, name=None, modal=0, fl=0):
         CruftDialog.CruftDialog.__init__(self,parent,name,modal,fl)
         glformat = QGLFormat()
-        print dir(glformat)
-        print glformat.plane()
+        print(dir(glformat))
+        print(glformat.plane())
         # glformat.setStencil(True)
         self.qglwidget = qlgw = QGLWidget(glformat, self.frame1, "glpane")
         if useFont:
@@ -163,7 +163,7 @@ class Craft(CruftDialog.CruftDialog):
 
             glListBase(self.fontOffset)
             # PyOpenGL's glCallLists requires a Numeric array
-            glCallLists(Numeric.array(map(ord, str)))
+            glCallLists(Numeric.array(list(map(ord, str))))
 
             # glCallList(self.fontOffset + ord('A'))
             glPopAttrib()

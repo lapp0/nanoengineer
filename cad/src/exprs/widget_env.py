@@ -91,7 +91,7 @@ class widget_env(Delegator):
         self.staterefs = staterefs ###k
         ###KLUGES, explained below [061028]:
         Delegator.__init__(self, delegate) # this will be None or the parent env
-        for k,v in lexmods.iteritems():
+        for k,v in lexmods.items():
             setattr(self, k,v) # worst part of the kluge -- dangerous if symnames overlap method names
             # next worst part: special methods like __repr__ end up delegating
         pass
@@ -99,7 +99,7 @@ class widget_env(Delegator):
         return "<widget_env at %#x (_self = %r)>" % (id(self), getattr(self, '_self', '<none>')) # revised 070120
     __str__ = __repr__ #k guess: might be needed for same reason as __repr__
     def understand_expr(self, expr, lexmods = None):
-        print "understand_expr ran"###070112 -- never happens
+        print("understand_expr ran")###070112 -- never happens
         "#doc; retval contains env + lexmods, and can be trusted to understand itself."
         # only the "rules" in self are needed for this, not the glpane & staterefs! so put this method in a subobject! #e
         assert not lexmods, "lexmods are nim" ###@@@
@@ -129,7 +129,7 @@ class widget_env(Delegator):
         try:
             res = expr._e_make_in(self, ipath)
         except:#070118
-            print "following exception in env.make's _e_make_in call concerns expr %r and ipath %r: " % (expr, ipath)
+            print("following exception in env.make's _e_make_in call concerns expr %r and ipath %r: " % (expr, ipath))
             raise
         return res
     def with_literal_lexmods(self, **lexmods):
@@ -164,8 +164,8 @@ class widget_env(Delegator):
         return lexenv ##### 070109 is _app bug fixed even w/ this? yes, it was unrelated. WE STILL NEED NEW CODE HERE. ####BUG
         # kluge 070109: do just enough to see if using this fixes the bug i suspect it might -- ###WRONG IN GENERAL (and disabled too)
         if getattr(self, '_app', None) is not getattr(lexenv, '_app', None):
-            print "fyi: dynenv_with_lexenv makes a difference for _app: %r vs %r" % \
-                  ( getattr(self, '_app', None) , getattr(lexenv, '_app', None) ) ### remove when works
+            print("fyi: dynenv_with_lexenv makes a difference for _app: %r vs %r" % \
+                  ( getattr(self, '_app', None) , getattr(lexenv, '_app', None) )) ### remove when works
         if not hasattr(self, '_app'):
             return lexenv
         return lexenv.with_literal_lexmods(_app = self._app) # really this is a "dynamic mod" as hardcoded in the name _app (w/in current kluge)

@@ -120,7 +120,7 @@ def createUniquePDBOutput(tmp_file_prefix, proteinName, win):
             global count_backrub
             outFile = tempPdb + '_' + str(count_backrub) + '.pdb'
             count_backrub = count_backrub + 1
-            print "using global count backrub", count_backrub
+            print("using global count backrub", count_backrub)
 
     outputPdbFilePath = os.path.join(dir1, outFile)
     if fileObject1:
@@ -161,7 +161,7 @@ def getScoreFromBackrubOutFile(outputPdbFilePath):
             words = line[16:]
             score = words.strip()
             pdbFile = os.path.basename(outputPdbFilePath)
-            print "For output pdb file " + pdbFile + ", score = ", score
+            print("For output pdb file " + pdbFile + ", score = ", score)
             fileObject1.close()
             return score
     return None
@@ -240,13 +240,13 @@ def getScoreFromOutputFile(tmp_file_prefix, outfile, numSim):
                     #process this line to read the total score
                     words = line[15:]
                     score = words.strip()
-                    print "For output pdb file " + pdbFile + ", score = ", score
+                    print("For output pdb file " + pdbFile + ", score = ", score)
                     score1 = float(score)
                     f.close()
                     scoreList.append(score1)
                     break
         else:
-            print "Output Pdb file cannot be read to obtain score"
+            print("Output Pdb file cannot be read to obtain score")
             f.close()
             return None, None
 
@@ -331,7 +331,7 @@ def processFastaFile(fastaFilePath, bestSimOutFileName, inputProtein):
                     break
                 line3 = doc[i]
     else:
-        print "File cannot be read"
+        print("File cannot be read")
     f.close()
     return proteinSeqTupleList
 
@@ -659,7 +659,7 @@ class RosettaRunner:
             self.resFile = resFile
         else:
             #Shall we refuse to run the program if we cannot write the residue file?
-            print "Residue file could not be written"
+            print("Residue file could not be written")
             return -1
         #remove all previously existing fasta files
         #may not be needed. But we are doing with out pdb, might as well do it

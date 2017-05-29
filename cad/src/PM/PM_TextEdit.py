@@ -98,10 +98,10 @@ class PM_TextEdit( QTextEdit ):
         """
 
         if 0: # Debugging code
-            print "QTextEdit.__init__():"
-            print "  label       =", label
-            print "  labelColumn =", labelColumn
-            print "  spanWidth   =", spanWidth
+            print("QTextEdit.__init__():")
+            print(("  label       =", label))
+            print(("  labelColumn =", labelColumn))
+            print(("  spanWidth   =", spanWidth))
 
         QTextEdit.__init__(self)
 
@@ -246,15 +246,15 @@ class PM_TextEdit( QTextEdit ):
         new_height = num_lines * self.fontMetrics().lineSpacing() + margin
 
         if 0: # Debugging code for me. Mark 2007-05-24
-            print "--------------------------------"
-            print "Widget name = ", self.objectName()
-            print "minLines =" , minLines
-            print "maxLines = ", maxLines
-            print "num_lines = ", num_lines
-            print "New height = ", new_height
-            print "text = ", text
-            print "Text width = ", text_width
-            print "current_width (of PM_TextEdit)=", current_width
+            print("--------------------------------")
+            print(("Widget name = ", self.objectName()))
+            print(("minLines =" , minLines))
+            print(("maxLines = ", maxLines))
+            print(("num_lines = ", num_lines))
+            print(("New height = ", new_height))
+            print(("text = ", text))
+            print(("Text width = ", text_width))
+            print(("current_width (of PM_TextEdit)=", current_width))
 
         # Reset height of PM_TextEdit.
         self.setMinimumSize(QSize(PM_MINIMUM_WIDTH * 0.5, new_height))

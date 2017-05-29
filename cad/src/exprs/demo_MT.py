@@ -329,7 +329,7 @@ def mt_node_id(node): # 070207; the name 'node_id' itself conflicts with a funct
         pass
     else:
         if print_mt_node_id:
-            print "this node %r has mt_node_id %r" % (node,node.mt_node_id)
+            print("this node %r has mt_node_id %r" % (node,node.mt_node_id))
             # old Q: where do our Rects get it?
             # A: they don't -- the bug fixed by bugfix070218 meant this was never called except for World!!
             # [note: on 070302 the comments about bugfix070218, and the code affected by it, was rewritten and removed
@@ -354,7 +354,7 @@ def mt_node_id(node): # 070207; the name 'node_id' itself conflicts with a funct
     from foundation.Utility import node_id
     res = node_id(node) # not sure what to do if this fails -- let it be an error for now -- consider using id(node) if we need to
     if print_mt_node_id:
-        print "legacy node %r has effective mt_node_id %r" % (node,res)
+        print("legacy node %r has effective mt_node_id %r" % (node,res))
     return res
 
 def mt_node_selected(node): #070216 experiment
@@ -580,7 +580,7 @@ class test_drag_pixmap(InstanceMacro):
         node = self.node
         pixmap = mt.get_pixmap_for_dragging_nodes('move', [node]) # (drag_type, nodes); method defined in TreeWidget.py
             #e includes "moving n items", need to make it leave that out if I pass None for drag_type
-        print pixmap # <constants.qt.QPixmap object at 0x10fbc2a0>
+        print(pixmap) # <constants.qt.QPixmap object at 0x10fbc2a0>
         #e make Image (texture) from pixmap -- how?
         # - pass the pixmap into ImageUtils somehow (won't be hard, could go in in place of the filename)
         # - worry about how it works in our texture-caching key (won't be hard)
@@ -613,17 +613,17 @@ class test_drag_pixmap(InstanceMacro):
         ##qBlue(), etc. (qcolor.h) to access the pixels.
 
         image = pixmap.convertToImage()
-        print image # <constants.qt.QImage object at 0x10fe1900>
+        print(image) # <constants.qt.QImage object at 0x10fe1900>
 
-        print "scanlines 0 and 1 are", image.scanLine(0), image.scanLine(1)
+        print("scanlines 0 and 1 are", image.scanLine(0), image.scanLine(1))
             # <sip.voidptr object at 0x5f130> <sip.voidptr object at 0x5f130> -- hmm, same address
-        print "image.bits() is",image.bits() # image.bits() is <sip.voidptr object at 0x5f130> -- also same address
+        print("image.bits() is",image.bits()) # image.bits() is <sip.voidptr object at 0x5f130> -- also same address
 
-        print "\n*** still same address when all collected at once?:" # no. good.
+        print("\n*** still same address when all collected at once?:") # no. good.
         objs = [image.scanLine(0), image.scanLine(1), image.bits()]
         for obj in objs:
-            print obj
-        print
+            print(obj)
+        print()
         # but what can i do with a <sip.voidptr object>? Can Python buffers help?? Can PIL use it somehow??
         # Or do I have to write a C routine? Or can I pass it directly to OpenGL as texture data, if I get the format right?
         # Hmm, maybe look for Qt/OpenGL example code doing this, even if in C. ##e

@@ -86,7 +86,7 @@ class Trackball:
             if uq is not None:
                 quat = uq + quat - uq
         else:
-            print "warning: trackball.update sees oldmouse is None (should not happen)" #bruce 060514
+            print("warning: trackball.update sees oldmouse is None (should not happen)") #bruce 060514
             quat = Q(1,0,0,0)
         self.oldmouse = newmouse
         return quat

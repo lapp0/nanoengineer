@@ -186,4 +186,4 @@ for fn in os.listdir('angles'):
     coef, sosr, rank, svs = linear_least_squares(a,b)
     d2f=poly(dif(dif(coef)))
     nx = newton(poly(dif(coef)), d2f, m2[1,0])
-    print name, 'theta0=', nx, 'Ktheta=', d2f(nx)
+    print(name, 'theta0=', nx, 'Ktheta=', d2f(nx))

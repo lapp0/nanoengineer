@@ -13,7 +13,7 @@ if os.name=="nt":
     if not sys.executable.upper().endswith("PYTHON.EXE") and \
        not sys.executable.upper().endswith("PYTHON"):
         try:
-            capture_file = u"".join((sys.executable[:-4], "_console.log"))
+            capture_file = "".join((sys.executable[:-4], "_console.log"))
             sys.stdout = open(capture_file, 'w')
             sys.stderr = sys.stdout
             capture_console = True # already trapped, don't try more.
@@ -34,14 +34,13 @@ if os.name=="nt":
         if capture_console or os.path.isdir(tmpFilePath):
             try: # We made the directory or it already existed, try
                     # creating the log file.
-                capture_file = os.path.normpath(u"".join((tmpFilePath,\
+                capture_file = os.path.normpath("".join((tmpFilePath,\
                                                           "/pref_mod_console.log")))
                 sys.stdout = open(capture_file, 'w')
                 sys.stderr = sys.stdout
                 capture_console = True
             except:
-                print >> sys.stderr, \
-                      "Failed to create any console log file."
+                print("Failed to create any console log file.", file=sys.stderr)
                 capture_console = False
 
 
@@ -113,14 +112,13 @@ except:
 progopts=progopts[0]
 parseopts(progopts)
 if exitset:
-    print >> sys.__stderr__, \
-          "Usage: pref_modifier -K <key value> -V <value to store>"
+    print("Usage: pref_modifier -K <key value> -V <value to store>", file=sys.__stderr__)
     sys.exit(0)
 
 key=prefkeys[keyset]    #set the key value to that used by the database
-print keyset
-print valueset
-print key
+print(keyset)
+print(valueset)
+print(key)
 
 prefstmp={}
 prefstmp[key]=valueset  #set up the dict for the database update function
@@ -153,9 +151,9 @@ try:
         string1 = string1.replace('\r', r'\r')
         return string1
     file.write("%s = %s\n" % (encode(key), encode(str(valueset))))
-    print "appended to", filename
+    print("appended to", filename)
 except:
-    print "ignoring exception while appending to", DEFAULT_PREFS_BASENAME
+    print("ignoring exception while appending to", DEFAULT_PREFS_BASENAME)
     pass
 
 # end

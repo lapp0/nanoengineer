@@ -94,7 +94,7 @@ def remove_prefix_func(prefix):
     return func
 
 def filter_and_remove_prefix( lis, prefix):
-    return map( remove_prefix_func( prefix), filter( lambda attr: attr.startswith( prefix), lis ) )
+    return list(map( remove_prefix_func( prefix), [attr for attr in lis if attr.startswith( prefix)] ))
 
 invalmap_per_class = {}
 
@@ -190,7 +190,7 @@ class InvalMixin:
 ##            if debug_counter < 0:
 ##                debug_counter = 38653
 ##                print_compact_stack("a random _xxx call of this, for %r of %r: " % (attr, self))
-            raise AttributeError, attr
+            raise AttributeError(attr)
 ##        global debug_counter
 ##        debug_counter -= 1
 ##        if debug_counter < 0:
@@ -204,12 +204,12 @@ class InvalMixin:
     def validate_attr(self, attr):
         # in the initial implem, just storing the attr's value is sufficient.
         # let's just make sure it was in fact stored.
-        assert self.__dict__.has_key(attr), "validate_attr finds no attr %r was saved, in %r" % (attr, self)
+        assert attr in self.__dict__, "validate_attr finds no attr %r was saved, in %r" % (attr, self)
         #e if it was not stored, we could also, instead, print a warning and store None here.
         pass
 
     def validate_attrs(self, attrs):
-        map( self.validate_attr, attrs)
+        list(map( self.validate_attr, attrs))
 
     def invalidate_attrs(self, attrs, **kws):
         """
@@ -217,9 +217,9 @@ class InvalMixin:
         """
         if not kws:
             # optim:
-            map( self.invalidate_attr, attrs)
+            list(map( self.invalidate_attr, attrs))
         else:
-            map( lambda attr: self.invalidate_attr(attr, **kws), attrs)
+            list(map( lambda attr: self.invalidate_attr(attr, **kws), attrs))
 
     def invalidate_attr(self, attr, skip = ()):
         """
@@ -282,7 +282,7 @@ class InvalMixin:
     # debug methods (invalidatable_attrs is also used by some Undo update methods (not just for debugging) as of 060224)
 
     def invalidatable_attrs(self):
-        res = self.__imap.keys()
+        res = list(self.__imap.keys())
         res.sort() #bruce 060224
         return res
 
@@ -291,17 +291,17 @@ class InvalMixin:
 
     def invalidQ(self, attr):
         assert self.invalidatableQ(attr)
-        return not self.__dict__.has_key(attr)
+        return attr not in self.__dict__
 
     def validQ(self, attr):
         assert self.invalidatableQ(attr)
-        return self.__dict__.has_key(attr)
+        return attr in self.__dict__
 
     def invalid_attrs(self):
-        return filter( self.invalidQ, self.invalidatable_attrs() )
+        return list(filter( self.invalidQ, self.invalidatable_attrs() ))
 
     def valid_attrs(self):
-        return filter( self.validQ, self.invalidatable_attrs() )
+        return list(filter( self.validQ, self.invalidatable_attrs() ))
 
     pass # end of class InvalMixin
 
@@ -323,7 +323,7 @@ def getattr_helper(self, attr):
     # then look for a recompute method
     ubmeth = getattr(self.__class__, "_recompute_" + attr, None)
     if not ubmeth:
-        raise AttributeError, attr #bruce 060228 making this more conservative in case it's not always so rare
+        raise AttributeError(attr) #bruce 060228 making this more conservative in case it's not always so rare
 ##        # rare enough to raise a nicer exception than our own __getattr__ does
 ##        ###e this should use a safe_repr function for self [bruce 051011 comment]
 ##        raise AttributeError, "%s has no %r: %r" % (self.__class__.__name__, attr, self)
@@ -347,7 +347,7 @@ def getattr_helper(self, attr):
             # (but store it ourselves to discourage recursion if exception ignored)
             setattr(self, attr, val)
             msg = "bug: _recompute_%s returned None, and did not store any value" % attr
-            print msg
+            print(msg)
             assert val is not None, msg # not sure if this will be seen
     ## self.validate_attr(attr) # noop except for asserts, so removed for now
     return val
@@ -397,13 +397,13 @@ if __name__ == '__main__':
     testab(3,4,tobj)
     tobj.a = 17
     tobj.c = 23 # might be inconsistent with the rule, that's ok
-    print "about to tobj.changed_attrs(['a','c'])"
+    print("about to tobj.changed_attrs(['a','c'])")
     tobj.changed_attrs(['a','c']) # should inval d,e but not c or b (even tho a affects c); how do we find out?
-    print "this should inval d,e but not c or b (even tho a affects c); see what is now invalid:"
-    print tobj.invalid_attrs()
-    print "now confirm that unlike the rule, c != a + b; they are c,b,a = %r,%r,%r" % (tobj.c,tobj.b,tobj.a)
-    print "and fyi here are d and e: %r and %r" % (tobj.d,tobj.e)
-    print "and here are c,b,a again (should be unchanged): %r,%r,%r" % (tobj.c,tobj.b,tobj.a)
+    print("this should inval d,e but not c or b (even tho a affects c); see what is now invalid:")
+    print(tobj.invalid_attrs())
+    print("now confirm that unlike the rule, c != a + b; they are c,b,a = %r,%r,%r" % (tobj.c,tobj.b,tobj.a))
+    print("and fyi here are d and e: %r and %r" % (tobj.d,tobj.e))
+    print("and here are c,b,a again (should be unchanged): %r,%r,%r" % (tobj.c,tobj.b,tobj.a))
 
 # this looks correct, need to put outputs into asserts, above:
 """

@@ -113,7 +113,7 @@ class DnaChain(object):
         # doc - iterator or just return a list? for now, return list, for simplicity & robustness
         #e would it be an optim to cache this? note the reverse method would have to redo or inval it.
         baseatoms = self.baseatoms
-        return zip(baseatoms, range(len(baseatoms)))
+        return list(zip(baseatoms, list(range(len(baseatoms)))))
 
     def start_baseindex(self):
         return 0
@@ -124,7 +124,7 @@ class DnaChain(object):
     def __len__(self):
         return self.baselength()
 
-    def __nonzero__(self): # 080311
+    def __bool__(self): # 080311
         # avoid Python calling __len__ for this [review: need __eq__ as well?]
         return True
 
@@ -275,7 +275,7 @@ class DnaChain(object):
         if errormsg:
             prefix = "debug_check_bond_direction%s in %r" % (when, self)
             msg = "%s: ERROR: %s" % (prefix, errormsg)
-            print "\n*** %s ***\n" % msg
+            print("\n*** %s ***\n" % msg)
             summary_format = "DNA updater: bug: [N] failure(s) of debug_check_bond_direction, see console prints"
             env.history.deferred_summary_message( redmsg(summary_format))
         return
@@ -362,8 +362,8 @@ class DnaChain(object):
                     else:
                         next_interior_atom = self.baseatoms[-2]
                     if next_interior_atom is next_atom:
-                        print "\n*** PROBABLE BUG: next_interior_atom is next_atom %r for end_atom %r in %r" % \
-                              (next_atom, end_atom, self)
+                        print("\n*** PROBABLE BUG: next_interior_atom is next_atom %r for end_atom %r in %r" % \
+                              (next_atom, end_atom, self))
                     pass
             else:
                 # do axis atoms in this per-end loop, only if chain length > 1;
@@ -418,7 +418,7 @@ class DnaChain(object):
             # remove atoms with errors [fix predicted bug, 080206]
             # (review: should axis_neighbors, or a variant method, do this?)
             ###### SHOULD REVIEW ALL USES OF axis_neighbors FOR NEEDING THIS @@@@@
-            next_atoms = filter( lambda atom: not atom._dna_updater__error , next_atoms )
+            next_atoms = [atom for atom in next_atoms if not atom._dna_updater__error]
             while len(next_atoms) < 2:
                 next_atoms.append(None)
 
@@ -463,10 +463,10 @@ class DnaChain(object):
                 if badvote and goodvote:
                     # should never happen for physically reasonable structures,
                     # but is probably possible for nonsense structures
-                    print "\nBUG or unreasonable structure: " \
+                    print("\nBUG or unreasonable structure: " \
                           "badvote %d goodvote %d for next_atoms %r " \
                           "around %r with %r" % \
-                          (badvote, goodvote, next_atoms, self, end_atom)
+                          (badvote, goodvote, next_atoms, self, end_atom))
                     pass
                 pass
             except:
@@ -757,10 +757,7 @@ class StrandChain(DnaChain_AtomChainWrapper):
 ##            chain_or_ring.debug_check_bond_direction("init arg to %r" % self)
 ##            ## AttributeError: 'AtomChain' object has no attribute 'debug_check_bond_direction'
         DnaChain_AtomChainWrapper.__init__(self, chain_or_ring)
-        baseatoms = filter( lambda atom:
-                              not atom.element.symbol.startswith('P') ,
-                                # KLUGE, should use an element attribute, whether it's base-indexed
-                            chain_or_ring.atom_list )
+        baseatoms = [atom for atom in chain_or_ring.atom_list if not atom.element.symbol.startswith('P')]
         self.baseatoms = baseatoms # in order of rungindex (called baseindex in methods)
             # note: baseatoms affects methods with "base" in their name,
             # but not e.g. iteratoms (which must cover Pl)

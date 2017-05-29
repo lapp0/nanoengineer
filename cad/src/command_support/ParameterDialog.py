@@ -91,7 +91,7 @@ class parameter_dialog_or_frame:
         elif type == "QFrame":
             QFrame.__init__(self,parent,name)
         else:
-            print "don't know about type == %r" % (type,)
+            print("don't know about type == %r" % (type,))
 
         self.image1 = QPixmap()
         self.image1.loadFromData(image1_data,"PNG") # should be: title_icon ####
@@ -308,9 +308,9 @@ class parameter_dialog_or_frame:
                     self.chirality_N_spinbox = QSpinBox(self.parameters_grpbox,"chirality_N_spinbox") # was chirality_m_spinbox, now chirality_N_spinbox
                     editfield = self.chirality_N_spinbox
                     ### seems like Qt defaults for min and max are 0,100 -- way too small a range!
-                    if param.options.has_key('min') or 1:
+                    if 'min' in param.options or 1:
                         self.chirality_N_spinbox.setMinimum(param.options.get('min', -999999999)) # was 0
-                    if param.options.has_key('max') or 1:
+                    if 'max' in param.options or 1:
                         self.chirality_N_spinbox.setMaximum(param.options.get('max', +999999999)) # wasn't in egcode, but needed
                     self.chirality_N_spinbox.setValue(param.options.get('default', 0)) # was 5
                         ##e note: i suspect this default 0 should come from something that knows this desc grammar.
@@ -324,7 +324,7 @@ class parameter_dialog_or_frame:
                     getter = self.chirality_N_spinbox.value # note: it also has .text, which includes suffix
 
                 else:
-                    print "didn't match:",param ###e improve this
+                    print("didn't match:",param) ###e improve this
 
                 # things done the same way for all kinds of param-editing widgets
                 if 1: #bruce 060703 moved this down here, as bugfix
@@ -472,7 +472,7 @@ class ParameterDialogBase(parameter_dialog_or_frame):
         return
     def set_defaults(self, dict1):
         if env.debug():
-            print "debug: set_defaults is nim" ####k is it even sensible w/o a controller being involved??
+            print("debug: set_defaults is nim") ####k is it even sensible w/o a controller being involved??
         return
     def show(self):
         if self.controller:
@@ -484,7 +484,7 @@ class ParameterDialogBase(parameter_dialog_or_frame):
         elif self.typ == "QFrame":
             QFrame.show(self)
         else:
-            print "don't know about self.typ == %r" % (self.typ,)
+            print("don't know about self.typ == %r" % (self.typ,))
 
     # bindings for the buttons -- delegate them to controller if we have one.
     def do_sponsor_btn(self):
@@ -523,12 +523,12 @@ class ParameterDialogBase(parameter_dialog_or_frame):
     def do_ok_btn(self):
 ##        print "do_ok_btn: printing then delegating"
         if 0:
-            print "printing param values"
-            getters = self.param_getters.items()
+            print("printing param values")
+            getters = list(self.param_getters.items())
             getters.sort()
             for paramname, getter in getters:
                 try:
-                   print "param %s = %r" % (paramname, getter())
+                   print("param %s = %r" % (paramname, getter()))
                 except:
                     print_compact_traceback("exception trying to get param %s: " % (paramname,))
         if self.controller:
@@ -570,16 +570,16 @@ def get_description(filename):
 
     res, newrest = parse_top(Whole, list(gentok))
     if debug_parse:
-        print len(` res `), 'chars in res' #3924
+        print(len(repr( res)), 'chars in res') #3924
 ##        print res # might be an error message
     if newrest and debug_parse: # boolean test, since normal value is []
-        print "res is", res # assume it is an error message
-        print "newrest is", newrest
-        print "res[0].pprint() :"
-        print res[0].pprint() #k
+        print("res is", res) # assume it is an error message
+        print("newrest is", newrest)
+        print("res[0].pprint() :")
+        print(res[0].pprint()) #k
 
     if debug_parse:
-        print "parse done"
+        print("parse done")
 
     desc = res[0] #k class ThingData in parse_utils - move to another file? it stays with the toplevel grammar...
 
@@ -594,27 +594,27 @@ if __name__ == '__main__': # this has the parsing calls
         def __init__(self, parent = None, desc = None):
             parameter_dialog_or_frame.__init__(self, parent, desc) # sets self.desc (buttons might want to use it)
         def do_sponsor_btn(self):
-            print "do_sponsor_btn: nim"
+            print("do_sponsor_btn: nim")
         def do_done_btn(self):
-            print "do_done_btn: nim"
+            print("do_done_btn: nim")
         def do_abort_btn(self):
-            print "do_abort_btn: nim"
+            print("do_abort_btn: nim")
         def do_preview_btn(self):
-            print "do_preview_btn: nim"
+            print("do_preview_btn: nim")
         def do_whatsthis_btn(self):
-            print "do_whatsthis_btn: nim"
+            print("do_whatsthis_btn: nim")
         def do_cancel_btn(self):
-            print "do_cancel_btn: nim"
+            print("do_cancel_btn: nim")
         def do_ok_btn(self):
-            print "do_ok_btn: printing param values"
-            getters = self.param_getters.items()
+            print("do_ok_btn: printing param values")
+            getters = list(self.param_getters.items())
             getters.sort()
             for paramname, getter in getters:
                 try:
-                    print "param %s = %r" % (paramname, getter())
+                    print("param %s = %r" % (paramname, getter()))
                 except:
                     print_compact_traceback("exception trying to get param %s: " % (paramname,))
-            print
+            print()
         pass
 
     import sys
@@ -630,9 +630,9 @@ if __name__ == '__main__': # this has the parsing calls
     w = NTdialog(parent, desc) ### also, env to supply prefs, state to control
     w.show()
     a.connect(a, SIGNAL('lastWindowClosed()'), a, SLOT('quit()'))
-    print "about to exec_"
+    print("about to exec_")
     a.exec_()
 
-    print "exiting, test done"
+    print("exiting, test done")
 
 # end

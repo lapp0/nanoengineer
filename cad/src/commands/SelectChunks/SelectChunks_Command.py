@@ -188,9 +188,9 @@ class SelectChunks_Command(Select_Command):
         [debugging method] invalidate all aspects of selected atoms or mols
         """
         for mol in self.o.assy.selmols:
-            print "already valid in mol %r: %r" % (mol, mol.invalid_attrs())
+            print("already valid in mol %r: %r" % (mol, mol.invalid_attrs()))
             mol.invalidate_everything()
-        for atm in self.o.assy.selatoms.values():
+        for atm in list(self.o.assy.selatoms.values()):
             atm.invalidate_everything()
         return
 
@@ -199,7 +199,7 @@ class SelectChunks_Command(Select_Command):
         [debugging method] update all aspects of selected atoms or mols;
         no effect expected unless you invalidate them first
         """
-        for atm in self.o.assy.selatoms.values():
+        for atm in list(self.o.assy.selatoms.values()):
             atm.update_everything()
         for mol in self.o.assy.selmols:
             mol.update_everything()

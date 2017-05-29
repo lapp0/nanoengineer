@@ -48,9 +48,9 @@ else: #Linux
     PM_HEADER_FONT_BOLD = True
 
 if 0:
-    print "PropMgr width = ",     PM_DEFAULT_WIDTH
-    print "PropMgr Min width = ", PM_MINIMUM_WIDTH
-    print "PropMgr Max width = ", PM_MAXIMUM_WIDTH
+    print(("PropMgr width = ",     PM_DEFAULT_WIDTH))
+    print(("PropMgr Min width = ", PM_MINIMUM_WIDTH))
+    print(("PropMgr Max width = ", PM_MAXIMUM_WIDTH))
 
 # PropMgr constants.
 PM_GROUPBOX_SPACING       = 4 # 4 pixels between groupboxes

@@ -37,4 +37,4 @@ while True:
 
     length = math.sqrt(dx * dx + dy * dy + dz * dz)
 
-    print "(%f %f) -> (%f %f) %6.2f" % (x1, y1, x2, y2, length * 1000)
+    print("(%f %f) -> (%f %f) %6.2f" % (x1, y1, x2, y2, length * 1000))

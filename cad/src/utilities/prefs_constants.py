@@ -606,8 +606,8 @@ def getDefaultWorkingDirectory():
     if os.path.isdir(wd):
         return wd
     else:
-        print "getDefaultWorkingDirectory(): default working directory [", \
-              wd , "] does not exist. Setting default working directory to [.]"
+        print("getDefaultWorkingDirectory(): default working directory [", \
+              wd , "] does not exist. Setting default working directory to [.]")
         return "."
 
 _default_workingDirectory = getDefaultWorkingDirectory()

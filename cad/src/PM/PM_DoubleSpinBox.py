@@ -167,17 +167,17 @@ class PM_DoubleSpinBox( QDoubleSpinBox ):
         """
 
         if 0: # Debugging code
-            print "PropMgrSpinBox.__init__():"
-            print "  label        = ", label
-            print "  labelColumn  = ", labelColumn
-            print "  value        = ", value
-            print "  setAsDefault = ", setAsDefault
-            print "  minimum      = ", minimum
-            print "  maximum      = ", maximum
-            print "  singleStep   = ", singleStep
-            print "  decimals     = ", decimals
-            print "  suffix       = ", suffix
-            print "  spanWidth    = ", spanWidth
+            print("PropMgrSpinBox.__init__():")
+            print(("  label        = ", label))
+            print(("  labelColumn  = ", labelColumn))
+            print(("  value        = ", value))
+            print(("  setAsDefault = ", setAsDefault))
+            print(("  minimum      = ", minimum))
+            print(("  maximum      = ", maximum))
+            print(("  singleStep   = ", singleStep))
+            print(("  decimals     = ", decimals))
+            print(("  suffix       = ", suffix))
+            print(("  spanWidth    = ", spanWidth))
 
         if not parentWidget:
             return

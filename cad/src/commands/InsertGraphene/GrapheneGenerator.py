@@ -62,7 +62,7 @@ class GrapheneGenerator:
         if PROFILE:
             t = sw.now()
             env.history.message(greenmsg("%g seconds to build %d atoms" %
-                                         (t, len(atoms.values()))))
+                                         (t, len(list(atoms.values())))))
         return mol
 
 
@@ -113,7 +113,7 @@ class GrapheneGenerator:
 
         # trim to dimensions
         atoms = mol.atoms
-        for atm in atoms.values():
+        for atm in list(atoms.values()):
             x, y, z = atm.posn()
             xdim, ydim = width + bond_length, height + bond_length
             # xdim, ydim = width + 0.5 * bond_length, height + 0.5 * bond_length
@@ -124,7 +124,7 @@ class GrapheneGenerator:
             """Trim all the carbons that only have one carbon neighbor.
             """
             for i in range(2):
-                for atm in atoms.values():
+                for atm in list(atoms.values()):
                     if not atm.is_singlet() and len(atm.realNeighbors()) == 1:
                         atm.kill()
 
@@ -133,7 +133,7 @@ class GrapheneGenerator:
             # really good here would be to break the bonds that are
             # stretched by this and put back the bondpoints.
             angstromsPerTurn = 6.0
-            for atm in atoms.values():
+            for atm in list(atoms.values()):
                 x, y, z = atm.posn()
                 r = (x**2 + y**2) ** .5
                 if 0.25 * width <= r <= 0.5 * width:
@@ -146,18 +146,18 @@ class GrapheneGenerator:
         if endings == 1:
             # hydrogen terminations
             trimCarbons()
-            for atm in atoms.values():
+            for atm in list(atoms.values()):
                 atm.Hydrogenate()
         elif endings == 2:
             # nitrogen terminations
             trimCarbons()
             dstElem = PeriodicTable.getElement('N')
             atomtype = dstElem.find_atomtype('sp2')
-            for atm in atoms.values():
+            for atm in list(atoms.values()):
                 if len(atm.realNeighbors()) == 2:
                     atm.Transmute(dstElem, force=True, atomtype=atomtype)
 
-        for atm in atoms.values():
+        for atm in list(atoms.values()):
             atm.setposn(atm.posn() + position)
 
         if num_atoms == len(mol.atoms):

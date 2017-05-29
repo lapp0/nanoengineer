@@ -20,7 +20,7 @@ class Triple:
                 self.x = args[0].x
                 self.y = args[0].y
                 self.z = args[0].z
-            elif isinstance(args[0], types.ListType):
+            elif isinstance(args[0], list):
                 self.x = args[0][0]
                 self.y = args[0][1]
                 self.z = args[0][2]

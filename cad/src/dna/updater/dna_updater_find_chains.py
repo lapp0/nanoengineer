@@ -159,9 +159,9 @@ def find_axis_and_strand_chains_or_rings( changed_atoms):
             pass # ignore all others, including role == 'unpaired-base' atoms
         return
 
-    for atom in changed_atoms.itervalues():
+    for atom in changed_atoms.values():
         if atom.killed():
-            print "bug: update_PAM_chunks: %r is killed (ignoring)" % atom
+            print("bug: update_PAM_chunks: %r is killed (ignoring)" % atom)
         elif atom.is_singlet():
             # classify the real neighbor instead
             # (Note: I'm not sure if this is needed, but I'll do it to be safe.
@@ -176,7 +176,7 @@ def find_axis_and_strand_chains_or_rings( changed_atoms):
         return (), () # optimization
 
     if debug_flags.DEBUG_DNA_UPDATER:
-        print "dna updater: %d axis atoms, %d strand atoms" % (len(axis_atoms), len(strand_atoms))
+        print("dna updater: %d axis atoms, %d strand atoms" % (len(axis_atoms), len(strand_atoms)))
 
     axis_chains = axis_analyzer.find_chains_or_rings( axis_atoms )
         # NOTE: this takes ownership of axis_atoms and trashes it.
@@ -197,13 +197,13 @@ def find_axis_and_strand_chains_or_rings( changed_atoms):
     axis_atoms = None # not a dict, bug if used
 
     if debug_flags.DEBUG_DNA_UPDATER:
-        print "dna updater: found %d axis chains or rings" % len(axis_chains)
+        print("dna updater: found %d axis chains or rings" % len(axis_chains))
 
     #
     strand_chains = strand_analyzer.find_chains_or_rings( strand_atoms )
     assert not strand_atoms  # see warning on similar assert above
     if debug_flags.DEBUG_DNA_UPDATER:
-        print "dna updater: found %d strand chains or rings" % len(strand_chains)
+        print("dna updater: found %d strand chains or rings" % len(strand_chains))
 
     return axis_chains, strand_chains # from find_axis_and_strand_chains_or_rings
 

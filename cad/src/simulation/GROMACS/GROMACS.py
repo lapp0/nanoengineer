@@ -143,9 +143,9 @@ class GROMACS:
 
     def writeStructure_Helper(self, node):
         partType = "pseudo"
-        if self.debug: print "node.name=%s" % node.name
+        if self.debug: print("node.name=%s" % node.name)
         if node.name[0:6] == "strand":
-            if self.debug: print "\t atomic helper"
+            if self.debug: print("\t atomic helper")
             self.writeAtomicPDB(node)
             partType = "atomic"
 
@@ -154,7 +154,7 @@ class GROMACS:
                 if childNode.is_group():
                     partType = self.writeStructure_Helper(childNode)
                 else:
-                    if self.debug: print "\t p-atom write"
+                    if self.debug: print("\t p-atom write")
                     self.writePseudoAtomStructure(childNode)
         return partType
 
@@ -234,13 +234,13 @@ class GROMACS:
                 # Emit bonds
                 #
                 atom_1_Index = self.atomKeyToIndexMap[atom_1.key]
-                if self.debug: print "atom [%s] %d" % (atom_1.key, atom_1_Index)
+                if self.debug: print("atom [%s] %d" % (atom_1.key, atom_1_Index))
 
                 bondCount = 0
                 bondIndexes = []
                 for bond in atom_1.bonds:
                     atom_2 = bond.other(atom_1)
-                    if self.debug: print "atom_2.key=%s" % atom_2.key
+                    if self.debug: print("atom_2.key=%s" % atom_2.key)
                     if atom_2.key not in self.atomKeyToIndexMap:
                         continue
 
@@ -332,11 +332,11 @@ class GROMACS:
         nucleotideIndex = 1
         for childNode in nodeMembers:
             if self.debug:
-                print "node=%s  nucleotideIndex=%d nucleotide=%s " % \
-                    (node.name, nucleotideIndex, childNode.name),
+                print("node=%s  nucleotideIndex=%d nucleotide=%s " % \
+                    (node.name, nucleotideIndex, childNode.name), end=' ')
                 if childNode == lastNode:
-                    print "last",
-                print "\n"
+                    print("last", end=' ')
+                print("\n")
             atomTypeIndex = 0
             for atom in childNode.atoms_in_mmp_file_order():
                 if atom.element.eltnum == 0:

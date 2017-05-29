@@ -36,7 +36,7 @@ class Record:
 
     def matches(self, line, pattern):
         if not line.startswith(pattern):
-            raise Mismatch, pattern + ":::" + line
+            raise Mismatch(pattern + ":::" + line)
         return line[len(pattern):]
 
     def processFirstLine(self, line):
@@ -45,7 +45,7 @@ class Record:
     def read(self, lines, depth=0):
         lines = self.readFirstLine(lines, depth)
         if DEBUG:
-            print (depth * "    ") + self.keyword
+            print((depth * "    ") + self.keyword)
         if hasattr(self, "bairns"):
             return self.readRemainingLines(lines, depth)
         else:
@@ -54,7 +54,7 @@ class Record:
     def readFirstLine(self, lines, depth):
         #if DEBUG: print self, "FIRST LINE", lines[0][:-1]
         if len(lines) < 1:
-            raise Mismatch, "no lines left"
+            raise Mismatch("no lines left")
         firstline = lines[0]
         firstline = self.matches(firstline,
                                  self.keyword + " ")
@@ -79,7 +79,7 @@ class Record:
                     pass
             if not found:
                 if depth == 0:
-                    print "?", lines[0]
+                    print("?", lines[0])
                     lines = lines[1:]
                 else:
                     return lines
@@ -142,9 +142,9 @@ examples = [
     ]
 
 for e in examples:
-    print "#############"
-    print e
+    print("#############")
+    print(e)
     lines = open(e).readlines()
     m = MmpFile()
     m.read(lines)
-    print m
+    print(m)

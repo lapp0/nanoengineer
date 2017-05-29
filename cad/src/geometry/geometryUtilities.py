@@ -178,9 +178,9 @@ def inertia_eigenvectors(basepos, already_centered = False):
 
 if 0: # self-test; works fine as of 060119
     def testie(points):
-        print "ie( %r ) is %r" % ( points, inertia_eigenvectors(points) )
+        print("ie( %r ) is %r" % ( points, inertia_eigenvectors(points) ))
 
-    map( testie, [
+    list(map( testie, [
         [],
         [V(0,0,0)],
         [V(0,0,1)], # not centered
@@ -189,7 +189,7 @@ if 0: # self-test; works fine as of 060119
         [V(0,1,1), V(0,-1,-1), V(0,1,-1), V(0,-1,1)],
         [V(1,4,9), V(1,4,-9), V(1,-4,9), V(1,-4,-9),
          V(-1,4,9), V(-1,4,-9), V(-1,-4,9), V(-1,-4,-9)],
-     ])
+     ]))
 
 # ==
 
@@ -251,7 +251,7 @@ def compute_heuristic_axis( basepos, type,
     # evals[i] tells you moment of inertia when rotating around axis evecs[i], which is larger if points are farther from axis.
     # So for a slab of dims 1x4x9, for axis '1' we see dims '4' and '9' and eval is the highest in that case.
 
-    valvecs = zip(evals, evecs)
+    valvecs = list(zip(evals, evecs))
     valvecs.sort()
 
     evals, evecs = unzip(valvecs) # (custom helper function, inverse of zip in this case)
@@ -371,7 +371,7 @@ def arbitrary_perpendicular( vec, nicevecs = [] ): #bruce 060608, probably dupli
     Return an arbitrary unit vector perpendicular to vec (a Numeric array, 3 floats),
     making it from vec and as-early-as-possible nicevecs (if any are passed).
     """
-    nicevecs = map(norm, nicevecs) + [X_AXIS, Y_AXIS]
+    nicevecs = list(map(norm, nicevecs)) + [X_AXIS, Y_AXIS]
     # we'll look at vec and each nicevec until they span a subspace which includes a perpendicular.
     # if we're not done, it means our subspace so far is spanned by just vec itself.
     vec = norm(vec)

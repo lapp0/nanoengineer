@@ -48,7 +48,7 @@ def reposition_baggage_0(self, baggage = None, planned_atom_nupos = None):
         other = -1 # set later if needed
         if debug_flags.atom_debug:
             # assert baggage is a subset of self.baggageNeighbors()
-            _bn = map(id, self.baggageNeighbors())
+            _bn = list(map(id, self.baggageNeighbors()))
             for atom in baggage:
                 assert id(atom) in _bn
             atom = 0
@@ -94,8 +94,8 @@ def _reposition_baggage_1(self, baggage, other, planned_atom_nupos):
         # should never happen, as we are called as of 060629, i think,
         # though if it did, there would be things we could do in theory,
         # like rotate atomtype.bondvecs to best match baggage...
-        print "bug?: %r.reposition_baggage(%r) finds no other atoms -- " \
-              "nim, not thought to ever happen" % (self, baggage)
+        print("bug?: %r.reposition_baggage(%r) finds no other atoms -- " \
+              "nim, not thought to ever happen" % (self, baggage))
         return
 
     if len_other == 1:
@@ -126,8 +126,8 @@ def _reposition_baggage_1(self, baggage, other, planned_atom_nupos):
         if len(other) != len_other:
             # must mean baggage is not a subset of neighbors
             args = (self, baggage, planned_atom_nupos)
-            print "bug in reposition_baggage%r: len(other == %r) != len_other %r" % \
-                  (args, other, len_other)
+            print("bug in reposition_baggage%r: len(other == %r) != len_other %r" % \
+                  (args, other, len_other))
             return
     if len_other == 1:
         other0_bond = find_bond(other[0], self)
@@ -138,8 +138,8 @@ def _reposition_baggage_1(self, baggage, other, planned_atom_nupos):
     if planned_atom_nupos:
         planned_atom, nupos = planned_atom_nupos
         if planned_atom not in other:
-            print "likely bug in reposition_baggage: " \
-                  "planned_atom not in other", planned_atom, other
+            print("likely bug in reposition_baggage: " \
+                  "planned_atom not in other", planned_atom, other)
     other_posns = [(atom.posn(), nupos)[atom is planned_atom] for atom in other]
         #e we might later wish we'd kept a list of the bonds to baggage and
         # other, to grab the v6's -- make a dict from atom.key above?
@@ -168,7 +168,7 @@ def _reposition_baggage_1(self, baggage, other, planned_atom_nupos):
         if len_baggage == 1: # (3,1,2)
             extra = 1
             if debugprints:
-                print "debug repos baggage: sp3,1,2"
+                print("debug repos baggage: sp3,1,2")
         plane = cross( othervecs[0], othervecs[1] )
         if vlen(plane) < 0.001:
             # othervecs are nearly parallel (same or opposite);
@@ -176,8 +176,8 @@ def _reposition_baggage_1(self, baggage, other, planned_atom_nupos):
             # as close to existing posns as you can, but this case can be left
             # nim for now since it's rare and probably transient.
             if debugprints:
-                print "debug repos baggage: othervecs are nearly parallel; " \
-                      "this case is nim", self, other ###@@@
+                print("debug repos baggage: othervecs are nearly parallel; " \
+                      "this case is nim", self, other) ###@@@
             return
         plane = norm(plane)
         back = norm(othervecs[0] + othervecs[1])
@@ -195,7 +195,7 @@ def _reposition_baggage_1(self, baggage, other, planned_atom_nupos):
             plane0 = norm( cross( othervecs[0], othervecs[1] ))
             if plane0:
                 if debugprints:
-                    print "debug repos baggage: sp3 with 3 real bonds in a plane"
+                    print("debug repos baggage: sp3 with 3 real bonds in a plane")
                 # pick closest of plane0, -plane0 to existing posn
 ##                # one way:
 ##                if dot(plane0, bagvecs[0]) < 0:
@@ -208,7 +208,7 @@ def _reposition_baggage_1(self, baggage, other, planned_atom_nupos):
             else:
                 # not possible -- if othervecs[0], othervecs[1] are antiparallel,
                 # overall sum (in back) can't be zero; if parallel, ditto.
-                print "can't happen: back and plane0 vanish", othervecs
+                print("can't happen: back and plane0 vanish", othervecs)
                 return
             pass
         pass
@@ -221,8 +221,8 @@ def _reposition_baggage_1(self, baggage, other, planned_atom_nupos):
             # existing posn, or arb point on equator
             p0 = cross( bagvecs[0], othervecs[0] )
             if debugprints:
-                print "debug repos baggage: antiparallel sp2 1 2 case, " \
-                      "not p0 == %r" % (not p0) # untested so far
+                print("debug repos baggage: antiparallel sp2 1 2 case, " \
+                      "not p0 == %r" % (not p0)) # untested so far
             if not p0:
                 # bagvec is parallel too
                 res = [arbitrary_perpendicular(othervecs[0])]
@@ -246,12 +246,12 @@ def _reposition_baggage_1(self, baggage, other, planned_atom_nupos):
         # (along sp_chains too), but when you move chain atoms (let alone
         # their neighbors), I just don't recall.
         if debugprints:
-            print "debug repos baggage: sp2 with twisting pi_bond is nim", self ###@@@
+            print("debug repos baggage: sp2 with twisting pi_bond is nim", self) ###@@@
         return
     else:
         #bruce 080515 bugfix: fallback case
         # (otherwise following code has UnboundLocalError for 'res')
-        print "bug?: reposition_baggage (for %r) can't yet handle this algchoice:" % self, algchoice
+        print("bug?: reposition_baggage (for %r) can't yet handle this algchoice:" % self, algchoice)
         return
     # now work out the best assignment of posns in res to baggage; reorder res
     # to fit bags_ordered
@@ -259,7 +259,7 @@ def _reposition_baggage_1(self, baggage, other, planned_atom_nupos):
     bags_ordered = baggage # in case len(res) == 1
     if len(res) > 1:
         dists = []
-        for atom_junk, vec, i in zip(baggage, bagvecs, range(len_baggage)):
+        for atom_junk, vec, i in zip(baggage, bagvecs, list(range(len_baggage))):
             for pos in res:
                 dists.append(( vlen(pos - vec), i, pos ))
         dists.sort()
@@ -289,7 +289,7 @@ def _reposition_baggage_1(self, baggage, other, planned_atom_nupos):
     for atom, vec in zip(bags_ordered, res):
         dist = vlen( selfposn - atom.posn() )
         if abs(1.0 - vlen(vec)) > 0.00001:
-            print "bug in reposition_baggage: vec not len 1:", vec
+            print("bug in reposition_baggage: vec not len 1:", vec)
         atom.setposn( selfposn + norm(vec) * dist )
             # norm(vec) is hoped to slightly reduce accumulated
             # numerical errors...
@@ -298,7 +298,7 @@ def _reposition_baggage_1(self, baggage, other, planned_atom_nupos):
             #  would also change them when at most one real atom would need
             #  moving, which I suppose they ought to...)
     if debugprints and 0:
-        print "done"
+        print("done")
     return # from _reposition_baggage_1
 
 # end... tested: sp3 2 2, sp2 1 2

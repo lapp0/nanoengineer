@@ -48,6 +48,7 @@ from utilities.constants import noop
 from utilities.debug import print_compact_traceback
 
 from widgets.widget_helpers import RGBf_to_QColor
+import collections
 
 # ===
 
@@ -247,7 +248,7 @@ class TreeModel(TreeModel_api):
                         text = "Disable"
                     res.append(( text, command, checked and 'checked' or None, disabled_menu_item and 'disabled' or None ))
         except:
-            print "bug in MT njigs == 1, ignored"
+            print("bug in MT njigs == 1, ignored")
             ## raise # just during devel
             pass
 
@@ -363,7 +364,7 @@ class TreeModel(TreeModel_api):
         if len(nodeset) == 1:
             node = nodeset[0]
             submenu = []
-            attrs = filter( lambda attr: "__CM_" in attr, dir( node.__class__ )) #e should do in order of superclasses
+            attrs = [attr for attr in dir( node.__class__ ) if "__CM_" in attr] #e should do in order of superclasses
             attrs.sort() # ok if empty list
             #bruce 050708 -- provide a way for these custom menu items to specify a list of menu_spec options (e.g. 'disabled') --
             # they should define a method with the same name + "__options" and have it return a list of options, e.g. ['disabled'],
@@ -385,14 +386,14 @@ class TreeModel(TreeModel_api):
                     continue
                 classname, menutext = attr.split("__CM_",1)
                 boundmethod = getattr( node, attr)
-                if callable(boundmethod):
+                if isinstance(boundmethod, collections.Callable):
                     lis = opts.get(attr + "__options") or []
                     if lis != 'remove':
                         mitem = tuple([menutext.replace('_',' '), boundmethod] + lis)
                         submenu.append(mitem)
                 elif boundmethod is None:
                     # kluge: None means remove any existing menu items (before the submenu) with this menutext!
-                    res = filter( lambda text_cmd: text_cmd and text_cmd[0] != menutext, res ) # text_cmd might be None
+                    res = [text_cmd for text_cmd in res if text_cmd and text_cmd[0] != menutext] # text_cmd might be None
                     while res and res[0] == None:
                         res = res[1:]
                     #e should also remove adjacent Nones inside res
@@ -462,7 +463,7 @@ class TreeModel(TreeModel_api):
                         # providing it. This aspect of the API is bad, should be revised.
                         # Warning 3: consider whether each implem of this needs to call
                         # self.deselect_partly_picked_whole_nodes().
-                    assert callable(method)
+                    assert isinstance(method, collections.Callable)
                 except:
                     dupok = False
                 else:
@@ -566,10 +567,10 @@ class TreeModel(TreeModel_api):
         nodeset = self.topmost_selected_nodes()
         if len(nodeset) == 1:
             debug._node = nodeset[0]
-            print "set debug._node to", debug._node
+            print("set debug._node to", debug._node)
         else:
             debug._nodeset = nodeset
-            print "set debug._nodeset to list of %d items" % len(debug._nodeset)
+            print("set debug._nodeset to list of %d items" % len(debug._nodeset))
         return
 
     def cm_properties(self):
@@ -651,7 +652,7 @@ class TreeModel(TreeModel_api):
                 ## node.delmember(new) #e (addsibling ought to do this for us...) [now it does]
                 m.addsibling(new, before = True)
                 break # (this always happens, since something was picked under node)
-        node.apply2picked(lambda(x): x.moveto(new))
+        node.apply2picked(lambda x: x.moveto(new))
             # this will have skipped new before moving anything picked into it!
             # even so, I'd feel better if it unpicked them before moving them...
             # but I guess it doesn't. for now, just see if it works this way... seems to work.
@@ -762,7 +763,7 @@ class TreeModel(TreeModel_api):
         nodeset = self.topmost_selected_nodes()
         self.assy.part.permit_pick_atoms()
         for m in nodeset:
-            for a in m.atoms.itervalues():
+            for a in m.atoms.values():
                 a.pick()
         self.win.win_update()
 

@@ -142,7 +142,7 @@ class Base:
         return -cmp(self.phosphorusZcoord, other.phosphorusZcoord)
 
     def keys(self):
-        return map(lambda a: a.key, self.atomlist)
+        return [a.key for a in self.atomlist]
 
     def __len__(self):
         return len(self.atomlist)
@@ -163,7 +163,7 @@ class Base:
         newguys = [ ]
         for a in self.atomlist:
             for k in a.bonds:
-                if k not in newguys and k not in self.keys():
+                if k not in newguys and k not in list(self.keys()):
                     newguys.append(k)
                     atoms[k].buddy = a
         newAtoms = 0
@@ -208,12 +208,12 @@ class Strand:
         self.atoms[key] = a
 
     def transform(self, t):
-        if t.func_code.co_argcount == 1:
-            for a in self.atoms.values():
+        if t.__code__.co_argcount == 1:
+            for a in list(self.atoms.values()):
                 v = V(a.x, a.y, a.z)
                 a.x, a.y, a.z = tuple(t(v))
         else:
-            for a in self.atoms.values():
+            for a in list(self.atoms.values()):
                 a.x, a.y, a.z = t(a.x, a.y, a.z)
 
     def addAtomFromMmp(self, mmpline):
@@ -231,7 +231,7 @@ class Strand:
             if a2.key not in a1.bonds:
                 a1.bonds.append(a2.key)
         buckets = { }
-        for atom in self.atoms.values():
+        for atom in list(self.atoms.values()):
             atom.bonds = [ ]  # clear existing bonds
             # put this atom in one of the buckets
             key = quantize(atom.posn())
@@ -251,7 +251,7 @@ class Strand:
                         except KeyError:
                             pass
             return lst
-        for atm1 in self.atoms.values():
+        for atm1 in list(self.atoms.values()):
             for atm2 in region(atm1.posn()):
                 bondLen = vlen(atm1.posn() - atm2.posn())
                 idealBondLen = atm1.atomtype.rcovalent + atm2.atomtype.rcovalent
@@ -262,21 +262,21 @@ class Strand:
 
     def assignBases(self):
         self.inferBonds()
-        remainingKeys = self.atoms.keys()
+        remainingKeys = list(self.atoms.keys())
         while len(remainingKeys) > 0:
             baseKey = remainingKeys[0]
-            print "Base", baseKey
+            print("Base", baseKey)
             base = Base(self, baseKey)
             self.bases.append(base)
             remainingKeys = remainingKeys[1:]
             base.grow()
-            for key in base.keys():
+            for key in list(base.keys()):
                 if key in remainingKeys:
                     remainingKeys.remove(key)
 
     def renumberAtoms(self):
         # Renumber their keys, and recompute bonds with new keys
-        atomlist = self.atoms.values()
+        atomlist = list(self.atoms.values())
         self.atoms = { }
         self.nextKey = 1
         for i in range(len(atomlist)):
@@ -285,7 +285,7 @@ class Strand:
 
     def filter(self, filt):
         s = Strand()
-        for a in self.atoms.values():
+        for a in list(self.atoms.values()):
             if filt(a):
                 s.addAtom(a.clone())
         s.inferBonds()
@@ -293,7 +293,7 @@ class Strand:
 
     def writeManyMmps(self, specs, tfm0, tfm):
         # discard tiny "bases" and any atoms in them
-        tinybases = filter(lambda b: len(b) < 6, self.bases)
+        tinybases = [b for b in self.bases if len(b) < 6]
         for b in tinybases:
             for a in b.atomlist:
                 del self.atoms[a.key]
@@ -335,13 +335,13 @@ end molecular machine part %(groupname)s
 
     def writeMmp(self, filename, groupname=None):
         # Sort the atoms by what group they are in
-        atomlist = self.atoms.values()
+        atomlist = list(self.atoms.values())
         atomlist.sort(lambda a1, a2: cmp(a1.base, a2.base))
         self.renumberAtoms()
         # write the file
         s = ""
         thisgroup = None
-        for a in self.atoms.values():
+        for a in list(self.atoms.values()):
             if groupname == None:
                 if thisgroup != a.base:
                     s += "mol (Strand %d) def\n" % a.base

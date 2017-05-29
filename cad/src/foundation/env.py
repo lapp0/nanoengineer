@@ -161,7 +161,7 @@ def once_per_event(*args, **kws):
     assert args or kws, "some args or kws are required, " \
                         "otherwise the result would be meaninglessly global"
     if kws:
-        items = kws.items()
+        items = list(kws.items())
         items.sort()
         key1 = (args, tuple(items))
     else:
@@ -204,8 +204,8 @@ def track(thing): #bruce 050804
     """
     from utilities import debug_flags
     if debug_flags.atom_debug:
-        print "atom_debug: fyi (from env module): " \
-              "something asked to be tracked, but nothing is tracking: ", thing
+        print("atom_debug: fyi (from env module): " \
+              "something asked to be tracked, but nothing is tracking: ", thing)
         # if this happens and is not an error, then we'll zap the message.
     return
 
@@ -274,9 +274,9 @@ class pre_init_fake_history_widget:
 ##        from utilities import debug_flags
 ##        if debug_flags.atom_debug:
         # bruce 071018 print this always, and clarify the text:
-        print "fyi: this history message was produced too early " \
-              "to show up in the History Widget:"
-        print msg
+        print("fyi: this history message was produced too early " \
+              "to show up in the History Widget:")
+        print(msg)
         # REVIEW: use print_compact_stack instead, if atom_debug is set?
         return
     redmsg = orangemsg = greenmsg = message #bruce 080220

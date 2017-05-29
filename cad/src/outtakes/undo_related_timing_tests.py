@@ -6,7 +6,7 @@ $Id$
 # [moved out of undo.py by bruce 071004]
 
 # not all of these are needed, perhaps:
-from cPickle import dump, load, HIGHEST_PROTOCOL
+from pickle import dump, load, HIGHEST_PROTOCOL
 import foundation.env as env
 from utilities.debug import register_debug_menu_command, register_debug_menu_command_maker
     ###@@@ don't put all those commands in there -- use a submenu, use atom-debug,
@@ -167,7 +167,7 @@ def blerg_try1(mols):
     for m in mols:
         atlist = m.atlist
         atpos = m.atpos
-        keys = map( lambda a: a.key, atlist )
+        keys = [a.key for a in atlist]
         # now efficiently loop over both those lists. I think there's a better way in python
         # (and surely it should be done in pyrex or Numeric anyway), but try easy way first:
         for key, pos in zip(keys, atpos):

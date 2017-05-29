@@ -68,7 +68,7 @@ class DnaLadderRailChunk_writemmp_mapping_memo(writemmp_mapping_memo):
             # (might happen if dna updater is turned off at runtime -- not sure;
             #  note, doing that might have worse effects, like self.ladder existing
             #  but being out of date, causing traceback errors. #### FIX those sometime (elsewhere).)
-            print "error: ladder not set during writemmp, can't convert pam model, in %r" % chunk
+            print("error: ladder not set during writemmp, can't convert pam model, in %r" % chunk)
             msg = "Error: [N] chunk(s) don't have ladders set"
             env.history.deferred_summary_message( redmsg( msg))
         else:
@@ -133,11 +133,11 @@ class DnaStrandChunk_writemmp_mapping_memo(DnaLadderRailChunk_writemmp_mapping_m
         if direction == Pl_STICKY_BOND_DIRECTION:
             # Pls want to stick to the right within baseatoms;
             # pass baseatom pairs in current order
-            pairs = zip( [None] + baseatoms, baseatoms + [None] )
+            pairs = list(zip( [None] + baseatoms, baseatoms + [None] ))
         else:
             # Pls want to stick to the left; pass reversed pairs
             # (but no need to reverse the result)
-            pairs = zip( baseatoms + [None], [None] + baseatoms )
+            pairs = list(zip( baseatoms + [None], [None] + baseatoms ))
 
         res = [self._compute_one_Pl_atom(a1, a2) for (a1, a2) in pairs]
 
@@ -195,8 +195,8 @@ class DnaStrandChunk_writemmp_mapping_memo(DnaLadderRailChunk_writemmp_mapping_m
                     if candidate.molecule is chunk: # required for returning live ones
                         return candidate
                     else:
-                        print "bug? %r not in %r but should be" % \
-                              (candidate, chunk,)
+                        print("bug? %r not in %r but should be" % \
+                              (candidate, chunk,))
                         pass
         else:
             # if only a1 is in chunk, a live Pl bonded to it
@@ -331,7 +331,7 @@ class Fake_Pl(object): #bruce 080327
         # usually (or always?) this is (- Pl_STICKY_BOND_DIRECTION)
 
     def __init__(self, owning_Ss_atom, bond_direction):
-        self.key = atKey.next()
+        self.key = next(atKey)
         self.owning_Ss_atom = owning_Ss_atom
             # reference cycle -- either destroy self when atom is destroyed,
             # or just store owning_Ss_atom.key or so
@@ -339,7 +339,7 @@ class Fake_Pl(object): #bruce 080327
         return
 
     def posn(self): # stub - average posn of Ss neighbors (plus offset in case only one!)
-        print "should use Pl_pos_from_neighbor_PAM3plus5_data for %r" % self #####
+        print("should use Pl_pos_from_neighbor_PAM3plus5_data for %r" % self) #####
         # note: average_value seems to work here
         res = average_value( [n.posn() for n in self.neighbors()], V(0, 0, 0) )
         return res + V(0, 2, 0) # offset (kluge, wrong)
@@ -408,11 +408,11 @@ class Fake_Pl(object): #bruce 080327
         res = [a1, a2]
         if self.bond_direction < 0:
             res.reverse() #k good? better to compare to +/- Pl_STICKY_BOND_DIRECTION??
-        print "_neighbor_atoms -> ", res #######
+        print("_neighbor_atoms -> ", res) #######
         return res
 
     def neighbors(self):
-        return filter(None, self._neighbor_atoms())
+        return [_f for _f in self._neighbor_atoms() if _f]
 
     pass # end of class
 

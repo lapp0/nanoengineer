@@ -47,7 +47,7 @@ class TranslateChunks_GraphicsMode(Move_GraphicsMode):
         elif self.o.modkeys == 'Shift+Control':
             self.o.setCursor(self.w.DeleteCursor)
         else:
-            print "Error in update_cursor_for_no_MB(): Invalid modkey=", self.o.modkeys
+            print("Error in update_cursor_for_no_MB(): Invalid modkey=", self.o.modkeys)
 
         return
 
@@ -97,8 +97,8 @@ class TranslateChunks_GraphicsMode(Move_GraphicsMode):
                 self.leftADown(objectUnderMouse, event)
                 return
             else:
-                print "TranslateChunks_GraphicsMode Error - "\
-                      "unknown moveOption value =", self.moveOption
+                print("TranslateChunks_GraphicsMode Error - "\
+                      "unknown moveOption value =", self.moveOption)
 
             ma = norm(V(dot(ma,self.o.right),dot(ma,self.o.up)))
             # When in the front view, right = 1,0,0 and up = 0,1,0, so ma will
@@ -214,8 +214,8 @@ class TranslateChunks_GraphicsMode(Move_GraphicsMode):
         elif self.moveOption == 'TRANSZ':
             ma = V(0,0,1) # Z Axis
         else:
-            print "_leftDragConstrainedTranslation Error: unknown moveOption value:", \
-                  self.moveOption
+            print("_leftDragConstrainedTranslation Error: unknown moveOption value:", \
+                  self.moveOption)
             return
 
         self.transDelta += dx # Increment translation delta

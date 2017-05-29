@@ -28,9 +28,9 @@ def enableDeveloperFeatures():
     Call this to see if you should enable a particular developer feature.
     """
     if not _developerFeatures_set_yet:
-        print "bug: enableDeveloperFeatures() queried before " \
+        print("bug: enableDeveloperFeatures() queried before " \
               " setDeveloperFeatures() called; returning %r" % \
-              _developerFeatures
+              _developerFeatures)
     return _developerFeatures
 
 def setDeveloperFeatures(developerFeatures):

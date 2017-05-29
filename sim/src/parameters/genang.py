@@ -42,7 +42,7 @@ for lin in f.readlines():
     m = parmpat.match(lin)
     l,b,r = m.group(1),m.group(2),m.group(3)
 
-    ks,r0,de = map(lambda p: float(m.group(p)),[4,5,6])
+    ks,r0,de = [float(m.group(p)) for p in [4,5,6]]
 
     Rzeros[l+b+r]=r0
     Rzeros[r+b+l]=r0
@@ -78,7 +78,7 @@ for c in centers:
             if rb != crb: continue
             # print r
             name = le+lb+ce+rb+re
-            print name
+            print(name)
             for nmx,dth in angs:
                 of = open(name+nmx+'.inp','w')
                 of.write(pref % name)

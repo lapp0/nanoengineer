@@ -27,7 +27,7 @@ class Program:
     def getSymbol(self, k):
         return self.symtab[k]
     def hasSymbol(self, k):
-        return self.symtab.has_key(k)
+        return k in self.symtab
     def thread(self, func, mem=None):
         T = thread(self.opcodes, mem)
         T.pc = self.symtab[func]
@@ -102,7 +102,7 @@ class Program:
             elif x[-1:] == ':':
                 # the start of a definition, put it in the symbol table
                 self.setSymbol(x[:-1], len(self))
-            elif verbs.has_key(x):
+            elif x in verbs:
                 # a primitive
                 self.append(verbs[x])
             elif self.hasSymbol(x):
@@ -126,7 +126,7 @@ class Program:
         while i < finish:
             x = self[i]
             # there are two kinds of forward references, calls and spawns
-            if type(x) == types.StringType:
+            if type(x) == bytes:
                 if x[:6] == 'spawn:':
                     self[i] = verbs['spawn']
                     self[i+1] = self.getSymbol(x[6:])
@@ -137,7 +137,7 @@ class Program:
     def explain(self):
         def reverseDict(d):
             v = { }
-            for k in d.keys():
+            for k in list(d.keys()):
                 v[d[k]] = k
             return v
         v = reverseDict(verbs)
@@ -152,12 +152,12 @@ class Program:
                 pass
             try:
                 u = v[x]
-                r = r + '    ' + `i` + ' ' + u + '\n'
+                r = r + '    ' + repr(i) + ' ' + u + '\n'
             except KeyError:
                 try:
                     g = ' (' + s[x] + ')'
                 except KeyError:
                     g = ''
-                r = r + '    ' + `i` + ' ' + `x` + g + '\n'
+                r = r + '    ' + repr(i) + ' ' + repr(x) + g + '\n'
             i = i + 1
-        print r
+        print(r)

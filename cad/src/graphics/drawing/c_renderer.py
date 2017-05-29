@@ -69,15 +69,15 @@ try:
         # Should never happen for end users, but if it does we want to print the
         # warning.
         if env.debug() or not EndUser.enableDeveloperFeatures():
-            print "debug: fyi:", \
+            print("debug: fyi:", \
                   "Loaded experimental version of C rendering code:", \
-                  quux.__file__
+                  quux.__file__)
 except:
     quux = None
     quux_module_import_succeeded = False
     if env.debug(): #bruce 060323 added condition
-        print "WARNING: unable to import C rendering code (quux module).", \
-              "Only Python rendering will be available."
+        print("WARNING: unable to import C rendering code (quux module).", \
+              "Only Python rendering will be available.")
     pass
 
 # ==
@@ -133,8 +133,7 @@ class ShapeList_inplace:
         """
 
         if self.petrified:
-            raise ValueError, \
-                  "Tried to add a sphere to a petrified ShapeList_inplace"
+            raise ValueError("Tried to add a sphere to a petrified ShapeList_inplace")
 
         # struct Sphere {
         #     float m_color[4];
@@ -168,8 +167,7 @@ class ShapeList_inplace:
         """
 
         if self.petrified:
-            raise ValueError, \
-                  "Tried to add a cylinder to a petrified ShapeList_inplace"
+            raise ValueError("Tried to add a cylinder to a petrified ShapeList_inplace")
 
         # struct Cylinder {
         #     float m_color[4];
@@ -383,7 +381,7 @@ def test_pyrex_opengl(test_type): # not tested since major refactoring
             sys.path.append(binPath)
         import quux
         if "experimental" in os.path.dirname(quux.__file__):
-            print "WARNING: Using experimental version of quux module"
+            print("WARNING: Using experimental version of quux module")
         # quux.test()
         quux.shapeRendererInit()
         quux.shapeRendererSetUseDynamicLOD(0)

@@ -13,7 +13,7 @@ from processes.ServerManagerDialog import Ui_ServerManagerDialog
 from PyQt4.Qt import QDialog, QStringList, SIGNAL, QMessageBox
 from simulation.SimServer import SimServer
 import os
-import cPickle as pickle
+import pickle as pickle
 from utilities.debug import print_compact_stack
 from utilities.qt4transition import qt4todo
 from platform_dependent.PlatformDependent import find_or_make_Nanorex_directory
@@ -128,7 +128,7 @@ class ServerManager(QDialog, Ui_ServerManagerDialog):
         self.server_listview.takeItem(item)
         del self.servers[self.items.index(item)]
         self.items.remove(item)
-        print "After deleting."
+        print("After deleting.")
         return
 
     def changeServer(self, curItem):

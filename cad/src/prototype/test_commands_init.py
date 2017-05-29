@@ -31,9 +31,9 @@ def construct_cmdrun( cmd_class, commandSequencer):
     #  though passing assy might be more logical)
     cmdrun = cmd_class(commandSequencer)
     if not hasattr(cmdrun, 'glpane'):
-        print "bug: no glpane in cmdrun %r: did it forget to call ExampleCommand.__init__?" % (cmdrun,)
+        print("bug: no glpane in cmdrun %r: did it forget to call ExampleCommand.__init__?" % (cmdrun,))
     if not hasattr(cmdrun, 'commandSequencer'):
-        print "bug: no commandSequencer in cmdrun %r: did it forget to call ExampleCommand.__init__?" % (cmdrun,)
+        print("bug: no commandSequencer in cmdrun %r: did it forget to call ExampleCommand.__init__?" % (cmdrun,))
     ###e should also put it somewhere, as needed for a mode ####DOIT
     if 'kluge, might prevent malloc errors after removing pm from ui (guess)':
         import foundation.changes as changes
@@ -53,7 +53,7 @@ def start_cmdrun( cmdrun):
     # as a temporary command.
     commandSequencer.userEnterCommand( cmdrun, always_update = True)
 
-    print "done with start_cmdrun for", cmdrun
+    print("done with start_cmdrun for", cmdrun)
         # returns as soon as user is in it, doesn't wait for it to "finish" -- so run is not a good name -- use Enter??
         # problem: Enter is only meant to be called internally by glue code in CommandSequencer.
         # solution: use a new method, maybe Start. note, it's not guaranteed to change to it immediately! it's like Done (newmode arg).

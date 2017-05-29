@@ -76,25 +76,25 @@ def findImproper(torsions, i, j, k, l):
     each position, then with two.
     """
     can = canonicalizeImproper(i, j, k, l)
-    if (torsions.has_key(can)):
+    if (can in torsions):
         return can, torsions[can]
     can = canonicalizeImproper('X', j, k, l)
-    if (torsions.has_key(can)):
+    if (can in torsions):
         return can, torsions[can]
     can = canonicalizeImproper(i, 'X', k, l)
-    if (torsions.has_key(can)):
+    if (can in torsions):
         return can, torsions[can]
     can = canonicalizeImproper(i, j, k, 'X')
-    if (torsions.has_key(can)):
+    if (can in torsions):
         return can, torsions[can]
     can = canonicalizeImproper('X', 'X', k, l)
-    if (torsions.has_key(can)):
+    if (can in torsions):
         return can, torsions[can]
     can = canonicalizeImproper('X', j, k, 'X')
-    if (torsions.has_key(can)):
+    if (can in torsions):
         return can, torsions[can]
     can = canonicalizeImproper(i, 'X', k, 'X')
-    if (torsions.has_key(can)):
+    if (can in torsions):
         return can, torsions[can]
     return None, None
 
@@ -104,10 +104,10 @@ def findProper(torsions, i, j, k, l):
     wildcards.
     """
     can = canonicalizeProper(i, j, k, l)
-    if (torsions.has_key(can)):
+    if (can in torsions):
         return can, torsions[can]
     can = canonicalizeProper('X', j, k, 'X')
-    if (torsions.has_key(can)):
+    if (can in torsions):
         return can, torsions[can]
     return None, None
 
@@ -216,7 +216,7 @@ if (__name__ == '__main__'):
             first = False
             continue
         name = mol.name
-        print "[ %s ]" % name
+        print("[ %s ]" % name)
         PDBName2AmberNumericType = {}
         for section in mol.getElements():
             sectionName = section.name
@@ -249,10 +249,10 @@ if (__name__ == '__main__'):
                         whichMatch, value = findProper(properTorsions, i, j, k, l)
                         rtpValue = definedPropers[defined]
                         if (value == None):
-                            print "need to define proper: %s %s" % (canonicalizeProper(i, j, k, l), rtpValue)
+                            print("need to define proper: %s %s" % (canonicalizeProper(i, j, k, l), rtpValue))
                         else:
                             if (value != rtpValue):
-                                print "proper mismatch: %s: %s != %s" % (canonicalizeProper(i, j, k, l), value, rtpValue)
+                                print("proper mismatch: %s: %s != %s" % (canonicalizeProper(i, j, k, l), value, rtpValue))
                             else:
                                 #print "proper match: %s %s %s" % (canonicalizeProper(i, j, k, l), whichMatch, value)
                                 pass
@@ -271,10 +271,10 @@ if (__name__ == '__main__'):
                         whichMatch, value = findImproper(improperTorsions, i, j, k, l)
                         rtpValue = definedImpropers[defined]
                         if (value == None):
-                            print "need to define improper: %s %s" % (canonicalizeImproper(i, j, k, l), rtpValue)
+                            print("need to define improper: %s %s" % (canonicalizeImproper(i, j, k, l), rtpValue))
                         else:
                             if (value != rtpValue):
-                                print "improper mismatch: %s: %s != %s" % (canonicalizeImproper(i, j, k, l), value, rtpValue)
+                                print("improper mismatch: %s: %s != %s" % (canonicalizeImproper(i, j, k, l), value, rtpValue))
                             else:
                                 #print "improper match: %s %s %s" % (canonicalizeImproper(i, j, k, l), whichMatch, value)
                                 pass

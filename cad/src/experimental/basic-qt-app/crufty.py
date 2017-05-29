@@ -31,7 +31,7 @@ class Crufty(QWidget, Ui_Cruft):
         self.show()
 
     def pushButton1_clicked(self):
-        print self.textBrowser.toPlainText()
+        print(self.textBrowser.toPlainText())
         self.close()
 
 def main():

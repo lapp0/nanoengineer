@@ -238,22 +238,22 @@ class GLShaderObject(object):
                 # Each matrix has 16 components. Leave slack for other vars too.
                 (maxComponents - _VERTEX_SHADER_GPU_VAR_SLACK) / 16)
             if N_CONST_XFORMS <= 0:
-                print (
+                print((
                     "N_CONST_XFORMS not positive, is %d. %d max components." %
-                    (N_CONST_XFORMS, maxComponents))
+                    (N_CONST_XFORMS, maxComponents)))
 
                 # Now, we think this means we should use display lists instead.
-                print "error: not enough shader constant memory"
+                print("error: not enough shader constant memory")
                 self.error = True
                 return
 
             elif N_CONST_XFORMS == oldNCX:
-                print ("N_CONST_XFORMS unchanged at %d. %d max components." %
-                       (N_CONST_XFORMS, maxComponents))
+                print(("N_CONST_XFORMS unchanged at %d. %d max components." %
+                       (N_CONST_XFORMS, maxComponents)))
             else:
-                print (
+                print((
                     "N_CONST_XFORMS changed to %d, was %d. %d max components." %
-                       (N_CONST_XFORMS, oldNCX, maxComponents))
+                       (N_CONST_XFORMS, oldNCX, maxComponents)))
                 pass
             pass
 
@@ -305,8 +305,8 @@ class GLShaderObject(object):
             glLinkProgramARB(self.progObj) # Checks status, raises error if bad.
         except:
             self.error = True
-            print shaderName, "shader program link error"
-            print glGetInfoLogARB(self.progObj)
+            print(shaderName, "shader program link error")
+            print(glGetInfoLogARB(self.progObj))
             return              # Can't do anything good after an error.
 
         # Optional, may be useful for debugging.
@@ -314,8 +314,8 @@ class GLShaderObject(object):
         status = glGetObjectParameterivARB(self.progObj, GL_VALIDATE_STATUS)
         if (not status):
             self.error = True
-            print "Shader program validation error"
-            print glGetInfoLogARB(self.progObj)
+            print("Shader program validation error")
+            print(glGetInfoLogARB(self.progObj))
             return              # Can't do anything good after an error.
 
         return
@@ -331,9 +331,9 @@ class GLShaderObject(object):
         except:
             self.error = True
             types = {GL_VERTEX_SHADER:"vertex", GL_FRAGMENT_SHADER:"fragment"}
-            print ("\n%s %s shader program compilation error" %
-                   (shaderName, types[shaderType]))
-            print glGetInfoLogARB(shader)
+            print(("\n%s %s shader program compilation error" %
+                   (shaderName, types[shaderType])))
+            print(glGetInfoLogARB(shader))
             pass
         return shader
 
@@ -550,7 +550,7 @@ class GLShaderObject(object):
                 # once per session, since this will be in the inner draw loop!
                 global _warnedVars
                 if name not in _warnedVars:
-                    print "Warning:", msg
+                    print("Warning:", msg)
                     _warnedVars += [name]
                     pass
                 pass
@@ -601,7 +601,7 @@ class GLShaderObject(object):
                 # once per session, since this will be in the inner draw loop!
                 global _warnedVars
                 if name not in _warnedVars:
-                    print "Warning:", msg
+                    print("Warning:", msg)
                     _warnedVars += [name]
                     pass
                 pass
@@ -707,7 +707,7 @@ class GLShaderObject(object):
                 if CHECK_TEXTURE_XFORM_LOADING:
                     mats = glGetTexImage(GL_TEXTURE_2D, 0, GL_RGBA, GL_FLOAT)
                     nMats = len(mats)
-                    print "setupTransforms\n[[",
+                    print("setupTransforms\n[[", end=' ')
                     for i in range(nMats):
                         nElts = len(mats[i])
                         perLine = 8
@@ -716,16 +716,16 @@ class GLShaderObject(object):
                             jStart = perLine * line
                             jEnd = min(nElts, jStart + perLine)
                             for j in range(jStart, jEnd):
-                                print "%.2f" % mats[i][j],
+                                print("%.2f" % mats[i][j], end=' ')
                                 continue
                             if line < nLines-1:
-                                print "\n  ",
+                                print("\n  ", end=' ')
                                 pass
                         if i < nMats-1:
-                            print "]\n [",
+                            print("]\n [", end=' ')
                             pass
                         continue
-                    print "]]"
+                    print("]]")
                 pass
             else:
                 # should never happen if SUPPORTS_XFORMS is defined correctly

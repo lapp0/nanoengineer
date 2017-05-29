@@ -86,15 +86,15 @@ def angleBetween(vec1, vec2):
 
 def measureLength(xyz, first, second):
     '''Returns the angle between two atoms (nuclei)'''
-    p0 = apply(V, xyz[first])
-    p1 = apply(V, xyz[second])
+    p0 = V(*xyz[first])
+    p1 = V(*xyz[second])
     return vlen(p0 - p1)
 
 def measureAngle(xyz, first, second, third):
     '''Returns the angle between two atoms (nuclei)'''
-    p0 = apply(V, xyz[first])
-    p1 = apply(V, xyz[second])
-    p2 = apply(V, xyz[third])
+    p0 = V(*xyz[first])
+    p1 = V(*xyz[second])
+    p2 = V(*xyz[third])
     v01, v21 = p0 - p1, p2 - p1
     return angleBetween(v01, v21)
 
@@ -109,7 +109,7 @@ def main(mmpInputFile, xyzInputFile=None, outf=None,
         assert atm1 != atm2
         if atm2 < atm1:
             atm1, atm2 = atm2, atm1
-        if bondLengthTerms.has_key(atm1):
+        if atm1 in bondLengthTerms:
             if atm2 not in bondLengthTerms[atm1]:
                 bondLengthTerms[atm1].append(atm2)
         else:
@@ -117,10 +117,10 @@ def main(mmpInputFile, xyzInputFile=None, outf=None,
 
     def getBonds(atm1):
         lst = [ ]
-        if bondLengthTerms.has_key(atm1):
+        if atm1 in bondLengthTerms:
             for x in bondLengthTerms[atm1]:
                 lst.append(x)
-        for key in bondLengthTerms.keys():
+        for key in list(bondLengthTerms.keys()):
             if atm1 in bondLengthTerms[key]:
                 if key not in lst:
                     lst.append(key)
@@ -131,7 +131,7 @@ def main(mmpInputFile, xyzInputFile=None, outf=None,
         if atm3 < atm1:
             atm1, atm3 = atm3, atm1
         value = (atm2, atm3)
-        if bondAngleTerms.has_key(atm1):
+        if atm1 in bondAngleTerms:
             if value not in bondAngleTerms[atm1]:
                 bondAngleTerms[atm1].append(value)
         else:
@@ -172,21 +172,21 @@ def main(mmpInputFile, xyzInputFile=None, outf=None,
                     addBondAngle(first, second, third)
 
     lengthList = [ ]
-    for first in bondLengthTerms.keys():
+    for first in list(bondLengthTerms.keys()):
         for second in bondLengthTerms[first]:
             lengthList.append((first, second,
                                measureLength(xyz, first, second)))
     angleList = [ ]
-    for first in bondAngleTerms.keys():
+    for first in list(bondAngleTerms.keys()):
         for second, third in bondAngleTerms[first]:
             angleList.append((first, second, third,
                               measureAngle(xyz, first, second, third)))
 
     if generateFlag:
         for a1, a2, L in lengthList:
-            print "LENGTH", a1, a2, L
+            print("LENGTH", a1, a2, L)
         for a1, a2, a3, A in angleList:
-            print "ANGLE", a1, a2, a3, A
+            print("ANGLE", a1, a2, a3, A)
 
     if referenceInputFile != None:
         badness = False
@@ -202,13 +202,13 @@ def main(mmpInputFile, xyzInputFile=None, outf=None,
                 a11, a22, LL = lengthList[lp]
                 lp += 1
                 if a1 != a11 or a2 != a22:
-                    print ("Wrong length term (%d, %d), should be (%d, %d)"
-                           % (a11, a22, a1, a2))
+                    print(("Wrong length term (%d, %d), should be (%d, %d)"
+                           % (a11, a22, a1, a2)))
                     badness = True
                     break
                 if abs(L - LL) > LENGTH_TOLERANCE:
-                    print ("Wrong bond length at (%d, %d), it's %f, should be %f"
-                           % (a1, a2, LL, L))
+                    print(("Wrong bond length at (%d, %d), it's %f, should be %f"
+                           % (a1, a2, LL, L)))
                     badness = True
                     break
             elif line.startswith("ANGLE "):
@@ -220,21 +220,21 @@ def main(mmpInputFile, xyzInputFile=None, outf=None,
                 a11, a22, a33, AA = angleList[ap]
                 ap += 1
                 if a1 != a11 or a2 != a22 or a3 != a33:
-                    print ("Wrong angle term (%d, %d, %d), should be (%d, %d, %d)"
-                           % (a11, a22, a33, a1, a2, a3))
+                    print(("Wrong angle term (%d, %d, %d), should be (%d, %d, %d)"
+                           % (a11, a22, a33, a1, a2, a3)))
                     badness = True
                     break
                 if abs(L - LL) > ANGLE_TOLERANCE:
-                    print ("Wrong bond angle at (%d, %d, %d), it's %f, should be %f"
-                           % (a1, a2, a3, AA, A))
+                    print(("Wrong bond angle at (%d, %d, %d), it's %f, should be %f"
+                           % (a1, a2, a3, AA, A)))
                     badness = True
                     break
             else:
-                print "Unknown line in reference file:", line
+                print("Unknown line in reference file:", line)
                 badness = True
                 break
         if not badness:
-            print "OK"
+            print("OK")
     if outf != None:
         outf.close()
         sys.stdout = ss
@@ -253,7 +253,7 @@ if __name__ == "__main__":
             opts, args = getopt.getopt(sys.argv[1:], "m:x:o:r:g",
                                        ["mmp=", "xyz=", "output=",
                                         "reference=", "generate"])
-        except getopt.error, msg:
+        except getopt.error as msg:
             errprint(msg)
             sys.exit(1)
         for o, a in opts:
@@ -268,7 +268,7 @@ if __name__ == "__main__":
             elif o in ('-g', '--generate'):
                 generateFlag = True
             else:
-                print "Bad command line option:", o
+                print("Bad command line option:", o)
 
         if mmpInputFile == None:
             mmpInputFile = args.pop(0)
@@ -284,11 +284,11 @@ if __name__ == "__main__":
              referenceInputFile=referenceInputFile,
              generateFlag=generateFlag)
 
-    except Exception, e:
+    except Exception as e:
         if e:
             sys.stderr.write(sys.argv[0] + ": " + repr(e.args[0]) + "\n")
             import traceback
-            traceback.print_tb(sys.exc_traceback, sys.stderr)
+            traceback.print_tb(sys.exc_info()[2], sys.stderr)
             sys.stderr.write("\n")
         sys.stderr.write(__doc__)
         sys.exit(1)

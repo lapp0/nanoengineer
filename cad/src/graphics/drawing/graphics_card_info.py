@@ -44,6 +44,7 @@ from utilities.debug_prefs import debug_pref, Choice_boolean_False
 
 from utilities import debug_flags
 from utilities.debug import print_compact_traceback
+from functools import reduce
 
 # ==
 

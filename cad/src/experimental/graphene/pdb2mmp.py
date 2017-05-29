@@ -36,10 +36,10 @@ for L in sys.stdin.readlines():
     if fields[0] == 'HETATM':
         index = string.atoi(fields[1])
         elem = {'C': 6, 'H': 1, 'N': 7}[fields[2]]
-        xyz = map(string.atof, fields[-3:])
+        xyz = list(map(string.atof, fields[-3:]))
         atoms[index] = Atom(index, elem, xyz)
     elif fields[0] == 'CONECT':
-        fields = map(string.atoi, fields[1:])
+        fields = list(map(string.atoi, fields[1:]))
         x = fields[0]
         for y in fields[1:]:
             if y < x:
@@ -70,4 +70,4 @@ info opengroup open = False
 egroup (Clipboard)
 end molecular machine part 1881'''
 
-print r
+print(r)

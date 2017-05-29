@@ -120,7 +120,7 @@ class PM_ColorComboBox( PM_ComboBox ):
             self.colorNames = colorNames
             self.colorList  = colorList
 
-        self.colorDict = dict(zip(self.colorNames, self.colorList))
+        self.colorDict = dict(list(zip(self.colorNames, self.colorList)))
 
         PM_ComboBox.__init__(self,
                  parentWidget,

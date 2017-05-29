@@ -153,7 +153,7 @@ def update_DNA_groups( new_chunks, new_wholechains ):
     transclose( old_groups, collector)
 
     depth_group_pairs = [ (group.node_depth(), group)
-                          for group in old_groups.itervalues() ]
+                          for group in old_groups.values() ]
     depth_group_pairs.sort()
     depth_group_pairs.reverse() # deepest first
 

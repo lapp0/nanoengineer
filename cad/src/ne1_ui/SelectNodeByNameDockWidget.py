@@ -149,7 +149,7 @@ class SelectNodeByNameDockWidget(PM_DockWidget):
         min_val = self._nucleotidesSpinBox_1.value()
         max_val = self._nucleotidesSpinBox_2.value()
         if min_val > max_val:
-            print "Lower value for number of nucleotides exceeds max search value"
+            print("Lower value for number of nucleotides exceeds max search value")
             return ()
 
         def func2(node):
@@ -157,7 +157,7 @@ class SelectNodeByNameDockWidget(PM_DockWidget):
 
             return (n >= min_val and n <= max_val)
 
-        return filter(lambda m:func2(m), lst)
+        return [m for m in lst if func2(m)]
 
 
     def _searchNodesByName(self, nodeList):
@@ -177,7 +177,7 @@ class SelectNodeByNameDockWidget(PM_DockWidget):
 
             return False
 
-        return filter(lambda m:func2(m), lst)
+        return [m for m in lst if func2(m)]
 
 
 

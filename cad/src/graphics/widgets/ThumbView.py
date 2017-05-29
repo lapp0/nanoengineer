@@ -951,13 +951,13 @@ class MMKitView(ThumbView):
                         # depends on whether any multichunk library parts have bondpoints on
                         # more than one chunk. [bruce 060629]
                         if env.debug() and self.lastHotspotChunk.hotspot: #bruce 060629 re bug 1974
-                            print "debug: unsetting hotspot of %r (was %r)" % \
-                                  (self.lastHotspotChunk, self.lastHotspotChunk.hotspot)
+                            print("debug: unsetting hotspot of %r (was %r)" % \
+                                  (self.lastHotspotChunk, self.lastHotspotChunk.hotspot))
                         self.lastHotspotChunk.set_hotspot(None)
                     else:
                         # Don't unset hotspot in this case (doing so was causing bug 1974).
                         if env.debug() and self.lastHotspotChunk.hotspot:
-                            print "debug: NOT unsetting hotspot of %r" % (self.lastHotspotChunk, )
+                            print("debug: NOT unsetting hotspot of %r" % (self.lastHotspotChunk, ))
                         pass
                 self.lastHotspotChunk = mol
                     # [as of 060629, the only purpose of this is to permit the above code to unset it in some cases]

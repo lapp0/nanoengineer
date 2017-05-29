@@ -41,20 +41,20 @@ def printSizePolicy(widget):
     Prints the horizontal and vertical policy of <widget>.
     """
     sizePolicy = widget.sizePolicy()
-    print "-----------------------------------"
-    print "Widget name =", widget.objectName()
-    print "Horizontal SizePolicy =", getSizePolicyName(sizePolicy.horizontalPolicy())
-    print "Vertical SizePolicy =",   getSizePolicyName(sizePolicy.verticalPolicy()
-    )
+    print("-----------------------------------")
+    print("Widget name =", widget.objectName())
+    print("Horizontal SizePolicy =", getSizePolicyName(sizePolicy.horizontalPolicy()))
+    print("Vertical SizePolicy =",   getSizePolicyName(sizePolicy.verticalPolicy()
+    ))
 def printSizeHints(widget):
     """Special method for debugging Qt size hints.
     Prints the minimumSizeHint (width and height)
     and the sizeHint (width and height) of <widget>.
     """
-    print "-----------------------------------"
-    print "Widget name =", widget.objectName()
-    print "Current Width, Height =", widget.width(), widget.height()
+    print("-----------------------------------")
+    print("Widget name =", widget.objectName())
+    print("Current Width, Height =", widget.width(), widget.height())
     minSize = widget.minimumSizeHint()
-    print "Min Width, Height =", minSize.width(), minSize.height()
+    print("Min Width, Height =", minSize.width(), minSize.height())
     sizeHint = widget.sizeHint()
-    print "SizeHint Width, Height =", sizeHint.width(), sizeHint.height()
+    print("SizeHint Width, Height =", sizeHint.width(), sizeHint.height())

@@ -307,7 +307,7 @@ class FuseChunks_Command(Move_Command, fusechunksBase):
 
                     # Loop through all the atoms in the selected chunk.
                     # Use values() if the loop ever modifies chunk or mol--
-                    for a1 in chunk.atoms.itervalues():
+                    for a1 in chunk.atoms.values():
                         # Singlets can't be overlapping atoms --
                         if a1.element is Singlet:
                             continue
@@ -316,7 +316,7 @@ class FuseChunks_Command(Move_Command, fusechunksBase):
                             continue
 
                         # Loop through all the atoms in this chunk.
-                        for a2 in mol.atoms.itervalues():
+                        for a2 in mol.atoms.values():
                             # Only atoms of the same type can be overlapping.
                             # This also screens singlets, since a1 can't be a
                             # singlet.

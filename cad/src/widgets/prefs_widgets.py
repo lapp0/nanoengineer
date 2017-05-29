@@ -106,11 +106,11 @@ def set_metainfo_from_stateref( setter, stateref, attr, debug_metainfo = False):
     if hasattr(stateref, attr):
         value = getattr( stateref, attr)
         if debug_metainfo:
-            print "debug_metainfo: using %r.%s = %r" % (stateref, attr, value)
+            print("debug_metainfo: using %r.%s = %r" % (stateref, attr, value))
         setter(value)
     else:
         if debug_metainfo:
-            print "debug_metainfo: %r has no value for %r" % (stateref, attr)
+            print("debug_metainfo: %r has no value for %r" % (stateref, attr))
     return
 
 # ==
@@ -168,8 +168,8 @@ def connect_colorpref_to_colorframe( prefs_key, colorframe ): #bruce 050805; rev
             ## no longer needed: set color for qcolorrole = QPalette.ColorRole(role) for role in range(14)
             ## no longer needed: colorframe.setLineWidth(500) # width of outline of frame (at least half max possible size)
         except:
-            print "data for following exception: ",
-            print "colorframe %r has palette %r" % (colorframe, colorframe.palette())
+            print("data for following exception: ", end=' ')
+            print("colorframe %r has palette %r" % (colorframe, colorframe.palette()))
                 # fyi: in Qt4, like in Qt3, colorframe is a QFrame
             print_compact_traceback( "bug (ignored): exception in formula-setter: " ) #e include formula obj in this msg?
         pass
@@ -507,7 +507,7 @@ class _twoway_Qt_connection(object):
         self.connect()
         self.connect_the_other_way() #e rename
         if self.debug:
-            print "\n_changes__debug_print: finished _twoway_Qt_connection.__init__ for %r containing %r" % (self, stateref)
+            print("\n_changes__debug_print: finished _twoway_Qt_connection.__init__ for %r containing %r" % (self, stateref))
                 ###REVIEW: what if subclass init is not done, and needed for %r to work?
         self.debug_name = debug_name or "" # used by __repr__ in place of classname, if provided
         return
@@ -536,8 +536,8 @@ class _twoway_Qt_connection(object):
     def connect_the_other_way(self):
         self.conn1 = Formula( self.usage_tracked_getter, self.careful_widget_setter, debug = self.debug )
         if self.debug:
-            print "\n_changes__debug_print: %r connected from %r to %r using %r with %r" % \
-                  ( self, self.stateref, self.widget, self.conn1, self.usage_tracked_getter )
+            print("\n_changes__debug_print: %r connected from %r to %r using %r with %r" % \
+                  ( self, self.stateref, self.widget, self.conn1, self.usage_tracked_getter ))
             ## self.conn1._changes__debug_print = True # too late to tell Formula to notice initial stuff! Done with option instead.
     debug = False
     def careful_widget_setter(self, value):
@@ -547,8 +547,8 @@ class _twoway_Qt_connection(object):
         # the value, unless the widget refrains from sending signals when
         # programmatically set. [bruce 070815]
         if self.debug:
-            print "\n_changes__debug_print: %r setting %r to %r using %r" % \
-                  ( self, self.widget, value, self.widget_setter )
+            print("\n_changes__debug_print: %r setting %r to %r using %r" % \
+                  ( self, self.widget, value, self.widget_setter ))
         self.disconnect() # avoid possible recursion
         try:
             self.widget_setter(value)

@@ -12,7 +12,7 @@ class Ticker(QObject):
         timer.start(1000)
 
     def hello(self):
-        print 'hi it works'
+        print('hi it works')
         return 4
 
 x=Ticker()

@@ -93,7 +93,7 @@ class Set:
                     self.root = B
                 return B
             A = B
-            B = B.next
+            B = B.__next__
 
     def bubbleUp(self, C):
         # bubble this node up toward the top of the list, but only
@@ -102,7 +102,7 @@ class Set:
         # If C has no previous, then it's already at the top.
         if B != None:
             A = B.previous
-            D = C.next
+            D = C.__next__
             if A != None:
                 A.next = C
             else:
@@ -136,7 +136,7 @@ class Set:
         r = self.root
         while r != None:
             lst.append(r)
-            r = r.next
+            r = r.__next__
         def sortOrder(x1, x2):
             return cmp(x1.prefix, x2.prefix)
         lst.sort(sortOrder)
@@ -194,7 +194,7 @@ class SetWithTestMethods(Set):
         r = self.root
         while r != None:
             total += (3 + 128) * 4
-            r = r.next
+            r = r.__next__
         return total
 
     def addRange(self, m, n):
@@ -274,7 +274,7 @@ class Tests(unittest.TestCase):
 
     def test_AsArray(self):
         x = SetWithTestMethods()
-        a = Numeric.array(range(N), Numeric.UInt32)
+        a = Numeric.array(list(range(N)), Numeric.UInt32)
         x.addRange(0, N)
         assert len(x) == len(a)
         assert len(x) == N
@@ -329,4 +329,4 @@ if __name__ == "__main__":
     test()
     if stuff != None:
         for x in stuff:
-            print x
+            print(x)

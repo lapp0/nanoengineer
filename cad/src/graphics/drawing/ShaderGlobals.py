@@ -138,13 +138,13 @@ class ShaderGlobals:
                 # errors (to prevent us from even trying to load new code),
                 # to distinguish them from code-loading errors (after which
                 # it's ok to try again to load new code).
-                print "Shader setup failed:", self
+                print("Shader setup failed:", self)
                     # precaution in case more specific message was not printed
-                print " To work around this error, we'll use non-shader drawing for %ss." % self.primtype
-                print " You can avoid trying to load GLSL shaders each time NE1 starts up"
-                print " by unsetting appropriate GLPane debug_prefs. Or, updating your"
-                print " graphics card drivers might make shaders work, speeding up graphics."
-                print
+                print(" To work around this error, we'll use non-shader drawing for %ss." % self.primtype)
+                print(" You can avoid trying to load GLSL shaders each time NE1 starts up")
+                print(" by unsetting appropriate GLPane debug_prefs. Or, updating your")
+                print(" graphics card drivers might make shaders work, speeding up graphics.")
+                print()
             pass
         return
 
@@ -167,7 +167,7 @@ class ShaderGlobals:
         (to avoid redundant error messages) and the part that does.)
         """
         if glGetString(GL_EXTENSIONS).find("GL_ARB_shader_objects") >= 0:
-            print "note: this session WILL try to use %s-shaders" % self.primtype
+            print("note: this session WILL try to use %s-shaders" % self.primtype)
             pass
         else:
             # REVIEW:
@@ -176,20 +176,20 @@ class ShaderGlobals:
             # and fragment programs from the GLSL source using an option of the
             # nVidia Cg compiler.  Needs some loading API changes too...
             # [Russ comment, late 2008]
-            print "note: this session WOULD try to use %s-shaders,\n" % self.primtype, \
-                "but GL_EXTENSION GL_ARB_shader_objects is not supported.\n"
+            print("note: this session WOULD try to use %s-shaders,\n" % self.primtype, \
+                "but GL_EXTENSION GL_ARB_shader_objects is not supported.\n")
             return
 
         shader_class = self.get_shader_class()
         self.shader = shader_class()
         if not self.shader.error: # see also shader_available
             # Note: self.shader.error is possible at this stage; see above.
-            print "%s shader initialization is complete." % self.primtype
+            print("%s shader initialization is complete." % self.primtype)
 
             primitiveBuffer_class = self.get_primitiveBuffer_class()
             self.primitiveBuffer = primitiveBuffer_class( self)
-            print "%s primitive buffer initialization is complete." % self.primtype
-            print
+            print("%s primitive buffer initialization is complete." % self.primtype)
+            print()
 
         return
 

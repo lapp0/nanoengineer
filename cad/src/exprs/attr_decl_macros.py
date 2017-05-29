@@ -249,7 +249,7 @@ def _type_coercion_expr( type_expr, thing_expr):
     return thing_expr
 
     assert 0, "this will never run" # until we fix canon_type to not always return Anything!!
-    print "TypeCoerce is nim, ignoring",type_expr #####070115   ###IMPLEM TypeCoerce
+    print("TypeCoerce is nim, ignoring",type_expr) #####070115   ###IMPLEM TypeCoerce
     from xxx import TypeCoerce # note, if xxx == IorE's file, runtime import is required, else recursive import error; use new file??
     return TypeCoerce( type_expr, thing_expr)
         # a new expr, for a helper IorE -- this is an easy way to do some memoization optims (almost as good as optim for finalization),
@@ -274,7 +274,7 @@ class _this_gets_replaced_with_argpos_for_current_attr(internal_Expr):#e rename?
             # WAIT, i bet this won't actually catch the error, since the replace would actually occur... have to do it in the scanner.
             printnim("improve quick & dirty check for two attrs claiming one arg (it may not even work)")###e
             self.attrs_ive_seen[attr] = 1
-            assert len(self.attrs_ive_seen) <= 1, "these attrs claim the same arg: %r" % self.attrs_ive_seen.keys()
+            assert len(self.attrs_ive_seen) <= 1, "these attrs claim the same arg: %r" % list(self.attrs_ive_seen.keys())
             # WARNING: if this works, it will break the use of Arg in future things like lambda_expr or _e_extend
             # where the same Arg() object might get passed to multiple class/attr contexts in runtime-generated exprs with Arg decls.
             # If/when that happens, this object needs to be made immutable, which can be done by removing this code (inside 'if 1'),
@@ -472,9 +472,9 @@ class State(data_descriptor_Expr):
             # note: this does not process _e_kws. self._e_debug was set in OpExpr.__init__.
         myargs(*self._e_args)
         # 070831 exploring new State keyword args, for metainfo like minimum
-        for kw in self._e_kws.keys():
+        for kw in list(self._e_kws.keys()):
             if kw != 'doc':
-                print "\n*** unrecognized State keyword arg: %s" % kw
+                print("\n*** unrecognized State keyword arg: %s" % kw)
             continue
         return
     def _e_set_descriptor(self, descriptor):
@@ -494,7 +494,7 @@ class State(data_descriptor_Expr):
         return
     def _e_get_for_our_cls(self, descriptor, instance):
         if self._e_debug:
-            print "_e_get_for_our_cls",(self, descriptor, instance, )
+            print("_e_get_for_our_cls",(self, descriptor, instance, ))
         if self._e_descriptor is not None:
             assert self._e_descriptor is descriptor, \
                    "different descriptors in get: %r stored, %r stored next" % (self._e_descriptor, descriptor)
@@ -506,7 +506,7 @@ class State(data_descriptor_Expr):
         return getattr(holder, attr)
     def _e_set_for_our_cls(self, descriptor, instance, val):
         if self._e_debug:
-            print "_e_set_for_our_cls",(self, descriptor.attr, instance, val)
+            print("_e_set_for_our_cls",(self, descriptor.attr, instance, val))
         if self._e_descriptor is not None:
             assert self._e_descriptor is descriptor, \
                    "different descriptors in set: %r stored, %r stored next" % (self._e_descriptor, descriptor) # see comment above
@@ -530,7 +530,7 @@ class State(data_descriptor_Expr):
                 val0 = getattr(res, attr)
                 ## assert val is val0,
                 if not (val is val0):
-                    print "bug: set_default_attrs should have stored %r at %r in %r, but it has %r" % (val, attr, res, val0)
+                    print("bug: set_default_attrs should have stored %r at %r in %r, but it has %r" % (val, attr, res, val0))
             pass
         return res
     def _e_eval_defaultValue(self, attr, instance): #070904 split this out
@@ -574,13 +574,13 @@ class State(data_descriptor_Expr):
         assert self._e_descriptor is not None
         descriptor = self._e_descriptor
         res = self._e_get_for_our_cls(descriptor, instance)
-        print "fyi: _e_eval (not thru __get__, i think) of self = %r in instance = %r gets res = %r" % (self, instance, res)
+        print("fyi: _e_eval (not thru __get__, i think) of self = %r in instance = %r gets res = %r" % (self, instance, res))
             ### I SUSPECT this never happens now that formula-scanner is properly called on us, but I'm not sure, so find out.
             ### ALSO we'll now see the predicted above bug from copying the descriptor, when we use subclasses inheriting a State decl.
         return res
     def _e_StateRef__your_attr_in_obj_ref( self, descriptor, instance):
         if self._e_debug:
-            print "_e_StateRef__your_attr_in_obj_ref",(self, descriptor, instance)
+            print("_e_StateRef__your_attr_in_obj_ref",(self, descriptor, instance))
             ### TODO (if needed for future debugging):
             # - also print_compact_stack;
             # - also set lval._changes__debug_print on this lval.

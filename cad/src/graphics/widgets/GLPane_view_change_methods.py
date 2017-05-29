@@ -140,7 +140,7 @@ class GLPane_view_change_methods(object):
         """
         Recenter the current view around the origin of modeling space.
         """
-        print "**in setViewRecenter"
+        print("**in setViewRecenter")
         part = self.part
         part.computeBoundingBox()
         scale = (part.bbox.scale() * 0.75) + (vlen(part.center) * .5)

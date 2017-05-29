@@ -16,7 +16,7 @@ whenever any submodule of this exprs package is used.
 
 # control initial import order:
 
-import Exprs # probably not needed at present, but might be needed
+from . import Exprs # probably not needed at present, but might be needed
     # if we revise __Symbols__.py to not import Exprs, or vice versa
 
 # try to tell Pylint that we needed to do that import: [bruce 071023]
@@ -25,8 +25,8 @@ Exprs
 # initialize some symbols using side effects
 # [moved here from ExprsConstants.py, bruce 070914]
 
-from __Symbols__ import Anything #070115
-from __Symbols__ import Automatic, Something #070131
+from .__Symbols__ import Anything #070115
+from .__Symbols__ import Automatic, Something #070131
 
 # Symbol docstrings -- for now, just tack them on (not yet used AFAIK):
 

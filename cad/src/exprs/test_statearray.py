@@ -56,7 +56,7 @@ class _color_toggler(DelegatingInstanceOrExpr):
     pass
 
 class test_StateArrayRefs(DelegatingInstanceOrExpr): ### has some WRONGnesses
-    indices = range(10)
+    indices = list(range(10))
     colors = StateArrayRefs(Color, pink)
         #e i want an arg for the index set... maybe even the initial set, or total set, so i can iter over it...
         # NOTE: at least one dictlike class has that feature - review the ones in py_utils, see what _CK_ uses

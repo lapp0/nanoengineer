@@ -83,7 +83,7 @@ class Select_GraphicsMode_MouseHelpers_preMixin(commonGraphicsMode):
         if self.mouse_exceeded_distance(event, 1) and not self.o.wheelHighlight:
             if DEBUG_BAREMOTION_VERBOSE:
                 #bruce 080129 re highlighting bug 2606 reported by Paul
-                print "debug fyi: skipping %r.bareMotion since mouse travelled too far" % self
+                print("debug fyi: skipping %r.bareMotion since mouse travelled too far" % self)
             return False
 
         self.update_selobj(event)

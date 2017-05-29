@@ -56,7 +56,7 @@ class PrefChoiceNode(PrefNode):
         if default_name is not None:
             self.default_name = default_name
             self.defaultValue = self.choicedict[default_name] # it better be in there!
-        elif defaultValue is not None or None in self.choicedict.values():
+        elif defaultValue is not None or None in list(self.choicedict.values()):
             for name, val in self.choices:
                 if val == defaultValue:
                     self.default_name = name
@@ -90,7 +90,7 @@ bool_choice = [ PrefChoiceNode, opts(
 
 dispmode_choice = [ PrefChoiceNode, opts(
                       typename = "display mode",
-                      choices = zip( dispLabel, range(len(dispLabel)) ),
+                      choices = list(zip( dispLabel, list(range(len(dispLabel))) )),
                       defaultValue = default_display_mode
                    )]
 
@@ -170,7 +170,7 @@ def prefsTree(assy):
         return assy.prefsTree
     except:
         if _debug_prefstree:
-            print "remaking prefsTree object for", assy # this is normal
+            print("remaking prefsTree object for", assy) # this is normal
         pass
     assy.prefsTree = prefsTree_class(assy)
     assy.prefs_node = assy.prefsTree.topnode #e might be better for assy to look it up this way itself

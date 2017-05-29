@@ -191,10 +191,10 @@ def insertin(assy, filename):
         xyz = transform.getCartesian(index)
 
         if (index > 3):
-            if (AMBER_AtomTypes.has_key(type)):
+            if (type in AMBER_AtomTypes):
                 sym = AMBER_AtomTypes[type]
             else:
-                print "unknown AMBER atom type, substituting Carbon: %s" % type
+                print("unknown AMBER atom type, substituting Carbon: %s" % type)
                 sym = "C"
 
             a = Atom(sym, A(xyz), mol)

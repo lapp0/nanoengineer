@@ -251,7 +251,7 @@ class GLPane_event_methods(object, DebugMenuMixin):
         self._cursorWithoutSelectionLock = cursor
 
         if not cursor: #bruce 080918
-            print "BUG: can't set cursor from %r -- no cached cursor so far" % (inCursor,)
+            print("BUG: can't set cursor from %r -- no cached cursor so far" % (inCursor,))
             return None
 
         # Apply modifications before setting cursor.
@@ -333,7 +333,7 @@ class GLPane_event_methods(object, DebugMenuMixin):
                 #bruce 070328 revised algorithm, since PyQt evidently forgot to make MouseButtons constants work as dict keys.
                 # It works now for bareMotion (None), real buttons (LMB or RMB), and simulated MMB (option+LMB).
                 # In the latter case I think it fixes a bug, by displaying the rotate cursor during option+LMB drag.
-                for lhs, rhs in button_names.iteritems():
+                for lhs, rhs in button_names.items():
                     if self.in_drag == lhs:
                         self.button = rhs
                         break
@@ -527,7 +527,7 @@ class GLPane_event_methods(object, DebugMenuMixin):
             #  forget about recursive event processing) [done in a different way in redraw, bruce 060323]
             if self.__pressEvent is not None and debug_flags.atom_debug:
                 # this happens whenever I put up a context menu in GLPane, so don't print it unless atom_debug ###@@@
-                print "atom_debug: bug: pressEvent didn't get release:", self.__pressEvent
+                print("atom_debug: bug: pressEvent didn't get release:", self.__pressEvent)
             self.__pressEvent = event
             self.__flag_and_begin_retval = None
             ##e we could simplify the following code using newer funcs external_begin_cmd_checkpoint etc in undo_manager
@@ -823,13 +823,13 @@ class GLPane_event_methods(object, DebugMenuMixin):
     # on top of it, which is very annoying to the user.
     def focusInEvent(self, event):
         if DEBUG_BAREMOTION:
-            print "focusInEvent"
+            print("focusInEvent")
             pass
         self.enterEvent(event)
 
     def focusOutEvent(self, event):
         if DEBUG_BAREMOTION:
-            print "focusOutEvent"
+            print("focusOutEvent")
             pass
         self.leaveEvent(event)
 
@@ -842,16 +842,16 @@ class GLPane_event_methods(object, DebugMenuMixin):
         """
         del event
         if DEBUG_BAREMOTION:
-            print "enterEvent"
+            print("enterEvent")
             pass
         choice = self._timer_debug_pref()
         if choice is None:
             if not env.seen_before("timer is turned off"):
-                print "warning: GLPane's timer is turned off by a debug_pref"
+                print("warning: GLPane's timer is turned off by a debug_pref")
             if self.highlightTimer:
                 self.killTimer(self.highlightTimer)
                 if DEBUG_BAREMOTION:
-                    print "  Killed highlight timer %r"% self.highlightTimer
+                    print("  Killed highlight timer %r"% self.highlightTimer)
                     pass
                 pass
             self.highlightTimer = None
@@ -860,7 +860,7 @@ class GLPane_event_methods(object, DebugMenuMixin):
             interval = int(choice)
             self.highlightTimer = self.startTimer(interval) # Milliseconds interval.
             if DEBUG_BAREMOTION:
-                print "  Started highlight timer %r"% self.highlightTimer
+                print("  Started highlight timer %r"% self.highlightTimer)
                 pass
             pass
         return
@@ -874,7 +874,7 @@ class GLPane_event_methods(object, DebugMenuMixin):
         """
         del event
         if DEBUG_BAREMOTION:
-            print "leaveEvent"
+            print("leaveEvent")
             pass
         # If an object is "hover highlighted", unhighlight it when leaving the GLpane.
         if self.selobj is not None:
@@ -888,7 +888,7 @@ class GLPane_event_methods(object, DebugMenuMixin):
         if self.highlightTimer:
             self.killTimer(self.highlightTimer)
             if DEBUG_BAREMOTION:
-                print "  Killed highlight timer %r"% self.highlightTimer
+                print("  Killed highlight timer %r"% self.highlightTimer)
                 pass
             self.highlightTimer = None
             pass
@@ -915,7 +915,7 @@ class GLPane_event_methods(object, DebugMenuMixin):
         del event
         if not self.highlightTimer or (self._timer_debug_pref() is None): #bruce 070110
             if debug_flags.atom_debug or DEBUG_BAREMOTION:
-                print "note (not a bug unless happens a lot): GLPane got timerEvent but has no timer"
+                print("note (not a bug unless happens a lot): GLPane got timerEvent but has no timer")
                     # should happen once when we turn it off or maybe when mouse leaves -- not other times, not much
             #e should we do any of the following before returning??
             return
@@ -941,7 +941,7 @@ class GLPane_event_methods(object, DebugMenuMixin):
                                 #Qt.NoButton & Qt.KeyButtonMask )
                 if DEBUG_BAREMOTION:
                     #bruce 080129 re highlighting bug 2606 reported by Paul
-                    print "debug fyi: calling %r.bareMotion with fake zero-motion event" % (self.graphicsMode,)
+                    print("debug fyi: calling %r.bareMotion with fake zero-motion event" % (self.graphicsMode,))
 
                 # russ 080527: Fix Bug 2606 (highlighting not turned on after wheel event.)
                 # Keep generating fake zero-motion events until one is handled rather than discarded.

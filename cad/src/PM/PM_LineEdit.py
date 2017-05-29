@@ -84,12 +84,12 @@ class PM_LineEdit( QLineEdit ):
         """
 
         if 0: # Debugging code
-            print "PM_LineEdit.__init__():"
-            print "  label        = ", label
-            print "  labelColumn  = ", labelColumn
-            print "  text         = ", text
-            print "  setAsDefault = ", setAsDefault
-            print "  spanWidth    = ", spanWidth
+            print("PM_LineEdit.__init__():")
+            print(("  label        = ", label))
+            print(("  labelColumn  = ", labelColumn))
+            print(("  text         = ", text))
+            print(("  setAsDefault = ", setAsDefault))
+            print(("  spanWidth    = ", spanWidth))
 
         QLineEdit.__init__(self)
 

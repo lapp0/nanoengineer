@@ -69,8 +69,8 @@ def initialize_icon_utilities():
 
     if EndUser.getAlternateSourcePath() != None:
         new_iconprefix = EndUser.getAlternateSourcePath()
-        print "ALTERNATE_CAD_SRC_PATH: setting _iconprefix to %r rather than %r" % \
-              ( new_iconprefix, _iconprefix )
+        print("ALTERNATE_CAD_SRC_PATH: setting _iconprefix to %r rather than %r" % \
+              ( new_iconprefix, _iconprefix ))
         _iconprefix = new_iconprefix
 
     Initialize.endInitialization(__name__)
@@ -121,7 +121,7 @@ def get_image_path(name, print_errors = True):
 
     if not os.path.exists(iconPath):
         if debug_flags.atom_debug and print_errors:
-            print "icon path %s doesn't exist." % (iconPath,)
+            print("icon path %s doesn't exist." % (iconPath,))
 
     return iconPath
 
@@ -206,7 +206,7 @@ def getpixmap(name, print_errors = True):
             # This could be a common case. As the client uses getpixmap function
             # to see if a pixmap exists. So if its obscuring other debug messages,
             # the following print statement can be removed
-            print "pixmap path %s doesn't exist." % pixmapPath
+            print("pixmap path %s doesn't exist." % pixmapPath)
         pass
     return pixmap
 
@@ -231,7 +231,7 @@ def imagename_to_pixmap(imagename): #bruce 050108
                                    UI_SUBDIRECTORY_COMPONENT,
                                    imagename)
         if not os.path.exists(pixmappath):
-            print 'pixmap does not exist; using null pixmap: ' + pixmappath
+            print('pixmap does not exist; using null pixmap: ' + pixmappath)
             import traceback
             traceback.print_stack(file = sys.stdout)
         pixmap = QtGui.QPixmap(pixmappath)
@@ -255,7 +255,7 @@ def imagename_to_icon(imagename):
         iconpath = os.path.join( image_directory(), UI_SUBDIRECTORY_COMPONENT,
                                  imagename)
         if not os.path.exists(iconpath):
-            print 'icon does not exist: ' + iconpath
+            print('icon does not exist: ' + iconpath)
         icon = QtGui.QIcon(iconpath)
         _icons[imagename] = icon
         return icon

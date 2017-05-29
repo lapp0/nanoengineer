@@ -310,8 +310,8 @@ assert MMP_FORMAT_VERSION_TO_WRITE__WITH_COMPACT_BONDS_AND_NEW_DISPLAY_NAMES in 
 if _version_being_written_by_default != KNOWN_MMPFORMAT_VERSIONS[-1]:
     # warn, since this situation should be temporary; warning will be wrong
     # if these constants are not kept up to date with the actual writing code
-    print "note: KNOWN_MMPFORMAT_VERSIONS contains more recent versions " \
-          "than the one we're writing by default, %r" % _version_being_written_by_default
+    print("note: KNOWN_MMPFORMAT_VERSIONS contains more recent versions " \
+          "than the one we're writing by default, %r" % _version_being_written_by_default)
     pass
 
 # ==
@@ -380,7 +380,9 @@ def _normalize_mmp_date(date): #bruce 080328
         # date of earliest mmpformat record, compared two equivalent ways
     return int(date)
 
-def _mmp_format_newer( (required1, preferred1), (required2, preferred2) ):
+def _mmp_format_newer(xxx_todo_changeme, xxx_todo_changeme1 ):
+    (required1, preferred1) = xxx_todo_changeme
+    (required2, preferred2) = xxx_todo_changeme1
     return mmp_date_newer( required1, required2) or \
            ( required1 == required2 and
              mmp_date_newer( preferred1, preferred2) )

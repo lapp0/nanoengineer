@@ -160,8 +160,8 @@ def drawGPGrid(glpane, color, line_type, w, h, uw, uh, up, right):
         elif line_type == DOTTED_LINE:
             glLineStipple (1, 0x0101)  #  dotted
         else:
-            print "drawGPGrid(): line_type '", line_type, \
-                  "' is not valid.  Drawing dashed grid line."
+            print("drawGPGrid(): line_type '", line_type, \
+                  "' is not valid.  Drawing dashed grid line.")
             glLineStipple (1, 0x00FF)  #  dashed
 
     glBegin(GL_LINES)
@@ -282,8 +282,8 @@ def drawGPGridForPlane(glpane, color, line_type, w, h, uw, uh, up, right,
         elif line_type == DOTTED_LINE:
             glLineStipple (1, 0x0101)  #  dotted
         else:
-            print "drawGPGrid(): line_type '", line_type,"' is not valid. ", \
-                  "Drawing dashed grid line."
+            print("drawGPGrid(): line_type '", line_type,"' is not valid. ", \
+                  "Drawing dashed grid line.")
             glLineStipple (1, 0x00FF)  #  dashed
 
     glBegin(GL_LINES)
@@ -781,8 +781,8 @@ def drawSiCGrid(color, line_type, w, h, up, right):
         elif line_type == DOTTED_LINE:
             glLineStipple (1, 0x0101)  #  dotted
         else:
-            print "drawer.drawSiCGrid(): line_type '", line_type, \
-                  "' is not valid.  Drawing dashed grid line."
+            print("drawer.drawSiCGrid(): line_type '", line_type, \
+                  "' is not valid.  Drawing dashed grid line.")
             glLineStipple (1, 0x00FF)  #  dashed
 
     glClipPlane(GL_CLIP_PLANE0, (1.0, 0.0, 0.0, hw))

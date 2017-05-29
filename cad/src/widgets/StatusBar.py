@@ -109,7 +109,7 @@ class StatusBar(QStatusBar):
     def makeCommandNameUnique(self, commandName):
         index = 1
         trial = commandName
-        while (self.abortableCommands.has_key(trial)):
+        while (trial in self.abortableCommands):
             trial = "%s [%d]" % (commandName, index)
             index += 1
         return trial
@@ -127,7 +127,7 @@ class StatusBar(QStatusBar):
         Slot for Abort button.
         """
         if debug_flags.atom_debug and self.sim_abort_button_pressed: #bruce 060106
-            print "atom_debug: self.sim_abort_button_pressed is already True before we even put up our dialog"
+            print("atom_debug: self.sim_abort_button_pressed is already True before we even put up our dialog")
 
         # Added confirmation before aborting as part of fix to bug 915. Mark 050824.
         # Bug 915 had to do with a problem if the user accidently hit the space bar or espace key,
@@ -143,7 +143,7 @@ class StatusBar(QStatusBar):
                                    1)  # Escape (1= Cancel)
 
         if ret == 0: # Confirmed
-            for abortHandler in self.abortableCommands.values():
+            for abortHandler in list(self.abortableCommands.values()):
                 abortHandler.pressed()
 
     def show_indeterminate_progress(self):

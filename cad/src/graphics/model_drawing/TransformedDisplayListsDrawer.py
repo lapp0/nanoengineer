@@ -240,7 +240,7 @@ class TransformedDisplayListsDrawer(object,
             #russ 080225: Moved deallocation into ColorSortedDisplayList class
             # for ColorSorter.
             self.displist.deallocate_displists()
-            for extra_displist in self.extra_displists.values():
+            for extra_displist in list(self.extra_displists.values()):
                 extra_displist.deallocate_displists()
             self.extra_displists = {}
             del self.displist # note: runs __del_displist due to a property

@@ -253,7 +253,7 @@ class Ui_CommandToolbar( QWidget ):
         #tooltip text on two or more lines. (undesirable effect)
 
         if not text:
-            print "no text to truncate. Returning"
+            print("no text to truncate. Returning")
             return
 
         truncatedLength  = length - len(truncateSymbol)

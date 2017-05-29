@@ -154,7 +154,7 @@ trans_green = translucent_color(green)
 # ==
 
 if debug_flags.atom_debug:
-    print "\ntestdraw: %d reloads" % exprs_globals.reload_counter
+    print("\ntestdraw: %d reloads" % exprs_globals.reload_counter)
 
 def end_of_Enter(glpane):
     # called by testmode.Enter after it does everything else including super Enter; was never called before 070103
@@ -175,7 +175,7 @@ def leftDown(mode, event, glpane, superclass): # called from testmode.leftDown
     ####@@@@ LOGIC BUG: when we reload, we replace one highlightable with a new one in the same place --
     # but don't replace selobj with the new one! So we predict not selobj_still_ok -- should print that from there ###@@@
     # [fixed now? note, reload is not right here, but in superclass.leftDown when it calls testmode.emptySpaceLeftDown]
-    if printdraw: print "\ntestdraw leftDown" ###@@@
+    if printdraw: print("\ntestdraw leftDown") ###@@@
     superclass.leftDown(mode, event) # this might call testmode.emptySpaceLeftDown (or other class-specific leftDown methods in it)
     glpane.gl_update() # always, for now [might be redundant with superclass.leftDown, too]
 
@@ -255,7 +255,7 @@ def drawtest0(glpane):
 
     try:
         if printdraw:
-            print "drawfunc (redraw %d)" % env.redraw_counter
+            print("drawfunc (redraw %d)" % env.redraw_counter)
         drawtest1(glpane)
     except:
         # this happens sometimes

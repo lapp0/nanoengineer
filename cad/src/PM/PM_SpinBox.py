@@ -148,16 +148,16 @@ class PM_SpinBox( QSpinBox ):
         """
 
         if 0: # Debugging code
-            print "PM_SpinBox.__init__():"
-            print "  label        = ", label
-            print "  labelColumn  = ", labelColumn
-            print "  value        = ", value
-            print "  setAsDefault = ", setAsDefault
-            print "  minimum      = ", minimum
-            print "  maximum      = ", maximum
-            print "  singleStep   = ", singleStep
-            print "  suffix       = ", suffix
-            print "  spanWidth    = ", spanWidth
+            print("PM_SpinBox.__init__():")
+            print(("  label        = ", label))
+            print(("  labelColumn  = ", labelColumn))
+            print(("  value        = ", value))
+            print(("  setAsDefault = ", setAsDefault))
+            print(("  minimum      = ", minimum))
+            print(("  maximum      = ", maximum))
+            print(("  singleStep   = ", singleStep))
+            print(("  suffix       = ", suffix))
+            print(("  spanWidth    = ", spanWidth))
 
         QSpinBox.__init__(self)
 

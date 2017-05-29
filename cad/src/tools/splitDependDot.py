@@ -26,17 +26,16 @@ def transclose( toscan, collector):
     while toscan:
         found = {}
         len1 = len(toscan)
-        for obj in toscan.itervalues():
+        for obj in toscan.values():
             collector(obj, found)
         len2 = len(toscan)
         if len1 != len2:
-            print >> sys.stderr, \
-                  "bug: transclose's collector %r modified dict toscan (id %#x, length %d -> %d)" % \
-                  (collector, id(toscan), len1, len2)
+            print("bug: transclose's collector %r modified dict toscan (id %#x, length %d -> %d)" % \
+                  (collector, id(toscan), len1, len2), file=sys.stderr)
         # now "subtract seen from found"
         new = {}
-        for key, obj in found.iteritems():
-            if not seen.has_key(key):
+        for key, obj in found.items():
+            if key not in seen:
                 new[key] = obj
         seen.update(new)
         toscan = new
@@ -65,7 +64,7 @@ def readDependDot_as_pairs(filename):
             assert words[2].endswith(';')
             module2 = words[2][:-1]
             if _DEBUG:
-                print "got %r -> %r" % (module1, module2)
+                print("got %r -> %r" % (module1, module2))
             res.append((module1,module2))
     return res
 
@@ -90,7 +89,7 @@ def extract_connected_set(dict1, module1):
             dict_to_store_into[m2] = m2
         return
     seen = transclose(  {module1: module1}, collector )
-    return seen.keys()
+    return list(seen.keys())
 
 def sorted(list1):
     copy = list(list1)
@@ -112,18 +111,18 @@ def doit(filename):
         # I don't know if '#' starts a comment line in GraphViz input...
         # and these lines are not that useful, so don't bother:
         ## print "# " + " ".join(modules)
-        print "digraph G_%s {" % first_key
+        print("digraph G_%s {" % first_key)
         for module1 in modules:
             for module2 in sorted(imports_dict_orig[module1]):
-                print "    %s -> %s;" % (module1, module2)
+                print("    %s -> %s;" % (module1, module2))
             if module1 != modules[-1]:
-                print
-        print "}\n"
+                print()
+        print("}\n")
     return
 
 def print_usage():
     program = sys.argv[0]
-    print >>sys.stderr, "Usage: %s [depend.dot-filename]  ==> prints cyclic sets as separate digraphs"
+    print("Usage: %s [depend.dot-filename]  ==> prints cyclic sets as separate digraphs", file=sys.stderr)
     return
 
 def main(argv):

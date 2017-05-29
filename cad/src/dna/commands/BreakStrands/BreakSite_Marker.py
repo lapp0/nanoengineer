@@ -98,8 +98,7 @@ class BreakSite_Marker(object):
         """
         basesBeforeNextBreak = self.command.getNumberOfBasesBeforeNextBreak()
         rawStrandAtomList = strand.get_strand_atoms_in_bond_direction()
-        strandAtomList = filter(lambda atm: not atm.is_singlet(),
-                                rawStrandAtomList)
+        strandAtomList = [atm for atm in rawStrandAtomList if not atm.is_singlet()]
 
         if len(strandAtomList) < 3:
             return #skip this strand. It doesn't have enough bases
@@ -119,14 +118,14 @@ class BreakSite_Marker(object):
         startAtomIndex = 0
         endAtomIndex = len(strandAtomList) - 1
 
-        if self._startAtoms_dict.has_key(strand):
+        if strand in self._startAtoms_dict:
             startAtom = self._startAtoms_dict[strand]
             #@@BUG METHOD NOT FINISHED YET
             #-- sometimes it gives error x not in list after breaking
             #a strand etc. CHECK this -- Ninad 2008-07-02
             startAtomIndex = strandAtomList.index(startAtom)
 
-        if self._endAtoms_dict.has_key(strand):
+        if strand in self._endAtoms_dict:
             endAtom = self._endAtoms_dict.index(endAtom)
 
             endAtomIndex = strandAtomList.index(endAtom)
@@ -159,12 +158,12 @@ class BreakSite_Marker(object):
                 next_atom = strandAtomList[idx + 1]
                 bond = find_bond(atm, next_atom)
 
-                if not atomPair_dict.has_key(bond):
+                if bond not in atomPair_dict:
                     atomPair_dict[bond] = (atm, next_atom)
 
                 if DEBUG_DRAW_SPHERES_AROUND_ATOMS_AT_BREAK_SITES:
                     for a in (atm, next_atom):
-                        if not self._breakSitesDict.has_key(id(a)):
+                        if id(a) not in self._breakSitesDict:
                             self._breakSitesDict[id(a)] = a
 
             i += 1
@@ -177,8 +176,7 @@ class BreakSite_Marker(object):
         basesBeforeNextBreak = self.command.getNumberOfBasesBeforeNextBreak()
 
         rawStrandAtomList = strand.get_strand_atoms_in_bond_direction()
-        strandAtomList = filter(lambda atm: not atm.is_singlet(),
-                                rawStrandAtomList)
+        strandAtomList = [atm for atm in rawStrandAtomList if not atm.is_singlet()]
 
         if len(strandAtomList) < 3:
             return #skip this strand. It doesn't have enough bases
@@ -193,14 +191,14 @@ class BreakSite_Marker(object):
         startAtomIndex = 0
         endAtomIndex = len(strandAtomList) - 1
 
-        if self._startAtoms_dict.has_key(strand):
+        if strand in self._startAtoms_dict:
             startAtom = self._startAtoms_dict[strand]
             #@@BUG METHOD NOT FINISHED YET
             #-- sometimes it gives error x not in list after breaking
             #a strand etc. CHECK this -- Ninad 2008-07-02
             startAtomIndex = strandAtomList.index(startAtom)
 
-        if self._endAtoms_dict.has_key(strand):
+        if strand in self._endAtoms_dict:
             endAtom = self._endAtoms_dict.index(endAtom)
 
             endAtomIndex = strandAtomList.index(endAtom)
@@ -235,11 +233,11 @@ class BreakSite_Marker(object):
                 next_atom = strandAtomList[idx + 1]
                 bond = find_bond(atm, next_atom)
 
-                if not self._breakSites_atomPairs_dict.has_key(bond):
+                if bond not in self._breakSites_atomPairs_dict:
                     self._breakSites_atomPairs_dict[bond] = (atm, next_atom)
 
                 for a in (atm, next_atom):
-                    if not self._breakSitesDict.has_key(id(a)):
+                    if id(a) not in self._breakSitesDict:
                         self._breakSitesDict[id(a)] = a
 
             i += 1

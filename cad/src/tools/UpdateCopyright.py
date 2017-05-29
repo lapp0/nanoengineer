@@ -444,10 +444,10 @@ def printFileSet(headerString, fileSet):
     if (len(fileList) == 0):
         return
     fileList.sort()
-    print headerString
+    print(headerString)
     for file in fileList:
-        print " " + file + " \\"
-    print ""
+        print(" " + file + " \\")
+    print("")
 
 if (__name__ == '__main__'):
 
@@ -463,7 +463,7 @@ if (__name__ == '__main__'):
         elif (sys.argv[i] == "--no-cvs"):
             OptionNoCVS = True
         else:
-            print >>sys.stderr, "UpdateCopyright.py: unrecognized option: " + sys.argv[i]
+            print("UpdateCopyright.py: unrecognized option: " + sys.argv[i], file=sys.stderr)
             sys.exit(1)
 
     optionCount = 0
@@ -474,9 +474,9 @@ if (__name__ == '__main__'):
     if (OptionDryRun):
         optionCount += 1
     if (optionCount != 1):
-        print >>sys.stderr, "UpdateCopyright.py:"
-        print >>sys.stderr, " you must specify exactly one of:"
-        print >>sys.stderr, "  --check, --modify, --dry-run"
+        print("UpdateCopyright.py:", file=sys.stderr)
+        print(" you must specify exactly one of:", file=sys.stderr)
+        print("  --check, --modify, --dry-run", file=sys.stderr)
         sys.exit(1)
 
     WorkingDirectory = os.getcwd()

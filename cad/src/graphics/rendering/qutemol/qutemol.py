@@ -83,10 +83,10 @@ def launch_qutemol(pdb_file):
     try:
         args = [pdb_file]
         if env.debug():
-            print "Debug: Launching", plugin_name, \
+            print("Debug: Launching", plugin_name, \
                   "\n  working directory=", workdir, \
                   "\n  program_path=", program_path,  \
-                  "\n  args are %r" % (args,)
+                  "\n  args are %r" % (args,))
 
         arguments = QStringList()
         for arg in args:
@@ -154,7 +154,7 @@ REMARK   8 ;Atom Name  NE1 Atom  CPK Radius  Ball and Stick  Color (RGB)
 REMARK   8 ;           Number                Radius\n""")
 
     elementTable = PeriodicTable.getAllElements()
-    for elementNumber, element in elementTable.items():
+    for elementNumber, element in list(elementTable.items()):
         color = element.color
         r = int(color[0] * 255 + 0.5)
         g = int(color[1] * 255 + 0.5)
@@ -301,9 +301,9 @@ def write_qutemol_files(part, excludeFlags = EXCLUDE_HIDDEN_ATOMS):
 
     if 0:
         stats.num_atoms = stats.natoms - stats.nsinglets
-        print "write_qutemol_files(): natoms =", stats.natoms, \
+        print("write_qutemol_files(): natoms =", stats.natoms, \
               "nsinglets =", stats.nsinglets, \
-              "num_atoms =", stats.num_atoms
+              "num_atoms =", stats.num_atoms)
 
     if not stats.natoms:
         # There are no atoms in the current part.

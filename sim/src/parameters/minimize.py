@@ -142,7 +142,7 @@ def datread(fname):
         card = f.readline()
         if endpat.match(card): break
         m=frecpat.match(card)
-        v=A([map(float,(m.group(1),m.group(2), m.group(3)))])
+        v=A([list(map(float,(m.group(1),m.group(2), m.group(3))))])
         grads = concatenate((grads,v),axis=0)
 
     f.close()
@@ -173,7 +173,7 @@ def inpread(fname):
         m=irecpat.match(card)
         elem += [m.group(1)]
 
-        v=A([map(float,(m.group(2),m.group(3), m.group(4)))])
+        v=A([list(map(float,(m.group(2),m.group(3), m.group(4))))])
         atoms = concatenate((atoms,v),axis=0)
 
     postface = card
@@ -199,7 +199,7 @@ def xyzread(f):
     for i in range(n):
         m=xyzpat.match(f.readline())
         elems += [capitalize(m.group(1))]
-        atoms[i]=A(map(float,(m.group(2),m.group(3), m.group(4))))
+        atoms[i]=A(list(map(float,(m.group(2),m.group(3), m.group(4)))))
     return elems, atoms
 
 def xyzwrite(f, elem, pos):
@@ -212,11 +212,11 @@ def logread(name):
     while 1:
         card = f.readline()
         if failpat.search(card):
-            print 'GAMESS bombs in',name
+            print('GAMESS bombs in',name)
             return None, None
         if card == "1     ***** EQUILIBRIUM GEOMETRY LOCATED *****\n": break
         if card == " **** THE GEOMETRY SEARCH IS NOT CONVERGED! ****":
-            print 'GAMESS bombs in',name
+            print('GAMESS bombs in',name)
             return None, None
 
     f.readline() # COORDINATES ...
@@ -233,7 +233,7 @@ def logread(name):
         m=irecpat.match(card)
         elem += [capitalize(m.group(1))]
 
-        v=A([map(float,(m.group(2),m.group(3), m.group(4)))])
+        v=A([list(map(float,(m.group(2),m.group(3), m.group(4))))])
         atoms = concatenate((atoms,v),axis=0)
 
     return elem, atoms
@@ -248,7 +248,7 @@ def dpbwrite(f, pos):
         f.write(pack("bbb",int(line[0]),int(line[1]),int(line[2])))
 
 def rungms(name, elem, pos, pref):
-    print "*****  running",name,"   *****"
+    print("*****  running",name,"   *****")
     inpwrite(name, elem, pos, pref)
     if am1p.search(pref):
         os.system("rungms "+name+" 1 > "+name+".log")
@@ -258,7 +258,7 @@ def rungms(name, elem, pos, pref):
     return name
 
 def makexyz():
-    print "making xyz files:"
+    print("making xyz files:")
     xyzs = {}
     files = os.listdir('level0')
     for file in files:
@@ -267,7 +267,7 @@ def makexyz():
     for file in files:
         x = pdbname.match(file)
         if x and not x.group(1) in xyzs:
-            print 'Making',x.group(1)+'.xyz'
+            print('Making',x.group(1)+'.xyz')
             os.system("pdb2xyz " + 'level0/'+x.group(1))
 
 def fexist(fname):
@@ -277,7 +277,7 @@ def fexist(fname):
 
 
 def dirsetup():
-    print "making input files:"
+    print("making input files:")
     files = os.listdir('level0')
     for file in files:
         x = xyzname.match(file)
@@ -288,7 +288,7 @@ def dirsetup():
             inpwrite('level0/'+name, elems, atoms)
 
 def dorunrun(n):
-    print "\nrunning Gamess at level",n
+    print("\nrunning Gamess at level",n)
     fd = 'level'+str(n-1)
     td = 'level'+str(n)
     header = open(td+'/theory').read()

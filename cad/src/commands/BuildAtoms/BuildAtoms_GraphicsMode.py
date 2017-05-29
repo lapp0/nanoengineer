@@ -1143,7 +1143,7 @@ class BuildAtoms_basicGraphicsMode(SelectAtoms_basicGraphicsMode):
             # Chunks? What if the hiddenness or invisibility came from the
             #partlib?]
             if debug_flags.atom_debug:
-                print "atom_debug: ignoring object of unhandled type (Jig? Comment? Named View?) in ensure_visible_0", stuff
+                print("atom_debug: ignoring object of unhandled type (Jig? Comment? Named View?) in ensure_visible_0", stuff)
             return 0
         pass
 
@@ -1275,7 +1275,7 @@ class BuildAtoms_basicGraphicsMode(SelectAtoms_basicGraphicsMode):
         elif self.o.modkeys == 'Shift+Control':
             self.o.setCursor(self.w.DeleteCursor)
         else:
-            print "Error in update_cursor_for_no_MB(): Invalid modkey=", self.o.modkeys
+            print("Error in update_cursor_for_no_MB(): Invalid modkey=", self.o.modkeys)
         return
 
 

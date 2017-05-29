@@ -38,7 +38,7 @@ class DelegatingInstanceOrExpr_obs(InstanceOrExpr): #061020; as of 061109 this l
                 # note, _C__attr for _attr starting with _ is permitted.
         except AttributeError:
             if attr.startswith('_'):
-                raise AttributeError, attr # not just an optim -- we don't want to delegate these.
+                raise AttributeError(attr) # not just an optim -- we don't want to delegate these.
             return getattr(self.delegate, attr) # here is where we delegate.
     pass
 
@@ -161,7 +161,7 @@ class CL(InstanceOrExpr):
             i2 = len(self.elts)
         # if elts know their own indices, or (better?) if gaps depend on their id not index,
         # we can just grab & filter the elts themselves:
-        return filter(lambda elt: elt.nonempty, self.elts[i1:i2])
+        return [elt for elt in self.elts[i1:i2] if elt.nonempty]
     def insert_gaps(self, elts):
         "Given a list of 0 or more of our elts, return a new list with appropriate gap objects inserted between the elements."
         return interleave_by_func(self.elts, self.gapfunc)

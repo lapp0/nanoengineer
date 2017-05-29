@@ -23,6 +23,7 @@ from TreeView import * # including class TreeView, and import * from many other 
 from widgets.menu_helpers import makemenu_helper
 from platform import fix_buttons_helper
 from utilities.debug import DebugMenuMixin, print_compact_stack, print_compact_traceback
+import imp
 allButtons = (leftButton|midButton|rightButton) #e should be defined in same file as the buttons
 from utilities import debug_flags
 from platform import tupleFromQPoint, fix_plurals
@@ -30,7 +31,8 @@ import os
 import foundation.env as env
 
 # but platform thinks "# def qpointFromTuple - not needed"; for now, don't argue, just do it here:
-def QPointFromTuple((x,y)):
+def QPointFromTuple(xxx_todo_changeme):
+    (x,y) = xxx_todo_changeme
     return QPoint(x,y)
 
 debug_keys = env.debug() #####@@@@@
@@ -45,14 +47,18 @@ if not (os.path.isdir("/Users/bruce") and os.path.isdir("/Huge")):
     # (well, since this check is here, i might commit it with 1 a few times, but remove it pre-release)
     debug_dragstuff = 0
 if debug_dragstuff:
-    print "\n * * * * Running with debug_dragstuff set. \nExpect lots of output if you drag in the model tree!\n"
+    print("\n * * * * Running with debug_dragstuff set. \nExpect lots of output if you drag in the model tree!\n")
 
 # For some reason I want this module to be independent of Numeric for now:
 
-def pair_plus((x0,y0),(x1,y1)):
+def pair_plus(xxx_todo_changeme1, xxx_todo_changeme2):
+    (x0,y0) = xxx_todo_changeme1
+    (x1,y1) = xxx_todo_changeme2
     return x0+x1,y0+y1
 
-def pair_minus((x0,y0),(x1,y1)):
+def pair_minus(xxx_todo_changeme3, xxx_todo_changeme4):
+    (x0,y0) = xxx_todo_changeme3
+    (x1,y1) = xxx_todo_changeme4
     return x0-x1,y0-y1
 
 # ==
@@ -94,7 +100,7 @@ class TreeWidget(TreeView, DebugMenuMixin):
         # btw see "dragAutoScroll" property in QScrollView docs. dflt true. that's why we have to accept drops on viewport.
 
         if debug_dragstuff:
-            print "self, and our viewport:",self,self.viewport()
+            print("self, and our viewport:",self,self.viewport())
 
         # debug menu and reload command ###e subclasses need to add reload actions too
         self._init_time = time.asctime() # for debugging; do before DebugMenuMixin._init1
@@ -236,7 +242,7 @@ class TreeWidget(TreeView, DebugMenuMixin):
     def checkpoint_before_drag(self, event): # GLPane version: extra arg 'but'
         if 1: # GLPane version: if but & (leftButton|midButton|rightButton):
             if self.__pressEvent is not None and debug_flags.atom_debug:
-                print "atom_debug: bug: pressEvent in MT didn't get release:", self.__pressEvent
+                print("atom_debug: bug: pressEvent in MT didn't get release:", self.__pressEvent)
             self.__pressEvent = event
             self.__flag_and_begin_retval = None
             if self.assy:
@@ -365,7 +371,7 @@ class TreeWidget(TreeView, DebugMenuMixin):
             if debug_flags.atom_debug:
                 #bruce 060210 made this debug-only, since what it reports is not too bad, and it happens routinely now in Build mode
                 # if atoms are selected and you then select a chunk in MT
-                print "atom_debug: bug, fyi: there are both atoms and chunks selected. Deselecting some of them to fit current mode or internal code."
+                print("atom_debug: bug, fyi: there are both atoms and chunks selected. Deselecting some of them to fit current mode or internal code.")
             new_selwhat_influences = ( selwhat_from_mode, selwhat) # old mode has first say in this case, if it wants it
             #e (We could rewrite this (equivalently) to just use the other case with selwhat_from_sel = None.)
         else:
@@ -384,9 +390,9 @@ class TreeWidget(TreeView, DebugMenuMixin):
                 #  when the current mode is more compatible with selecting chunks. But I think this causes
                 #  no harm, so I might as well wait until we further revise selection code to fix it.)
                 if debug_flags.atom_debug:
-                    print "atom_debug: bug, fyi: actual selection (%s) inconsistent " \
+                    print("atom_debug: bug, fyi: actual selection (%s) inconsistent " \
                           "with internal variable for that (%s); will fix internal variable" % \
-                          (SELWHAT_NAMES[selwhat_from_sel], SELWHAT_NAMES[selwhat])
+                          (SELWHAT_NAMES[selwhat_from_sel], SELWHAT_NAMES[selwhat]))
         # Let the strongest (first listed) influence, of those with an opinion,
         # decide what selmode we'll be in now, and make everything consistent with that.
         for opinion in new_selwhat_influences:
@@ -400,7 +406,7 @@ class TreeWidget(TreeView, DebugMenuMixin):
                     # right after it gets initiated (almost too fast to see).
                     if selwhat == SELWHAT_CHUNKS:
                         win.toolsSelectMolecules()
-                        print "fyi: forced mode to Select Chunks" # should no longer ever happen as of 060403
+                        print("fyi: forced mode to Select Chunks") # should no longer ever happen as of 060403
                     elif selwhat == SELWHAT_ATOMS:
                         win.toolsBuildAtoms() #bruce 060403 change: toolsSelectAtoms -> toolsBuildAtoms
                         ## win.toolsSelectAtoms() #bruce 050504 making use of this case for the first time; seems to work
@@ -748,7 +754,7 @@ class TreeWidget(TreeView, DebugMenuMixin):
         # [bruce 050128 adding drag & drop support]
         if self.drag_handler:
             if debug_dragstuff:
-                print "should never happen: selection_click finds old drag_handler to dispose of"
+                print("should never happen: selection_click finds old drag_handler to dispose of")
             try:
                 self.drag_handler.cleanup(self)
             except:
@@ -848,9 +854,9 @@ class TreeWidget(TreeView, DebugMenuMixin):
         if you want to refuse this drag (also after emitting a suitable warning).
         """
         if drag_type == 'move':
-            nodes_ok = filter( lambda n: n.drag_move_ok(), nodes)
+            nodes_ok = [n for n in nodes if n.drag_move_ok()]
         else:
-            nodes_ok = filter( lambda n: n.drag_copy_ok(), nodes)
+            nodes_ok = [n for n in nodes if n.drag_copy_ok()]
         oops = len(nodes) - len(nodes_ok)
         if oops:
             ## msg = "some selected nodes can't be dragged that way -- try again" ###e improve msg
@@ -928,7 +934,7 @@ class TreeWidget(TreeView, DebugMenuMixin):
     def dragEnterEvent(self,event):
         self.last_event_type = "dragenter" #k ok to do this here and for contentsDragEnter both??
         if debug_dragstuff:
-            print "dragEnterEvent happened too! SHOULD NOT HAPPEN" # unless we are not accepting drops on the viewport
+            print("dragEnterEvent happened too! SHOULD NOT HAPPEN") # unless we are not accepting drops on the viewport
 
     # To highlight the correct items/gaps under potential drop-points during drag and drop,
     # we need to be told when autoscrolling occurs, since Qt neglects to send us new dragMove events
@@ -1005,7 +1011,7 @@ class TreeWidget(TreeView, DebugMenuMixin):
     def dragLeaveEvent(self, event):
         self.last_event_type = "dragleave" ###k ok here too?
         if debug_dragstuff:
-            print "dragLeaveEvent, event == %r, SHOULD NOT HAPPEN" % event
+            print("dragLeaveEvent, event == %r, SHOULD NOT HAPPEN" % event)
         #e remove highlighting from dragmove
 
     true_dragMove_cpos = None
@@ -1079,8 +1085,8 @@ class TreeWidget(TreeView, DebugMenuMixin):
         actualmsg = desc + substatus
         if bugmsg:
             if debug_dragstuff:
-                print "alpha wanted to put this into statusbar but it's probably a bug, so not doing that:"
-                print " " + actualmsg
+                print("alpha wanted to put this into statusbar but it's probably a bug, so not doing that:")
+                print(" " + actualmsg)
             actualmsg = " " # sigh... in fact, don't put it there since it erases our results msg.
         else:
             self.statusbar_msg( actualmsg )
@@ -1240,7 +1246,7 @@ class TreeWidget(TreeView, DebugMenuMixin):
             self.draw_stubsymbol_at_cpos_in_viewport(painter, cpos, color = Qt.green) # i think we're depending on clip to event.rect()
                 # should use highlightcolor; for debug use diff color than when drawn in the other place that can draw this
             if debug_dragstuff:
-                print "drew in green"
+                print("drew in green")
 ##        if self.do_update_drop_point_highlighting_in_next_viewportPaintEvent: ###@@@ 050130
 ##            self.do_update_drop_point_highlighting_in_next_viewportPaintEvent = False
 ##            self.update_drop_point_highlighting()
@@ -1275,7 +1281,7 @@ class TreeWidget(TreeView, DebugMenuMixin):
     def contentsDropEvent(self, event):
         self.last_event_type = "drop"
         if debug_dragstuff:
-            print "contentsDropEvent, event == %r" % event
+            print("contentsDropEvent, event == %r" % event)
 
         # should we disable the drag_handler, or rely on mouseRelease to do that? ###e ####@@@@
 
@@ -1307,12 +1313,12 @@ class TreeWidget(TreeView, DebugMenuMixin):
             # should be delegated to the current drag_handler if it recognizes it
         if oktext:
             if debug_dragstuff:
-                print "accepting text"
+                print("accepting text")
             str1 = QString() # see dropsite.py in examples3
             res = QTextDrag.decode(event, str1)
             text = str(str1)
             if debug_dragstuff:
-                print "got this res and text: %r, %r" % (res,text) # guess: from finder it will be filename [was url i think]
+                print("got this res and text: %r, %r" % (res,text)) # guess: from finder it will be filename [was url i think]
             event.accept(True)
             # up to this point (accepting dropped text) we'll behave the same whether or not it was *our* dropped object.
             # (except for the highlighting done by DragMove, which ideally would distinguish that according to which items
@@ -1332,9 +1338,9 @@ class TreeWidget(TreeView, DebugMenuMixin):
                     assert recognized_Q == True
                     if debug_dragstuff:
                         # because recognized_Q:
-                        print "our drag handler recognized this drop as one it had generated"
+                        print("our drag handler recognized this drop as one it had generated")
                         if drag_type:
-                            print "our drag handler accepted this drop"
+                            print("our drag handler accepted this drop")
                     assert drag_type in ['copy','move'] # for now it can't reject it; to do that it would return None
                         # (sorry for the mess, the deadline approaches)
                     # and nodes is a list of 1 or more nodes, and it's been our job to highlight the originals specially too,
@@ -1344,7 +1350,7 @@ class TreeWidget(TreeView, DebugMenuMixin):
                     # it's our job to now do the operation.
                     self.doit(event, drag_type, nodes)
                     if 0 and debug_dragstuff:
-                        print "NOT IMPLEMENTED: do the op on these dragged nodes:",nodes
+                        print("NOT IMPLEMENTED: do the op on these dragged nodes:",nodes)
                         self.redmsg("NIM: do the op %r on %d nodes, first/last names %r, %r" % (
                             drag_type, len(nodes), nodes[0].name, nodes[-1].name ))
 ##                    do the op
@@ -1480,7 +1486,7 @@ class TreeWidget(TreeView, DebugMenuMixin):
     def keyPressEvent(self, event): ####@@@@ Delete might need revision, and belongs in the subclass
         key = event.key()
         if debug_keys:
-            print "mt key press",key###########@@@@@
+            print("mt key press",key)###########@@@@@
         from utilities import debug_flags
         key = platform.filter_key(key) #bruce 041220 (needed for bug 93)
         ####@@@@ as of 050126 this delete binding doesn't seem to work:
@@ -1516,7 +1522,7 @@ class TreeWidget(TreeView, DebugMenuMixin):
     def keyReleaseEvent(self, event):
         key = event.key()
         if debug_keys:
-            print "mt key release",key###########@@@@@
+            print("mt key release",key)###########@@@@@
 
     def moveup(self): #bruce 060219
         "Move the selection up (not the nodes, just their selectedness)"
@@ -1669,7 +1675,7 @@ class TreeWidget(TreeView, DebugMenuMixin):
         oldname = self.done_renaming()
         if oldname != item.object.name: #bruce 050128 #e clean all this up, see comments below
             if debug_flags.atom_debug:
-                print "atom_debug: bug, fyi: oldname != item.object.name: %r, %r" % (oldname, item.object.name)
+                print("atom_debug: bug, fyi: oldname != item.object.name: %r, %r" % (oldname, item.object.name))
         what = (oldname and "%r" % oldname) or "something" # not "node %r"
         ## del oldname
         # bruce 050119 rewrote/bugfixed the following, including the code by
@@ -1688,7 +1694,7 @@ class TreeWidget(TreeView, DebugMenuMixin):
             # and must differ from item.object.name so that gets written back into the MT item.
             # non-kluge solution would be to bring that code in here too, or separate those uses.
             # what I'll do -- make "not ok" also always cause item.setText, below.
-            text_now_displayed = ('%r' % unicode(text))[2:-1] # change u'...' to ...
+            text_now_displayed = ('%r' % str(text))[2:-1] # change u'...' to ...
             assert type(text_now_displayed) == type(""), "repr of unicode is not ordinary string"
             del text
         else:
@@ -1699,7 +1705,7 @@ class TreeWidget(TreeView, DebugMenuMixin):
             res = "renamed %s to %r" % (what, newname)
             if newname != item.object.name: #bruce 050128
                 if debug_flags.atom_debug:
-                    print "atom_debug: bug, fyi: newname != item.object.name: %r, %r" % (newname, item.object.name)
+                    print("atom_debug: bug, fyi: newname != item.object.name: %r, %r" % (newname, item.object.name))
         else:
             reason = newname
             del newname
@@ -1783,13 +1789,13 @@ class TreeWidget(TreeView, DebugMenuMixin):
         with a new one made using the reloaded modules
         """
         # for now we might just plop the new one over the existing one! hope that works.
-        print "_reload_this_module... i mean all needed modules for the tree widget, and remake it..."
+        print("_reload_this_module... i mean all needed modules for the tree widget, and remake it...")
 
         width = self.width() #050128
         height = self.height()
 
         # figure out which modules to reload. The ones of the classes...
-        print "finding modules we should reload, innermost first:"
+        print("finding modules we should reload, innermost first:")
         class1 = self.__class__
         bases = class1.__bases__ # base classes (tuple), not including class1 - this is not the superclass list!
         # there is some method to get supers, but for now let's be quick and simple
@@ -1803,16 +1809,16 @@ class TreeWidget(TreeView, DebugMenuMixin):
             classes.append(super)
             class1 = super
             bases = class1.__bases__
-        modulenames = map( lambda c: c.__module__, classes ) # __module__ is misnamed, it's only a module name
-        modules = map( lambda n: sys.modules[n], modulenames )
-        print "module names:", modulenames
-        print "reloading all these %d modules, outermost first" % len(modules)
+        modulenames = [c.__module__ for c in classes] # __module__ is misnamed, it's only a module name
+        modules = [sys.modules[n] for n in modulenames]
+        print("module names:", modulenames)
+        print("reloading all these %d modules, outermost first" % len(modules))
         modules.reverse()
         modules = self.filter_reload_modules(modules) # let subclasses modify this list [050219/050327]
         for mod in modules:
-            print "reloading",mod
-            reload(mod)
-        print "now remaking the model tree widget" #e should let subclass give us these details...
+            print("reloading",mod)
+            imp.reload(mod)
+        print("now remaking the model tree widget") #e should let subclass give us these details...
         from modelTree.ModelTree import modelTree
         # figure out where we are
         splitter = self.parent() # QSplitter
@@ -1835,7 +1841,7 @@ class TreeWidget(TreeView, DebugMenuMixin):
         while len(wantsizes) < len(sizes):
             wantsizes.append(0)
         splitter.setSizes(sizes) ###e this will also help us extend what's stored by save/load window layout.
-        print "splitter-child sizes after setSizes",splitter.sizes()
+        print("splitter-child sizes after setSizes",splitter.sizes())
         splitter.updateGeometry()
         splitter.update()
         win.mt.setContentsPos( x, y) # do this 3 times ... doesn't help avoid a "flicker to no scrollbar state"
@@ -1845,7 +1851,7 @@ class TreeWidget(TreeView, DebugMenuMixin):
         win.mt.setContentsPos( x, y) # do this 3 times - was not enough to do it before updateGeometry above
 ##        win.mt.show()
 ##        self.hide()
-        print "done reloading... I guess"
+        print("done reloading... I guess")
         env.history.message( "reloaded model tree, init time %s" % win.mt._init_time)
         return
 

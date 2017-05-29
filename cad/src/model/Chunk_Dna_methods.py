@@ -248,7 +248,7 @@ class Chunk_Dna_methods: ## (NodeWithAtomContents):
         # False on this class, since it's implemented in our DnaStrandChunk
         # subclass.
         found_strand_atom = False
-        for atom in self.atoms.itervalues():
+        for atom in self.atoms.values():
             if atom.element.role == 'strand':
                 found_strand_atom = True
                 # side effect: use strand icon [mark 080203]
@@ -283,7 +283,7 @@ class Chunk_Dna_methods: ## (NodeWithAtomContents):
         # False on this class, since it's implemented in our DnaAxisChunk
         # subclass.
         found_axis_atom = False
-        for atom in self.atoms.itervalues():
+        for atom in self.atoms.values():
             if atom.element.role == 'axis':
                 found_axis_atom = True
             elif atom.is_singlet():
@@ -360,8 +360,8 @@ class Chunk_Dna_methods: ## (NodeWithAtomContents):
             # if not recognized, use ""
             if val not in ("", MODEL_PAM3, MODEL_PAM5):
                 # maybe todo: use deferred_summary_message?
-                print "fyi: info chunk display_as_pam with unrecognized value %r" % \
-                      (val,)
+                print("fyi: info chunk display_as_pam with unrecognized value %r" % \
+                      (val,))
                 val = ""
             #bruce 080523: silently ignore this, until the bug 2842 dust fully
             # settles. This is #1 of 2 changes (in the same commit) which
@@ -378,8 +378,8 @@ class Chunk_Dna_methods: ## (NodeWithAtomContents):
             # if not recognized, use ""
             if val not in ("", MODEL_PAM3, MODEL_PAM5):
                 # maybe todo: use deferred_summary_message?
-                print "fyi: info chunk save_as_pam with unrecognized value %r" % \
-                      (val,)
+                print("fyi: info chunk save_as_pam with unrecognized value %r" % \
+                      (val,))
                 val = ""
             self.save_as_pam = val
         else:

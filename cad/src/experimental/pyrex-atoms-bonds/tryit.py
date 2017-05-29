@@ -15,9 +15,9 @@ class PerformanceLog:
         self.records.append("%s: %.2f nanoseconds per element"
                             % (name, time))
     def dump(self):
-        print "Performance information"
+        print("Performance information")
         for x in self.records:
-            print x
+            print(x)
 
 PL = PerformanceLog()
 
@@ -66,7 +66,7 @@ class Tests(unittest.TestCase):
 
     def test_AtomSetAsArrayMethod(self):
         x = AtomSet()
-        a = Numeric.array(range(N), Numeric.UInt32)
+        a = Numeric.array(list(range(N)), Numeric.UInt32)
         x.quickFill(N)
         assert len(x) == len(a)
         assert len(x) == N

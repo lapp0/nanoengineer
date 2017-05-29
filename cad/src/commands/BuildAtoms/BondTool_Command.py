@@ -115,12 +115,12 @@ class BondTool_Command(BuildAtoms_Command):
 
         bondList = []
         #all selected atoms
-        atoms = self.win.assy.selatoms.values()
+        atoms = list(self.win.assy.selatoms.values())
         for a in atoms:
             for b in a.bonds[:]:
                 #If bond 'b' is already in the bondDict, skip this
                 #iteration.
-                if bondDict.has_key(id(b)):
+                if id(b) in bondDict:
                     continue
                 else:
                     bondDict[id(b)] = b
@@ -288,12 +288,12 @@ class DeleteBondTool(BondTool_Command):
         bondDict = {}
         bondList = []
         #all selected atoms
-        atoms = self.win.assy.selatoms.values()
+        atoms = list(self.win.assy.selatoms.values())
         for a in atoms:
             for b in a.bonds[:]:
                 #If bond 'b' is already in the bondDict, skip this
                 #iteration.
-                if bondDict.has_key(id(b)):
+                if id(b) in bondDict:
                     continue
                 else:
                     bondDict[id(b)] = b

@@ -47,7 +47,7 @@ AVAILABLE_TEST_CASES_DICT = {
     8.3: "Cylinder primitives chunked in a DrawingSet",
     100: "test_selection_redraw",
  }
-AVAILABLE_TEST_CASES_ITEMS = AVAILABLE_TEST_CASES_DICT.items()
+AVAILABLE_TEST_CASES_ITEMS = list(AVAILABLE_TEST_CASES_DICT.items())
 AVAILABLE_TEST_CASES_ITEMS.sort()
 
 # Used for tests with graphicsMode.Draw_model() from TestGraphics_GraphicsMode.
@@ -286,7 +286,7 @@ def delete_caches():
     test_spheres = None
     if test_DrawingSet is not None:
         test_DrawingSet = None
-        print "set test_DrawingSet = None"
+        print("set test_DrawingSet = None")
     test_endpoints = None
     if test_Object:
         test_Object.destroy()
@@ -343,7 +343,7 @@ def test_drawing(glpane, initOnly = False):
     global _USE_SHADERS
     if _USE_SHADERS:
         if not drawing_globals.test_sphereShader:
-            print "test_drawing: Loading sphere shaders."
+            print("test_drawing: Loading sphere shaders.")
 
             try:
                 from graphics.drawing.gl_shaders import GLSphereShaderObject
@@ -353,10 +353,10 @@ def test_drawing(glpane, initOnly = False):
                 # bugs in other code. Ideally we'd call the new methods that encapsulate
                 # this, to setup shaders. [bruce 090304 comment]
 
-                print "test_drawing: Sphere-shader initialization is complete.\n"
+                print("test_drawing: Sphere-shader initialization is complete.\n")
             except:
                 _USE_SHADERS = False
-                print "test_drawing: Exception while loading sphere shaders, will reraise and not try again"
+                print("test_drawing: Exception while loading sphere shaders, will reraise and not try again")
                 raise
             pass
 
@@ -394,8 +394,8 @@ def test_drawing(glpane, initOnly = False):
     # . 17,424 spheres is 6.7 million tri-strip vertices.  (6,690,816)
     if testCase == 1:
         if test_csdl is None:
-            print ("Test case 1, %d^2 spheres\n  %s." %
-                   (nSpheres, "ColorSorter"))
+            print(("Test case 1, %d^2 spheres\n  %s." %
+                   (nSpheres, "ColorSorter")))
 
             test_csdl = ColorSortedDisplayList()
             ColorSorter.start(None, test_csdl)
@@ -418,8 +418,8 @@ def test_drawing(glpane, initOnly = False):
     # . 90,000 spheres (all drawing modes) 1.1 FPS
     elif testCase == 2:
         if test_dl is None:
-            print ("Test case 2, %d^2 spheres\n  %s." %
-                   (nSpheres, "One display list calling primitive dl's"))
+            print(("Test case 2, %d^2 spheres\n  %s." %
+                   (nSpheres, "One display list calling primitive dl's")))
 
             test_dl = glGenLists(1)
             glNewList(test_dl, GL_COMPILE_AND_EXECUTE)
@@ -444,16 +444,16 @@ def test_drawing(glpane, initOnly = False):
     elif int(testCase) == 3:
         doTransforms = False
         if test_spheres is None:
-            print ("Test case 3, %d^2 spheres\n  %s." %
-                   (nSpheres, "One big VBO/IBO chunk buffer"))
+            print(("Test case 3, %d^2 spheres\n  %s." %
+                   (nSpheres, "One big VBO/IBO chunk buffer")))
             if testCase == 3.1:
                 print ("Sub-test 3.1, animate partial updates.")
             elif testCase == 3.2:
-                print ("Sub-test 3.2, animate partial updates" +
-                       " w/ C per-chunk array buffering.")
+                print(("Sub-test 3.2, animate partial updates" +
+                       " w/ C per-chunk array buffering."))
             elif testCase == 3.3:
-                print ("Sub-test 3.3, animate partial updates" +
-                       " w/ Python array buffering.")
+                print(("Sub-test 3.3, animate partial updates" +
+                       " w/ Python array buffering."))
             # . 3.4 - Big batch draw, with transforms indexed by IDs added.
             #   (Second FPS number with debug colors in the vertex shader off.)
             #   - 90,000 (300x300) spheres, TEXTURE_XFORMS = True, 26(29) FPS
@@ -468,12 +468,12 @@ def test_drawing(glpane, initOnly = False):
                 from graphics.drawing.gl_shaders import N_CONST_XFORMS
                 from graphics.drawing.gl_shaders import UNIFORM_XFORMS
                 if TEXTURE_XFORMS:
-                    print "Transforms in texture memory."
+                    print("Transforms in texture memory.")
                 elif UNIFORM_XFORMS:
-                    print "%d transforms in uniform memory." % N_CONST_XFORMS
+                    print("%d transforms in uniform memory." % N_CONST_XFORMS)
                     pass
                 else:
-                    print "transforms not supported, error is likely"
+                    print("transforms not supported, error is likely")
                 doTransforms = True
                 pass
 
@@ -539,9 +539,9 @@ def test_drawing(glpane, initOnly = False):
             test_spheres = GLSphereBuffer()
             test_spheres.addSpheres(centers, radii, colors, transformIDs, None)
             if doTransforms:
-                print ("%d primitives in %d transform chunks of size <= %d" %
+                print(("%d primitives in %d transform chunks of size <= %d" %
                        (nSpheres * nSpheres, len(transforms),
-                        transformChunkLength))
+                        transformChunkLength)))
                 shader = drawing_globals.test_sphereShader
                 shader.setupTransforms(transforms)
             pass
@@ -646,9 +646,9 @@ def test_drawing(glpane, initOnly = False):
     # . 17,424 spheres (132x132 box/shader draw quads calls) 0.7 FPS
     elif testCase == 4:
         if test_ibo is None:
-            print ("Test case 4, %d^2 spheres\n  %s." %
+            print(("Test case 4, %d^2 spheres\n  %s." %
                    (nSpheres,
-                    "Separate VBO/IBO shader/box buffer sphere calls, no DL"))
+                    "Separate VBO/IBO shader/box buffer sphere calls, no DL")))
 
             # Collect transformed bounding box vertices and offset indices.
             # Start at the lower-left corner, offset so the whole pattern comes
@@ -709,9 +709,9 @@ def test_drawing(glpane, initOnly = False):
     # . 17,424 spheres (1 box/shader DL draw call) 9.2 FPS
     elif testCase == 5:
         if test_dl is None:
-            print ("Test case 5, %d^2 spheres\n  %s." %
+            print(("Test case 5, %d^2 spheres\n  %s." %
                    (nSpheres,
-                    "One DL around separate VBO/IBO shader/box buffer sphere calls"))
+                    "One DL around separate VBO/IBO shader/box buffer sphere calls")))
 
             # Collect transformed bounding box vertices and offset indices.
             # Start at the lower-left corner, offset so the whole pattern comes
@@ -785,9 +785,9 @@ def test_drawing(glpane, initOnly = False):
     # . 250,000 (500x500) spheres  3.2 FPS
     elif testCase == 6:
         if test_dls is None:
-            print ("Test case 6, %d^2 spheres\n  %s." %
+            print(("Test case 6, %d^2 spheres\n  %s." %
                    (nSpheres,
-                    "N col DL's around VBO/IBO shader/box buffer sphere calls"))
+                    "N col DL's around VBO/IBO shader/box buffer sphere calls")))
 
             # Wrap n display lists around the draws (one per column.)
             test_dls = glGenLists(nSpheres) # Returns ID of first DL in the set.
@@ -847,8 +847,8 @@ def test_drawing(glpane, initOnly = False):
     # . 250,000 (500x500) spheres  7.3 FPS
     elif testCase == 7:
         if test_spheres is None:
-            print ("Test case 7, %d^2 spheres\n  %s." %
-                   (nSpheres, "Per-column VBO/IBO chunk buffers"))
+            print(("Test case 7, %d^2 spheres\n  %s." %
+                   (nSpheres, "Per-column VBO/IBO chunk buffers")))
             test_spheres = []
             for x in range(nSpheres):
                 centers = []
@@ -963,8 +963,8 @@ def test_drawing(glpane, initOnly = False):
         doCylinders = False
         if test_spheres is None:
             # Setup.
-            print ("Test case 8, %d^2 primitives\n  %s, length %d." %
-                   (nSpheres, "Short VBO/IBO chunk buffers", chunkLength))
+            print(("Test case 8, %d^2 primitives\n  %s, length %d." %
+                   (nSpheres, "Short VBO/IBO chunk buffers", chunkLength)))
             if testCase == 8.1:
                 print ("Sub-test 8.1, sphere chunks are in CSDL's in a DrawingSet.")
                 test_DrawingSet = DrawingSet()
@@ -979,7 +979,7 @@ def test_drawing(glpane, initOnly = False):
                 pass
             if test_DrawingSet:
                 # note: doesn't happen in test 8.0, which causes a bug then. [bruce 090223 comment]
-                print "constructed test_DrawingSet =", test_DrawingSet
+                print("constructed test_DrawingSet =", test_DrawingSet)
 
             if USE_GRAPHICSMODE_DRAW:
                 print ("Use graphicsMode.Draw_model for DrawingSet in paintGL.")
@@ -1020,7 +1020,7 @@ def test_drawing(glpane, initOnly = False):
                     else:
                         # Through ColorSorter to cylinder primitive buffer...
                         if not drawing_globals.cylinderShader_available():
-                            print "warning: not cylinderShader_available(), error is likely:"
+                            print("warning: not cylinderShader_available(), error is likely:")
                         if (True and  # Whether to do tapered shader-cylinders.
                             # Display List cylinders don't support taper.
                             glpane.glprefs.cylinderShader_desired()):
@@ -1085,8 +1085,8 @@ def test_drawing(glpane, initOnly = False):
             if len(centers):
                 test_spheres += [chunkFn(centers, radii, colors)]
                 pass
-            print "Setup time", time.time() - t1, "seconds."
-            print "%d chunk buffers" % len(test_spheres)
+            print("Setup time", time.time() - t1, "seconds.")
+            print("%d chunk buffers" % len(test_spheres))
             pass
         elif not initOnly: # Run.
             test_Draw_8x(glpane)
@@ -1105,7 +1105,7 @@ def test_drawing(glpane, initOnly = False):
                 test_Object.destroy()
             test_Object = test_class(*params)
             test_Object.activate()
-            print test_Object
+            print(test_Object)
             pass
         # review: safe to change elif to if? not sure, GL state is only initialized below
         elif not initOnly: # Run.

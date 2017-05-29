@@ -8,6 +8,7 @@ dna_updater_follow_strand.py - helper function for dna_updater_ladders.
 """
 
 from utilities.constants import noop
+import collections
 
 _FAKE_AXIS_FOR_BARE_STRANDS = [1]
     # arbitrary non-false object comparable using 'is'
@@ -101,7 +102,7 @@ def dna_updater_follow_strand(phase, strand, strand_axis_info, break_axis, break
         # but this special case seems to fix the assertion error we otherwise
         # got below, from "assert prior_axis is not None # since at least one s_atom",
         # so for now, permit it (with debug print) and see if it causes any other trouble.
-        print "fyi: dna_updater_follow_strand bailing on 0-length strand %r" % (strand,)
+        print("fyi: dna_updater_follow_strand bailing on 0-length strand %r" % (strand,))
         return
 
     assert phase in (1,2)
@@ -109,14 +110,14 @@ def dna_updater_follow_strand(phase, strand, strand_axis_info, break_axis, break
         break_strand_phase2 = break_strand
         break_strand = noop # optimization
         break_axis = noop # optimization
-        assert callable( axis_break_between_Q)
-        assert callable( break_strand_phase2)
+        assert isinstance( axis_break_between_Q, collections.Callable)
+        assert isinstance( break_strand_phase2, collections.Callable)
     else:
         assert axis_break_between_Q is None
         break_strand_phase2 = None # not used, but mollify pylint
 
-    assert callable(break_axis)
-    assert callable(break_strand)
+    assert isinstance(break_axis, collections.Callable)
+    assert isinstance(break_strand, collections.Callable)
 
     prior_axis = None
     prior_index = None

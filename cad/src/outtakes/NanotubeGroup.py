@@ -176,7 +176,7 @@ class NanotubeGroup(Group):
         atomList = []
         def func(node):
             if isinstance(node, self.assy.Chunk):
-                atomList.extend(node.atoms.itervalues())
+                atomList.extend(iter(node.atoms.values()))
 
         self.apply2all(func)
         return atomList

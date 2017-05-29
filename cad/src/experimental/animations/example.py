@@ -40,7 +40,7 @@ animate.remove_old_yuvs()
 m = animate.MpegSequence()
 
 if rendering:
-    print 'RENDERING...'
+    print('RENDERING...')
     # First step, generate all the subframes we'll need
     m.rawSubframes(os.path.join(animate.mpeg_dir, 'fastpov'),
                    os.path.join(animate.mpeg_dir, 'fastjpeg'),

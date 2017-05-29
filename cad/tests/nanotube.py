@@ -63,8 +63,8 @@ class Chirality:
     class ConstError(TypeError): pass
     def __setattr__(self,name,value):
         # Don't touch my precious constants
-        if self.__dict__.has_key(name):
-            raise self.ConstError, "Can't reassign " + name
+        if name in self.__dict__:
+            raise self.ConstError("Can't reassign " + name)
         self.__dict__[name] = value
 
     def x1y1(self, n, m):
@@ -157,7 +157,7 @@ mol (Nanotube.1) def
                 outf.write("info atom atomtype = sp3\n")
                 r = "bond1"
             else:
-                raise Exception, "unknown element"
+                raise Exception("unknown element")
             bondlist = self.bondsForAtom(i+1)
             for k in bondlist:
                 a1, a2 = self.bonds[k]

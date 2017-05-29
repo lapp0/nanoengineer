@@ -323,7 +323,7 @@ class Move_Command(SelectChunks_Command):
         elif rotype == 'ROTATEZ':
             ma = V(0,0,1) # Z Axis
         else:
-            print 'modifyMody.rotateTheta: Error.  rotype = ', rotype, ', which is undefined.'
+            print('modifyMody.rotateTheta: Error.  rotype = ', rotype, ', which is undefined.')
             return
 
         # wware 20061214: I don't know where the need arose for this factor of 100,

@@ -420,7 +420,7 @@ class GamessProp(QDialog, Ui_GamessPropDialog):
                 self.dfttyp_combox.insertItem(100, f)
                 # 100 makes sure item is appended to list. [mark 2007-05-04]
         else:
-            print "load_dfttyp_combox: Unknown GAMESS Version.  Loading GAMES DFT functionals."
+            print("load_dfttyp_combox: Unknown GAMESS Version.  Loading GAMES DFT functionals.")
             for f in gms_dfttyp_items:
                 self.dfttyp_combox.insertItem(100, f)
                 # 100 makes sure item is appended to list. [mark 2007-05-04]

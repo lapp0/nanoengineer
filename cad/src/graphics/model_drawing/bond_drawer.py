@@ -592,8 +592,8 @@ def draw_bond_main(self,
                 roles = (atom1.element.role, atom2.element.role)
                      # Inlined self.is_rung_bond() .
                 if roles == ('axis', 'strand') or roles == ('strand', 'axis'):
-                    print ("\n*** bug in dna updater: %s %r" %
-                           ("errors not propogated along", self))
+                    print(("\n*** bug in dna updater: %s %r" %
+                           ("errors not propogated along", self)))
         #bruce 071016 (tentative -- needs mouseover msg, as said above)
         # (TODO: we could set an error message string on self, but set it to
         # None whenever not setting the error color; since this is done whenever

@@ -34,6 +34,7 @@ from PyQt4.Qt import QIcon
 from utilities import debug_flags
 
 from foundation.undo_manager import wrap_callable_for_undo
+import collections
 
 # ==
 
@@ -96,12 +97,12 @@ def makemenu_helper(widget, menu_spec, menu = None):
                 #menu.insertItem( menutext, submenu )
                 menu.addMenu(submenu)   # how do I get menutext in there?
                     # (similar code might work for QAction case too, not sure)
-            elif m and isinstance(m[1], types.ListType): #bruce 041103 added this case
+            elif m and isinstance(m[1], list): #bruce 041103 added this case
                 submenu = QMenu(menutext, menu)
                 submenu = makemenu_helper(widget, m[1], submenu) # [this used to call widget.makemenu]
                 menu.addMenu(submenu)
             elif m:
-                assert callable(m[1]), \
+                assert isinstance(m[1], collections.Callable), \
                     "%r[1] needs to be a callable" % (m,) #bruce 041103
                 # transform m[1] into a new callable that makes undo checkpoints and provides an undo command-name
                 # [bruce 060324 for possible bugs in undo noticing cmenu items, and for the cmdnames]
@@ -132,7 +133,7 @@ def makemenu_helper(widget, menu_spec, menu = None):
                     # (Speculation: maybe because insertSeparator was used, since addSeparator didn't work or wasn't noticed,
                     #  and since disabled item were added by an older function (also for unknown reasons)?)
                 pass
-        except Exception, e:
+        except Exception as e:
             if isinstance(e, SystemExit):
                 raise
             print_compact_traceback("exception in makemenu_helper ignored, for %r:\n" % (m,) )
@@ -176,11 +177,11 @@ def insert_command_into_menu(menu, menutext, command, options = (), position = -
     for option in options:
         # some options have to be processed first
         # since they are only usable when the menu item is inserted. [bruce 050614]
-        if type(option) is types.TupleType:
+        if type(option) is tuple:
             if option[0] == 'iconset':
                 # support iconset, pixmap, or pixmap filename [bruce 050614 new feature]
                 iconset = option[1]
-                if type(iconset) is types.StringType:
+                if type(iconset) is bytes:
                     filename = iconset
                     from utilities.icon_utilities import imagename_to_pixmap
                     iconset = imagename_to_pixmap(filename)
@@ -208,7 +209,7 @@ def insert_command_into_menu(menu, menutext, command, options = (), position = -
             mitem.setChecked(False)
         elif option == 'disabled':
             mitem.setEnabled(False)
-        elif type(option) is types.TupleType:
+        elif type(option) is tuple:
             if option[0] == 'whatsThis':
                 text = option[1]
                 if ENABLE_WHATSTHIS_LINKS:
@@ -218,13 +219,13 @@ def insert_command_into_menu(menu, menutext, command, options = (), position = -
                 pass # this was processed above
             else:
                 if debug_flags.atom_debug:
-                    print "atom_debug: fyi: don't understand menu_spec option %r", (option,)
+                    print("atom_debug: fyi: don't understand menu_spec option %r", (option,))
             pass
         elif option is None:
             pass # this is explicitly permitted and has no effect
         else:
             if debug_flags.atom_debug:
-                print "atom_debug: fyi: don't understand menu_spec option %r", (option,)
+                print("atom_debug: fyi: don't understand menu_spec option %r", (option,))
         pass
         #e and something to use QMenuData.setShortcut
         #e and something to run whatever func you want on menu and mitem_id

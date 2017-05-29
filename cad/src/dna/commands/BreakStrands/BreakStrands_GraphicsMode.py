@@ -94,7 +94,7 @@ class BreakStrands_GraphicsMode(BreakOrJoinstrands_GraphicsMode ):
             if DEBUG_DRAW_SPHERES_AROUND_ATOMS_AT_BREAK_SITES:
                 breakSitesDict = self._breakSite_marker.getBreakSitesDict()
 
-                atmList = breakSitesDict.values()
+                atmList = list(breakSitesDict.values())
 
                 for atm in atmList:
                     sphere_radius = max(1.2*atm.drawing_radius(),
@@ -107,8 +107,8 @@ class BreakStrands_GraphicsMode(BreakOrJoinstrands_GraphicsMode ):
 
             breakSites_atomPairs_dict = self._breakSite_marker.getBreakSites_atomPairsDict()
 
-            for aDict in breakSites_atomPairs_dict.values(): #DEBUG========
-                for atm1, atm2 in aDict.values():
+            for aDict in list(breakSites_atomPairs_dict.values()): #DEBUG========
+                for atm1, atm2 in list(aDict.values()):
                     #Its okay to do this check for only atm1 (for speed reason)
                     #lets assume that atm2 drawing radius will be the same (it won't
                     #be the same in very rare cases....)
@@ -124,7 +124,7 @@ class BreakStrands_GraphicsMode(BreakOrJoinstrands_GraphicsMode ):
 
             startAtomsDict = self._breakSite_marker.getStartAtomsDict()
 
-            for atm in startAtomsDict.values():
+            for atm in list(startAtomsDict.values()):
                 sphere_radius = max(1.2*atm.drawing_radius(),
                                     SPHERE_RADIUS_2)
                 color = atm.molecule.color
@@ -173,7 +173,7 @@ class BreakStrands_GraphicsMode(BreakOrJoinstrands_GraphicsMode ):
             if _DEBUG_DRAW_SPHERES_AROUND_ATOMS_AT_BREAK_SITES:
                 breakSitesDict = self._breakSite_marker.getBreakSitesDict()
 
-                atmList = breakSitesDict.values()
+                atmList = list(breakSitesDict.values())
 
                 for atm in atmList:
                     sphere_radius = max(1.2*atm.drawing_radius(),
@@ -187,7 +187,7 @@ class BreakStrands_GraphicsMode(BreakOrJoinstrands_GraphicsMode ):
             breakSites_atomPairs_dict = self._breakSite_marker.getBreakSites_atomPairsDict()
 
 
-            for atm1, atm2 in breakSites_atomPairs_dict.values():
+            for atm1, atm2 in list(breakSites_atomPairs_dict.values()):
                 #Its okay to do this check for only atm1 (for speed reason)
                 #lets assume that atm2 drawing radius will be the same (it won't
                 #be the same in very rare cases....)
@@ -203,7 +203,7 @@ class BreakStrands_GraphicsMode(BreakOrJoinstrands_GraphicsMode ):
 
             startAtomsDict = self._breakSite_marker.getStartAtomsDict()
 
-            for atm in startAtomsDict.values():
+            for atm in list(startAtomsDict.values()):
                 sphere_radius = max(1.2*atm.drawing_radius(),
                                     SPHERE_RADIUS_2)
                 color = atm.molecule.color
@@ -242,7 +242,7 @@ class BreakStrands_GraphicsMode(BreakOrJoinstrands_GraphicsMode ):
     def breakStrandBonds(self):
         breakSites_atomPairs_dict = self._breakSite_marker.getBreakSites_atomPairsDict()
 
-        for aDict in breakSites_atomPairs_dict.values():
+        for aDict in list(breakSites_atomPairs_dict.values()):
             lst = list(aDict.keys())
             for bond in lst:
                 bond.bust()

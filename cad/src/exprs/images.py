@@ -112,21 +112,18 @@ courierfile = os.path.join( image_directory(), "ui/exprs/text/courier-128.png") 
 
 debug_glGenTextures = True #070308 #####
 
-class _texture_holder(object):
+class _texture_holder(object, metaclass=ExprsMeta):
     """
     [private class for use in a public MemoDict]
     From a filename and other data, create on demand, and cache, a PIL Image object and an optional OpenGL texture object;
     objects of this class are meant to be saved as a memoized dict value with the filename being the dict key
     """
-    #e so far, no param choices, keep only one version, no mgmt, no scaling...
-
-    __metaclass__ = ExprsMeta #e or could use ConstantComputeMethodMixin I think
 
     def __init__(self, tex_key):
         self.filename, self.pil_kws_items = tex_key # have to put sorted items tuple in key, since dict itself is unhashable
         self.pil_kws = dict(self.pil_kws_items)
         if 1: #e could remove when works, but don't really need to
-            items = self.pil_kws.items()
+            items = list(self.pil_kws.items())
             items.sort()
             assert tuple(items) == self.pil_kws_items
         # pil_kws added 061127, doc in nEImageOps;
@@ -151,7 +148,7 @@ class _texture_holder(object):
         if debug_glGenTextures and seen_before(('debug_glGenTextures', self.filename)):
             #070313 using env.seen_before (rename env module (cad/src) -> global_env? for now, basic imports seen_before via py_utils.)
             #k I'm not sure if, after certain reloads, I should expect to routinely see this message as textures get reloaded. 070313
-            print "debug fyi: same filename seen before, in glGenTextures -> %r for %r" % (tex_name, self)
+            print("debug fyi: same filename seen before, in glGenTextures -> %r for %r" % (tex_name, self))
         # note: by experiment (iMac G5 Panther), this returns a single number (1L, 2L, ...), not a list or tuple,
         # but for an argument >1 it returns a list of longs. We depend on this behavior here. [bruce 060207]
         tex_name = int(tex_name) # make sure it worked as expected
@@ -317,7 +314,7 @@ def canon_image_filename( filename):
         # and it was still present in cvs (I think -- at least it's in my checkouts) as of 070604.
         os.path.join( cad, "images"),
     ]
-    tries = map( lambda dir: os.path.join(dir, filename), path)
+    tries = [os.path.join(dir, filename) for dir in path]
     lastresort = courierfile
         #e replace with some error-indicator image, or make one with the missing filename as text (on demand, or too slow)
     ## tries.append(lastresort)
@@ -326,14 +323,14 @@ def canon_image_filename( filename):
         if filename == -1:
             filename = lastresort
             if 'too important to not tell all users for now' or debug_flags.atom_debug:
-                print "bug: image file %r not found, using last-resort image file %r" % (orig_filename, lastresort) ###
+                print("bug: image file %r not found, using last-resort image file %r" % (orig_filename, lastresort)) ###
         filename = os.path.abspath(os.path.normpath(filename)) # faster to do this on demand
         if os.path.isfile(filename):
             if DEBUG_IMAGE_SEARCH:
-                print "                found:",filename
+                print("                found:",filename)
             return filename
         if DEBUG_IMAGE_SEARCH:
-            print "didn't find:", filename
+            print("didn't find:", filename)
     assert 0, "lastresort file %r should always be present" % os.path.abspath(os.path.normpath(lastresort))
     pass # end of canon_image_filename
 
@@ -467,7 +464,7 @@ class Image(Widget2D):
         # Note: don't include texture_options here, since they don't affect the PIL image object itself.
         pil_kws = dict(rescale = self.rescale, ideal_width = self.ideal_width, ideal_height = self.ideal_height,
                        convert = self.convert, _tmpmode = self._tmpmode)
-        items = pil_kws.items()
+        items = list(pil_kws.items())
         items.sort()
         pil_kws_items = tuple(items) # make that dict hashable
         tex_key = (self.use_filename, pil_kws_items) # must be compatible with the single arg to _texture_holder.__init__
@@ -754,9 +751,9 @@ class PixelGrabber(InstanceOrExpr, DelegatingMixin):#e draft, API needs revision
             #  It's in http://www.pythonware.com/library/pil/handbook/image.htm .)
             # But I'd need to read up about how the option should be given for other formats.
         if os.path.isfile(filename):
-            print "saved image, %d x %d:" % (w,h), filename
+            print("saved image, %d x %d:" % (w,h), filename)
         else:
-            print "save image (%d x %d) didn't work:" % (w,h), filename
+            print("save image (%d x %d) didn't work:" % (w,h), filename)
         return
     pass # end of class PixelGrabber
 

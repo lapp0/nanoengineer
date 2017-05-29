@@ -109,12 +109,12 @@ def PAM_atoms_allowed_in_same_ladder(a1, a2): #bruce 080401
         elif bond.is_rung_bond():
             weird = "rung bond"
         if weird:
-            print "might cause bugs: %r and %r not allowed in same ladder, but %s" % (a1, a2, weird)
+            print("might cause bugs: %r and %r not allowed in same ladder, but %s" % (a1, a2, weird))
             if explain_false:
-                print " reason not allowed: ", print0[0]
+                print(" reason not allowed: ", print0[0])
         elif explain_false_always:
-            print "debug fyi: PAM_atoms_allowed_in_same_ladder(%r, %r) -> %r" % (a1, a2, res)
-            print " reason not allowed: ", print0[0]
+            print("debug fyi: PAM_atoms_allowed_in_same_ladder(%r, %r) -> %r" % (a1, a2, res))
+            print(" reason not allowed: ", print0[0])
     return res
 
 # end

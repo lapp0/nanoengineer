@@ -80,9 +80,9 @@ def printBond(a1, bond1, ac, bond2, a2, parameters):
     bendName = '%s-%s-%s.%s-%s-%s' % (a1, b1, ac, centerHybridization, b2, a2)
     bendLine = 'addInitialBendData(%-14s, %-13s, %2d, "%s");' % (ktheta, theta0, quality, bendName)
     if (bendName in bends):
-        print '//' + bendLine
+        print('//' + bendLine)
     else:
-        print '  ' + bendLine
+        print('  ' + bendLine)
     bends[bendName] = 1
 
 if __name__ == "__main__":
@@ -96,7 +96,7 @@ if __name__ == "__main__":
         # find RCSID
         m = idPattern.search(lin)
         if m:
-            print '#define RCSID_BENDS_H "Generated from: ' + m.group(1) + '"'
+            print('#define RCSID_BENDS_H "Generated from: ' + m.group(1) + '"')
             continue
 
         # ignore comments and blank lines
@@ -124,10 +124,10 @@ if __name__ == "__main__":
             if m:
                 if not headerPrinted:
                     headerPrinted = True
-                    print '//                     ktheta          theta0  quality bondName'
+                    print('//                     ktheta          theta0  quality bondName')
                 printBond(m.group(1), m.group(2), m.group(3), m.group(4), m.group(5), parameters)
             else:
-                print >> sys.stderr, 'malformed bond: ' + bond
+                print('malformed bond: ' + bond, file=sys.stderr)
             continue
         else:
-            print >> sys.stderr, 'unrecognized line: "' + lin + '"'
+            print('unrecognized line: "' + lin + '"', file=sys.stderr)

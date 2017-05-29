@@ -138,8 +138,8 @@ class ChainAtomMarker(Jig):
             # (i don't know if that can happen), and assert not too many atoms.
             assert len(atomlist) <= _NUMBER_OF_MARKER_ATOMS
             if atomlist:
-                print "bug? %r.setAtoms(%r), len != _NUMBER_OF_MARKER_ATOMS or 0" % \
-                      (self, atomlist)
+                print("bug? %r.setAtoms(%r), len != _NUMBER_OF_MARKER_ATOMS or 0" % \
+                      (self, atomlist))
             self.marked_atom = self.next_atom = None #bruce 080216
         self._check_atom_order() #bruce 080216 do in all cases, was just main one
         return
@@ -224,7 +224,7 @@ class ChainAtomMarker(Jig):
         """
         res = ( len(self.atoms) < self._expected_number_of_atoms() )
         if debug_flags.DEBUG_DNA_UPDATER_VERBOSE:
-            print "is_homeless(%r) returning %r" % (self, res)
+            print("is_homeless(%r) returning %r" % (self, res))
         return res
 
 # old code:

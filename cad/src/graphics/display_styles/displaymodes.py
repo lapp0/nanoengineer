@@ -146,7 +146,7 @@ class ChunkDisplayMode(DisplayMode):
             # this would set global style if nothing was selected
             # (since that method used to act that way).
         if env.debug():
-            print "setDisplayStyle_of_selection to %r.ind == %r" % (self, self.ind)
+            print("setDisplayStyle_of_selection to %r.ind == %r" % (self, self.ind))
         return
 
     def _f_drawchunk(self, glpane, chunk, highlighted = False):

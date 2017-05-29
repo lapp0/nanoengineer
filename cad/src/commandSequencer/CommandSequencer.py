@@ -47,6 +47,7 @@ from commandSequencer.command_levels import allowed_parent
 
 from command_support.modes import nullMode
 from command_support.baseCommand import baseCommand # only for isinstance assertion
+import imp
 
 
 _DEBUG_CSEQ_INIT = False # DO NOT COMMIT with True
@@ -155,7 +156,7 @@ class CommandSequencer(object):
         # todo: should try to clean up init code (see docstring)
         # now that USE_COMMAND_STACK is always true.
         if _DEBUG_CSEQ_INIT:
-            print "_DEBUG_CSEQ_INIT: __init__"###
+            print("_DEBUG_CSEQ_INIT: __init__")###
 
         self.assy = assy
         self.win = assy.win
@@ -227,7 +228,7 @@ class CommandSequencer(object):
         for them to do. So we can ignore this for now.)
         """
         if _DEBUG_CSEQ_INIT:
-            print "_DEBUG_CSEQ_INIT: reinit modes"###
+            print("_DEBUG_CSEQ_INIT: reinit modes")###
 
         self.exit_all_commands()
 
@@ -252,24 +253,24 @@ class CommandSequencer(object):
             # that comment fairly recently. [bruce 080925 comment]
         for command_class in preloaded_command_classes():
             commandName = command_class.commandName
-            assert not self._commandTable.has_key(commandName)
+            assert commandName not in self._commandTable
             # use preloaded_command_classes for ordering, even when
             # instantiating registered classes that replace them
             actual_class = self._registered_command_classes.get(
                 commandName, command_class )
             if actual_class is not command_class:
-                print "fyi: instantiating replacement command %r" % (actual_class,)
+                print("fyi: instantiating replacement command %r" % (actual_class,))
                 assert actual_class.commandName == commandName
                     # always true, due to how these are stored and looked up
             self._instantiate_cached_command( actual_class)
         # now do the rest of the registered classes
         # (in order of their commandNames, so bugs are more likely
         #  to be deterministic)
-        more_items = self._registered_command_classes.items()
+        more_items = list(self._registered_command_classes.items())
         more_items.sort()
         for commandName, actual_class in more_items:
-            if not self._commandTable.has_key(commandName):
-                print "fyi: instantiating registered non-built-in command %r" % (actual_class,)
+            if commandName not in self._commandTable:
+                print("fyi: instantiating registered non-built-in command %r" % (actual_class,))
                 self._instantiate_cached_command( actual_class)
 
         # todo: something to support lazily loaded/instantiated commands
@@ -348,7 +349,7 @@ class CommandSequencer(object):
                 print_compact_traceback()
             if self._raw_currentCommand and \
                self.currentCommand.commandName == old_commandName:
-                print "bug: failed to exit", self.currentCommand
+                print("bug: failed to exit", self.currentCommand)
                 break
             continue
         # Now we're in the default command. Some callers require us to exit
@@ -410,7 +411,7 @@ class CommandSequencer(object):
         try:
             del self._commandTable[commandName]
         except KeyError:
-            print "fyi: no command object for %r in prepare_to_reload_commandClass" % commandName
+            print("fyi: no command object for %r in prepare_to_reload_commandClass" % commandName)
         return
 
     def register_command_class(self, commandName, command_class): #bruce 080805
@@ -507,7 +508,7 @@ class CommandSequencer(object):
         #bruce 080813 moved/renamed this from GLPane.update_after_new_mode,
         # and refactored it
         if DEBUG_COMMAND_SEQUENCER:
-            print "DEBUG_COMMAND_SEQUENCER: calling _cseq_update_after_new_mode"
+            print("DEBUG_COMMAND_SEQUENCER: calling _cseq_update_after_new_mode")
         glpane = self.assy.glpane
         glpane.update_GLPane_after_new_command()
             #bruce 080903 moved this before the call of update_after_new_graphicsMode
@@ -655,7 +656,7 @@ class CommandSequencer(object):
             #bruce 080910
             if want_commandName is want_command:
                 # this is routine when we're called from test_commands_init.py
-                print "fyi: command object %r passed as want_commandName to userEnterCommand" % want_commandName
+                print("fyi: command object %r passed as want_commandName to userEnterCommand" % want_commandName)
                 want_commandName = want_command.commandName # make following code work
             else:
                 assert 0, "commandName mismatch: userEnterCommand gets want_commandName %r, " \
@@ -715,7 +716,7 @@ class CommandSequencer(object):
             continue
 
         if error:
-            print "error trying to enter", want_commandName #e more info
+            print("error trying to enter", want_commandName) #e more info
 
         if do_update:
             self._cseq_update_after_new_mode()
@@ -819,7 +820,7 @@ class CommandSequencer(object):
         """
         self._f_assert_command_stack_unlocked()
         if DEBUG_COMMAND_SEQUENCER:
-            print "DEBUG_COMMAND_SEQUENCER: _f_exit_active_command wants to exit back to", command
+            print("DEBUG_COMMAND_SEQUENCER: _f_exit_active_command wants to exit back to", command)
         assert command.command_is_active(), "can't exit inactive command: %r" % command
         # exit commands, innermost (current) first, until we fail,
         # or exit the command we were passed (our exit_target).
@@ -828,7 +829,7 @@ class CommandSequencer(object):
         while not error:
             old_command = self.currentCommand
             if DEBUG_COMMAND_SEQUENCER:
-                print "DEBUG_COMMAND_SEQUENCER: _f_exit_active_command will exit currentCommand", old_command
+                print("DEBUG_COMMAND_SEQUENCER: _f_exit_active_command will exit currentCommand", old_command)
             exited = self._exit_currentCommand_with_flags( cancel = cancel,
                                                            forced = forced,
                                                            implicit = implicit,
@@ -855,7 +856,7 @@ class CommandSequencer(object):
             pass
 
         if DEBUG_COMMAND_SEQUENCER:
-            print "DEBUG_COMMAND_SEQUENCER: _f_exit_active_command returns, currentCommand is", self.currentCommand
+            print("DEBUG_COMMAND_SEQUENCER: _f_exit_active_command returns, currentCommand is", self.currentCommand)
         return
 
     _f_command_stack_is_locked = None # None or a reason string
@@ -864,14 +865,14 @@ class CommandSequencer(object):
         assert not self._f_command_stack_is_locked
         self._f_command_stack_is_locked = why or "for some reason"
         if _DEBUG_COMMAND_STACK_LOCKING:
-            print "_DEBUG_COMMAND_STACK_LOCKING: locking command stack:", self._f_command_stack_is_locked ###
+            print("_DEBUG_COMMAND_STACK_LOCKING: locking command stack:", self._f_command_stack_is_locked) ###
         return
 
     def _f_unlock_command_stack(self):
         assert self._f_command_stack_is_locked
         self._f_command_stack_is_locked = None
         if _DEBUG_COMMAND_STACK_LOCKING:
-            print "_DEBUG_COMMAND_STACK_LOCKING: unlocking command stack"
+            print("_DEBUG_COMMAND_STACK_LOCKING: unlocking command stack")
         return
 
     def _f_assert_command_stack_unlocked(self):
@@ -1036,7 +1037,7 @@ class CommandSequencer(object):
         try:
             self._enterRequestCommand(commandName)
             if not self._fyi_request_data_was_accessed:
-                print "bug: request command forgot to call _args_and_callback_for_request_command:", commandName
+                print("bug: request command forgot to call _args_and_callback_for_request_command:", commandName)
         finally:
             self._entering_request_command = False
             self._request_arguments = None
@@ -1081,13 +1082,13 @@ class CommandSequencer(object):
             # set current command to nullmode),
             # to protect from all kinds of events? [bruce 080829]
             if _DEBUG_F_UPDATE_CURRENT_COMMAND:
-                print "_DEBUG_F_UPDATE_CURRENT_COMMAND: _f_update_current_command does nothing since command stack is locked (%s)" % \
-                      self._f_command_stack_is_locked
+                print("_DEBUG_F_UPDATE_CURRENT_COMMAND: _f_update_current_command does nothing since command stack is locked (%s)" % \
+                      self._f_command_stack_is_locked)
             return
         else:
             # this is very common
             if _DEBUG_F_UPDATE_CURRENT_COMMAND:
-                print "_DEBUG_F_UPDATE_CURRENT_COMMAND: _f_update_current_command called, stack not locked"
+                print("_DEBUG_F_UPDATE_CURRENT_COMMAND: _f_update_current_command called, stack not locked")
 
         self._f_assert_command_stack_unlocked()
 
@@ -1109,8 +1110,8 @@ class CommandSequencer(object):
                 break
             pass
         if not good:
-            print "likely bug: command_update_state changed current command " \
-                  "away from, then back to, %r" % self.currentCommand
+            print("likely bug: command_update_state changed current command " \
+                  "away from, then back to, %r" % self.currentCommand)
         # command stack should not be changed after this point
         command = self.currentCommand
 
@@ -1149,7 +1150,7 @@ class CommandSequencer(object):
                     old_PM.close() # might not be needed, if desired_PM is not None ### REVIEW
                 except:
                     # might happen for same reason as an existing common exception related to this...
-                    print "fyi: discarded exception in closing %r" % old_PM
+                    print("fyi: discarded exception in closing %r" % old_PM)
                     pass
             if desired_PM:
                 desired_PM.show()
@@ -1178,7 +1179,7 @@ class CommandSequencer(object):
         pw = self.win.activePartWindow()
         if not pw:
             # I don't know if pw can be None
-            print "fyi: _KLUGE_current_PM sees pw of None" ###
+            print("fyi: _KLUGE_current_PM sees pw of None") ###
             return None
         try:
             return pw.KLUGE_current_PropertyManager()
@@ -1290,8 +1291,8 @@ class CommandSequencer(object):
             assert res
         except:
             if debug_flags.atom_debug:
-                print "fyi: error adding testmode.py from cad/src/exprs " \
-                      "to custom modes menu (ignored)"
+                print("fyi: error adding testmode.py from cad/src/exprs " \
+                      "to custom modes menu (ignored)")
             pass
         try:
             import platform_dependent.gpl_only as gpl_only
@@ -1320,13 +1321,13 @@ class CommandSequencer(object):
             # (so an explicit --include is not needed for it)
             # (but this is apparently still failing to let the testmode
             # item work in a built release -- I don't know why ###FIX)
-            print "_enter_custom_mode specialcase for testmode"
+            print("_enter_custom_mode specialcase for testmode")
                 #e remove this print, when it works in a built release
             import exprs.testmode as testmode
             ## reload(testmode) # This reload is part of what prevented
             # this case from working in A9 [bruce 070611]
             from exprs.testmode import testmode as _modeclass
-            print "_enter_custom_mode specialcase -- import succeeded"
+            print("_enter_custom_mode specialcase -- import succeeded")
         else:
             dir, file = os.path.split(fn)
             base, ext = os.path.splitext(file)
@@ -1349,7 +1350,7 @@ class CommandSequencer(object):
             _module = _modeclass = None
                 # fool pylint into realizing this is not undefined 2 lines below
             exec("import %s as _module" % (base,))
-            reload(_module)
+            imp.reload(_module)
             exec("from %s import %s as _modeclass" % (base,base))
             sys.path = oldpath
         modeobj = _modeclass(self)

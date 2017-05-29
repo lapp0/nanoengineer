@@ -18,6 +18,7 @@ from utilities.debug import register_debug_menu_command
 from PyQt4.Qt import QObject ## , QWidget, SIGNAL
 from utilities import debug_flags # for atom_debug
 import utilities.EndUser as EndUser
+import imp
 
 # debug print options
 
@@ -74,19 +75,19 @@ else:
 ## DISABLE_SLOT_ARGCOUNT_RETRY = False # DO NOT COMMIT with this line enabled -- for testing of end user case code
 
 if EndUser.enableDeveloperFeatures():
-    print "DISABLE_SLOT_ARGCOUNT_RETRY =", DISABLE_SLOT_ARGCOUNT_RETRY
+    print("DISABLE_SLOT_ARGCOUNT_RETRY =", DISABLE_SLOT_ARGCOUNT_RETRY)
 
 # ==
 
 def reload_undo(target = None):
     # does this work at all, now that undo_UI was split out of undo_manager? [bruce 071217 Q]
     import foundation.undo_archive as undo_archive
-    reload(undo_archive)
+    imp.reload(undo_archive)
     import foundation.undo_manager as undo_manager
-    reload(undo_manager)
+    imp.reload(undo_manager)
     import foundation.undo_internals as undo_internals
-    reload(undo_internals)
-    print "\nreloaded 3 out of 4 undo_*.py files; open a new file and we'll use them\n" #e (works, but should make reopen automatic)
+    imp.reload(undo_internals)
+    print("\nreloaded 3 out of 4 undo_*.py files; open a new file and we'll use them\n") #e (works, but should make reopen automatic)
 
 register_debug_menu_command("reload undo", reload_undo)
 
@@ -97,7 +98,7 @@ def keep_under_key(thing, key, obj, attr):
     obj.attr[key] = thing, creating obj.attr dict if necessary
     """
     if DEBUG_PRINT_UNDO and 0:
-        print "keepkey:",key,"keepon_obj:",obj # also print attr to be complete
+        print("keepkey:",key,"keepon_obj:",obj) # also print attr to be complete
             # This shows unique keys, but just barely (name is deleg for lots of QActions)
             # so we'll have to worry about it, and maybe force all keys unique during init.
             # If some keys are not unique, result might be that some user actions
@@ -140,7 +141,7 @@ class wrappedslot:
                 if success:
                     # if DEBUG_GETARGSPEC, args_info already printed basic info
                     if any_kws_ok and DEBUG_GETARGSPEC:
-                        print "DEBUG_GETARGSPEC: surprised to see **kws in a slot method; ignoring this issue: %r" % (slotboundmethod,)
+                        print("DEBUG_GETARGSPEC: surprised to see **kws in a slot method; ignoring this issue: %r" % (slotboundmethod,))
                     del any_kws_ok
                     signal_args = guess_signal_argcount(signal)
                     strict = True # whether our test is not certain (i.e. too loose); might be set to false below
@@ -150,7 +151,7 @@ class wrappedslot:
                         strict = False
                     if maxargs is None:
                         if DEBUG_GETARGSPEC:
-                            print "DEBUG_GETARGSPEC: note: %r accepts **args, unusual for a slot method" % (slotboundmethod,)
+                            print("DEBUG_GETARGSPEC: note: %r accepts **args, unusual for a slot method" % (slotboundmethod,))
                         maxargs = max(999999, signal_args + 1)
                         strict = False
                     assert type(minargs) == type(1)
@@ -159,19 +160,19 @@ class wrappedslot:
                     if not ok:
                         # print the warning which is the point of USE_GETARGSPEC
                         if minargs != maxargs:
-                            print "\n * * * WARNING: we guess %r wants from %d to %d args, but signal %r passes %d args" % \
-                                  (slotboundmethod, minargs, maxargs, signal, signal_args)
+                            print("\n * * * WARNING: we guess %r wants from %d to %d args, but signal %r passes %d args" % \
+                                  (slotboundmethod, minargs, maxargs, signal, signal_args))
                         else:
-                            print "\n * * * WARNING: we guess %r wants %d args, but signal %r passes %d args" % \
-                                  (slotboundmethod, maxargs, signal, signal_args)
+                            print("\n * * * WARNING: we guess %r wants %d args, but signal %r passes %d args" % \
+                                  (slotboundmethod, maxargs, signal, signal_args))
                     elif DEBUG_GETARGSPEC:
                         if minargs != maxargs:
-                            print "DEBUG_GETARGSPEC: %r and %r agree about argcount (since %d <= %d <= %d)" % \
-                                  (slotboundmethod, signal, minargs, signal_args, maxargs)
+                            print("DEBUG_GETARGSPEC: %r and %r agree about argcount (since %d <= %d <= %d)" % \
+                                  (slotboundmethod, signal, minargs, signal_args, maxargs))
                         else:
                             assert signal_args == minargs
-                            print "DEBUG_GETARGSPEC: %r and %r agree about argcount %d" % \
-                                  (slotboundmethod, signal, minargs)
+                            print("DEBUG_GETARGSPEC: %r and %r agree about argcount %d" % \
+                                  (slotboundmethod, signal, minargs))
                     self.need_runtime_test = (not ok) or (not strict)
                         # REVIEW: also say "or any_kws_ok", or if kws passed at runtime?
                 else:
@@ -192,9 +193,9 @@ class wrappedslot:
         # or we might call methods passed to us, or of known names on an obj passed to us;
         # or we might call a func passed to us, passing it a callback to us which does the slot call.
         if kws:
-            print "unexpected but maybe ok: some keywords were passed to a slot method:", slotboundmethod, kws # maybe never seen
+            print("unexpected but maybe ok: some keywords were passed to a slot method:", slotboundmethod, kws) # maybe never seen
         if DEBUG_PRINT_UNDO:
-            print "(#e begin) calling wrapped version (with %d args) of" % len(args), slotboundmethod
+            print("(#e begin) calling wrapped version (with %d args) of" % len(args), slotboundmethod)
         mc = self.begin()
         try:
             if DISABLE_SLOT_ARGCOUNT_RETRY:
@@ -216,7 +217,7 @@ class wrappedslot:
                 except TypeError:
                     # it might be that we're passing too many args. Try to find out and fix. First, for debugging, print more info.
                     if DEBUG_FEWER_ARGS_RETRY:
-                        print "args for %r from typeerror: args %r, kws %r" % (slotboundmethod, args, kws)
+                        print("args for %r from typeerror: args %r, kws %r" % (slotboundmethod, args, kws))
                     if USE_GETARGSPEC and not self.need_runtime_test:
                         if self.args_info_result is None:
                             self.args_info_result = args_info(slotboundmethod)
@@ -250,19 +251,19 @@ class wrappedslot:
                             res = slotboundmethod(*args, **kws)
                             worked = True
                             if DEBUG_FEWER_ARGS_RETRY:
-                                print " retry with fewer args (%d) worked" % len(args)
+                                print(" retry with fewer args (%d) worked" % len(args))
                             break # if no exceptions
                         except TypeError:
                             # guessing it's still an arg problem
                             if DEBUG_FEWER_ARGS_RETRY:
                                 if NONERROR_STDERR_OK:
                                     print_compact_traceback("assuming this is a slot argcount problem: ")
-                                print "args for %r from typeerror, RETRY: args %r, kws %r" % (slotboundmethod, args, kws)
+                                print("args for %r from typeerror, RETRY: args %r, kws %r" % (slotboundmethod, args, kws))
                             continue
                         # other exceptions are treated as errors, below
                     if not worked:
                         # TODO (maybe): retry with first arglist? more likely to be the real error...
-                        print "will try to reraise the last TypeError" # always print this, since we're about to print a traceback
+                        print("will try to reraise the last TypeError") # always print this, since we're about to print a traceback
                         raise
                         assert 0, "tried to reraise the last TypeError"
                     pass
@@ -272,13 +273,13 @@ class wrappedslot:
             self.error()
             self.end(mc)
             if DEBUG_PRINT_UNDO:
-                print "(#e end) it had an exception"
-            print "bug: exception in %r%r (noticed in its undo wrapper); reraising it:" % (slotboundmethod, args)
+                print("(#e end) it had an exception")
+            print("bug: exception in %r%r (noticed in its undo wrapper); reraising it:" % (slotboundmethod, args))
             raise   #k ok? optimal??
         else:
             self.end(mc)
             if DEBUG_PRINT_UNDO:
-                print "(#e end) it worked" ##  it returned", res
+                print("(#e end) it worked") ##  it returned", res
                     # Note that slot retvals are probably ignored, except when they're called directly
                     # (not via connections), but we don't intercept direct calls anyway.
                     # So don't bother printing them for now.
@@ -339,7 +340,7 @@ class wrappedslot:
                             # same list and call it differently, with a different flag?? ##e
                             assy.current_command_info(cmdname = fn) #e cmdname might be set more precisely by the slot we're wrapping
                 if 0:
-                    print " featurename =", fn
+                    print(" featurename =", fn)
                     # This works! prints correct names for toolbuttons and main menu items.
                     # Doesn't work for glpane cmenu items, but I bet it will when we fix them to have proper WhatsThis text.
                     # Hmm, how will we do that? There is presently no formal connection between them and the usual qactions
@@ -352,7 +353,7 @@ class wrappedslot:
                 # they might in theory need them in the future for some recipients, so it's not usually safe to exclude them.
                 # Instead, someday we'll optimize this more when no changes actually occurred (e.g. detect that above).
                 if 0 and env.debug():
-                    print "debug: wrappedslot found no featurename, signal = %r, sender = %r" % (self.__signal, sender)
+                    print("debug: wrappedslot found no featurename, signal = %r, sender = %r" % (self.__signal, sender))
         ## return cp_fn, mc  #060123 revised retval
         return mc
     def error(self):
@@ -361,7 +362,7 @@ class wrappedslot:
         """
         ###e mark the op_run as having an error, or at least print something
         if debug_flags.atom_debug:
-            print "atom_debug: unmatched begin_op??"
+            print("atom_debug: unmatched begin_op??")
         return
     def end(self, mc):
         ## cp_fn, mc = fn_mc
@@ -411,7 +412,7 @@ class hacked_connect_method_installer: #e could be refactored into hacked-method
             # which we could use instead of those last two args.
             # So for now, let's just print the args and hope we didn't need to wrap them.
             if DEBUG_PRINT_UNDO:
-                print "not wrapping connect-slot since args not len 3:",args###@@@
+                print("not wrapping connect-slot since args not len 3:",args)###@@@
             newargs = args
         else:
             # figure out what connection is being made, and whether we want to wrap its slot
@@ -431,13 +432,13 @@ class hacked_connect_method_installer: #e could be refactored into hacked-method
                 # redundant connections result in slotmap values of len > 1, presumably with functionally identical but unequal objects
         res = origmethod(*newargs) # pass on any exceptions
         if res is not True:
-            print "likely bug: connect retval is not True:", res
-            print " connect args (perhaps modified) were:", newargs
+            print("likely bug: connect retval is not True:", res)
+            print(" connect args (perhaps modified) were:", newargs)
         return res
     def fake_disconnect_method(self, origmethod, *args):
         if len(args) != 3:
             if DEBUG_PRINT_UNDO:
-                print "not wrapping DISconnect-slot since args not len 3:",args###@@@ let's hope this happens only when it did for connect
+                print("not wrapping DISconnect-slot since args not len 3:",args)###@@@ let's hope this happens only when it did for connect
             newargs = args
         else:
             sender, signal, slotboundmethod = args
@@ -452,7 +453,7 @@ class hacked_connect_method_installer: #e could be refactored into hacked-method
                 lis = slotmap[key] # fails only if there's a disconnect with no prior connect
             except KeyError:
                 # this case added by bruce 070615
-                print "likely bug: disconnect with no prior connect", key #e need better info?
+                print("likely bug: disconnect with no prior connect", key) #e need better info?
                 newargs = args # still call disconnect -- ok?? I guess so -- it returns False, but no other apparent problem.
             else:
                 newmethod = lis.pop() # should never fail, due to deleting empty lists (below)
@@ -461,13 +462,13 @@ class hacked_connect_method_installer: #e could be refactored into hacked-method
                 newargs = sender, signal, newmethod
         res = origmethod(*newargs) # pass on any exceptions
         if res is not True: ##k
-            print "likely bug: disconnect retval is not True:", res
-            print " disconnect args (perhaps modified) were:", newargs
+            print("likely bug: disconnect retval is not True:", res)
+            print(" disconnect args (perhaps modified) were:", newargs)
         return res
     def debug_print_stats(self, msg = '?'):
         self.stage = msg
         if DEBUG_PRINT_UNDO:
-            print "hcmi %r: %r" % (self.stage, self.conns)
+            print("hcmi %r: %r" % (self.stage, self.conns))
     def maybe_wrapslot(self, sender, signal, slotboundmethod, keepcache_object = None):
         """
         Caller is about to make a connection from sender's signal to slotboundmethod.
@@ -483,7 +484,7 @@ class hacked_connect_method_installer: #e could be refactored into hacked-method
         shouldwrap = self.decide(sender, signal) # always True, for now [clean up this code ###@@@]
         if not shouldwrap:
             if DEBUG_PRINT_UNDO:
-                print "not wrapping %s from %s to %s" % (signal,sender,slotboundmethod) ###@@@
+                print("not wrapping %s from %s to %s" % (signal,sender,slotboundmethod)) ###@@@
             return slotboundmethod
         # make object which can wrap it
         wr = wrappedslot(slotboundmethod, sender = sender, signal = signal) #060121 added sender arg #060320 added signal arg
@@ -509,7 +510,7 @@ class hacked_connect_method_installer: #e could be refactored into hacked-method
         if 'treeChanged' in str(signal): ###@@@ kluge: knowing this [bruce 060320 quick hack to test-optimize Undo checkpointing]
             if env.debug():
                 ###@@@ kluge: assuming what we're used for, in this message text
-                print "debug: note: not wrapping this signal for undo checkpointing:", signal
+                print("debug: note: not wrapping this signal for undo checkpointing:", signal)
             return False
         return True # try wrapping them all, for simplicity
     pass # end of class hacked_connect_method_installer
@@ -519,7 +520,7 @@ _hcmi = None
 def hack_qwidget_pre_win_init(): # call this once, or more times if you can't avoid it; you must call it before main window is inited
     global _hcmi
     if _hcmi:
-        print "redundant call of hack_qwidget_pre_win_init ignored"
+        print("redundant call of hack_qwidget_pre_win_init ignored")
         return
     _hcmi = hacked_connect_method_installer()
     qclass = QObject # works with QWidget; also works with QObject and probably gets more calls
@@ -708,11 +709,11 @@ def args_info(func1): #bruce 071004 revised implem and return value format
                 # exceptions.TypeError: arg is not a Python function
                 # (happens for close, quit, setEnabled)
                 if DEBUG_USE_GETARGSPEC_TypeError:
-                    print "USE_GETARGSPEC TypeError for %r: " % (func1,)
+                    print("USE_GETARGSPEC TypeError for %r: " % (func1,))
                 return DEFAULT_RETVAL
             else:
                 if DEBUG_GETARGSPEC:
-                    print "inspect.getargspec(%r) = %r" % (func1, res)
+                    print("inspect.getargspec(%r) = %r" % (func1, res))
                 # now analyze the results to produce our return value
                 args,  varargs, varkw, defaults = res
                     # Python 2.1 documentation:
@@ -728,17 +729,17 @@ def args_info(func1): #bruce 071004 revised implem and return value format
                     args = args[1:]
                     if defaults is not None and len(defaults) == len(args0):
                         # a default value for self in a bound method would be too weird to believe
-                        print "USE_GETARGSPEC sees default value for self in %r argspec %r" % (func1, res)
+                        print("USE_GETARGSPEC sees default value for self in %r argspec %r" % (func1, res))
                         # but handle it anyway
                         defaults = defaults[1:]
                     if DEBUG_GETARGSPEC:
-                        print "removed self, leaving %r" % ((args,  varargs, varkw, defaults),) # remove when works
+                        print("removed self, leaving %r" % ((args,  varargs, varkw, defaults),)) # remove when works
                     pass
                 else:
                     assert type(args) == type([])
                     # first arg is missing (no args) or is not 'self'
                     if DEBUG_GETARGSPEC:
-                        print "USE_GETARGSPEC sees first arg not self:", args # other info was already printed
+                        print("USE_GETARGSPEC sees first arg not self:", args) # other info was already printed
 
                 # now use args, varargs, varkw, defaults to construct return values
                 success = True

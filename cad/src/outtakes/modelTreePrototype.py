@@ -54,7 +54,7 @@ _ICONSIZE = (22, 22) #bruce 070507 copied this over, not used enough
 
 
 def todo(x):
-    print 'TODO:', x
+    print('TODO:', x)
 
 # These base classes are JUST the API. Functionality is implemented by extending these base classes.
 
@@ -458,8 +458,7 @@ class ModelTree(ModelTreeGUI_api):
         self.setAcceptDrops(True)
 
     def selectedList(self):
-        return map(lambda x: x.internalPointer().node,
-                   self.selectedIndexes())
+        return [x.internalPointer().node for x in self.selectedIndexes()]
 
     def selectNodes(self, nodes, but_not=[ ]):
         selmodel = QItemSelectionModel(self.qtmodel, self)
@@ -522,7 +521,7 @@ class ModelTree(ModelTreeGUI_api):
     def expandAll(self):
         # With Qt 4.2, QTreeView will have its own expandAll method.
         # [bruce 070504 comment: we don't need this method anyway -- its only call is a bug.]
-        for index in self.qtmodel.indexdict.values():
+        for index in list(self.qtmodel.indexdict.values()):
             self.expand(index)
 
     def dragEnterEvent(self, event):
@@ -578,16 +577,16 @@ class ModelTree(ModelTreeGUI_api):
             item = index.internalPointer()
             rect = self.visualRect(index)
             if DEBUG2:
-                print "visualRect coords",rect.left(), rect.right(), rect.top(), rect.bottom()
+                print("visualRect coords",rect.left(), rect.right(), rect.top(), rect.bottom())
             qfm = QFontMetrics(QLineEdit(self).font())
             rect.setWidth(qfm.width(item.node.name) + _ICONSIZE[0] + 4)
             if DEBUG2:
-                print "visualRect coords, modified:",rect.left(), rect.right(), rect.top(), rect.bottom()
+                print("visualRect coords, modified:",rect.left(), rect.right(), rect.top(), rect.bottom())
                 # looks like icon and text, a bit taller than text (guesses)
             eventInRect = rect.contains(event.pos())
             if DEBUG2:
-                print "valid index: eventInRect = %r, item = %r, index = %r, alreadySelected = %r" % \
-                      (eventInRect, item, index, alreadySelected)#######
+                print("valid index: eventInRect = %r, item = %r, index = %r, alreadySelected = %r" % \
+                      (eventInRect, item, index, alreadySelected))#######
         else:
             thisnode = item = None
             alreadySelected = eventInRect = False
@@ -684,18 +683,18 @@ class TestNode(Node_api):
             # don't drop stuff that's already here
             if node in self.childNodes:
                 traceback.print_stack()
-                print self, nodes, node, self.childNodes
-                print 'node is in children already'
+                print(self, nodes, node, self.childNodes)
+                print('node is in children already')
                 return False
         if self.name.startswith("Chunk"):
             traceback.print_stack()
-            print self, node, self.childNodes
-            print 'cannot drop on a chunk'
+            print(self, node, self.childNodes)
+            print('cannot drop on a chunk')
             return False
         if self.name.startswith("Jig"):
             traceback.print_stack()
-            print self, node, self.childNodes
-            print 'cannot drop on a jig'
+            print(self, node, self.childNodes)
+            print('cannot drop on a jig')
             return False
         return True
     def drop_on(self, drag_type, nodes):
@@ -708,7 +707,7 @@ class TestNode(Node_api):
             node.parentNode = self
         if drag_type == 'move':
             for node in nodes:
-                if previous_parents.has_key(node):
+                if node in previous_parents:
                     previous_parents[node].childNodes.remove(node)
         return [ ]
     def node_icon(self, display_prefs):
@@ -758,7 +757,7 @@ class TestNe1Model(ModelTree_api):
         for node in nodeset:
             def thunk(str):
                 def _thunk(str=str):
-                    print str
+                    print(str)
                 return _thunk
             if isinstance(node, TestNode):
                 disableTuple = ('Disable', lambda node=node: self.cm_disable(node))
@@ -817,7 +816,7 @@ class TestWrapper(QGroupBox):
 
         def thunk(str):
             def _thunk(str=str):
-                print str
+                print(str)
             return _thunk
 
         self.chunkNum = 2
@@ -873,7 +872,7 @@ class TestWrapper(QGroupBox):
 
     def selected(self):
         "Selected"
-        print self.view.selectedList()
+        print(self.view.selectedList())
 
 ####################################################################
 

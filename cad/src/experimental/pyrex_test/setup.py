@@ -41,7 +41,7 @@ from distutils.core import setup
 from distutils.extension import Extension
 
 if (__name__ == '__main__'):
-    print "running cad/src/setup.py, sys.argv is %r" % (sys.argv,) # ['setup.py', 'build_ext', '--inplace']
+    print("running cad/src/setup.py, sys.argv is %r" % (sys.argv,)) # ['setup.py', 'build_ext', '--inplace']
     # note: this is NOT the same setup.py that is run during Mac release building
     # by autoBuild.py. That one lives in Distribution or Distribution/tmp,
     # whereever you run autoBuild from. (I don't know if other platforms ever run setup.py then.)
@@ -50,11 +50,11 @@ if (__name__ == '__main__'):
     try:
         from Pyrex.Distutils import build_ext
     except:
-        print "Problem importing Pyrex. You need to install Pyrex before it makes sense to run this."
-        print "For more info see README-Pyrex and/or "
-        print "  http://www.nanoengineer-1.net/mediawiki/index.php?title=Integrating_Pyrex_into_the_Build_System"
-        print "(If you already installed Pyrex, there's a bug in your Pyrex installation or in setup.py, "
-        print " since the import should have worked.)"
+        print("Problem importing Pyrex. You need to install Pyrex before it makes sense to run this.")
+        print("For more info see README-Pyrex and/or ")
+        print("  http://www.nanoengineer-1.net/mediawiki/index.php?title=Integrating_Pyrex_into_the_Build_System")
+        print("(If you already installed Pyrex, there's a bug in your Pyrex installation or in setup.py, ")
+        print(" since the import should have worked.)")
         sys.exit(1)
 
     setup(
@@ -66,5 +66,5 @@ if (__name__ == '__main__'):
     )
 
     # this exit reminds people not to "import setup" from nE-1 itself!
-    print "setup.py finished; exiting."
+    print("setup.py finished; exiting.")
     sys.exit(0)

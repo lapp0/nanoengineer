@@ -560,7 +560,7 @@ def test_translucent_icons(_files, _dir = ""): #e refile into images.py? (along 
                                         TextRect("drag blueflake under icons to see\n"
                                                  "their translucency over it")),
                            translation = (0,0,0))
-    for _file, _i in zip(_files, range(len(_files))):
+    for _file, _i in zip(_files, list(range(len(_files)))):
         _translation = (_i - 4) * 2.5 * DX # de-overlap them
         _tmp = Overlay( _tmp, Closer(DraggableObject(
             WithAttributes( trans_image( os.path.join( _dir, _file) ), mt_name = _file ), #e rename mt_name in this interface? (used by DraggableObject)
@@ -773,7 +773,7 @@ espwindow-hide.png              measureangle-hide.png           mollines-hide.pn
 
 if 1:
     # test the corresponding non-hidden icons instead -- works
-    hide_icons = map(lambda name: name.replace("-hide",""), hide_icons)
+    hide_icons = [name.replace("-hide","") for name in hide_icons]
     for another in "clipboard-empty.png clipboard-full.png clipboard-gray.png".split():
         hide_icons.append(another)
     pass
@@ -796,7 +796,7 @@ for i in range(5): # 4 is enough unless you set 'if 1' above
             res[i][j] = nevermind(Boxed)(Spacer(1 * PIXELS)) ## None   ###e Spacer should not need any args to be size 0
         continue
     continue
-testexpr_14 = SimpleColumn( * map(lambda row: nevermind(Boxed)(SimpleRow(*row)), res) ) # works!
+testexpr_14 = SimpleColumn( * [nevermind(Boxed)(SimpleRow(*row)) for row in res] ) # works!
 testexpr_14 = Translate(testexpr_14, V(-1,1,0) * 2)
 testexpr_14x = SimpleColumn(*[Rect(2 * i * PIXELS, 10 * PIXELS) for i in range(13)])
     # works (so to speak) -- 11th elt is TextRect("too many columns")
@@ -1089,7 +1089,7 @@ def aligntest(af):
                                                    doit(0.65),
                                                    doit(0.95) ))) )
     except:
-        print sys.exc_info() ##k
+        print(sys.exc_info()) ##k
         return BottomRight(TextRect('exception discarded') )#e find a way to include the text?
 
 def aligntest_by_name(afname):
@@ -1698,10 +1698,10 @@ class AppOuterLayer(DelegatingInstanceOrExpr): #e refile when works [070108 expe
         #  but *never* in terms of causing the gl_update from our caller's use of this here. Not sure how to fix that. ####k 070109)
         self.testname = ', '.join(testnames)
         if get_pref(debug_prints_prefs_key):
-            print "AppOuterLayer: before delegate draw", env.redraw_counter###
+            print("AppOuterLayer: before delegate draw", env.redraw_counter)###
         self.drawkid( self.delegate) ## self.delegate.draw()
         if get_pref(debug_prints_prefs_key):
-            print "AppOuterLayer: after delegate draw", env.redraw_counter###
+            print("AppOuterLayer: after delegate draw", env.redraw_counter)###
     ###e need an env for args which binds some varname to self (dynamically), so the args have some way to access our state
     def env_for_arg(self, index):
         env = self.env_for_args #e or could use super of this method [better #e]
@@ -1738,10 +1738,10 @@ if not enable_testbed:
 
 testnames = [] # note: we show this in the testbed via _app, like we show current redraw [070122]
 
-print "using testexpr %r" % testexpr
+print("using testexpr %r" % testexpr)
 for name in dir():
     if name.startswith('testexpr') and name != 'testexpr' and eval(name) is testexpr:
-        print "(which is probably %s)" % name
+        print("(which is probably %s)" % name)
         testnames.append(name)
 
 # (see below for our required call of _testexpr_and_testnames_were_changed() )
@@ -1763,7 +1763,7 @@ def _load_recent_tests():
 def _add_recent_test( _recent_tests, this_test):
     #e should be a method of a class RecentTestsList
     # (note: class RecentFilesList exists in NE1 and/or IDLE -- I don't know if either is appropriate)
-    _recent_tests = filter( lambda test1: test1 != this_test , _recent_tests)
+    _recent_tests = [test1 for test1 in _recent_tests if test1 != this_test]
     _recent_tests.append(this_test) # most recent last
     _recent_tests = _recent_tests[-10:] # length limit
     return _recent_tests
@@ -1821,7 +1821,7 @@ _testexpr_and_testnames_were_changed()
 
 def _set_test(test):
     global testexpr, testnames
-    print "\n_set_test(%r):" % (test,)
+    print("\n_set_test(%r):" % (test,))
     testexpr = eval(test)
         # this is already enough to cause "remake main instance", since testexpr is compared on every draw
         ###BUG: this can fail if you eval a new testname after handediting this file (to add that name)
@@ -1829,7 +1829,7 @@ def _set_test(test):
         # Also, when that happens the test does not get saved in _recent_tests -- good and bad, but more bad than good
         # if it was hard to type (tho main importance only comes after we add editing of the text in _recent_files entries).
     testnames = [test]
-    print "set testexpr to %r" % (testexpr,)
+    print("set testexpr to %r" % (testexpr,))
     _testexpr_and_testnames_were_changed()
     ##e need to print "doing it" or so into sbar, too, since redraw can take so long
     return
@@ -1853,13 +1853,13 @@ def _set_test_from_dialog( ): # see also grab_text_using_dialog in another file;
         command = command.replace("@@@",'\n')
         _set_test(command) # this even works for general exprs -- e.g. you can just type in Rect(3,3,purple)!
     else:
-        print "_set_test_from_dialog: cancelled"
+        print("_set_test_from_dialog: cancelled")
     return
 
 def _delete_current_test():
     global _recent_tests
     current_test = testnames[-1]
-    _recent_tests = filter( lambda test: test != current_test, _recent_tests)
+    _recent_tests = [test for test in _recent_tests if test != current_test]
     _save_recent_tests()
     _set_test(_recent_tests[-1]) #k bug: could be empty
     return
@@ -1914,7 +1914,7 @@ def _clear_state(): #070318; doesn't crash, but has bugs -- see comments where i
     """
     clear state, then reload (without reload, gets exception)
     """
-    print "clearing _state (len %d), then reloading" % len(_state)
+    print("clearing _state (len %d), then reloading" % len(_state))
     _state.clear()
     import foundation.env as env
     win = env.mainwindow()
@@ -2147,8 +2147,8 @@ def find_or_make_main_instance(glpane, staterefs, testexpr, testbed): #061120; g
         old = _last_main_instance_data
         _last_main_instance_data = new_data
         res = _last_main_instance = make_main_instance(glpane, staterefs, testexpr, testbed)
-        print "\n**** MADE NEW MAIN INSTANCE %s ****\n" % time.asctime(), res, \
-              "(glpane %s, staterefs %s, testexpr %s, testbed %s, reloads %s)" % _cmpmsgs(old, new_data)
+        print("\n**** MADE NEW MAIN INSTANCE %s ****\n" % time.asctime(), res, \
+              "(glpane %s, staterefs %s, testexpr %s, testbed %s, reloads %s)" % _cmpmsgs(old, new_data))
     else:
         res = _last_main_instance
         ## print "reusing main instance", res
@@ -2171,7 +2171,7 @@ def make_main_instance(glpane, staterefs, testexpr, testbed):
     try:
         testname = testname_for_testexpr[testexpr] # new feature 070322
     except KeyError:
-        print "no saved testname_for_testexpr"
+        print("no saved testname_for_testexpr")
         testname = "?"
         pass
     ipath = (testname, NullIpath)
@@ -2210,24 +2210,24 @@ class _find_or_make: #061217 from find_or_make_main_instance etc #e refile ### N
             old_data = self.old_data
             self.old_data = new_data
             if self.printname:
-                print "remaking %r, because",
+                print("remaking %r, because", end=' ')
                 if old_data is None:
-                    print "not made before"
+                    print("not made before")
                 else:
                     # make sure keys are the same
-                    k1 = old_data.keys()
-                    k2 = new_data.keys()
+                    k1 = list(old_data.keys())
+                    k2 = list(new_data.keys())
                     k1.sort()
                     k2.sort()
                     if k1 != k2:
-                        print "data keys changed (bug?)"
+                        print("data keys changed (bug?)")
                     else:
                         for k in k1:
                             if not same_vals(old_data[k], new_data[k]):
-                                print "%s DIFFERENT" % k,
+                                print("%s DIFFERENT" % k, end=' ')
                             else:
-                                print "%s same" % k,
-                        print
+                                print("%s same" % k, end=' ')
+                        print()
                     pass
                 pass
             res = self.res = self.make(*data_args, **data_kws)
@@ -2294,10 +2294,10 @@ if 0:
     # what if I ask Arg() to record locals().keys() when it runs? Won't help, even if it works -- when it runs, *neither*
     # of these attrs will be defined in locals. Even so, does it work at all?? Yes.
     class something(InstanceOrExpr):
-        print locals().keys() # ['__module__']
+        print(list(locals().keys())) # ['__module__']
         attr2 = 0
-        print locals().keys() # ['__module__', 'attr2']
+        print(list(locals().keys())) # ['__module__', 'attr2']
         attr1 = 0
-        print locals().keys() # ['__module__', 'attr2', 'attr1']
+        print(list(locals().keys())) # ['__module__', 'attr2', 'attr1']
         pass
 # end

@@ -153,20 +153,20 @@ class ProteinSequenceEditor(Ui_ProteinSequenceEditor):
             # Replace space characters with the same character.
             aa = self._previousSequence[cursorPos - 1]
             theSequence.replace(" ", aa)
-            print "The last character was replaced with: ", aa
+            print("The last character was replaced with: ", aa)
 
         # Insert the sequence; it will be "stylized" by _setSequence().
         self._setSequence(theSequence, inCursorPos = cursorPos)
 
         if False: # Set to True for debugging statements.
             if theSequence == self._previousSequence:
-                print "The sequence did not change (YOU SHOULD NEVER SEE THIS)."
+                print("The sequence did not change (YOU SHOULD NEVER SEE THIS).")
             elif len(theSequence) < len(self._previousSequence):
-                print "Character(s) were deleted from the sequence."
+                print("Character(s) were deleted from the sequence.")
             elif len(theSequence) == len(self._previousSequence):
-                print "A character was replaced. The sequence length is the same."
+                print("A character was replaced. The sequence length is the same.")
             else:
-                print "Character(s) where added to the sequence."
+                print("Character(s) where added to the sequence.")
             pass
 
         # If the sequence in the text edit (field) is different from the current
@@ -344,7 +344,7 @@ class ProteinSequenceEditor(Ui_ProteinSequenceEditor):
         """
         colorList = ['Red','Blue', 'Green']
         secStrucList = ['H','E', '-']
-        secStrucDict = dict(zip(secStrucList, colorList))
+        secStrucDict = dict(list(zip(secStrucList, colorList)))
         outSequence = ""
         for i in range(len(inSequence)):
             currentAA = inSequence[i]
@@ -439,7 +439,7 @@ class ProteinSequenceEditor(Ui_ProteinSequenceEditor):
 
         aaList = ['A', 'V', 'X', 'Y', 'W', 'T', 'S', 'P', 'F', 'M', 'K', 'L', 'I'
                   'H', 'G', 'Q', 'E', 'C', 'R', 'N', 'D' ]
-        aaDict = dict(zip(aaList, colorList))
+        aaDict = dict(list(zip(aaList, colorList)))
         for i in range(len(inSequence)):
             currentAA = inSequence[i]
             try:
@@ -560,9 +560,9 @@ class ProteinSequenceEditor(Ui_ProteinSequenceEditor):
 
         # Useful print statements for debugging.
         if 0:
-            print "setCursorPosition(): Sequence=", self.getPlainSequence()
-            print "Final inCursorPos=%d\ncursorPos=%d, anchorPos=%d" % \
-                  (inCursorPos, cursorPos, anchorPos)
+            print("setCursorPosition(): Sequence=", self.getPlainSequence())
+            print("Final inCursorPos=%d\ncursorPos=%d, anchorPos=%d" % \
+                  (inCursorPos, cursorPos, anchorPos))
 
         self._suppress_cursorPosChanged_signal = True
 
@@ -609,7 +609,7 @@ class ProteinSequenceEditor(Ui_ProteinSequenceEditor):
         cursorPos = cursor.position()
 
         if 0:
-            print "_cursorPosChanged(): cursorPos=", cursorPos
+            print("_cursorPosChanged(): cursorPos=", cursorPos)
 
         self.setCursorPosition(inCursorPos = cursorPos) # sets all three.
 
@@ -695,7 +695,7 @@ class ProteinSequenceEditor(Ui_ProteinSequenceEditor):
         try:
             lines = open(self.sequenceFileName, "rU").readlines()
         except:
-            print "Exception occurred to open file: ", self.sequenceFileName
+            print("Exception occurred to open file: ", self.sequenceFileName)
             return
 
         sequence = lines[0]
@@ -721,7 +721,7 @@ class ProteinSequenceEditor(Ui_ProteinSequenceEditor):
         try:
             f = open(fileName, "w")
         except:
-            print "Exception occurred to open file %s to write: " % fileName
+            print("Exception occurred to open file %s to write: " % fileName)
             return None
 
         f.write(str(sequence))

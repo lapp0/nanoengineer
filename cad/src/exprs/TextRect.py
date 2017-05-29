@@ -44,7 +44,7 @@ class TextRect(Widget2D):
     msg_lines = call_Expr( call_Expr(msg.rstrip).count, '\n') + 1
         # i.e. msg.rstrip().count('\n') + 1, but x.y(z) syntax-combo is not allowed, as a safety feature --
         # we'll need to find a way to sometimes allow it, I think.
-    msg_cols = call_Expr( lambda msg: max(map(len, msg.split('\n'))) , msg ) # finally implemented 061211
+    msg_cols = call_Expr( lambda msg: max(list(map(len, msg.split('\n')))) , msg ) # finally implemented 061211
     # formulae
     ###e msg_lines, msg_cols, and make sure those can be used in the default formulae for the args
     # lbox attrs -- in the wrong units, not pixelwidth, so we need to kluge them for now

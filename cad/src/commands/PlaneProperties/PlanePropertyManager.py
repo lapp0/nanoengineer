@@ -382,7 +382,7 @@ class PlanePropertyManager(EditCommand_PM):
         elif idx == 1:
             self.displayLabelStyle = LABELS_ALONG_PLANE_EDGES
         else:
-            print "Invalid index", idx
+            print("Invalid index", idx)
         return
 
     def changeOriginInGP(self, idx):
@@ -400,7 +400,7 @@ class PlanePropertyManager(EditCommand_PM):
         elif idx == 3:
             self.originLocation = PLANE_ORIGIN_UPPER_RIGHT
         else:
-            print "Invalid index", idx
+            print("Invalid index", idx)
         return
 
     def displayLabelsInGP(self, state):

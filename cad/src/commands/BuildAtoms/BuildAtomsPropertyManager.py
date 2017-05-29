@@ -378,7 +378,7 @@ class BuildAtomsPropertyManager(Ui_BuildAtomsPropertyManager):
 
         if self.model_changed_from_glpane:
             #Model is changed from glpane ,do nothing. Fixes bug 2545
-            print "bug: self.model_changed_from_glpane seen; should never happen after bug 2564 was fixed." #bruce 071015
+            print("bug: self.model_changed_from_glpane seen; should never happen after bug 2564 was fixed.") #bruce 071015
             return
 
         totalAtoms, selectedAtom, atomPosn_junk = self._currentSelectionParams()

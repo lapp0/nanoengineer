@@ -202,7 +202,7 @@ class MeasurementJig(Jig):
     def readmmp_info_leaf_setitem(self, key, val, interp):
         import string, Numeric
         if key == ['handle']:
-            self.handle_offset = Numeric.array(map(string.atof, val.split())) - self.center()
+            self.handle_offset = Numeric.array(list(map(string.atof, val.split()))) - self.center()
         else:
             Jig.readmmp_info_leaf_setitem(self, key, val, interp)
 

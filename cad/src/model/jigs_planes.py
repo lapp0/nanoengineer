@@ -83,7 +83,7 @@ class RectGadget(Jig):
         Override the version from Jig. Removed adding jig to atoms
         """
         if self.atoms:
-            print "fyi: bug? setAtoms overwrites existing atoms on %r" % self
+            print("fyi: bug? setAtoms overwrites existing atoms on %r" % self)
         self.atoms = list(atomlist)
 
     def __init_quat_center(self, list):
@@ -117,7 +117,7 @@ class RectGadget(Jig):
         elif name == 'up':
             return self.quat.rot(V(0.0, 1.0, 0.0))
         else:
-            raise AttributeError, 'RectGadget has no "%s"' % name
+            raise AttributeError('RectGadget has no "%s"' % name)
                 #bruce 060209 revised text
 
     def getaxis(self):
@@ -318,7 +318,7 @@ class GridPlane(RectGadget):
         """
         format: width height (cx, cy, cz) (w, x, y, z) grid_type line_type x_space y_space (gr, gg, gb)
         """
-        color = map(int, A(self.grid_color)*255)
+        color = list(map(int, A(self.grid_color)*255))
 
         dataline = "%.2f %.2f (%f, %f, %f) (%f, %f, %f, %f) %d %d %.2f %.2f (%d, %d, %d)" % \
            (self.width, self.height, self.center[0], self.center[1], self.center[2],

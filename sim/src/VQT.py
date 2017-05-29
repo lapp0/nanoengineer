@@ -143,7 +143,7 @@ class Q:
                      1.0 - 2.0 * (self.y**2 + self.x**2)]])
             return self.__dict__['matrix']
         else:
-            raise AttributeError, 'No "%s" in Quaternion' % name
+            raise AttributeError('No "%s" in Quaternion' % name)
 
     def __getitem__(self, num):
         return self.vec[num]
@@ -160,7 +160,7 @@ class Q:
 
 
     def __reset(self):
-        if self.__dict__.has_key('matrix'):
+        if 'matrix' in self.__dict__:
             del self.__dict__['matrix']
 
 

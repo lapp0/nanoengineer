@@ -30,7 +30,7 @@ def truncateText(text, length = 12, truncateSymbol = '...'):
     #tooltip text on two or more lines. (undesirable effect)
 
     if not text:
-        print "no text to truncate. Returning"
+        print("no text to truncate. Returning")
         return
 
     truncatedLength  = length - len(truncateSymbol)
@@ -81,8 +81,8 @@ class NE1_QWidgetAction(_superclass):
             flyoutToolBar = cmdToolbar.flyoutToolBar
             if flyoutToolBar:
                 if 0:
-                    print "***self.text() =%s, parent = %s"%(self.text(),
-                                                             parent)
+                    print("***self.text() =%s, parent = %s"%(self.text(),
+                                                             parent))
 
             if parent is flyoutToolBar:
                 btn = self._createToolButtonWidget(parent)

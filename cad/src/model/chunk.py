@@ -469,7 +469,7 @@ class Chunk(Chunk_Dna_methods, Chunk_mmp_methods,
         # review: add to Node API? might be better to just add enough
         # change tracking to never need it.
         self._drawer.invalidate_display_lists_for_style(style)
-        for ebset in self._bonded_chunks.itervalues():
+        for ebset in self._bonded_chunks.values():
             ebset.invalidate_display_lists_for_style(style)
                 # note: doing this in our ExternalBondSets is needed in
                 # principle, but might not be needed in practice for the
@@ -806,7 +806,7 @@ class Chunk(Chunk_Dna_methods, Chunk_mmp_methods,
         """
         maybe_empty = []
         if self._f_lost_externs:
-            for ebset in self._bonded_chunks.itervalues():
+            for ebset in self._bonded_chunks.values():
                 ebset.remove_incorrect_bonds()
                 if ebset.empty():
                     maybe_empty.append(ebset)
@@ -828,8 +828,8 @@ class Chunk(Chunk_Dna_methods, Chunk_mmp_methods,
                         # (since the only way to make one is the above case,
                         #  which ends up storing it in both otherchunk and self,
                         #  and the only way to remove one removes it from both)
-                        print "likely bug: ebset %r was in %r but not in %r" % \
-                              (ebset, otherchunk, self)
+                        print("likely bug: ebset %r was in %r but not in %r" % \
+                              (ebset, otherchunk, self))
                     self._bonded_chunks[ otherchunk] = ebset
                     pass
                 ebset.add_bond( bond) # ok if bond is already there
@@ -842,7 +842,7 @@ class Chunk(Chunk_Dna_methods, Chunk_mmp_methods,
         return
 
     def _destroy_bonded_chunks(self):
-        for ebset in self._bonded_chunks.values():
+        for ebset in list(self._bonded_chunks.values()):
             ebset.destroy()
         self._bonded_chunks = {} # precaution (should be already true)
         return
@@ -852,7 +852,7 @@ class Chunk(Chunk_Dna_methods, Chunk_mmp_methods,
         del self._bonded_chunks[otherchunk]
 
     def potential_bridging_objects(self):
-        return self._bonded_chunks.values()
+        return list(self._bonded_chunks.values())
 
     # ==
 
@@ -896,7 +896,7 @@ class Chunk(Chunk_Dna_methods, Chunk_mmp_methods,
         found_carbon_atom = False # CNT
         found_boron_atom = False  # BNNT
 
-        for atom in self.atoms.itervalues():
+        for atom in self.atoms.values():
             if atom.element.symbol == 'C':
                 if atom.atomtype.is_planar():
                     found_carbon_atom = True
@@ -980,10 +980,10 @@ class Chunk(Chunk_Dna_methods, Chunk_mmp_methods,
             except: # bruce 060411 bug-safety
                 if m1 is None:
                     m1 = b.atom1.molecule = _get_nullMol()
-                    print "bug: %r.atom1.molecule was None (changing it to _nullMol)" % b
+                    print("bug: %r.atom1.molecule was None (changing it to _nullMol)" % b)
                 if m2 is None:
                     m2 = b.atom2.molecule = _get_nullMol()
-                    print "bug: %r.atom2.molecule was None (changing it to _nullMol)" % b
+                    print("bug: %r.atom2.molecule was None (changing it to _nullMol)" % b)
                 bad = True
             if bad:
                 # bruce 060412 print -> print_compact_stack
@@ -997,14 +997,14 @@ class Chunk(Chunk_Dna_methods, Chunk_mmp_methods,
                     if debug_flags.atom_debug:
                         print_compact_stack( "\n" + msg + ": " )
                     else:
-                        print msg
+                        print(msg)
                 if m2.part is None:
                     msg = "possible bug: %r .atom2 == %r .mol == %r .part is None" % \
                         ( b, b.atom2, m2 )
                     if debug_flags.atom_debug:
                         print_compact_stack( "\n" + msg + ": " )
                     else:
-                        print msg
+                        print(msg)
                 b.bust()
         # someday, maybe: check atom-jig bonds ... but callers need to handle
         # some jigs specially first, which this would destroy...
@@ -1017,7 +1017,7 @@ class Chunk(Chunk_Dna_methods, Chunk_mmp_methods,
         #bruce 050217; 050524 added keyword arg; 060410 renamed it & more
 
         # first make sure no other code forgot to call us and set it directly
-        assert not 'hotspot' in self.__dict__.keys(), "bug in some unknown other code"
+        assert not 'hotspot' in list(self.__dict__.keys()), "bug in some unknown other code"
         if self._hotspot is not hotspot:
             self.changed()
                 #bruce 060324 fix bug 1532, and an unreported bug where this
@@ -1032,7 +1032,7 @@ class Chunk(Chunk_Dna_methods, Chunk_mmp_methods,
             assert self.hotspot is hotspot or silently_fix_if_invalid, \
                    "getattr bug, or specified hotspot %s is invalid" % \
                    safe_repr(hotspot)
-        assert not 'hotspot' in self.__dict__.keys(), \
+        assert not 'hotspot' in list(self.__dict__.keys()), \
                "bug in getattr for hotspot or in set_hotspot"
         return
 
@@ -1045,7 +1045,7 @@ class Chunk(Chunk_Dna_methods, Chunk_mmp_methods,
             if hs.killed_with_debug_checks(): # this also checks whether its key is in self.atoms
                 # bug detected
                 if debug_flags.atom_debug:
-                    print "_get_hotspot sees killed singlet still claiming to be in this Chunk"
+                    print("_get_hotspot sees killed singlet still claiming to be in this Chunk")
                 # fall thru
             else:
                 # return a valid hotspot.
@@ -1272,7 +1272,7 @@ class Chunk(Chunk_Dna_methods, Chunk_mmp_methods,
          may need to override this further.]
         """
         atom_content = 0
-        for atom in self.atoms.itervalues():
+        for atom in self.atoms.values():
             ## atom_content |= (atom._f_updated_atom_content())
                 # IMPLEM that method on class Atom (look up from self.display)?
                 # no, probably best to inline it here instead:
@@ -1369,7 +1369,7 @@ class Chunk(Chunk_Dna_methods, Chunk_mmp_methods,
         # [bruce 041207, by separate experiment]. Some callers test the boolean
         # value we compute for self.singlets. Since the elements are pyobjs,
         # this would probably work even if filter returned an array.)
-        return filter( lambda atom: atom.element is Singlet, self.atlist )
+        return [atom for atom in self.atlist if atom.element is Singlet]
 
     _inputs_for_singlpos = ['singlets', 'atpos']
     def _recompute_singlpos(self):
@@ -1381,7 +1381,7 @@ class Chunk(Chunk_Dna_methods, Chunk_mmp_methods,
         # we must access self.atpos, since we depend on it in our inval rules
         # (if that's too slow, then anyone invalling atpos must inval this too #e)
         if len(self.singlets):
-            return A( map( lambda atom: atom.posn(), self.singlets ) )
+            return A( [atom.posn() for atom in self.singlets] )
         else:
             return []
         pass
@@ -1454,12 +1454,12 @@ class Chunk(Chunk_Dna_methods, Chunk_mmp_methods,
         (including bondpoints), ordered by atom.key.
         Also set atom.index on each atom in the list, to its index in the list.
         """
-        atomitems = self.atoms.items()
+        atomitems = list(self.atoms.items())
         atomitems.sort()
             # in order of atom keys; probably doesn't yet matter, but makes order deterministic
         atlist = [atom for (key, atom) in atomitems]
         self.atlist = array(atlist, PyObject) #review: untested whether making it an array is good or bad
-        for atom, i in zip(atlist, range(len(atlist))):
+        for atom, i in zip(atlist, list(range(len(atlist)))):
             atom.index = i
         return
 
@@ -1479,7 +1479,7 @@ class Chunk(Chunk_Dna_methods, Chunk_mmp_methods,
 
         # Something must have been invalid to call us, so basepos must be
         # invalid. So we needn't call changed_attr on it.
-        assert not self.__dict__.has_key('basepos')
+        assert 'basepos' not in self.__dict__
         if self.assy is None:
             if debug_flags.atom_debug:
                 # [bruce comment 050702: this happens if you delete the chunk
@@ -1497,7 +1497,7 @@ class Chunk(Chunk_Dna_methods, Chunk_mmp_methods,
 ##                print "fyi: _recompute_atpos sees %r already existing" % attr
 
         atlist = self.atlist # might call _recompute_atlist
-        atpos = map( lambda atom: atom.posn(), atlist )
+        atpos = [atom.posn() for atom in atlist]
             # atpos, basepos, and atlist must be in same order
         atpos = A(atpos)
         # we must invalidate or fix self.atpos when any of our atoms' positions is changed!
@@ -1516,7 +1516,7 @@ class Chunk(Chunk_Dna_methods, Chunk_mmp_methods,
         # used [still active as of 070411].
         if debug_messup_basecenter:
             # ... so this flag lets us try some other value to test that!!
-            blorp = messupKey.next()
+            blorp = next(messupKey)
             self.basecenter += V(blorp, blorp, blorp)
         self.quat = Q(1,0,0,0)
             # arbitrary value, except we assume it has this specific value to
@@ -1648,7 +1648,7 @@ class Chunk(Chunk_Dna_methods, Chunk_mmp_methods,
         Recompute self.externs, the list of external bonds of self.
         """
         externs = []
-        for atom in self.atoms.itervalues():
+        for atom in self.atoms.values():
             for bond in atom.bonds:
                 if bond.atom1.molecule is not self or \
                    bond.atom2.molecule is not self:
@@ -1716,7 +1716,7 @@ class Chunk(Chunk_Dna_methods, Chunk_mmp_methods,
             # I'd add a debug print except I might never test this
             # before the release and it might be verbose [bruce 090218]
             drawn = {}
-        for atom in self.atoms.values():
+        for atom in list(self.atoms.values()):
             atom.writepov(file, disp, self.color)
             for bond in atom.bonds:
                 if id(bond) not in drawn:
@@ -1735,7 +1735,7 @@ class Chunk(Chunk_Dna_methods, Chunk_mmp_methods,
         if self.hidden or disp == diINVISIBLE:
             return
         # review: use self.color somehow?
-        for a in self.atoms.values():
+        for a in list(self.atoms.values()):
             a.writemdl(alist, f, disp, self.color)
 
     # ==
@@ -1757,7 +1757,7 @@ class Chunk(Chunk_Dna_methods, Chunk_mmp_methods,
         self.basepos
 
         # Now, update bbox iff it's already present.
-        if self.__dict__.has_key('bbox'):
+        if 'bbox' in self.__dict__:
             # bbox already present -- moving it is faster than recomputing it
             #e (though it might be faster to just delete it, if many moves
             #   will happen before we need it again)
@@ -1882,7 +1882,7 @@ class Chunk(Chunk_Dna_methods, Chunk_mmp_methods,
         additional invalidations.
         @see: _changed_basecenter_or_quat_while_atoms_fixed (quite different)
         """
-        assert self.__dict__.has_key('basepos'), \
+        assert 'basepos' in self.__dict__, \
                "internal error in _changed_basecenter_or_quat_to_move_atoms for %r" % (self,)
 
         if not len(self.basepos): #bruce 041119 bugfix -- use len()
@@ -1925,10 +1925,10 @@ class Chunk(Chunk_Dna_methods, Chunk_mmp_methods,
         and won't access or modify self.atpos) and self.atlist (which must
         already exist).
         """
-        assert self.__dict__.has_key('atlist')
+        assert 'atlist' in self.__dict__
         atlist = self.atlist
         assert len(atlist) == len(atpos)
-        for i in xrange(len(atlist)):
+        for i in range(len(atlist)):
             atlist[i]._f_setposn_no_chunk_or_bond_invals( atpos[i] )
         return
 
@@ -2092,7 +2092,7 @@ class Chunk(Chunk_Dna_methods, Chunk_mmp_methods,
         @return: number of invisible atoms in self (which are all made visible)
         """
         n = 0
-        for a in self.atoms.itervalues():
+        for a in self.atoms.values():
             if a.display == diINVISIBLE:
                 a.setDisplayStyle(diDEFAULT)
                 n += 1
@@ -2109,7 +2109,7 @@ class Chunk(Chunk_Dna_methods, Chunk_mmp_methods,
         @return: number of atoms in self whose display style setting changed
         """
         n = 0
-        for a in self.atoms.itervalues():
+        for a in self.atoms.values():
             if a.display != display:
                 a.setDisplayStyle(display)
                     # REVIEW: does this always succeed?
@@ -2222,8 +2222,8 @@ class Chunk(Chunk_Dna_methods, Chunk_mmp_methods,
         ele2Num = {}
 
         # Determine the number of element types in this Chunk.
-        for a in self.atoms.values():
-            if not ele2Num.has_key(a.element.symbol):
+        for a in list(self.atoms.values()):
+            if a.element.symbol not in ele2Num:
                 ele2Num[a.element.symbol] = 1 # New element found
             else:
                 ele2Num[a.element.symbol] += 1 # Increment element
@@ -2233,7 +2233,7 @@ class Chunk(Chunk_Dna_methods, Chunk_mmp_methods,
         nsinglets = 0
         einfo = ""
 
-        for item in ele2Num.iteritems():
+        for item in ele2Num.items():
             if item[0] == "X":  # Singlet
                 nsinglets = int(item[1])
                 continue
@@ -2261,7 +2261,7 @@ class Chunk(Chunk_Dna_methods, Chunk_mmp_methods,
         """
         stats.nchunks += 1
         stats.natoms += self.natoms()
-        for a in self.atoms.itervalues():
+        for a in self.atoms.values():
             if a.element.symbol == "X":
                 stats.nsinglets += 1
 
@@ -2275,7 +2275,7 @@ class Chunk(Chunk_Dna_methods, Chunk_mmp_methods,
         # [fyi, that doesn't refer to the one in ops_select --bruce]
         self.assy.permit_pick_atoms()
         npicked = 0
-        for a in self.atoms.itervalues():
+        for a in self.atoms.values():
             if not a.is_singlet():
                 if not a.picked:
                     a.pick()
@@ -2415,7 +2415,7 @@ class Chunk(Chunk_Dna_methods, Chunk_mmp_methods,
 
         #10/28/04, delete all atoms, so jigs attached can be deleted when no atoms
         #  attaching the jig . Huaicai
-        for a in self.atoms.values():
+        for a in list(self.atoms.values()):
             a.kill()
             # WARNING: this will recursively kill self (when its last atom is
             # killed as this loop ends, or perhaps earlier if a bondpoint comes
@@ -2427,7 +2427,7 @@ class Chunk(Chunk_Dna_methods, Chunk_mmp_methods,
             #  to do that explicitly and to do it first -- bruce 041109 comment]
         #bruce 041029 precautions:
         if self.atoms:
-            print "fyi: bug (ignored): %r mol.kill retains killed atoms %r" % (self, self.atoms)
+            print("fyi: bug (ignored): %r mol.kill retains killed atoms %r" % (self, self.atoms))
         self.atoms = {}
         self.invalidate_attr('atlist') # probably not needed; covers atpos
             # and basepos too, due to rules; externs were correctly set to []
@@ -2446,7 +2446,7 @@ class Chunk(Chunk_Dna_methods, Chunk_mmp_methods,
         [extends private superclass method; see its docstring for details]
         """
         _superclass._f_set_will_kill( self, val)
-        for a in self.atoms.itervalues():
+        for a in self.atoms.values():
             a._f_will_kill = val # inlined a._f_prekill(val), for speed
             ##e want to do it on their bonds too??
         return
@@ -2653,7 +2653,7 @@ class Chunk(Chunk_Dna_methods, Chunk_mmp_methods,
         return self.sel_radii_squared_private
 
     def compute_sel_radii_squared(self):
-        lis = map( lambda atom: atom.selradius_squared(), self.atlist )
+        lis = [atom.selradius_squared() for atom in self.atlist]
         if not lis:
             return lis
         else:
@@ -2679,10 +2679,10 @@ class Chunk(Chunk_Dna_methods, Chunk_mmp_methods,
             return take(compress(p, self.singlets), i)
         except:
             print_compact_traceback("exception in nearSinglets (data printed below): ")
-            print "if that was bug 829, this data (point, singlpos, v) might be relevant:"
-            print "point =", point
-            print "singlpos =", singlpos
-            print "v =", v
+            print("if that was bug 829, this data (point, singlpos, v) might be relevant:")
+            print("point =", point)
+            print("singlpos =", singlpos)
+            print("v =", v)
             return [] # safe value for caller
 
     # == copy methods (extended/revised by bruce 050524-26)
@@ -3044,7 +3044,7 @@ class Chunk(Chunk_Dna_methods, Chunk_mmp_methods,
             # REVIEW: why is this not redundant? (or is it?) [bruce 090112 question]
         numol.dad = dad
         if dad and debug_flags.atom_debug: #bruce 050215
-            print "atom_debug: mol.copy got an explicit dad (this is deprecated):", dad
+            print("atom_debug: mol.copy got an explicit dad (this is deprecated):", dad)
         return numol
 
     # ==
@@ -3057,7 +3057,7 @@ class Chunk(Chunk_Dna_methods, Chunk_mmp_methods,
         and (whether or not that succeeds) removes all their open bonds.
         """
         # todo: move this into the operations code for its caller
-        for a in self.atoms.values():
+        for a in list(self.atoms.values()):
             if p or a.picked:
                 a.Passivate()
 
@@ -3073,7 +3073,7 @@ class Chunk(Chunk_Dna_methods, Chunk_mmp_methods,
         # only affects Carbon
         # todo: move this into the operations code for its caller
         count = 0
-        for a in self.atoms.values():
+        for a in list(self.atoms.values()):
             count += a.Hydrogenate()
         return count
 
@@ -3085,7 +3085,7 @@ class Chunk(Chunk_Dna_methods, Chunk_mmp_methods,
         """
         # todo: move this into the operations code for its caller
         count = 0
-        for a in self.atoms.values():
+        for a in list(self.atoms.values()):
             count += a.Dehydrogenate()
                 # review: bug if done to H-H?
         return count
@@ -3129,7 +3129,7 @@ class Chunk(Chunk_Dna_methods, Chunk_mmp_methods,
         # effectively inlines hopmol and its delatom and addatom;
         # no need to find and hop singlet neighbors of atoms in mol
         # since they were already in mol anyway.
-        for atom in mol.atoms.values():
+        for atom in list(mol.atoms.values()):
             # should be a method in atom:
             atom.index = -1
             atom.molecule = self
@@ -3275,7 +3275,7 @@ class _nullMol_Chunk(Chunk):
         if env.debug():
             print_compact_stack(msg + ": ")
         else:
-            print msg
+            print(msg)
         return
 
     def isNullChunk(self): # by Ninad, implementing old suggestion by Bruce for is_nullMol

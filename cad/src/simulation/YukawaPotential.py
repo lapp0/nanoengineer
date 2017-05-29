@@ -130,14 +130,13 @@ class YukawaPotential(object):
         # results in the normal table being 2 * self.rCutoff.  Silly,
         # really.
         while (r < 2 * self.rCutoff + (DELTA_R / 2.0)):
-            print >>tableFile, \
-                  "%8.4f %13.6e %13.6e %13.6e %13.6e %13.6e %13.6e" % (r,
+            print("%8.4f %13.6e %13.6e %13.6e %13.6e %13.6e %13.6e" % (r,
                                                                        self.r_1(r),
                                                                        self.d2_r_1(r),
                                                                        self.func(r),
                                                                        self.d2_func(r),
                                                                        0,
-                                                                       0)
+                                                                       0), file=tableFile)
             r += DELTA_R
         tableFile.close()
 

@@ -52,7 +52,7 @@ def delete_bare_atoms( changed_atoms): # rename; also make not delete, just erro
 
     fix_these_bonds = {} # id(bond) -> bond
 
-    for atom in changed_atoms.itervalues():
+    for atom in changed_atoms.values():
         pam = atom.element.pam
         if pam: # optimization
             if (pam == MODEL_PAM3 and fix_PAM3) or \
@@ -85,10 +85,10 @@ def delete_bare_atoms( changed_atoms): # rename; also make not delete, just erro
                                 if not PAM_atoms_allowed_in_same_ladder(bond.atom1, bond.atom2):
                                     fix_these_bonds[id(bond)] = bond
 
-    for bond in fix_these_bonds.values():
+    for bond in list(fix_these_bonds.values()):
         # REVIEW: can one of its atoms be in delete_these_atoms?
         # (probably doesn't matter even if it is)
-        print "*** need to fix this bad rung bond (nim, so bugs will ensue): %r" % bond #####
+        print("*** need to fix this bad rung bond (nim, so bugs will ensue): %r" % bond) #####
         # pam model mismatch: mark them as errors, so not in any chains or ladders
         # pam option mismatch: reset options to default on all chunks connected by rung bonds (or could mark as errors)
         # other (if possible) (eg display styles, if that matters) --
@@ -99,11 +99,11 @@ def delete_bare_atoms( changed_atoms): # rename; also make not delete, just erro
         a1, a2 = bond.atom1, bond.atom2
         if a1.element.pam != a2.element.pam:
             # since it's a rung bond, we know the pams are both set
-            print " nim: mark as errors", a1, a2 ## NIM here, look up how other code does it before propogation
+            print(" nim: mark as errors", a1, a2) ## NIM here, look up how other code does it before propogation
         elif a1.molecule.display_as_pam != a2.molecule.display_as_pam or \
              a1.molecule.save_as_pam != a2.molecule.save_as_pam:
             # transclose to find chunks connected by rung bonds, put in a dict, reset pam props below
-            print " nim: reset pam props starting at", a1, a2
+            print(" nim: reset pam props starting at", a1, a2)
         continue
 
     for atom in delete_these_atoms:
@@ -129,7 +129,7 @@ def atom_is_bare(atom): # fyi: only used in this file as of 080312; ### REVIEW [
      considered bare by this code.)
     """
     if atom.element.role == 'axis':
-        strand_neighbors = filter(lambda other: other.element.role == 'strand', atom.neighbors())
+        strand_neighbors = [other for other in atom.neighbors() if other.element.role == 'strand']
         return not strand_neighbors
     elif atom.element.role == 'strand' and not atom.element is Pl5:
         return False # bruce 080117 revision, might be temporary --
@@ -140,7 +140,7 @@ def atom_is_bare(atom): # fyi: only used in this file as of 080312; ### REVIEW [
 ##        return not axis_neighbors
     elif atom.element.role == 'unpaired-base':
         # guess, bruce 080117
-        strand_neighbors = filter(lambda other: other.element.role == 'strand', atom.neighbors())
+        strand_neighbors = [other for other in atom.neighbors() if other.element.role == 'strand']
         return not strand_neighbors
     else:
         return False

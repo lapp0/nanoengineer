@@ -33,7 +33,7 @@ def fix_deprecated_elements( changed_atoms):
 
     deprecated_atoms = []
 
-    for atom in changed_atoms.itervalues():
+    for atom in changed_atoms.values():
         deprecated_to = atom.element.deprecated_to
             # an element symbol, or None, or 'remove'
         if deprecated_to:
@@ -48,7 +48,7 @@ def fix_deprecated_elements( changed_atoms):
             if fix:
                 deprecated_atoms.append(atom)
             elif debug_flags.DEBUG_DNA_UPDATER:
-                print "dna updater: debug_pref says don't alter deprecated atom %r" % (atom,)
+                print("dna updater: debug_pref says don't alter deprecated atom %r" % (atom,))
         continue
 
     for atom in deprecated_atoms:
@@ -70,7 +70,7 @@ def fix_deprecated_elements( changed_atoms):
             # (review whether it's still going to happen in the current master_updater call)? ####
 
             if debug_flags.DEBUG_DNA_UPDATER_VERBOSE:
-                print "dna updater: kill deprecated atom %r" % (atom,)
+                print("dna updater: kill deprecated atom %r" % (atom,))
             summary_format = \
                 "Warning: dna updater killed [N] deprecated %s pseudoatom(s)" % \
                 (atom.element.symbol,)
@@ -89,8 +89,8 @@ def fix_deprecated_elements( changed_atoms):
             # Use mvElement to avoid remaking existing bondpoints.
             elt = PeriodicTable.getElement(deprecated_to)
             if debug_flags.DEBUG_DNA_UPDATER_VERBOSE:
-                print "dna updater: transmute deprecated atom %r to element %s" % \
-                      (atom, elt.symbol)
+                print("dna updater: transmute deprecated atom %r to element %s" % \
+                      (atom, elt.symbol))
             if dna_updater_warn_when_transmuting_deprecated_elements():
                 summary_format = \
                     "Warning: dna updater transmuted [N] %s to %s pseudoatom(s)" % \

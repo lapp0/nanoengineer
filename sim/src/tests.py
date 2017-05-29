@@ -45,16 +45,16 @@ else:
 
 if __name__ == "__main__":
     if not os.path.exists(simulatorCmd):
-        print "simulator needs rebuilding"
+        print("simulator needs rebuilding")
     if not os.path.exists("sim.so"):
-        print "sim.so needs rebuilding"
+        print("sim.so needs rebuilding")
 
 # Global flags and variables set from command lines
 DEBUG = 0
 MD5_CHECKS = False
 TIME_ONLY = False
 TIME_LIMIT = 1.e9
-LENGTH_ANGLE_TEST, STRUCTCOMPARE_C_TEST = range(2)
+LENGTH_ANGLE_TEST, STRUCTCOMPARE_C_TEST = list(range(2))
 STRUCTURE_COMPARISON_TYPE = LENGTH_ANGLE_TEST
 GENERATE = False
 KEEP_RESULTS = False
@@ -74,8 +74,7 @@ def todo(str):
         raise Unimplemented(str)
 
 def readlines(filename):
-    return map(lambda x: x.rstrip(),
-               open(filename).readlines())
+    return [x.rstrip() for x in open(filename).readlines()]
 
 testTimes = { }
 testsSkipped = 0
@@ -124,15 +123,15 @@ def angleBetween(vec1, vec2):
 
 def measureLength(xyz, first, second):
     """Returns the angle between two atoms (nuclei)"""
-    p0 = apply(V, xyz[first])
-    p1 = apply(V, xyz[second])
+    p0 = V(*xyz[first])
+    p1 = V(*xyz[second])
     return vlen(p0 - p1)
 
 def measureAngle(xyz, first, second, third):
     """Returns the angle between two atoms (nuclei)"""
-    p0 = apply(V, xyz[first])
-    p1 = apply(V, xyz[second])
-    p2 = apply(V, xyz[third])
+    p0 = V(*xyz[first])
+    p1 = V(*xyz[second])
+    p2 = V(*xyz[third])
     v01, v21 = p0 - p1, p2 - p1
     return angleBetween(v01, v21)
 
@@ -155,7 +154,7 @@ class Atom:
     def clone(self):
         "permit deep cloning of structure files"
         a = Atom()
-        for key in self.__dict__.keys():
+        for key in list(self.__dict__.keys()):
             setattr(a, key, getattr(self, key))
         return a
     def __repr__(self):
@@ -194,15 +193,15 @@ class XyzFile:
             a = Atom()
             element, x, y, z = lines[i].split()
             a.elem = _PeriodicTable.index(element)
-            a.x, a.y, a.z = map(string.atof, (x, y, z))
+            a.x, a.y, a.z = list(map(string.atof, (x, y, z)))
             self.atoms.append(a)
     def readFromList(self, lst):
-        assert type(lst) == types.ListType
+        assert type(lst) == list
         for atminfo in lst:
             a = Atom()
             element, x, y, z = atminfo
             a.elem = _PeriodicTable.index(element)
-            a.x, a.y, a.z = map(string.atof, (x, y, z))
+            a.x, a.y, a.z = list(map(string.atof, (x, y, z)))
             self.atoms.append(a)
     def write(self, title, outf=None):
         if outf == None:
@@ -374,7 +373,7 @@ class LengthAngleComparison:
                 raise AssertionError("bond from atom to itself?")
             if atm2 < atm1:
                 atm1, atm2 = atm2, atm1
-            if bondLengthTerms.has_key(atm1):
+            if atm1 in bondLengthTerms:
                 if atm2 not in bondLengthTerms[atm1]:
                     bondLengthTerms[atm1].append(atm2)
             else:
@@ -382,10 +381,10 @@ class LengthAngleComparison:
 
         def getBonds(atm1):
             lst = [ ]
-            if bondLengthTerms.has_key(atm1):
+            if atm1 in bondLengthTerms:
                 for x in bondLengthTerms[atm1]:
                     lst.append(x)
-            for key in bondLengthTerms.keys():
+            for key in list(bondLengthTerms.keys()):
                 if atm1 in bondLengthTerms[key]:
                     if key not in lst:
                         lst.append(key)
@@ -398,7 +397,7 @@ class LengthAngleComparison:
             if atm3 < atm1:
                 atm1, atm3 = atm3, atm1
             value = (atm2, atm3)
-            if bondAngleTerms.has_key(atm1):
+            if atm1 in bondAngleTerms:
                 if value not in bondAngleTerms[atm1]:
                     bondAngleTerms[atm1].append(value)
             else:
@@ -457,16 +456,15 @@ class LengthAngleComparison:
 
     def getLAfromXYZ(self, xyz):
         if len(xyz) != self.numAtoms:
-            raise WrongNumberOfAtoms, \
-                  "%d, expected %d" % (len(xyz), self.numAtoms)
+            raise WrongNumberOfAtoms("%d, expected %d" % (len(xyz), self.numAtoms))
 
         lengthList = [ ]
-        for first in self.bondLengthTerms.keys():
+        for first in list(self.bondLengthTerms.keys()):
             for second in self.bondLengthTerms[first]:
                 lengthList.append(self.LengthMeasurement(first, second,
                                                          self.mmp, xyz))
         angleList = [ ]
-        for first in self.bondAngleTerms.keys():
+        for first in list(self.bondAngleTerms.keys()):
             for second, third in self.bondAngleTerms[first]:
                 angleList.append(self.AngleMeasurement(first, second, third,
                                                        self.mmp, xyz))
@@ -477,12 +475,12 @@ class LengthAngleComparison:
                 lengthTolerance, angleTolerance):
         todo("handle multiple-frame xyz files from animations")
         xyz = XyzFile()
-        if type(questionableXyz) == types.StringType:
+        if type(questionableXyz) == bytes:
             xyz.read(questionableXyz)
-        elif type(questionableXyz) == types.ListType:
+        elif type(questionableXyz) == list:
             xyz.readFromList(questionableXyz)
         else:
-            raise Exception, type(questionableXyz)
+            raise Exception(type(questionableXyz))
         L1, A1 = self.getLAfromXYZ(xyz)
         xyz = XyzFile()
         xyz.read(knownGoodXyzFile)
@@ -518,7 +516,7 @@ class EarlyTermination(Exception):
 def rmtreeSafe(dir):
     # platform-independent 'rm -rf'
     try: shutil.rmtree(dir)
-    except OSError, e: pass
+    except OSError as e: pass
 
 lastRecordedTime = testStartTime = time.time()
 
@@ -593,8 +591,8 @@ class SandboxTest(TimedTest):
         self.simopts = simopts
         self.outputs = outputs
         if LIST_EVERYTHING:
-            print
-            print dir, testname
+            print()
+            print(dir, testname)
         self.runInSandbox()
 
     def runInSandbox(self):
@@ -626,13 +624,13 @@ class SandboxTest(TimedTest):
                 self.generateOutputFiles()
             else:
                 if DEBUG > 0:
-                    print os.listdir(".")
+                    print(os.listdir("."))
                 if DEBUG > 2:
-                    print ("******** " + self.basename + " ********")
+                    print(("******** " + self.basename + " ********"))
                     for f in os.listdir("."):
                         if f != simulatorCmd:
                             # assume everything else is a text file
-                            print "---- " + f + " ----"
+                            print("---- " + f + " ----")
                             sys.stdout.write(open(f).read())
                 try:
                     self.finish()
@@ -651,22 +649,22 @@ class SandboxTest(TimedTest):
             if str.startswith("FOO"):
                 return self.testname + str[3:]
             return str
-        cmdline = [ "./" + simulatorCmd ] + map(substFOO, opts)
+        cmdline = [ "./" + simulatorCmd ] + list(map(substFOO, opts))
         if DEBUG > 0:
-            print self.basename
-            print cmdline
+            print(self.basename)
+            print(cmdline)
         simProcess = qt.QProcess()
         stdout = open("stdout", "a")
         stderr = open("stderr", "a")
         def blabout():
             r = str(simProcess.readStdout())
             if DEBUG > 1:
-                print "STDOUT", r
+                print("STDOUT", r)
             stdout.write(str(simProcess.readStdout()))
         def blaberr():
             r = str(simProcess.readStderr())
             if DEBUG > 1:
-                print "STDERR", r
+                print("STDERR", r)
             stderr.write(str(simProcess.readStderr()))
         qt.QObject.connect(simProcess, qt.SIGNAL("readyReadStdout()"), blabout)
         qt.QObject.connect(simProcess, qt.SIGNAL("readyReadStderr()"), blaberr)
@@ -687,7 +685,7 @@ class SandboxTest(TimedTest):
             if str.startswith("FOO"):
                 return self.testname + str[3:]
             return str
-        cmdline = [ "./" + simulatorCmd ] + map(substFOO, opts)
+        cmdline = [ "./" + simulatorCmd ] + list(map(substFOO, opts))
         stdout = open("stdout", "w")
         stderr = open("stderr", "w")
         p = subprocess.Popen(cmdline)
@@ -803,8 +801,8 @@ class TraceFile:
             i += 1
         self.data = data = [ ]
         while i < len(lines) and lines[i][:1] != '#':
-            data.append(map(string.atof,
-                            lines[i].split()))
+            data.append(list(map(string.atof,
+                            lines[i].split())))
             i += 1
 
     def fuzzyMatch(self, other):
@@ -975,7 +973,7 @@ class JigTest(SandboxTest):
                     n = i - 1
                     break
             if n == None: return None
-            return map(string.atof, lines[n].split())
+            return list(map(string.atof, lines[n].split()))
         # add the following line to regenerate trace files when they fail to match?
         # shutil.copy(self.testname + ".trc", self.basename + ".trcnew")
         goodT = TraceFile(self.basename + ".trc")
@@ -2042,9 +2040,9 @@ class Main(unittest.TextTestRunner):
         def help(x):
             """print help information
             """
-            print __doc__
+            print(__doc__)
             for opt in options:
-                print opt.__name__ + "\n            " + opt.__doc__
+                print(opt.__name__ + "\n            " + opt.__doc__)
             sys.exit(0)
 
         options = (md5check,
@@ -2083,8 +2081,8 @@ class Main(unittest.TextTestRunner):
                     opt(arg)
                     break
             if not found:
-                print "Don't understand command line arg:", arg
-                print "Try typing:   python tests.py help"
+                print("Don't understand command line arg:", arg)
+                print("Try typing:   python tests.py help")
                 sys.exit(1)
 
         # For failures, don't usually bother with complete tracebacks,
@@ -2105,24 +2103,24 @@ class Main(unittest.TextTestRunner):
             ANGLE_TOLERANCE = 14.1     # degrees
 
         casenames = self.getCasenames()
-        self.run(unittest.TestSuite(map(Tests, casenames)))
+        self.run(unittest.TestSuite(list(map(Tests, casenames))))
 
         if TIME_ONLY:
             lst = [ ]
-            for name in testTimes.keys():
+            for name in list(testTimes.keys()):
                 t = testTimes[name]
                 lst.append([t, name])
             lst.sort()
             import pprint
-            pprint.pprint(map(lambda x: x[1], lst))
+            pprint.pprint([x[1] for x in lst])
         else:
-            print len(casenames) - testsSkipped, "tests really done,",
-            print testsSkipped, "tests skipped"
+            print(len(casenames) - testsSkipped, "tests really done,", end=' ')
+            print(testsSkipped, "tests skipped")
 
     def getCasenames(self):
         # Start with tests that appear both as entries in RANKED_BY_RUNTIME
         # and _also_ as test cases in Tests.
-        casenames = filter(lambda x: hasattr(Tests, x), RANKED_BY_RUNTIME)
+        casenames = [x for x in RANKED_BY_RUNTIME if hasattr(Tests, x)]
 
         if TIME_ONLY or GENERATE:
             # Add any test cases in Tests that did not appear in RANKED_BY_RUNTIME.
@@ -2133,7 +2131,7 @@ class Main(unittest.TextTestRunner):
             # filter the results to only what we want
             def filt(name):
                 return name.startswith("test_" + TEST_DIR)
-            casenames = filter(filt, casenames)
+            casenames = list(filter(filt, casenames))
 
         return casenames
 

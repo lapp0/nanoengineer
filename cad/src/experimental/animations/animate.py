@@ -22,11 +22,11 @@ class Dimensions:
         return Dimensions(self.width - other.width,
                           self.height - other.height)
     def __rmul__(self, other):
-        numtypes = (types.IntType, types.FloatType)
+        numtypes = (int, float)
         if type(other) in numtypes:
             return Dimensions(other * self.width,
                               other * self.height)
-        elif type(other) is types.TupleType and \
+        elif type(other) is tuple and \
              len(other) is 2 and \
              type(other[0]) in numtypes and \
              type(other[1]) in numtypes:
@@ -304,8 +304,7 @@ class MpegSequence:
             q.start()
             q.wait()
         else:
-            averages = map(lambda i: jpgfmt % (start + i * incr),
-                           range(frames))
+            averages = [jpgfmt % (start + i * incr) for i in range(frames)]
         for i in range(frames):
             fnum = start + incr * i
             yuv = (self.yuv_format() % self.frame) + '.yuv'
@@ -383,11 +382,9 @@ class MpegSequence:
             q.start()
             q.wait()
         else:
-            averages = map(lambda i: jpgfmt % (start + i * incr),
-                           range(frames))
+            averages = [jpgfmt % (start + i * incr) for i in range(frames)]
             if fadeTo is not None:
-                averages2 = map(lambda i: fadeTo % (start + i * incr),
-                                range(frames))
+                averages2 = [fadeTo % (start + i * incr) for i in range(frames)]
 
         for i in range(frames):
             fnum = start + incr * i

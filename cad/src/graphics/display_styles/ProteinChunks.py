@@ -84,7 +84,7 @@ try:
     from OpenGL.GLE import TUBE_CONTOUR_CLOSED
     from OpenGL.GLE import TUBE_JN_CAP
 except:
-    print "Protein Chunks: GLE module can't be imported. Now trying _GLE"
+    print("Protein Chunks: GLE module can't be imported. Now trying _GLE")
     from OpenGL._GLE import gleSetJoinStyle
     from OpenGL._GLE import TUBE_NORM_PATH_EDGE
     from OpenGL._GLE import TUBE_JN_ANGLE

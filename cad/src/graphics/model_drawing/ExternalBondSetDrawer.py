@@ -96,7 +96,7 @@ class ExternalBondSetDrawer(TransformedDisplayListsDrawer):
             if use_outer_colorsorter:
                 ColorSorter.start(glpane, None)
 
-            for bond in self._ebset._bonds.itervalues():
+            for bond in self._ebset._bonds.values():
                 bond.draw(glpane, disp, color, drawLevel)
 
             if use_outer_colorsorter:
@@ -143,7 +143,7 @@ class ExternalBondSetDrawer(TransformedDisplayListsDrawer):
         ebset = self._ebset
 
         if ebset.empty():
-            print "fyi: should never happen: drawing when empty: %r" % self
+            print("fyi: should never happen: drawing when empty: %r" % self)
             return
 
         chunks = ebset.chunks
@@ -217,8 +217,8 @@ class ExternalBondSetDrawer(TransformedDisplayListsDrawer):
         else:
             # self.displist needs to be remade (and then drawn, or also drawn)
             if _DEBUG_DL_REMAKES:
-                print "remaking %r DL since %r -> %r" % \
-                      (self, self.havelist, havelist_data)
+                print("remaking %r DL since %r -> %r" % \
+                      (self, self.havelist, havelist_data))
             if not self.havelist:
                 self._havelist_inval_counter += 1
                 # (probably not needed in this class, but needed in chunk,
@@ -283,7 +283,7 @@ class ExternalBondSetDrawer(TransformedDisplayListsDrawer):
         # and draw things in a sensible way given both (disp, color) pairs.
         # This is mainly waiting for that "sensible way" to be designed.
 
-        for bond in self._ebset._bonds.itervalues():
+        for bond in self._ebset._bonds.values():
             bond.draw(glpane, disp, color, drawLevel)
         return
 

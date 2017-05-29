@@ -32,17 +32,17 @@ class Quantity:
         else:
             c = 1. * stuff
             self.stuff = units.copy()
-        for k in self.stuff.keys():
+        for k in list(self.stuff.keys()):
             if self.stuff[k] == 0:
                 del self.stuff[k]
         self.stuff[coeff] = c
     def __repr__(self):
         str = '<%g' % self.stuff[coeff]
-        for k in self.stuff.keys():
+        for k in list(self.stuff.keys()):
             if k != coeff:
                 str = str + ' ' + k
                 if self.stuff[k] != 1:
-                    str = str + '^' + `self.stuff[k]`
+                    str = str + '^' + repr(self.stuff[k])
         return str + '>'
     def __add__(self, other):
         self.testUnitsMatch(other)
@@ -59,23 +59,23 @@ class Quantity:
         self.testUnitsMatch(other)
         return cmp(self.stuff[coeff], other.stuff[coeff])
     def __mul__(self, other):
-        if type(other) in (types.IntType, types.FloatType, types.ComplexType):
+        if type(other) in (int, float, complex):
             stuff = self.stuff.copy()
             stuff[coeff] = other * stuff[coeff]
             return Quantity(stuff)
         if not isinstance(other, Quantity):
-            raise UnitsMismatch, repr(self) + " * " + repr(other)
+            raise UnitsMismatch(repr(self) + " * " + repr(other))
         stuff = self.stuff.copy()
-        for k in other.stuff.keys():
+        for k in list(other.stuff.keys()):
             if k != coeff:
-                if stuff.has_key(k):
+                if k in stuff:
                     stuff[k] += other.stuff[k]
                     if abs(stuff[k]) < 1.0e-8:
                         del stuff[k]
                 else:
                     stuff[k] = other.stuff[k]
         stuff[coeff] *= other.stuff[coeff]
-        if len(stuff.keys()) == 1:
+        if len(list(stuff.keys())) == 1:
             return stuff[coeff]
         else:
             return Quantity(stuff)
@@ -87,7 +87,7 @@ class Quantity:
         return (self ** -1) * other
     def __pow__(self, z):
         stuff = self.stuff.copy()
-        for k in stuff.keys():
+        for k in list(stuff.keys()):
             if k != coeff:
                 stuff[k] = z * stuff[k]
         stuff[coeff] = stuff[coeff] ** z
@@ -97,8 +97,8 @@ class Quantity:
     def unitsMatch(self, other):
         if not isinstance(other, Quantity):
             return False
-        otherkeys = other.stuff.keys()
-        for k in self.stuff.keys():
+        otherkeys = list(other.stuff.keys())
+        for k in list(self.stuff.keys()):
             if k not in otherkeys:
                 return False
             if k != coeff and self.stuff[k] != other.stuff[k]:
@@ -106,7 +106,7 @@ class Quantity:
         return True
     def testUnitsMatch(self, other):
         if not self.unitsMatch(other):
-            raise UnitsMismatch, repr(self) + " mismatch " + repr(other)
+            raise UnitsMismatch(repr(self) + " mismatch " + repr(other))
 
 # Lotsa good stuff on units and measures at:
 # http://aurora.rg.iupui.edu/UCUM/UCUM-tab.html

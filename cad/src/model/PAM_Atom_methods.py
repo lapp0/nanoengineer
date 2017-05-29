@@ -397,8 +397,8 @@ class PAM_Atom_methods:
                             [moveme] )
                         if moved_this_one is not moveme:
                             # should never happen
-                            print "error: moved_this_one %r is not moveme %r" % \
-                                  (moved_this_one, moveme)
+                            print("error: moved_this_one %r is not moveme %r" % \
+                                  (moved_this_one, moveme))
                         pass
                     pass
                 if len(axis_neighbors) == 0:
@@ -458,8 +458,7 @@ class PAM_Atom_methods:
                             # print " for %r: axisvec %r starts as" % (self, axisvec,)
                             # now remove the component parallel to the presumed
                             # strand bonds' average direction
-                            presumed_strand_baggage = filter( None,
-                                [reference_strand_neighbor, honorary_strand_neighbor] )
+                            presumed_strand_baggage = [_f for _f in [reference_strand_neighbor, honorary_strand_neighbor] if _f]
                             vecs = [norm(find_bond(self, sn).bond_direction_vector())
                                     for sn in presumed_strand_baggage]
                             if vecs:
@@ -526,7 +525,7 @@ class PAM_Atom_methods:
         # if any are there
         if candidates:
             return candidates[0]
-        print "bug: Pl with no Ss: %r" % self
+        print("bug: Pl with no Ss: %r" % self)
             # only a true statement (that this is a bug) when dna updater
             # is enabled, but that's ok since we're only used then
         return None
@@ -574,8 +573,8 @@ class PAM_Atom_methods:
                 self._f_Pl_store_position_into_Ss3plus5_data()
                     # sets flag to false
             if debug_flags.DEBUG_DNA_UPDATER_VERBOSE: # 080413
-                print "fyi: stored pos of %r, "\
-                      "will kill it and rebond neighbors" % self
+                print("fyi: stored pos of %r, "\
+                      "will kill it and rebond neighbors" % self)
             kill_Pl_and_rebond_neighbors(self)
             ###REVIEW: does killing self mess up its chain or its DnaLadderRailChunk?
             # (when called from dna updater, those are already invalid, they're
@@ -587,7 +586,7 @@ class PAM_Atom_methods:
                 self._f_Pl_set_position_from_Ss3plus5_data()
                     # sets flag to true
             if debug_flags.DEBUG_DNA_UPDATER_VERBOSE: # 080413
-                print "fyi: fixed pos of %r, keeping it" % self
+                print("fyi: fixed pos of %r, keeping it" % self)
         return
 
     def _f_Pl_set_position_from_Ss3plus5_data(self): #bruce 080402
@@ -631,9 +630,9 @@ class PAM_Atom_methods:
         #       "on %r, now at %r" % (abspos, self, self.posn())
 
         if abspos is None:
-            print "bug: _f_Pl_set_position_from_Ss3plus5_data " \
+            print("bug: _f_Pl_set_position_from_Ss3plus5_data " \
                   "can't set %r on %r, now at %r" % \
-                  (abspos, self, self.posn())
+                  (abspos, self, self.posn()))
         else:
             self.setposn(abspos)
 
@@ -730,7 +729,7 @@ class PAM_Atom_methods:
         pos = self.posn()
         sn = self.strand_neighbors()
         if len(sn) != 2:
-            print "bug? %r has unexpected number of strand_neighbors %r" % (self, sn)
+            print("bug? %r has unexpected number of strand_neighbors %r" % (self, sn))
             # since ghost bases should be added to bring this up to 2
         for ss in sn:
             assert ss.element.role == 'strand'
@@ -790,7 +789,7 @@ class PAM_Atom_methods:
             if coord_string == "None":
                 return None
             return interp.decode_atom_coordinate(coord_string)
-        coords = map( decode, coord_strings) # each element is a float or None
+        coords = list(map( decode, coord_strings)) # each element is a float or None
         def decode_coords( x, y, z ):
             if x is None or y is None or z is None:
                 return None
@@ -1110,7 +1109,7 @@ class PAM_Atom_methods:
         else:
             # more than 2 -- see if some of them can be ignored
             # [behavior at ends of bare strands was revised 080212]
-            real_dirbonds = filter( lambda bond: not bond.is_open_bond(), dirbonds )
+            real_dirbonds = [bond for bond in dirbonds if not bond.is_open_bond()]
             num_real = len(real_dirbonds)
             if num_real == 2:
                 # This works around the situation in which a single strand
@@ -1153,12 +1152,12 @@ class PAM_Atom_methods:
                     # on open bond to make 3 dirs set ### FIX)
                     # kluge (bug): assume all real bonds have dir set.
                     # Easily fixable in the lambda if necessary.
-                    dirbonds_set = filter( lambda bond: bond._direction, dirbonds )
+                    dirbonds_set = [bond for bond in dirbonds if bond._direction]
                         #k non-private method?
                     if len(dirbonds_set) == 2:
                         return DIRBOND_CHAIN_MIDDLE, dirbonds_set[0], dirbonds_set[1]
                 if debug_flags.atom_debug:
-                    print "DIRBOND_ERROR noticed on", self
+                    print("DIRBOND_ERROR noticed on", self)
                 return DIRBOND_ERROR, None, None
         pass
 
@@ -1236,7 +1235,7 @@ class PAM_Atom_methods:
         """
         ### REVIEW: should this remain as a separate method, now that its result
         # can't be used naively?
-        return filter(lambda bond: bond.is_directional(), self.bonds)
+        return [bond for bond in self.bonds if bond.is_directional()]
 
     def bond_directions_are_set_and_consistent(self): #bruce 071204
         # REVIEW uses - replace with self._dna_updater__error??
@@ -1313,8 +1312,8 @@ class PAM_Atom_methods:
         """
         debug = debug_flags.atom_debug
         if debug:
-            print "debug fyi: fix_open_bond_directions%r" % \
-                  ((self, bondpoint, want_dir),)
+            print("debug fyi: fix_open_bond_directions%r" % \
+                  ((self, bondpoint, want_dir),))
 
         if bondpoint:
             bondpoint_bond = bondpoint.bonds[0]
@@ -1334,13 +1333,13 @@ class PAM_Atom_methods:
             if debug_flags.atom_debug:
                 print_compact_stack(msg + ": ")
             else:
-                print msg + " (set debug flag to see stack)"
+                print(msg + " (set debug flag to see stack)")
 
         if not self.bond_directions_are_set_and_consistent():
             if debug:
-                print "debug fyi: fix_open_bond_directions%r " \
+                print("debug fyi: fix_open_bond_directions%r " \
                       "needs to fix other open bonds" % \
-                      ((self, bondpoint, want_dir),)
+                      ((self, bondpoint, want_dir),))
             # Note: not doing the following would cause undesirable messages,
             # including history messages from the dna updater, but AFAIK would
             # cause no other harm when the dna updater is turned on (since the
@@ -1348,28 +1347,24 @@ class PAM_Atom_methods:
             # them).
             if want_dir:
                 num_fixed = [0]
-                fixable_open_bonds = filter( lambda bond:
-                                             bond.is_open_bond() and
+                fixable_open_bonds = [bond for bond in self.bonds if bond.is_open_bond() and
                                              bond is not bondpoint_bond and
-                                             bond.bond_direction_from(self) != 0 ,
-                                             self.bonds )
+                                             bond.bond_direction_from(self) != 0]
                 def number_with_direction( bonds, dir1 ):
                     """
                     return the number of bonds in bonds
                     which have the given direction from self
                     """
-                    return len( filter(
-                        lambda bond: bond.bond_direction_from(self) == dir1,
-                        bonds ))
+                    return len( [bond for bond in bonds if bond.bond_direction_from(self) == dir1])
                 def fix_one( bonds, dir1):
                     "fix one of those bonds (by clearing its direction)"
                     bond_to_fix = filter(
                         lambda bond: bond.bond_direction_from(self) == dir1,
                         bonds )[0]
                     if debug:
-                        print "debug fyi: fix_open_bond_directions(%r) " \
+                        print("debug fyi: fix_open_bond_directions(%r) " \
                               "clearing %r of direction %r" % \
-                              (self, bond_to_fix, dir1)
+                              (self, bond_to_fix, dir1))
                     bond_to_fix.clear_bond_direction()
                     num_fixed[0] += 1
                     assert num_fixed[0] <= len(self.bonds) # protect against infloop
@@ -1441,8 +1436,7 @@ class PAM_Atom_methods:
         ends" it will return an axis atom, since they will be represented
         internally as double strands with one strand marked as unreal.
         """
-        axis_neighbors = filter( lambda atom: atom.element.role == 'axis',
-                                 self.neighbors())
+        axis_neighbors = [atom for atom in self.neighbors() if atom.element.role == 'axis']
         if axis_neighbors:
             assert len(axis_neighbors) == 1, \
                    "%r.axis_neighbor() finds more than one: %r" % \
@@ -1458,8 +1452,7 @@ class PAM_Atom_methods:
         which are PAM Pl (pseudo-phosphate) atoms (or any variant thereof,
          which sometimes interposes between strand base sugar pseudoatoms).
         """
-        res = filter( lambda atom: atom.element is Pl5,
-                      self.neighbors())
+        res = [atom for atom in self.neighbors() if atom.element is Pl5]
         return res
 
     def strand_base_neighbors(self): #bruce 071204 (nim, not yet needed; rename?)
@@ -1627,8 +1620,8 @@ class PAM_Atom_methods:
         if not self.element.symbol.startswith('Ss'):
             # kluge? needs to match Ss3 and Ss5, and not Pl.
             # not necessarily an error
-            print "fyi: _store_PAM3plus5_abspos%r is a noop for this element" % \
-                  (self, data_index, abspos)
+            print("fyi: _store_PAM3plus5_abspos%r is a noop for this element" % \
+                  (self, data_index, abspos))
                 # remove when works if routine; leave in if never seen, to
                 # notice bugs; current caller tries not to call in this case,
                 # so this should not happen
@@ -1646,8 +1639,8 @@ class PAM_Atom_methods:
             self._PAM3plus5_Pl_Gv_data = [None, None, None]
         self._PAM3plus5_Pl_Gv_data[data_index] = relpos
         if debug_flags.DEBUG_DNA_UPDATER_VERBOSE:
-            print "fyi, on %r for data_index %r stored relpos %r" % \
-                  (self, data_index, relpos)
+            print("fyi, on %r for data_index %r stored relpos %r" % \
+                  (self, data_index, relpos))
             # todo: use these prints to get constants for
             # default_Pl_relative_position (and Gv) [review: done now?]
         return
@@ -1719,15 +1712,15 @@ class PAM_Atom_methods:
             ladder, whichrail, index = _f_find_new_ladder_location_of_baseatom(self)
             # not self.molecule.ladder, it finds the old invalid ladder instead
         except:
-            print "bug? can_make_up_Pl_abs_position can't find new ladder of %r" % \
-                  (self,)
+            print("bug? can_make_up_Pl_abs_position can't find new ladder of %r" % \
+                  (self,))
             return True
                 # should be False, but return True to mitigate new bugs caused
                 # by this feature
         if not ladder:
             # probably can't happen
-            print "bug? can_make_up_Pl_abs_position sees ladder of None for %r" % \
-                  (self,)
+            print("bug? can_make_up_Pl_abs_position sees ladder of None for %r" % \
+                  (self,))
             return True
                 # should be False (see comment above)
         return ladder.can_make_up_Pl_abs_position_for(self, direction)
@@ -1796,8 +1789,7 @@ class PAM_Atom_methods:
         """
         # [stub -- need more error checks in following (don't return Pl).
         #  but this is correct if structures have no errors.]
-        res = filter( lambda atom: atom.element.role == 'strand',
-                      self.neighbors())
+        res = [atom for atom in self.neighbors() if atom.element.role == 'strand']
         ##assert len(res) in (1, 2), \
         ##       "error: axis atom %r has %d strand_neighbors (should be 1 or 2)"\
         ##       % (self, len(res))
@@ -1805,14 +1797,13 @@ class PAM_Atom_methods:
         # we implem "delete bare atoms" -
         legal_nums = legal_numbers_of_strand_neighbors_on_axis()
         if not ( len(res) in legal_nums ):
-            print "error: axis atom %r has %d strand_neighbors (should be %s)" % \
-                  (self, len(res), " or ".join(map(str, legal_nums)))
+            print("error: axis atom %r has %d strand_neighbors (should be %s)" % \
+                  (self, len(res), " or ".join(map(str, legal_nums))))
         return res
 
     def axis_neighbors(self): #bruce 071204
         # (used on axis atoms, not sure if used on strand atoms)
-        return filter( lambda atom: atom.element.role == 'axis',
-                       self.neighbors())
+        return [atom for atom in self.neighbors() if atom.element.role == 'axis']
 
     # == end of PAM axis atom methods
 

@@ -95,7 +95,7 @@ def update_select_mode(win):
         if debug_flags.atom_debug:
             #bruce 060210 made this debug-only, since what it reports is not too bad, and it happens routinely now in Build mode
             # if atoms are selected and you then select a chunk in MT
-            print "atom_debug: bug, fyi: there are both atoms and chunks selected. Deselecting some of them to fit current mode or internal code."
+            print("atom_debug: bug, fyi: there are both atoms and chunks selected. Deselecting some of them to fit current mode or internal code.")
         new_selwhat_influences = ( selwhat_from_mode, selwhat) # old mode has first say in this case, if it wants it
         #e (We could rewrite this (equivalently) to just use the other case with selwhat_from_sel = None.)
     else:
@@ -114,9 +114,9 @@ def update_select_mode(win):
             #  when the current mode is more compatible with selecting chunks. But I think this causes
             #  no harm, so I might as well wait until we further revise selection code to fix it.)
             if debug_flags.atom_debug:
-                print "atom_debug: bug, fyi: actual selection (%s) inconsistent " \
+                print("atom_debug: bug, fyi: actual selection (%s) inconsistent " \
                       "with internal variable for that (%s); will fix internal variable" % \
-                      (SELWHAT_NAMES[selwhat_from_sel], SELWHAT_NAMES[selwhat])
+                      (SELWHAT_NAMES[selwhat_from_sel], SELWHAT_NAMES[selwhat]))
     # Let the strongest (first listed) influence, of those with an opinion,
     # decide what selmode we'll be in now, and make everything consistent with that.
     for opinion in new_selwhat_influences:
@@ -130,7 +130,7 @@ def update_select_mode(win):
                 # right after it gets initiated (almost too fast to see).
                 if selwhat == SELWHAT_CHUNKS:
                     win.toolsSelectMolecules()
-                    print "fyi: forced mode to Select Chunks" # should no longer ever happen as of 060403
+                    print("fyi: forced mode to Select Chunks") # should no longer ever happen as of 060403
                 elif selwhat == SELWHAT_ATOMS:
                     win.toolsBuildAtoms() #bruce 060403 change: toolsSelectAtoms -> toolsBuildAtoms
                     ## win.toolsSelectAtoms() #bruce 050504 making use of this case for the first time; seems to work

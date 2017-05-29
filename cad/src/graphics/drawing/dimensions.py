@@ -118,10 +118,10 @@ def drawLinearDimension(color,      # what color are we drawing this in
     theoreticalOutOfScreen = cross(theoreticalRight, bdiff)
     yflip = dot(theoreticalOutOfScreen, outOfScreen) < 0
     if debug_flags.atom_debug:
-        print "DEBUG INFO FROM drawLinearDimension"
-        print csys
-        print theoreticalRight, theoreticalOutOfScreen
-        print xflip, yflip
+        print("DEBUG INFO FROM drawLinearDimension")
+        print(csys)
+        print(theoreticalRight, theoreticalOutOfScreen)
+        print(xflip, yflip)
     if yflip:
         def fx(y):
             return br + 1.5 - y / (1. * HEIGHT)

@@ -119,7 +119,7 @@ class HelperClass:
         ### (all of which are various portions of an "arrow" from old to new value of the piece in question).
         "[private] incremental make (or ensure made) of a kid"
         # pseudocode:
-        new = not self._kid_lvals.has_key(index) # but even if not new, we might need to remake it... does that depend on code being new?
+        new = index not in self._kid_lvals # but even if not new, we might need to remake it... does that depend on code being new?
             # if so, is it automatic, from a diffing lval for the code, that will inval the kid-instance? #####@@@@@
         if new:
             self._kid_lvals[index] = KidLval(self, index) #### i don't like passing self (re cycles) -- maybe it won't need to store it??

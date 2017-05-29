@@ -139,7 +139,7 @@ def datread(fname):
         card = f.readline()
         if endpat.match(card): break
         m=frecpat.match(card)
-        v=A([map(float,(m.group(1),m.group(2), m.group(3)))])
+        v=A([list(map(float,(m.group(1),m.group(2), m.group(3))))])
         grads = concatenate((grads,v),axis=0)
 
     f.close()
@@ -159,7 +159,7 @@ def moiread(fname):
         m=irecpat.match(card)
         elem += [capitalize(m.group(1))]
 
-        v=A([map(float,(m.group(2),m.group(3), m.group(4)))])
+        v=A([list(map(float,(m.group(2),m.group(3), m.group(4))))])
         atoms = concatenate((atoms,v),axis=0)
 
     f.close()
@@ -188,7 +188,7 @@ def inpread(fname):
         m=irecpat.match(card)
         elem += [capitalize(m.group(1))]
 
-        v=A([map(float,(m.group(2),m.group(3), m.group(4)))])
+        v=A([list(map(float,(m.group(2),m.group(3), m.group(4))))])
         atoms = concatenate((atoms,v),axis=0)
 
     postface = card
@@ -221,7 +221,7 @@ def xyzread(f):
     for i in range(n):
         m=xyzpat.match(f.readline())
         elems += [capitalize(m.group(1))]
-        atoms[i]=A(map(float,(m.group(2),m.group(3), m.group(4))))
+        atoms[i]=A(list(map(float,(m.group(2),m.group(3), m.group(4)))))
     return elems, atoms
 
 def xyzwrite(f, elem, pos):
@@ -253,11 +253,11 @@ def logread(name):
     while 1:
         card = f.readline()
         if failpat.search(card):
-            print card
+            print(card)
             sys.exit(1)
         if card == "1     ***** EQUILIBRIUM GEOMETRY LOCATED *****\n": break
         if card == " **** THE GEOMETRY SEARCH IS NOT CONVERGED! ****":
-            print card
+            print(card)
             sys.exit(1)
     f.readline() # COORDINATES OF ALL ATOMS ARE (ANGS)
     f.readline() #    ATOM   CHARGE       X              Y              Z
@@ -272,7 +272,7 @@ def logread(name):
         m=irecpat.match(card)
         elem += [capitalize(m.group(1))]
 
-        v=A([map(float,(m.group(2),m.group(3), m.group(4)))])
+        v=A([list(map(float,(m.group(2),m.group(3), m.group(4))))])
         atoms = concatenate((atoms,v),axis=0)
 
     return elem, atoms
@@ -287,7 +287,7 @@ def dpbwrite(f, pos):
         f.write(pack("bbb",int(line[0]),int(line[1]),int(line[2])))
 
 def rungms(name, elem, pos, pref):
-    print "*****  running",name,"   *****"
+    print("*****  running",name,"   *****")
     inpwrite(name, elem, pos, pref)
     if am1p.search(pref):
         os.system("rungms "+name+" 1 > "+name+".log")
@@ -297,7 +297,7 @@ def rungms(name, elem, pos, pref):
     return name
 
 def makexyz():
-    print "making xyz files:"
+    print("making xyz files:")
     xyzs = {}
     files = os.listdir('.')
     for file in files:
@@ -306,7 +306,7 @@ def makexyz():
     for file in files:
         x = pdbname.match(file)
         if x and not x.group(1) in xyzs:
-            print 'Making',x.group(1)+'.xyz'
+            print('Making',x.group(1)+'.xyz')
             os.system("pdb2xyz " + x.group(1))
 
 def fexist(fname):
@@ -316,7 +316,7 @@ def fexist(fname):
 
 
 def dirsetup():
-    print "making input files:"
+    print("making input files:")
     files = os.listdir('.')
     for file in files:
         x = xyzname.match(file)
@@ -327,7 +327,7 @@ def dirsetup():
             inpwrite('level0/'+name, elems, atoms)
 
 def dorunrun(n):
-    print "running Gamess at level",n
+    print("running Gamess at level",n)
     fd = 'level'+str(n-1)
     td = 'level'+str(n)
     header = open(td+'/theory').read()
@@ -386,7 +386,7 @@ def texvec(v):
 
 def surfgen(fqbn, x1, x2):
     b = " $SURF ivec1(1)=1,"+str(1+len(x1))
-    b += " igrp1(1)="+texvec(map(lambda x: 1+len(x1)+x, range(len(x2))))
+    b += " igrp1(1)="+texvec([1+len(x1)+x for x in range(len(x2))])
     dx = x1[0][2]+x2[0][2]
     b += "\n orig1="+str(-0.33*dx)
     b += " disp1="+str(dx*0.01)+" ndisp1=50 $END\n"
@@ -500,12 +500,12 @@ def deread(nam):
 
 if __name__ == "__main__":
     files = os.listdir('bonds')
-    logfiles = filter(lambda x: x[-4:]=='.log', files)
-    defiles = filter(lambda x: x[-7:]=='.De.log', logfiles)
-    logfiles = filter(lambda x: x not in defiles, logfiles)
-    fn = map(lambda x: x[:-4], logfiles)
+    logfiles = [x for x in files if x[-4:]=='.log']
+    defiles = [x for x in logfiles if x[-7:]=='.De.log']
+    logfiles = [x for x in logfiles if x not in defiles]
+    fn = [x[:-4] for x in logfiles]
     for f in fn:
         if fexist('bonds/'+f+'.De.log'): zero = deread(f)
         else: zero=0.0
-        if zero==0.0: print '###',f,'-- no energy zero'
-        print f,'Ks=%7.2f R0=%7.4f De=%7.4f' % surfread(f,zero)
+        if zero==0.0: print('###',f,'-- no energy zero')
+        print(f,'Ks=%7.2f R0=%7.4f De=%7.4f' % surfread(f,zero))

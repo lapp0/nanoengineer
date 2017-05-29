@@ -110,8 +110,8 @@ def loadTexture(image_obj, tex_name = 0): #e arg want_mipmaps
     if not tex_name:
         tex_name = glGenTextures(1)
         # It's deprecated to let this happen much. [070308]
-        print "debug fyi: texture_helpers.loadTexture allocated tex_name %r" %\
-              (tex_name,)
+        print("debug fyi: texture_helpers.loadTexture allocated tex_name %r" %\
+              (tex_name,))
         # note: by experiment (iMac G5 Panther), this returns a single number
         # (1L, 2L, ...), not a list or tuple, but for an argument >1 it returns
         # a list of longs. We depend on this behavior here. [bruce 060207]

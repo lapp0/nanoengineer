@@ -16,7 +16,7 @@ import os
 # 520x420 in order to keep things visible.
 
 def do(cmd):
-    print cmd
+    print(cmd)
     if os.system(cmd) != 0:
         raise Exception
 

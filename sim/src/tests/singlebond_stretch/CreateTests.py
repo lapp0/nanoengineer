@@ -5,8 +5,7 @@ import sys
 import MmpFile
 import XyzFile
 
-damianFiles = map(lambda x: x.strip(),
-                  open("damianFiles").readlines())
+damianFiles = [x.strip() for x in open("damianFiles").readlines()]
 
 for df in damianFiles:
     prefix = df[:df.index(".")]
@@ -35,4 +34,4 @@ for df in damianFiles:
     outf.write("TYPE struct\n")
     outf.close()
 
-    print "Test input files generated for " + testPrefix
+    print("Test input files generated for " + testPrefix)

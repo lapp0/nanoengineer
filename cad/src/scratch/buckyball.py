@@ -81,9 +81,9 @@ class BuckyBall:
             dct = self.dct
             i, j = edge.ij()
             self.lst.append(edge)
-            if not dct.has_key(i):
+            if i not in dct:
                 dct[i] = [ ]
-            if not dct.has_key(j):
+            if j not in dct:
                 dct[j] = [ ]
             dct[i].append((edge, j))
             dct[j].append((edge, i))
@@ -103,18 +103,18 @@ class BuckyBall:
             return self.lst[0].atoms()
         def bondlist(self):
             lst = [ ]
-            for i in self.dct.keys():
+            for i in list(self.dct.keys()):
                 for e, j in self.dct[i]:
                     if j > i:
                         lst.append(e.atoms())
             return lst
         def mmpBonds(self):
             dct = { }
-            for i in self.dct.keys():
+            for i in list(self.dct.keys()):
                 for e, j in self.dct[i]:
                     if j > i:
                         a1, a2 = e.atoms()
-                        if not dct.has_key(a2):
+                        if a2 not in dct:
                             dct[a2] = [ ]
                         if a1+1 not in dct[a2]:
                             dct[a2].append(a1+1)
@@ -256,7 +256,7 @@ class BuckyBall:
                 for y in range(y0 - 1, y0 + 2):
                     for z in range(z0 - 1, z0 + 2):
                         key = (x, y, z)
-                        if occupied.has_key(key):
+                        if key in occupied:
                             return True
             return False
         def occupy(v):
@@ -330,7 +330,7 @@ end molecular machine part gp
             outf.write('atom %d (6) (%d, %d, %d) def\n' %
                        (i + 1, int(1000 * x), int(1000 * y), int(1000 * z)))
             outf.write('info atom atomtype = sp2\n')
-            if mmpbonds.has_key(i) and len(mmpbonds[i]) > 0:
+            if i in mmpbonds and len(mmpbonds[i]) > 0:
                 outf.write('bondg ' + ', '.join(map(str, mmpbonds[i])) + '\n')
         outf.write(mmp_footer)
         outf.close()

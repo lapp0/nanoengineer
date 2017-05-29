@@ -171,7 +171,7 @@ def main(argv, myStdout=sys.stdout, generate=False):
     assert testSpecFile[-5:] == ".test"
 
     if not exists("/tmp/testsimulator"):
-        raise Exception, "Can't find /tmp/testsimulator"
+        raise Exception("Can't find /tmp/testsimulator")
 
     tmpDir = "/tmp/runtest%d" % os.getpid()
     rmtree(tmpDir, ignore_errors=True)
@@ -223,8 +223,7 @@ def main(argv, myStdout=sys.stdout, generate=False):
         elif line[:1] == '#':
             pass
         elif len(line) > 0:
-            raise Exception, \
-                  "%s has unrecognied line:\n%s" % (testSpecFile, line)
+            raise Exception("%s has unrecognied line:\n%s" % (testSpecFile, line))
     inf.close()
 
     if userType == "min":
@@ -249,8 +248,7 @@ def main(argv, myStdout=sys.stdout, generate=False):
         program = userProgram or "echo fail"
         struct = userStruct
     else:
-        raise Exception, \
-              "%s has unrecognied type:\n%s" % (testSpecFile, userType)
+        raise Exception("%s has unrecognied type:\n%s" % (testSpecFile, userType))
 
 
     if generate:

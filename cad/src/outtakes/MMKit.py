@@ -462,7 +462,7 @@ class MMKit(QDialog,
 
     def event(self, event): #bruce 060412 debug code, but also checks all self.__needs_update_xxx flags (an essential bugfix)
         if debug_mmkit_events:
-            print "debug: MMKit.event got %r, type %r" % (event, event.type())
+            print("debug: MMKit.event got %r, type %r" % (event, event.type()))
                 # Qt doc for QEvent lists 'enum type' codes; the subclass is also printed by %r
 
         if self.__needs_update_clipboard_items:
@@ -472,7 +472,7 @@ class MMKit(QDialog,
         res = QDialog.event(self, event)
         if debug_mmkit_events:
             if res is not None:
-                print "debug: MMKit.event returns %r" % (res,) # usually True, sometimes False
+                print("debug: MMKit.event returns %r" % (res,)) # usually True, sometimes False
         # if we return None we get TypeError: invalid result type from MMKit.event()
         return res
 
@@ -693,7 +693,7 @@ class MMKit(QDialog,
             self.w.depositState = 'Library'
             self.w.update_depositState_buttons()
         else:
-            print 'Error: MMKit page unknown: ', page
+            print('Error: MMKit page unknown: ', page)
 
         self.elemGLPane.setFocus()
         self.updateBuildAtomsMessage()
@@ -798,7 +798,7 @@ class MMKit(QDialog,
             self.newModel.checkparts()
             if self.newModel.shelf.members:
                 if debug_flags.atom_debug:
-                    print "debug warning: library part %r contains clipboard items" % mmpfile
+                    print("debug warning: library part %r contains clipboard items" % mmpfile)
                     # we'll see if this is common
                     # happens for e.g. nanokids/nanoKid-C39H42O2.mmp
                 for m in self.newModel.shelf.members[:]:
@@ -817,7 +817,7 @@ class MMKit(QDialog,
             # (old code permitted this to be false below in 'if len(list):',
             #  but failed to check for it in the 'else' clause,
             #  thus causing bug 1627 [I think], now fixed in our caller)
-            print "bug: _clipboardPageView called when not self.currentPageOpen(ClipboardPage)" #bruce 060313
+            print("bug: _clipboardPageView called when not self.currentPageOpen(ClipboardPage)") #bruce 060313
             return
 
         self.pastableItems = self.w.assy.shelf.get_pastable_chunks()

@@ -188,7 +188,7 @@ class GLPane_lighting_methods(object):
 
             # now process it in a cleaner way
             val = {}
-            for (i, (c,a,d,s,x,y,z,e)) in zip(range(3), self._lights):
+            for (i, (c,a,d,s,x,y,z,e)) in zip(list(range(3)), self._lights):
                 name = "light%d" % i
                 params = dict( color = c, \
                                ambient_intensity = a, \
@@ -241,7 +241,7 @@ class GLPane_lighting_methods(object):
                 res.append( (color,a,d,s,x,y,z,e) )
             self.setLighting( res, gl_update = gl_update)
             if _DEBUG_LIGHTING:
-                print "_DEBUG_LIGHTING: fyi: Lighting preferences loaded"
+                print("_DEBUG_LIGHTING: fyi: Lighting preferences loaded")
             return True
         except:
             print_compact_traceback("bug: exception in loadLighting (current prefs not altered): ")

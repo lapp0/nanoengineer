@@ -185,8 +185,8 @@ class DynamicTip: # Mark and Ninad 060817.
              )
             global _last_tipText
             if tipText != _last_tipText:
-                print
-                print tipText
+                print()
+                print(tipText)
                 _last_tipText = tipText
             pass # use tipText below
 

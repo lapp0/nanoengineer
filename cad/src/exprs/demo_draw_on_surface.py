@@ -200,7 +200,7 @@ class PM_from_groups(DelegatingInstanceOrExpr): ###e refile into demo_ui or so, 
     def _C_use_message(self):
         lines = self.message.split('\n')
         lines = [line.strip() for line in lines]
-        lines = filter(None, lines)
+        lines = [_f for _f in lines if _f]
         return '\n'.join(lines)
     use_message = _self.use_message
     # appearance
@@ -265,7 +265,7 @@ class _cmd_DrawOnSurface_BG(Highlightable):
         # but in this polyline3d-making command we already know what to do:
 
         if not lastnode:
-            print "bug: no self.newnode!!!"
+            print("bug: no self.newnode!!!")
         else:
             if not isinstance(lastnode, polyline3d):
                 lastnode = self.newnode = self.world.make_and_add( polyline3d(lastnode), type = "polyline3d" )
@@ -411,7 +411,7 @@ class TextEditField(DelegatingInstanceOrExpr):
             text = text.strip()
             self.text = text # changes state
         else:
-            print "cancelled text edit, old text remains: %r" % (self.text,) #e some other place to put a message in the UI?
+            print("cancelled text edit, old text remains: %r" % (self.text,)) #e some other place to put a message in the UI?
         return
     pass
 
@@ -504,7 +504,7 @@ class _cmd_MakeRect_BG(Highlightable):
             self.newnode.motion = self.startpoint ###KLUGE
             self.making_a_rect_now = False # hide the rubber rect now that the real one is there
         else:
-            print "fyi: click with no drag did nothing" ##e remove after debug
+            print("fyi: click with no drag did nothing") ##e remove after debug
         return
 
     pass # end of class _cmd_MakeRect_BG

@@ -87,7 +87,7 @@ def reload_once(module):
             msg = "fyi (printonce): " + msg
             from foundation.env import seen_before
             if not seen_before(msg):
-                print msg
+                print(msg)
         if 1:
             ## printfyi( "exprs modules won't be reloaded during this session" ) # 070627 removed this
             return

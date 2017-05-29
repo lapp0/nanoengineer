@@ -115,7 +115,7 @@ def max_atom_bonds(atom, special_cases={'H':  1,
     """
     elt = atom.element
     sym = elt.symbol
-    if special_cases.has_key(sym):
+    if sym in special_cases:
         return special_cases[sym]
     else:
         maxbonds = 0
@@ -266,7 +266,7 @@ def covalent_radius(atm):
     try:
         return float( covrad_table[atm.element.symbol] ) # use radius from contributed code, if defined
     except KeyError:
-        print "fyi: covalent radius not in table:",atm.element.symbol # make sure I didn't misspell any symbol names
+        print("fyi: covalent radius not in table:",atm.element.symbol) # make sure I didn't misspell any symbol names
         return float( atm.element.atomtypes[0].rcovalent ) # otherwise use nE-1 radius
     pass
 
@@ -331,7 +331,7 @@ def list_potential_bonds(atmlist0):
     size for physically realistic atmlists, but could be quadratic in size for unrealistic ones (e.g. if all atom
     positions were compressed into a small region of space).
     """
-    atmlist = filter( bondable_atm, atmlist0 )
+    atmlist = list(filter( bondable_atm, atmlist0 ))
     lst = []
     maxBondLength = 2.0
     ngen = NeighborhoodGenerator(atmlist, maxBondLength)
@@ -407,7 +407,7 @@ def inferBonds(mol): # [probably by Will; TODO: needs docstring]
     # not sure how big a margin we should have for "coincident"
     maxBondLength = 2.0
     # first remove any coincident singlets
-    singlets = filter(lambda a: a.is_singlet(), mol.atoms.values())
+    singlets = [a for a in list(mol.atoms.values()) if a.is_singlet()]
     removable = { }
     sngen = NeighborhoodGenerator(singlets, maxBondLength)
     for sing1 in singlets:
@@ -419,10 +419,10 @@ def inferBonds(mol): # [probably by Will; TODO: needs docstring]
             if key1 != key2:
                 removable[key1] = sing1
                 removable[key2] = sing2
-    for badGuy in removable.values():
+    for badGuy in list(removable.values()):
         badGuy.kill()
     from operations.bonds_from_atoms import make_bonds
-    make_bonds(mol.atoms.values())
+    make_bonds(list(mol.atoms.values()))
     return
 
 # ==

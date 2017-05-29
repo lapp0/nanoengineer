@@ -48,7 +48,7 @@ usageMsg = '''usage: %s [-t] [-a] [-l] [-c] [-d] [-s n] [-o] files...
 '''
 def usage():
     pgm = basename(sys.argv[0])
-    print >> sys.stderr, usageMsg % (3*(pgm,))
+    print(usageMsg % (3*(pgm,)), file=sys.stderr)
     return
 
 # Option variables.
@@ -64,9 +64,9 @@ def doOpts():
     global printToks, noNLs, noComments, noDocStrs, sigWords, noOps, filenames
     try:
         opts, filenames = getopt(sys.argv[1:], "talcds:o")
-    except GetoptError, err:
+    except GetoptError as err:
         # print help information and exit:
-        print str(err) # will print something like "option -a not recognized"
+        print(str(err)) # will print something like "option -a not recognized"
         usage()
         sys.exit(2)
         pass
@@ -104,7 +104,7 @@ def py_tokenize(filename_in, file_out):
     g = generate_tokens(file_in.readline)
     li = list(g)
     file_in.close()
-    li2 = map(improve, li)
+    li2 = list(map(improve, li))
     if printToks:
         pprint(li2, file_out)
     else:
@@ -238,7 +238,7 @@ def doText(tokStrs, file_out):
 def dofiles(filenames):
     for filename in filenames:
         if len(filenames) > 1:
-            print "\n======= [%s]\n" % (filename,)
+            print("\n======= [%s]\n" % (filename,))
         py_tokenize(filename, sys.stdout)
     return
 

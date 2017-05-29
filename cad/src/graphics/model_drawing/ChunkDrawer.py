@@ -176,7 +176,7 @@ class ChunkDrawer(TransformedDisplayListsDrawer):
         """
         if self._has_displist():
             self.displist.updateTransform()
-        for extra_displist in self.extra_displists.itervalues():
+        for extra_displist in self.extra_displists.values():
             extra_displist.updateTransform()
         return
 
@@ -578,7 +578,7 @@ class ChunkDrawer(TransformedDisplayListsDrawer):
                 # [bruce 090224]
 
                 # draw the extra_displists, remaking as needed if wantlist
-                for extra_displist in self.extra_displists.itervalues():
+                for extra_displist in self.extra_displists.values():
                     extra_displist.draw_but_first_recompile_if_needed(
                         glpane,
                         selected = self._chunk.picked,
@@ -668,7 +668,7 @@ class ChunkDrawer(TransformedDisplayListsDrawer):
 
     def _renderOverlayText(self, glpane): # by EricM
         gotone = False
-        for atom in self._chunk.atoms.itervalues():
+        for atom in self._chunk.atoms.values():
             text = atom.overlayText
             if (text):
                 gotone = True
@@ -823,7 +823,7 @@ class ChunkDrawer(TransformedDisplayListsDrawer):
                       non_debug = True,
                       prefs_key = "v1.2/use ExternalBondSets for drawing?" ):
             # draw ExternalBondSets
-            objects_to_draw = self._chunk._bonded_chunks.itervalues()
+            objects_to_draw = iter(self._chunk._bonded_chunks.values())
             objects_are_ExternalBondSets = True
             use_outer_colorsorter = False
             selColor = bondcolor = None # not used in this case (nor is disp)
@@ -947,7 +947,7 @@ class ChunkDrawer(TransformedDisplayListsDrawer):
         if not neighborhoodGenerator:
             # precaution after refactoring, probably can't happen [bruce 090218]
             return
-        for atom in self._chunk.atoms.itervalues():
+        for atom in self._chunk.atoms.values():
             pos = atom.posn()
             prior_atoms_too_close = neighborhoodGenerator.region(pos)
             if prior_atoms_too_close:
@@ -1017,7 +1017,7 @@ class ChunkDrawer(TransformedDisplayListsDrawer):
                       Choice_boolean_False,
                       non_debug = True,
                       prefs_key = True ): #bruce 080214
-            print "debug fyi: remaking display lists for chunk %r" % self
+            print("debug fyi: remaking display lists for chunk %r" % self)
             summary_format = graymsg( "debug fyi: remade display lists for [N] chunk(s)" )
             env.history.deferred_summary_message(summary_format)
 
@@ -1117,7 +1117,7 @@ class ChunkDrawer(TransformedDisplayListsDrawer):
 
         bondcolor = atomcolor # never changed below
 
-        for atom in self._chunk.atoms.itervalues():
+        for atom in self._chunk.atoms.values():
             #bruce 050513 using itervalues here (probably safe, speed is needed)
             try:
                 color = atomcolor # might be modified before use
@@ -1193,15 +1193,15 @@ class ChunkDrawer(TransformedDisplayListsDrawer):
                 # other atoms. #e In future, draw a bug-symbol in its place.
                 print_compact_traceback("exception in drawing one atom or bond ignored: ")
                 try:
-                    print "current atom was:", atom
+                    print("current atom was:", atom)
                 except:
-                    print "current atom was... exception when printing it, discarded"
+                    print("current atom was... exception when printing it, discarded")
                 try:
                     atom_source = atom._f_source # optional atom-specific debug info
                 except AttributeError:
                     pass
                 else:
-                    print "Source of current atom:", atom_source
+                    print("Source of current atom:", atom_source)
         return # from _standard_draw_atoms (submethod of _draw_for_main_display_list)
 
     def overdraw_hotspot(self, glpane, disp): #bruce 050131

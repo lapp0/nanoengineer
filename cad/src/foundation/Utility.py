@@ -65,7 +65,7 @@ def node_id(node):
     try:
         node._id # make sure it exists already
     except AttributeError:
-        node._id = nodekey.next()
+        node._id = next(nodekey)
     return node._id
 
 def node_name(node):
@@ -320,13 +320,13 @@ class Node( StateMixin):
         """
         subclass = self.__class__
         if _DEBUG_UNDOABLE_ATTRS:
-            print "debug: running __declare_undoable_attrs in", subclass
+            print("debug: running __declare_undoable_attrs in", subclass)
         for attr in subclass.copyable_attrs:
             name = "_s_attr_" + attr
             if hasattr(subclass, name):
                 if _DEBUG_UNDOABLE_ATTRS:
-                    print " debug: not overwriting manual decl of %r as %r" % \
-                          (name, getattr(subclass, name))
+                    print(" debug: not overwriting manual decl of %r as %r" % \
+                          (name, getattr(subclass, name)))
             else:
                 setattr( subclass, name, S_DATA)
                     # or S_REFS? If it needs to be S_CHILD, add an individual
@@ -530,8 +530,8 @@ class Node( StateMixin):
         # leaf node that the old code was able to read. [bruce 071109 comment]
         if self.is_group():
             if debug_flags.atom_debug:
-                print "atom_debug: mmp file error, ignored: " \
-                      "a group got info leaf %r = ..." % (key,)
+                print("atom_debug: mmp file error, ignored: " \
+                      "a group got info leaf %r = ..." % (key,))
             return
         if key == ['hidden']:
             # val should be "True" or "False" (unrecognized vals are treated as False)
@@ -551,7 +551,7 @@ class Node( StateMixin):
             if debug_flags.atom_debug:
                 msg = "atom_debug: fyi: info leaf (in Node) with " \
                     "unrecognized key %r (not an error)" % (key,)
-                print msg
+                print(msg)
         return
 
     def is_disabled(self):
@@ -632,8 +632,8 @@ class Node( StateMixin):
             if self.no_selgroup_is_ok:
                 return #bruce 050602
             if debug_flags.atom_debug:
-                print "atom_debug: bug(?): change_current_selgroup_to_include_self " \
-                      "on node with no selgroup; ignored"
+                print("atom_debug: bug(?): change_current_selgroup_to_include_self " \
+                      "on node with no selgroup; ignored")
             return
         # ours is this node's selgroup, and might or might not already be the
         # current one in self.assy
@@ -1046,7 +1046,7 @@ class Node( StateMixin):
         if not self.picked:
             if self.part is None:
                 #bruce 080314 check for this
-                print "likely to cause bugs: .part is None in .pick for %r" % self
+                print("likely to cause bugs: .part is None in .pick for %r" % self)
             self.picked = True
             # bruce 050125: should we also call self.assy.permit_picked_parts()
             # here? ###@@@ [not just in chunk.pick]
@@ -1587,7 +1587,7 @@ class Node( StateMixin):
         """
         Updates the attribute values from dict1 to self
         """
-        for attr, val in dict1.iteritems():
+        for attr, val in dict1.items():
             setattr(self, attr, val)
 
     def copy_prior_part_to(self, target): #bruce 050527
@@ -1915,7 +1915,7 @@ class Node( StateMixin):
         return True # wrong for an abstract Node, but there is no such thing!
 
     def dumptree(self, depth = 0): # just for debugging
-        print depth * "...", self.name
+        print(depth * "...", self.name)
 
     def node_must_follow_what_nodes(self):
         #bruce 050422 made Node and Jig implems of this from function of same name
@@ -1952,7 +1952,7 @@ class Node( StateMixin):
         line = "# not yet implemented: mmp record for %r" % self.__class__.__name__
         mapping.write(line + '\n')
         if debug_flags.atom_debug:
-            print "atom_debug:", line
+            print("atom_debug:", line)
         return
 
     def writemmp_info_leaf(self, mapping): #bruce 050421
@@ -2354,10 +2354,10 @@ def topmost_nodes( nodes): #bruce 050303
             # add node, but also remove any members that are below it (how?)
             #e (could be more efficient if we sorted nodes by depth in tree,
             #  or perhaps even sorted the tree-paths from root to each node)
-            for other in res.values():
+            for other in list(res.values()):
                 if node.is_ascendant(other):
                     del res[id(other)]
             res[id(node)] = node
-    return res.values()
+    return list(res.values())
 
 # end

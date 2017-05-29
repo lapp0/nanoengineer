@@ -68,7 +68,7 @@ class GeneratorController(GeneratorBaseClass):
             self.dialog = None
             ##e more
         else:
-            print "error: self.dialog %r is not dialog %r" % (self.dialog, dialog)
+            print("error: self.dialog %r is not dialog %r" % (self.dialog, dialog))
         return
 
     def destroy(self):
@@ -117,7 +117,7 @@ class GeneratorController(GeneratorBaseClass):
             self.dismissed()
     def dismissed(self):
         if env.debug():
-            print "debug fyi: dismissed -- should we tell owner to destroy us? is it even still there?" ####@@@@
+            print("debug fyi: dismissed -- should we tell owner to destroy us? is it even still there?") ####@@@@
         self.destroy() # let's just take the initiative ourselves, though it might cause bugs, maybe we should do it later...
     pass # end of class GeneratorController
 

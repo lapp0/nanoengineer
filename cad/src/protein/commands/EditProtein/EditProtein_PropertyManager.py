@@ -447,7 +447,7 @@ class EditProtein_PropertyManager(Command_PropertyManager):
         if not self.current_protein:
             return
 
-        print "Show =",show
+        print("Show =",show)
         if show:
             self._expandAllRotamers()
         else:
@@ -554,7 +554,7 @@ class EditProtein_PropertyManager(Command_PropertyManager):
             aa_index = self.current_protein.protein.get_current_amino_acid_index()
 
         if 0: # Debugging statement
-            print"setCurrentAminoAcid(): aa_index=", aa_index
+            print("setCurrentAminoAcid(): aa_index=", aa_index)
         self.currentResidueComboBox.setCurrentIndex(aa_index)
         self.current_protein.protein.set_current_amino_acid_index(aa_index)
         self.current_aa = self.current_protein.protein.get_current_amino_acid()
@@ -619,7 +619,7 @@ class EditProtein_PropertyManager(Command_PropertyManager):
 
         if self.current_protein is self.previous_protein:
             if 0:
-                print "Edit Protein: _update_UI_do_updates() - DO NOTHING."
+                print("Edit Protein: _update_UI_do_updates() - DO NOTHING.")
             return
 
         # It is common that the user will unselect the current protein.
@@ -632,7 +632,7 @@ class EditProtein_PropertyManager(Command_PropertyManager):
 
         # Update all PM widgets that need to be since something has changed.
         if 0:
-            print "Edit Protein: _update_UI_do_updates() - UPDATING THE PMGR."
+            print("Edit Protein: _update_UI_do_updates() - UPDATING THE PMGR.")
         self.update_name_field()
         self.update_length_field()
         self.sequenceEditor.updateSequence(proteinChunk = self.current_protein)

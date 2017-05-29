@@ -29,11 +29,11 @@ def process(pat, found):
 
 def printres(found):
     items_to_sort = []
-    for pat, count in found.items():
+    for pat, count in list(found.items()):
         items_to_sort += [(len(pat), pat, count),]
     items_to_sort.sort()
     for len1, pat, count in items_to_sort:
-        print "%d       %s" % (count,pat)
+        print("%d       %s" % (count,pat))
     if len(items_to_sort) == 0:
         # nothing was printed above, so...
         print("no \\n or \\r found in that file!")
@@ -71,7 +71,7 @@ def dofile2(file, fileoutname, bakname = None, fileinname = None):
     fixed = 0
     while 1:
         if output and (len(output) % 100000 == 0):
-            print "did %d so far" % len(output)
+            print("did %d so far" % len(output))
         char0 = char1
         char1 = file.read(1)
         # Note: this seems to be fast enough -- it must be more buffered
@@ -93,17 +93,17 @@ def dofile2(file, fileoutname, bakname = None, fileinname = None):
             output += char1 # most chars get included unchanged
     # (it doesn't matter whether the last char in the file was \r or not)
     if (fixed):
-        print("writing to \"%s\"\n" % fileoutname)
+        print(("writing to \"%s\"\n" % fileoutname))
         fileout = open(fileoutname, 'wb')
         fileout.write(output)
         fileout.close()
         if (bakname):
-            print("moving that over original file \"%s\", backed up into \"%s\"\n" % (fileinname,bakname))
+            print(("moving that over original file \"%s\", backed up into \"%s\"\n" % (fileinname,bakname)))
             # caller still has it open for reading, but that should not matter provided it immediately closes it
             os.rename(fileinname, bakname)
             os.rename(fileoutname, fileinname)
     else:
-        print("not writing to \"%s\"\n" % fileoutname)
+        print(("not writing to \"%s\"\n" % fileoutname))
     pass
 
 
@@ -112,23 +112,23 @@ table_header_line = "count   newline-sequence-type\n-----   ----------" # only f
 # following code calls dofile1 and dofile2 on named files
 
 def do_filename(filename):
-    print('\nfile: "%s"' % filename)
+    print(('\nfile: "%s"' % filename))
     print(table_header_line)
     try:
         file = open(filename, 'rb')
         dofile1(file)
         file.close()
     except:
-        print "exception while doing1 that file:", \
-            sys.exc_info()[0], sys.exc_info()[1]
+        print("exception while doing1 that file:", \
+            sys.exc_info()[0], sys.exc_info()[1])
     sys.stdout.flush()
     try:
         file = open(filename, 'rb')
         dofile2(file, filename + "-fixed", bakname = filename + "-badnls", fileinname = filename)
         file.close()
     except:
-        print "exception while doing2 that file:", \
-            sys.exc_info()[0], sys.exc_info()[1]
+        print("exception while doing2 that file:", \
+            sys.exc_info()[0], sys.exc_info()[1])
     sys.stdout.flush()
     pass
 
@@ -151,7 +151,7 @@ if __name__ == "__main__":
 
     if not filenames:
         msg = "usage: %s <files> [no stdin reading supported for now]" % (program,)
-        print >> sys.stderr, msg
+        print(msg, file=sys.stderr)
         sys.exit(1)
 
     for filename in filenames:

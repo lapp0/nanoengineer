@@ -110,13 +110,13 @@ def update_PAM_chunks( changed_atoms, homeless_markers):
         if still_alive:
             live_markers.append(marker) # only used for asserts
         if (not not still_alive) != (not marker.killed()):
-            print "\n***BUG: still_alive is %r but %r.killed() is %r" % \
-                  (still_alive, marker, marker.killed())
+            print("\n***BUG: still_alive is %r but %r.killed() is %r" % \
+                  (still_alive, marker, marker.killed()))
         if debug_flags.DEBUG_DNA_UPDATER: # SOON: _VERBOSE
             if still_alive:
-                print "dna updater: moved marker %r, still alive after step1" % (marker,)
+                print("dna updater: moved marker %r, still alive after step1" % (marker,))
             else:
-                print "dna updater: killed marker %r (couldn't move it)" % (marker,)
+                print("dna updater: killed marker %r (couldn't move it)" % (marker,))
     del homeless_markers
 
     ignore_new_changes("from moving DnaMarkers")
@@ -217,8 +217,8 @@ def update_PAM_chunks( changed_atoms, homeless_markers):
 
     if _f_invalid_dna_ladders:
         #bruce 080413
-        print "\n*** likely bug: _f_invalid_dna_ladders is nonempty " \
-              "just before merging new ladders: %r" % _f_invalid_dna_ladders
+        print("\n*** likely bug: _f_invalid_dna_ladders is nonempty " \
+              "just before merging new ladders: %r" % _f_invalid_dna_ladders)
 
     # During the merging of ladders, we make ladder inval work normally;
     # at the end, we ignore any invalidated ladders due to the merge.
@@ -354,7 +354,7 @@ def update_PAM_chunks( changed_atoms, homeless_markers):
                     dict1[id(rail1)] = rail1
             return # from collector
         res = [] # elements are data args for WholeChain constructors (or helpers)
-        for rail in toscan_all.values(): # not itervalues (modified during loop)
+        for rail in list(toscan_all.values()): # not itervalues (modified during loop)
             if id(rail) in toscan_all: # if still there (hasn't been popped)
                 toscan = {id(rail) : rail}
                 rails_for_wholechain = transclose(toscan, collector)
@@ -366,15 +366,15 @@ def update_PAM_chunks( changed_atoms, homeless_markers):
     # markers.
 
     new_wholechains = (
-        map( Axis_WholeChain,
+        list(map( Axis_WholeChain,
              algorithm( merged_axis_ladders,
-                        lambda ladder: ladder.axis_rails() ) ) +
-        map( Strand_WholeChain,
+                        lambda ladder: ladder.axis_rails() ) )) +
+        list(map( Strand_WholeChain,
              algorithm( merged_ladders, # must do both kinds at once!
-                        lambda ladder: ladder.strand_rails ) )
+                        lambda ladder: ladder.strand_rails ) ))
      )
     if debug_flags.DEBUG_DNA_UPDATER:
-        print "dna updater: made %d new or changed wholechains..." % len(new_wholechains)
+        print("dna updater: made %d new or changed wholechains..." % len(new_wholechains))
 
     if debug_flags.DNA_UPDATER_SLOW_ASSERTS:
         assert_unique_wholechain_baseatoms(new_wholechains)
@@ -402,7 +402,7 @@ def update_PAM_chunks( changed_atoms, homeless_markers):
         #   - choose or make controlling marker,
         #   - and tell markers whether they're controlling (might kill some of them)
     if debug_flags.DEBUG_DNA_UPDATER:
-        print "dna updater: owned markers of those %d new or changed wholechains" % len(new_wholechains)
+        print("dna updater: owned markers of those %d new or changed wholechains" % len(new_wholechains))
 
     ignore_new_changes("from making wholechains and owning/validating/choosing/making markers",
                        changes_ok = True)
@@ -430,12 +430,12 @@ def _do_pam_conversions( default_pam, all_new_unmerged_ladders):
 
     ladders_dict = _f_ladders_with_up_to_date_baseframes_at_ends
     if ladders_dict:
-        print "***BUG: _f_ladders_with_up_to_date_baseframes_at_ends was found with leftover garbage; clearing it now"
+        print("***BUG: _f_ladders_with_up_to_date_baseframes_at_ends was found with leftover garbage; clearing it now")
         ladders_dict.clear()
 
     locator = _f_atom_to_ladder_location_dict
     if locator:
-        print "***BUG: _f_atom_to_ladder_location_dict was found with leftover garbage; clearing it now"
+        print("***BUG: _f_atom_to_ladder_location_dict was found with leftover garbage; clearing it now")
         locator.clear()
 
     if 1:
@@ -467,7 +467,7 @@ def _do_pam_conversions( default_pam, all_new_unmerged_ladders):
         if didit:
             assert ladders_dict.get(ladder, None) == False
             if debug_flags.DEBUG_DNA_UPDATER_VERBOSE:
-                print "converted:", ladder.ladder_string()
+                print("converted:", ladder.ladder_string())
         continue
 
     if number_converted:
@@ -538,8 +538,8 @@ def _find_rail_of_atom( atom, ladder_to_rails_function):
         assert 0, "can't find any rail in ladder %r (rails %r) which has %r as an end_atom" % \
                ( atom.molecule.ladder, rails, atom )
     except:
-        print "\n*** BUG: following exception is about _find_rail_of_atom( %r, .mol = %r, ._dna_updater__error = %r, %r): " % \
-              (atom, atom.molecule, atom._dna_updater__error, ladder_to_rails_function )
+        print("\n*** BUG: following exception is about _find_rail_of_atom( %r, .mol = %r, ._dna_updater__error = %r, %r): " % \
+              (atom, atom.molecule, atom._dna_updater__error, ladder_to_rails_function ))
         raise
     pass
 

@@ -146,12 +146,12 @@ class PM_ComboBox( QComboBox ):
         """
 
         if 0: # Debugging code
-            print "PM_ComboBox.__init__():"
-            print "  label        =", label
-            print "  choices      =", choices
-            print "  index        =", index
-            print "  setAsDefault =", setAsDefault
-            print "  spanWidth    =", spanWidth
+            print("PM_ComboBox.__init__():")
+            print(("  label        =", label))
+            print(("  choices      =", choices))
+            print(("  index        =", index))
+            print(("  setAsDefault =", setAsDefault))
+            print(("  spanWidth    =", spanWidth))
 
         QComboBox.__init__(self)
 

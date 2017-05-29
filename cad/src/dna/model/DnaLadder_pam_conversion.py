@@ -82,7 +82,7 @@ class DnaLadder_pam_conversion_methods:
         res = results[0]
         for res1 in results:
             if res1 != res:
-                print "fyi: inconsistent pam models %r in rails of %r" % (results, self) #### temporary
+                print("fyi: inconsistent pam models %r in rails of %r" % (results, self)) #### temporary
                 return MODEL_MIXED
                     # prevents pam conversion, may cause other bugs if callers not reviewed @@@
             continue
@@ -144,9 +144,9 @@ class DnaLadder_pam_conversion_methods:
         #revised, bruce 080411
 
         if _f_baseatom_wants_pam:
-            print "unexpected: something called %r._cmd_convert_to_pam(%r) " \
+            print("unexpected: something called %r._cmd_convert_to_pam(%r) " \
                   "but _f_baseatom_wants_pam is not empty" % \
-                  ( self, which_model)
+                  ( self, which_model))
             # should be safe, so don't clear it [bruce 080413 revision]
             # Note: if general code (not just our own cmenu ops) could call this
             # method, that code might assume it could call it on more than one
@@ -312,7 +312,7 @@ class DnaLadder_pam_conversion_methods:
         if not self.valid:
             # caller should have rejected self before this point
             # (but safer to not assert this, but just debug print for now)
-            print "bug?: _convert_to_pam on invalid ladder:", self
+            print("bug?: _convert_to_pam on invalid ladder:", self)
             summary_format = "Bug: PAM conversion attempted on [N] invalid DnaLadder(s)"
             env.history.deferred_summary_message( redmsg( summary_format ))
             return -1
@@ -338,8 +338,8 @@ class DnaLadder_pam_conversion_methods:
                 summary_format = "Warning: PAM conversion not implemented for [N] DnaLadder(s) with %s axis" % \
                                   element.symbol
                 env.history.deferred_summary_message( orangemsg( summary_format ))
-                print "conversion from PAM axis element %r is not yet implemented (in %r)" % \
-                      (self.axis_rail.baseatoms[0].element, self)
+                print("conversion from PAM axis element %r is not yet implemented (in %r)" % \
+                      (self.axis_rail.baseatoms[0].element, self))
                 return -1
             pass
         if self_pam_model == pam_model:
@@ -396,7 +396,7 @@ class DnaLadder_pam_conversion_methods:
             # if necessary to make sure we temporarily have a full set of 2 strand_rails.
             # what to do for non-axis ladders is not yet reviewed or implemented. @@@@
         if not ok:
-            print "baseframes failed for", self
+            print("baseframes failed for", self)
             # todo: summary message
             return False
 
@@ -452,16 +452,16 @@ class DnaLadder_pam_conversion_methods:
         # keep this in sync with the code in _convert_to_pam
         del ss, direction
         if not self.valid or self.error:
-            print "reason 1"
+            print("reason 1")
             return False
         if len(self.strand_rails) != 2:
-            print "reason 2"
+            print("reason 2")
             return False
         if not self.axis_rail:
-            print "reason 3"
+            print("reason 3")
             return False
         if self.axis_rail.baseatoms[0].element not in (Ax3, Gv5):
-            print "reason 4"
+            print("reason 4")
             return False
         return True
 
@@ -496,7 +496,7 @@ class DnaLadder_pam_conversion_methods:
                     # transmute it
                     atom.mvElement(Gv5)
                 else:
-                    print "unexpected: %r is already Gv5" % atom
+                    print("unexpected: %r is already Gv5" % atom)
                     # this might turn out to be normal if we can someday convert
                     # PAM5-with-Ax5 (in old mmp files) to PAM5-with-Gv5.
                 continue
@@ -577,13 +577,13 @@ class DnaLadder_pam_conversion_methods:
                         pass
                     pass
                 elif atom.element is Ss5:
-                    print "unexpected: strand rail %r (judging by atom %r) seems to be already PAM5" % (rail, atom)
+                    print("unexpected: strand rail %r (judging by atom %r) seems to be already PAM5" % (rail, atom))
                     # don't break loop here, in case this repairs a bug from an earlier exception
                     # partway through a pam conversion (not too likely, but then neither is this case at all,
                     # so we don't need to optimize it)
                     pass
                 else:
-                    print "likely bug: %r is not Ss3 or Ss5" % atom
+                    print("likely bug: %r is not Ss3 or Ss5" % atom)
                 continue
             pass
         elif want_pam_model == MODEL_PAM3:
@@ -637,7 +637,7 @@ class DnaLadder_pam_conversion_methods:
         if self.error or not self.valid:
             # caller should have rejected self before this point
             # (but safer to not assert this, but just debug print for now)
-            print "bug: _make_bridging_Pls_as_needed on ladder with error or not valid:", self
+            print("bug: _make_bridging_Pls_as_needed on ladder with error or not valid:", self)
             return
         res = {}
         for end_atom, next_atom in self._corner_atoms_with_next_atoms_or_None():
@@ -647,7 +647,7 @@ class DnaLadder_pam_conversion_methods:
             # review: is next_atom a bondpoint, None, or both, when a strand ends? I think a bondpoint,
             # this code only works properly for that case.
             if next_atom is None:
-                print "***BUG: _make_bridging_Pls_as_needed(%r) doesn't handle next_atom is None" % self
+                print("***BUG: _make_bridging_Pls_as_needed(%r) doesn't handle next_atom is None" % self)
                 continue
             # assume it's a bondpoint or Ss3 or Ss5. We want Pl iff either atom is Ss5.
             def atom_wants_Pl(atom):
@@ -713,25 +713,25 @@ class DnaLadder_pam_conversion_methods:
         if self.error or not self.valid:
             # caller should have rejected self before this point
             # (but safer to not assert this, but just debug print for now)
-            print "bug: _bridging_Pl_atoms on ladder with error or not valid:", self
+            print("bug: _bridging_Pl_atoms on ladder with error or not valid:", self)
             return
         res = {}
         for end_atom, next_atom in self._corner_atoms_with_next_atoms_or_None():
             if end_atom._dna_updater__error:
-                print "bug: %r has _dna_updater__error %r in %r, returning no _bridging_Pl_atoms" % \
-                      (end_atom, end_atom._dna_updater__error, self)
+                print("bug: %r has _dna_updater__error %r in %r, returning no _bridging_Pl_atoms" % \
+                      (end_atom, end_atom._dna_updater__error, self))
                 return []
             possible_Pl = next_atom
             # might be None or a non-Pl atom; if a Pl atom, always include in return value,
             # unless it has a _dna_updater__error, in which case complain and bail
             if possible_Pl is not None and possible_Pl.element is Pl5:
                 if possible_Pl._dna_updater__error:
-                    print "bug: possible_Pl %r has _dna_updater__error %r in %r, returning no _bridging_Pl_atoms" % \
-                      (possible_Pl, possible_Pl._dna_updater__error, self)
+                    print("bug: possible_Pl %r has _dna_updater__error %r in %r, returning no _bridging_Pl_atoms" % \
+                      (possible_Pl, possible_Pl._dna_updater__error, self))
                     return [] # bugfix: fixed indent level of this line [bruce 080412]
                 res[possible_Pl.key] = possible_Pl
             continue
-        res = res.values()
+        res = list(res.values())
         return res
 
     def _corner_atoms_with_next_atoms_or_None(self): #bruce 080410 split this out of _bridging_Pl_atoms
@@ -786,9 +786,9 @@ class DnaLadder_pam_conversion_methods:
             _fix(self.axis_rail.baseatoms[0])
             _fix(self.axis_rail.baseatoms[-1])
         # now do it
-        for atom in fix_soon.values():
+        for atom in list(fix_soon.values()):
             if atom.element is Singlet:
-                print "didn't expect X here:", atom
+                print("didn't expect X here:", atom)
                 continue
             atom.reposition_baggage()
                 # Note: on baseatoms (and on Pl if we extend it for that),
@@ -810,8 +810,8 @@ class DnaLadder_pam_conversion_methods:
         del self._baseframe_data
         # probably not needed:
         ladders_dict = _f_ladders_with_up_to_date_baseframes_at_ends
-        if ladders_dict.has_key(self):
-            print "unexpected: %r in ladders_dict too early, when cleared" % self
+        if self in ladders_dict:
+            print("unexpected: %r in ladders_dict too early, when cleared" % self)
             # only unexpected due to current usage, not an error in principle
         ladders_dict.pop(self, None)
         return
@@ -823,7 +823,7 @@ class DnaLadder_pam_conversion_methods:
         @see: related method, whichrail_and_index_of_baseatom
         """
         if debug_flags.DEBUG_DNA_UPDATER_VERBOSE: # 080413
-            print "storing locator data for", self
+            print("storing locator data for", self)
         locator = _f_atom_to_ladder_location_dict
         look_at_rails = self.rail_indices_and_rails()
         length = len(self)
@@ -855,8 +855,8 @@ class DnaLadder_pam_conversion_methods:
         """
         if not self.valid: #bruce 080411
             # maybe make this an assertion failure?
-            print "likely bug: invalid ladder in _f_baseframe_data_at(%r, %r, %r)" % \
-                  (self, whichrail, index)
+            print("likely bug: invalid ladder in _f_baseframe_data_at(%r, %r, %r)" % \
+                  (self, whichrail, index))
         ladders_dict = _f_ladders_with_up_to_date_baseframes_at_ends
         # review: is this code needed elsewhere?
         # caller is not sure self._baseframe_data is computed and/or
@@ -875,7 +875,7 @@ class DnaLadder_pam_conversion_methods:
             self._compute_and_store_new_baseframe_data( ends_only = True)
             pass
         if index == 0 or index == len(self) - 1:
-            assert ladders_dict.has_key(self)
+            assert self in ladders_dict
         else:
             assert ladders_dict[self] == False, \
                 "_f_baseframe_data_at%r: index not at end but ladders_dict[self] != False, but %r" % \
@@ -906,7 +906,7 @@ class DnaLadder_pam_conversion_methods:
         assert self.axis_rail, "need to override this in the subclass"
         if ends_only:
             if debug_flags.DEBUG_DNA_UPDATER_VERBOSE: # 080413
-                print "fyi: %r._compute_and_store_new_baseframe_data was only needed at the ends, optim is nim" % self
+                print("fyi: %r._compute_and_store_new_baseframe_data was only needed at the ends, optim is nim" % self)
         # using ends_only is an optim, not yet implemented
         assert len(self.strand_rails) == 2
         data = []
@@ -918,23 +918,23 @@ class DnaLadder_pam_conversion_methods:
         # even if this is None, we store it, and store something saying we computed it
         # so we won't try to compute it again -- though uses of it will fail.
         if debug_flags.DEBUG_DNA_UPDATER_VERBOSE: # 080413
-            print "fyi: computed baseframes (ends_only = %r) for %r; success == %r" % \
-                  (ends_only, self, (baseframes is not None))
-            print " details of self: valid = %r, error = %r, assy = %r, contents:\n%s" % \
+            print("fyi: computed baseframes (ends_only = %r) for %r; success == %r" % \
+                  (ends_only, self, (baseframes is not None)))
+            print(" details of self: valid = %r, error = %r, assy = %r, contents:\n%s" % \
                   (self.valid, self.error, self.axis_rail.baseatoms[0].molecule.assy,
-                   self.ladder_string())
+                   self.ladder_string()))
         self._baseframe_data = baseframes # even if None
         ladders_dict = _f_ladders_with_up_to_date_baseframes_at_ends
         if ladders_dict.get(self, None) is not None:
-            print "unexpected: %r was already computed (ends_only = %r), doing it again (%r)" % \
-                  (self, ladders_dict[self], ends_only)
+            print("unexpected: %r was already computed (ends_only = %r), doing it again (%r)" % \
+                  (self, ladders_dict[self], ends_only))
         if ends_only:
             # partial recompute: only record if first recompute for self
             ladders_dict.setdefault(self, ends_only)
         else:
             # full recompute: overrides prior record
             if ladders_dict.get(self, None) == True:
-                print " in fact, very unexpected: was computed at ends and is now computed on whole"
+                print(" in fact, very unexpected: was computed at ends and is now computed on whole")
             ladders_dict[self] = ends_only
         if baseframes is None:
             # todo: print summary message? give reason (hard, it's a math exception)
@@ -1056,7 +1056,7 @@ class DnaLadder_pam_conversion_methods:
                 # this only requires that axis_chunk is some kind of Chunk.
                 # fyi: if we didn't know what kind of node it was, we'd need to use:
                 ## node.parent_node_of_class(assy.DnaGroup)
-            print "got DnaGroup:", dnaGroup ####
+            print("got DnaGroup:", dnaGroup) ####
             if dnaGroup is not None:
                 dnaGroup.addchild(ghost_chunk)
             else:
@@ -1112,7 +1112,7 @@ class DnaLadder_pam_conversion_methods:
         """
         """
         # todo: see if DnaCylinder display style code has a better version
-        atoms = map( self.axis_atom_at_extended_baseindex, [i - 1, i, i + 1] )
+        atoms = list(map( self.axis_atom_at_extended_baseindex, [i - 1, i, i + 1] ))
         candidates = []
         if atoms[0] is not None:
             candidates.append( norm( atoms[1].posn() - atoms[0].posn() ))
@@ -1120,7 +1120,7 @@ class DnaLadder_pam_conversion_methods:
             candidates.append( norm( atoms[2].posn() - atoms[1].posn() ))
         if not candidates:
             # length 1 axis WholeChain
-            print "BUG: length 1 axis vector nim, using V(1, 0, 0):", self, i
+            print("BUG: length 1 axis vector nim, using V(1, 0, 0):", self, i)
             return V(1, 0, 0)
                 # unideal -- should return a perpendicular to a rung bond if we have one
         return average_value(candidates)
@@ -1170,7 +1170,7 @@ def make_strand2_ghost_base_atom( chunk, axis_atom, axis_vector, strand1_atom ):
     #  between them, for similar reasons re pam conversion; drawing code
     #  should handle that as well, if all Ss neighbors are ghosts.)
     strand2_atom.ghost = True
-    print "made ghost baseatom", strand2_atom
+    print("made ghost baseatom", strand2_atom)
         # not too verbose, since sticky ends should not be very long
         # (and this won't be set on free floating single strands)
     return strand2_atom

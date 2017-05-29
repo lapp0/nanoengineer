@@ -190,7 +190,7 @@ def moduleToDotNode(moduleName, returnPackageName):
         if (moduleName in libraryReferences):
             return "library"
         if (isPackage(moduleName)):
-            if (packageGroupMapping.has_key(moduleName)):
+            if (moduleName in packageGroupMapping):
                 return packageGroupMapping[moduleName]
             return moduleName
         mod = moduleName
@@ -200,7 +200,7 @@ def moduleToDotNode(moduleName, returnPackageName):
                 return "top"
             mod = mod[:i]
             if (isPackage(mod)):
-                if (packageGroupMapping.has_key(mod)):
+                if (mod in packageGroupMapping):
                     return packageGroupMapping[mod]
                 return mod
     return moduleName
@@ -208,7 +208,7 @@ def moduleToDotNode(moduleName, returnPackageName):
 def printPackage(fromPackageName, toPackageName, fromModuleName, toModuleName):
     if (optionByPackage):
         if (toPackageName != "library" and toPackageName != "tools"):
-            print >>sys.stderr, "%s -> %s, %s -> %s" % (fromPackageName, toPackageName, fromModuleName, toModuleName)
+            print("%s -> %s, %s -> %s" % (fromPackageName, toPackageName, fromModuleName, toModuleName), file=sys.stderr)
 
 
 def importsInFile(fileName):
@@ -257,8 +257,8 @@ def importsInFile(fileName):
                     printPackage(fromModule, toModule, fromModuleName, toModuleName)
     f.close()
     if (continuationWarning):
-        print >>sys.stderr, "WARNING: continued import statement in " + fileName
-    if (moduleNameToImportList.has_key(fromModule)):
+        print("WARNING: continued import statement in " + fileName, file=sys.stderr)
+    if (fromModule in moduleNameToImportList):
         # this happens if we're operating by package
         importSet = importSet.union(moduleNameToImportList[fromModule])
     importList = list(importSet)
@@ -270,22 +270,22 @@ nodeColors = {}
 packageNodes = []
 
 def createNode(name, fullModuleName):
-    if (not optionColorPackages or nodeColors.has_key(name)):
+    if (not optionColorPackages or name in nodeColors):
         return
     if (optionByPackage):
         packageName = name
     else:
         packageName = moduleToDotNode(fullModuleName, True)
-    if (packageColors.has_key(packageName)):
+    if (packageName in packageColors):
         nodeColors[name] = packageColors[packageName]
-        print '    %s [fillcolor="%s"];' % (name, nodeColors[name])
+        print('    %s [fillcolor="%s"];' % (name, nodeColors[name]))
     else:
-        print >>sys.stderr, "undefined package color: " + packageName
+        print("undefined package color: " + packageName, file=sys.stderr)
 
 def getPackageLevel(packageName):
-    if (packageLevels.has_key(packageName)):
+    if (packageName in packageLevels):
         return packageLevels[packageName]
-    print >>sys.stderr, "undefined package level: " + packageName
+    print("undefined package level: " + packageName, file=sys.stderr)
     return 9
 
 def printEdge(fromNode, toNode):
@@ -300,9 +300,9 @@ def printEdge(fromNode, toNode):
             color = "red"
         else:
             color = "black"
-        print "    %s -> %s [color=%s];" % (fn, tn, color)
+        print("    %s -> %s [color=%s];" % (fn, tn, color))
     else:
-        print "    %s -> %s;" % (fn, tn)
+        print("    %s -> %s;" % (fn, tn))
 
 excludeFromEdges = [
     "prototype",
@@ -329,11 +329,11 @@ def dependenciesInFile(fromModuleName, printing):
         if (printing and fromModuleName not in excludeFromEdges and toModuleName not in excludeToEdges):
             printEdge(fromModuleName, toModuleName)
 
-        if (fromModuleCount.has_key(fromModuleName)):
+        if (fromModuleName in fromModuleCount):
             fromModuleCount[fromModuleName] += 1
         else:
             fromModuleCount[fromModuleName] = 1
-        if (toModuleCount.has_key(toModuleName)):
+        if (toModuleName in toModuleCount):
             toModuleCount[toModuleName] += 1
         else:
             toModuleCount[toModuleName] = 1
@@ -405,28 +405,28 @@ def isInCycle(moduleName, cycleRoot, debugPrefix):
 
     if (moduleName == cycleRoot):
         if (debugCycle):
-            print debugPrefix + "Got to root"
+            print(debugPrefix + "Got to root")
         return True
-    if (visited.has_key(moduleName)):
+    if (moduleName in visited):
         if (debugCycle):
-            print debugPrefix + "Already visited %s, returning %s" % (moduleName, visited[moduleName])
+            print(debugPrefix + "Already visited %s, returning %s" % (moduleName, visited[moduleName]))
         return visited[moduleName]
     if (moduleName in pruneModules or moduleName in unreferencedModules or moduleName in externalModules):
         if (debugCycle):
-            print debugPrefix + "Pruning " + moduleName
+            print(debugPrefix + "Pruning " + moduleName)
         return False
     importList = moduleNameToImportList[moduleName]
     visited[moduleName] = False
     for toModuleName in importList:
         if (debugCycle):
-            print debugPrefix + "Descending to " + toModuleName
+            print(debugPrefix + "Descending to " + toModuleName)
         if (isInCycle(toModuleName, cycleRoot, debugPrefix + " ")):
             visited[moduleName] = True
             if (debugCycle):
-                print debugPrefix + "Part of cycle: %s -> %s" %(moduleName, toModuleName)
+                print(debugPrefix + "Part of cycle: %s -> %s" %(moduleName, toModuleName))
             return True
     if (debugCycle):
-        print debugPrefix + "Not in cycle: " + moduleName
+        print(debugPrefix + "Not in cycle: " + moduleName)
     return False
 
 def scanForCycles(cycleRoot):
@@ -437,7 +437,7 @@ def scanForCycles(cycleRoot):
 
     if (moduleName in pruneModules or moduleName in unreferencedModules or moduleName in externalModules):
         if (debugCycle):
-            print "returning right away"
+            print("returning right away")
         return
 
     removeArcs = []
@@ -445,15 +445,15 @@ def scanForCycles(cycleRoot):
     for toModuleName in importList:
         visited = {}
         if (debugCycle):
-            print "------- starting to scan: " + toModuleName
+            print("------- starting to scan: " + toModuleName)
         if (isInCycle(toModuleName, cycleRoot, "")):
             if (debugCycle):
-                print "in cycle: " + toModuleName
+                print("in cycle: " + toModuleName)
             pass
         else:
             removeArcs += [toModuleName]
             if (debugCycle):
-                print "NOT in cycle: " + toModuleName
+                print("NOT in cycle: " + toModuleName)
     for toModuleName in removeArcs:
         importList.remove(toModuleName)
     moduleNameToImportList[moduleName] = importList
@@ -461,22 +461,22 @@ def scanForCycles(cycleRoot):
 
 def printTree():
     initializeGlobals()
-    print "digraph G {"
+    print("digraph G {")
     if (optionColorPackages):
-        print "    node [style=filled];"
-        print '    node [fillcolor="#ff4040"];'
+        print("    node [style=filled];")
+        print('    node [fillcolor="#ff4040"];')
     alreadyProcessed = []
     for sourceFile in filesToProcess:
         fromModuleName = moduleToDotNode(fileNameToModuleName(sourceFile), optionByPackage)
         if (not fromModuleName in alreadyProcessed):
             alreadyProcessed += [fromModuleName]
             dependenciesInFile(fromModuleName, True)
-    print "}"
+    print("}")
     if (not optionByPackage):
-        for key in fromModuleCount.keys():
-            if (not toModuleCount.has_key(key)):
+        for key in list(fromModuleCount.keys()):
+            if (key not in toModuleCount):
                 toModuleCount[key] = 0
-            print >>sys.stderr, "%06d %06d %s" % (toModuleCount[key], fromModuleCount[key], key)
+            print("%06d %06d %s" % (toModuleCount[key], fromModuleCount[key], key), file=sys.stderr)
 
 if (__name__ == '__main__'):
     for opt in sys.argv[1:]:
@@ -502,20 +502,20 @@ if (__name__ == '__main__'):
         unreferencedModules.sort()
         for module in unreferencedModules:
             if (not module.endswith("__init__")):
-                print module
+                print(module)
     elif (optionPrintTables):
-        print "\n   Prune\n"
+        print("\n   Prune\n")
         pruneModules.sort()
         for module in pruneModules:
-            print module
-        print "\n   Unreferenced\n"
+            print(module)
+        print("\n   Unreferenced\n")
         unreferencedModules.sort()
         for module in unreferencedModules:
-            print module
-        print "\n   External\n"
+            print(module)
+        print("\n   External\n")
         externalModules.sort()
         for module in externalModules:
-            print module
+            print(module)
     else:
         if (optionJustCycles):
             alreadyProcessed = []

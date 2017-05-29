@@ -20,4 +20,4 @@ else:
         cmd = getattr(mcc, arg)
         if cmd.startswith("gcc ") or cmd.startswith("g++ "):
             cmd = cmd[4:]
-        print cmd
+        print(cmd)

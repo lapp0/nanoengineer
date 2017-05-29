@@ -51,10 +51,10 @@ def _report_psurface_import_status(): #bruce 080223; only run if feature is used
     if not _psurface_import_status_has_been_reported:
         _psurface_import_status_has_been_reported = True
         if not _psurface_import_worked:
-            print "psurface not imported, check if it has been built"
-            print " (will use slow python version instead)"
+            print("psurface not imported, check if it has been built")
+            print(" (will use slow python version instead)")
         else:
-            print "fyi: psurface import succeeded:", psurface
+            print("fyi: psurface import succeeded:", psurface)
     return
 
 try:
@@ -181,7 +181,7 @@ class Triple:
                 self.x = args[0].x
                 self.y = args[0].y
                 self.z = args[0].z
-            elif isinstance(args[0], types.ListType):
+            elif isinstance(args[0], list):
                 self.x = args[0][0]
                 self.y = args[0][1]
                 self.z = args[0][2]
@@ -578,7 +578,7 @@ class SurfaceChunks(ChunkDisplayMode):
             spheres = []
             atoms = []
             coltypes = []
-            for a in chunk.atoms.values():
+            for a in list(chunk.atoms.values()):
                 col = a.drawing_color()
                 ii = 0
                 for ic in range(len(coltypes)):
@@ -634,7 +634,7 @@ class SurfaceChunks(ChunkDisplayMode):
             rad = 0.0
             s = Surface()
             margin = 0
-            for a in chunk.atoms.values():
+            for a in list(chunk.atoms.values()):
                 dispjunk, ra = a.howdraw(diTrueCPK)
                 if ra > margin : margin = ra
                 s.radiuses.append(ra)

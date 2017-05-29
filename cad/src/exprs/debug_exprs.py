@@ -26,7 +26,7 @@ def getattr_debugprint(obj, attr): #070211; tested, though not usually in use
     try:
         return getattr(obj, attr)
     except AttributeError:
-        print "getattr_debugprint: %s has no %r (reraising)" % (safe_repr(obj), attr)
+        print("getattr_debugprint: %s has no %r (reraising)" % (safe_repr(obj), attr))
         raise
     pass
 
@@ -59,7 +59,7 @@ class DebugPrintAttrs(Widget, DelegatingMixin): # guess 061106; revised 061109, 
     attrs = Arg(Anything, [])
     def draw(self):
         guy = self.delegate
-        print "guy = %r" % (guy, )
+        print("guy = %r" % (guy, ))
         ## attrs = self.args[1:]
         attrs = self.attrs
         if type(attrs) == type("kluge"):
@@ -70,7 +70,7 @@ class DebugPrintAttrs(Widget, DelegatingMixin): # guess 061106; revised 061109, 
         if 'ipath' not in attrs:
             attrs.append('ipath')#070118; not sure it's good
         for name in attrs:
-            print "guy.%s is" % name, getattr(guy,name,"<unassigned>")
+            print("guy.%s is" % name, getattr(guy,name,"<unassigned>"))
         return self.drawkid( guy) ## return guy.draw()
     pass
 

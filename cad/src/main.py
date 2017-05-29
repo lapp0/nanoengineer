@@ -62,20 +62,20 @@ and enclosed our own startup code into def _start_NE1().
 
 import sys, os, time
 
-print
-print "starting NanoEngineer-1 in [%s]," % os.getcwd(), time.asctime()
-print "using Python: " + sys.version
+print()
+print(("starting NanoEngineer-1 in [%s]," % os.getcwd(), time.asctime()))
+print(("using Python: " + sys.version))
 try:
-    print "on path: " + sys.executable
+    print(("on path: " + sys.executable))
 except:
     pass
 
 if __name__ != '__main__':
-    print
-    print "Warning: main.py should not be imported except as the __main__ module."
-    print " (It is now being imported under the name %r.\n" \
-          "  This is a bug, but should cause no direct harm.)" % (__name__,)
-    print
+    print()
+    print("Warning: main.py should not be imported except as the __main__ module.")
+    print((" (It is now being imported under the name %r.\n" \
+          "  This is a bug, but should cause no direct harm.)" % (__name__,)))
+    print()
 
 # ALTERNATE_CAD_SRC_PATH feature:
 #
@@ -95,20 +95,20 @@ try:
     _main_dir = os.path.dirname( _main_path)
     _path_of_alt_path_file = os.path.join( _main_dir, "ALTERNATE_CAD_SRC_PATH" )
     if os.path.isfile( _path_of_alt_path_file):
-        print "found", _path_of_alt_path_file
+        print(("found", _path_of_alt_path_file))
         _fp = open( _path_of_alt_path_file, "rU")
         _content = _fp.read().strip()
         _fp.close()
         _content = os.path.normpath( os.path.abspath( _content))
-        print "containing pathname %r" % (_content,)
+        print(("containing pathname %r" % (_content,)))
         if os.path.isdir(_content):
             _alternateSourcePath = _content
         else:
-            print "which is not a directory, so will be ignored"
-            print
+            print("which is not a directory, so will be ignored")
+            print()
         pass
 except:
-    print "exception (discarded) in code for supporting ALTERNATE_CAD_SRC_PATH feature"
+    print("exception (discarded) in code for supporting ALTERNATE_CAD_SRC_PATH feature")
     ## raise # useful for debugging
         ### REVIEW: remove print or fix implementation, if an exception here
         # happens routinely on other platforms' release builds
@@ -116,12 +116,12 @@ except:
 def _start_NE1():
 
     if _alternateSourcePath is not None:
-        print
-        print "WILL USE ALTERNATE_CAD_SRC_PATH = %r" % ( _alternateSourcePath,)
+        print()
+        print(("WILL USE ALTERNATE_CAD_SRC_PATH = %r" % ( _alternateSourcePath,)))
         sys.path.insert(0, _alternateSourcePath)
         # see ne1_startup/ALTERNATE_CAD_SRC_PATH-doc.txt for info about other
         # effects of this (implemented by setAlternateSourcePath below)
-        print
+        print()
 
     # NOTE: imports of NE1 source modules MUST NOT BE DONE until after the
     # optional sys.path change done for _alternateSourcePath, just above.

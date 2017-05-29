@@ -210,7 +210,7 @@ class Lval(SelfUsageTrackingMixin, SubUsageTrackingMixin):
         # - do layer-prep things, like propogating inval signals from changedicts
         # - diff old & new
         if self._compute_method is None:
-            raise LvalError_ValueIsUnset, "our compute_method is not yet set: %r" % self
+            raise LvalError_ValueIsUnset("our compute_method is not yet set: %r" % self)
                 #k note: this is a subclass of AttributeError so hasattr can work in this case [061117 late]
         match_checking_code = self.begin_tracking_usage()
         try:
@@ -226,7 +226,7 @@ class Lval(SelfUsageTrackingMixin, SubUsageTrackingMixin):
             raise
             # note 061205: delegation code should probably catch this specifically and not delegate, unlike for attrerror.
             # Coded it in DelegatingMixin, UNTESTED! #####TEST
-        except AttributeError, e:
+        except AttributeError as e:
             # we don't want the caller to think this attr is entirely missing, and should be delegated!
             # So change this to another kind of exception.
             # [new feature 061205, works; see comment in Highlightable about a bug it helps catch]
@@ -235,17 +235,17 @@ class Lval(SelfUsageTrackingMixin, SubUsageTrackingMixin):
             # Until it does, print the inner traceback here.
             if 0:
                 msg = "AttributeError in %r._compute_method turned into a RuntimeError: %s" % (self, exc_info_summary())
-                print msg, "(reraising)" #070131 no traceback, to reduce verbosity
+                print(msg, "(reraising)") #070131 no traceback, to reduce verbosity
             else:
                 msg = "AttributeError in %r._compute_method turned into a RuntimeError" % self
                 print_compact_traceback(msg + ": ")
             self.end_tracking_usage( match_checking_code, self.inval )
             ## raise RuntimeError, msg ##e change to our own kind of exception, subclass of RuntimeError, NOT of AttributeError
             ## raise RuntimeError(e) # this fails to include the part of the traceback from e... that info is now lost. fix sometime.
-            raise RuntimeError, e # try this version -- seems equivalent, also doesn't work
+            raise RuntimeError(e) # try this version -- seems equivalent, also doesn't work
         except:
             ## print_compact_traceback("exception in %r._compute_method NO LONGER ignored: " % self)
-            print("(exception in %r._compute_method being reraised)" % self) # revised to not print traceback 070131, since reraised
+            print(("(exception in %r._compute_method being reraised)" % self)) # revised to not print traceback 070131, since reraised
                 ###e 061118 we still need to print more info from this; what to do to explain errors deep in evaling some expr?
                 # catch them and turn them into std custom exceptions, then wrap with posn/val info on each step of going up? (maybe)
             self.end_tracking_usage( match_checking_code, self.inval ) # legitness is a guess, but seems to be ok when it occurs
@@ -478,8 +478,8 @@ class LvalForState(Lval, StateRefInterface): #061117 -- NOT REVIEWED AS WELL AS 
                 #   NOTE: In present code [061121], this can also happen if usage tracking occurred, since it's not detected
                 # until the end_disallowing_usage_tracking call below (since begin_disallowing_usage_tracking is not fully
                 # implemented).
-                print "error: %r computed initial value %r (using it) but was also given an explicit _set_defaultValue(%r)" % \
-                      (self, val, defaultValue)
+                print("error: %r computed initial value %r (using it) but was also given an explicit _set_defaultValue(%r)" % \
+                      (self, val, defaultValue))
                 self._value = val
                 self.valid = True
                 return
@@ -489,7 +489,7 @@ class LvalForState(Lval, StateRefInterface): #061117 -- NOT REVIEWED AS WELL AS 
         pass # end of method _set_defaultValue
     def inval(self):
         msg = "inval in LvalForState is probably a bug indicator; not sure, remove this if needed" #061121
-        print msg
+        print(msg)
         assert 0, msg
     pass # end of class LvalForState
 

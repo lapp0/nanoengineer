@@ -180,7 +180,7 @@ class ops_select_Mixin:
         atoms = []
 
         for chunk in self.assy.selmols[:]:
-            atoms += chunk.atoms.values()
+            atoms += list(chunk.atoms.values())
 
         for jig in self.assy.getSelectedJigs():
             atoms += jig.atoms
@@ -220,9 +220,7 @@ class ops_select_Mixin:
         """
         selectedJigs = self.getSelectedJigs()
 
-        selectedPlanes = filter(lambda p:
-                                isinstance(p, self.win.assy.Plane),
-                                selectedJigs)
+        selectedPlanes = [p for p in selectedJigs if isinstance(p, self.win.assy.Plane)]
         return selectedPlanes
 
     def getSelectedDnaGroups(self):
@@ -395,7 +393,7 @@ class ops_select_Mixin:
         else:
             assert self.selwhat == SELWHAT_ATOMS
             for m in self.molecules:
-                for a in m.atoms.itervalues():
+                for a in m.atoms.values():
                     a.pick()
         self.w.win_update()
 
@@ -431,7 +429,7 @@ class ops_select_Mixin:
         # previous version inverted selatoms only in chunks with
         # some selected atoms.
         if self.selwhat == SELWHAT_CHUNKS:
-            newpicked = filter( lambda m: not m.picked, self.molecules )
+            newpicked = [m for m in self.molecules if not m.picked]
             self.unpickparts()
             for m in newpicked:
                 m.pick()
@@ -443,7 +441,7 @@ class ops_select_Mixin:
         else:
             assert self.selwhat == SELWHAT_ATOMS
             for m in self.molecules:
-                for a in m.atoms.itervalues():
+                for a in m.atoms.values():
                     if a.picked: a.unpick()
                     else: a.pick()
 
@@ -567,7 +565,7 @@ class ops_select_Mixin:
 
         num_picked = 0 # Number of atoms picked in the expand selection.
 
-        for a in self.selatoms.values():
+        for a in list(self.selatoms.values()):
             if a.picked: #bruce 051129 comment: this is presumably always true
                 for n in a.neighbors():
                     if not n.picked:
@@ -604,7 +602,7 @@ class ops_select_Mixin:
         contract_list = [] # Contains list of atoms to be unselected.
 
         assert self.selwhat == SELWHAT_ATOMS
-        for a in self.selatoms.values():
+        for a in list(self.selatoms.values()):
             if a.picked:
                 # If a selected atom has an unpicked neighbor, it gets added to the contract_list
                 # Bruce mentions: you can just scan realNeighbors if you want to only scan
@@ -660,8 +658,8 @@ class ops_select_Mixin:
         self.o.setCursor()
 
         if 0:
-            print "mouse_selection_lock_enabled=", \
-                  self.o.mouse_selection_lock_enabled
+            print("mouse_selection_lock_enabled=", \
+                  self.o.mouse_selection_lock_enabled)
 
     def hideSelection(self):
         """
@@ -679,7 +677,7 @@ class ops_select_Mixin:
 
         if self.selatoms:
             # Hide selected atoms by changing their display style to invisible.
-            for a in self.selatoms.itervalues():
+            for a in self.selatoms.values():
                 a.setDisplayStyle(diINVISIBLE)
         return
 
@@ -725,11 +723,11 @@ class ops_select_Mixin:
         if not self.selatoms:
             # Unhide any invisible atoms in the selected chunks.
             for chunk in self.assy.selmols[:]:
-                for a in chunk.atoms.itervalues():
+                for a in chunk.atoms.values():
                     a.setDisplayStyle(diDEFAULT)
         else:
             # Unhide selected atoms by changing their display style to default.
-            for a in self.selatoms.itervalues():
+            for a in self.selatoms.values():
                 a.setDisplayStyle(diDEFAULT)
         self.w.win_update()
         return
@@ -759,7 +757,7 @@ class ops_select_Mixin:
         [warning: not for general use -- doesn't change which select mode is in use]
         """
         #bruce 050517 added docstring
-        lis = self.selatoms.values()
+        lis = list(self.selatoms.values())
         self.unpickatoms() # (not sure whether this is still always good, but probably it's ok -- bruce 060721)
         for atm in lis:
             atm.molecule.pick()
@@ -780,7 +778,7 @@ class ops_select_Mixin:
             return
 
         if self.selatoms and self.assy.selwhat == SELWHAT_CHUNKS and env.debug():
-            print "debug: bug: permit_pick_parts sees self.selatoms even though self.assy.selwhat == SELWHAT_CHUNKS; unpicking them"
+            print("debug: bug: permit_pick_parts sees self.selatoms even though self.assy.selwhat == SELWHAT_CHUNKS; unpicking them")
                 # Note: this happens during bug 1819, and indicates a bug in the code that led up to here,
                 # probably something about selatoms being per-part, but selwhat (and MT part-switch conventions re selection)
                 # being for the assy -- maybe we need to deselect atoms, not only chunks, when switching parts (not yet done).
@@ -829,7 +827,7 @@ class ops_select_Mixin:
             if mol.hidden:
                 continue
             disp = mol.get_dispdef()
-            for a in mol.atoms.itervalues():
+            for a in mol.atoms.values():
                 if not a.visible(disp):
                     continue
                 dist = a.checkpick(p1, v1, disp, r, None)
@@ -1037,7 +1035,7 @@ class ops_select_Mixin:
             selatoms = self.selatoms
             self.selatoms = {}
             mols = {}
-            for a in selatoms.itervalues():
+            for a in selatoms.values():
                 # this inlines and optims Atom.unpick
                 a.picked = False
                 _changed_picked_Atoms[a.key] = a #bruce 060321 for Undo (or future general uses)
@@ -1286,7 +1284,7 @@ class Selection: #bruce 050404 experimental feature for initial use in Minimize 
                     del res[s.key]
         else:
             res = self.selatoms
-        items = res.items()
+        items = list(res.items())
         items.sort() # sort by atom key; might not be needed
         return [atom for key, atom in items]
     def __getattr__(self, attr): # in class Selection
@@ -1308,7 +1306,7 @@ class Selection: #bruce 050404 experimental feature for initial use in Minimize 
                 res[id(mol)] = mol
             self.selmols_dict = res
             return res
-        raise AttributeError, attr
+        raise AttributeError(attr)
 
     def picks_atom(self, atom): #bruce 050526
         """
@@ -1381,7 +1379,7 @@ class Selection: #bruce 050404 experimental feature for initial use in Minimize 
             # [name 'selatoms' is historical, but also warns that it doesn't include atoms in selmols --
             #  present implem is only correct on selection objects made only from atoms.]
         for i in range(ntimes):
-            for a1 in atoms.values(): # this list remains fixed as atoms dict is modified by this loop
+            for a1 in list(atoms.values()): # this list remains fixed as atoms dict is modified by this loop
                 for a2 in a1.realNeighbors():
                     atoms[a2.key] = a2 # analogous to a2.pick()
         return

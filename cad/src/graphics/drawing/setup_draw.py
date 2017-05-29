@@ -274,14 +274,14 @@ def setup_drawer():
     drawing_globals.solidCubeList = solidCubeList = glGenLists(1)
     glNewList(solidCubeList, GL_COMPILE)
     glBegin(GL_QUADS)
-    for i in xrange(len(drawing_globals.cubeIndices)):
+    for i in range(len(drawing_globals.cubeIndices)):
         avenormals = V(0,0,0) #bruce 060302 fixed normals for flat shading
-        for j in xrange(4) :
+        for j in range(4) :
             nTuple = tuple(
                 drawing_globals.cubeNormals[drawing_globals.cubeIndices[i][j]])
             avenormals += A(nTuple)
         avenormals = norm(avenormals)
-        for j in xrange(4) :
+        for j in range(4) :
             vTuple = tuple(
                 drawing_globals.cubeVertices[drawing_globals.cubeIndices[i][j]])
             #bruce 060302 made size compatible with glut.glutSolidCube(1.0)
@@ -294,11 +294,11 @@ def setup_drawer():
     drawing_globals.rotSignList = rotSignList = glGenLists(1)
     glNewList(rotSignList, GL_COMPILE)
     glBegin(GL_LINE_STRIP)
-    for ii in xrange(len(drawing_globals.rotS0n)):
+    for ii in range(len(drawing_globals.rotS0n)):
         glVertex3fv(tuple(drawing_globals.rotS0n[ii]))
     glEnd()
     glBegin(GL_LINE_STRIP)
-    for ii in xrange(len(drawing_globals.rotS1n)):
+    for ii in range(len(drawing_globals.rotS1n)):
         glVertex3fv(tuple(drawing_globals.rotS1n[ii]))
     glEnd()
     glBegin(GL_TRIANGLES)

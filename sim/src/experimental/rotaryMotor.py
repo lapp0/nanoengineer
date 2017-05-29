@@ -105,7 +105,7 @@ class BoschMotor(RotaryController):
     def __init__(self, atomlist, torque, gigahertz):
         RotaryController.__init__(self, atomlist)
         speed = (2 * pi * 1.e9 * units.AngularVelocityUnit) * gigahertz
-        if DEBUG: print "target speed", speed
+        if DEBUG: print("target speed", speed)
         assert units.TorqueUnit.unitsMatch(torque)
         assert units.AngularVelocityUnit.unitsMatch(speed)
         self.stallTorque = torque
@@ -123,7 +123,7 @@ class BoschMotor(RotaryController):
         if abs(ratio) > 0.3:
             # The C code must also throw an exception or do whatever is
             # the equivalent thing at this point.
-            raise Exception, "torque-to-speed ratio is too high"
+            raise Exception("torque-to-speed ratio is too high")
 
     def timeStep(self):
         # assume that any interatomic forces have already been computed
@@ -153,7 +153,7 @@ class RotarySpeedController(RotaryController):
     def __init__(self, atomlist, rampupTime, gigahertz):
         RotaryController.__init__(self, atomlist)
         speed = (2 * pi * 1.e9 * units.AngularVelocityUnit) * gigahertz
-        if DEBUG: print "target speed", speed
+        if DEBUG: print("target speed", speed)
         assert units.second.unitsMatch(rampupTime)
         assert units.AngularVelocityUnit.unitsMatch(speed)
         self.time = 0. * units.second
@@ -224,4 +224,4 @@ for i in range(10000):
 yyy.close()
 zzz.close()
 
-print "Gnuplot command:   plot \"yyy\" with lines, \"zzz\" with lines"
+print("Gnuplot command:   plot \"yyy\" with lines, \"zzz\" with lines")

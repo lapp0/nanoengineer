@@ -51,7 +51,7 @@ def node_position( node, root, inner_indices = []):
     if node == root:
         return list(inner_indices)
     if not node.dad:
-        raise ValueError, node
+        raise ValueError(node)
     ourindex = node.dad.members.index(node) # error if we're not in it! should never happen
     return node_position( node.dad, root, [ourindex] + inner_indices)
 
@@ -74,12 +74,12 @@ def node_new_index(node, root, after_these):
     try:
         ourpos = node_position(node, root)
     except ValueError:
-        raise ValueError, node ###stub; need a better detail
+        raise ValueError(node) ###stub; need a better detail
             # (or make subr itself help with that? not sure it can)
     try:
-        afterposns = map( lambda node1: node_position(node1, root), after_these)
+        afterposns = [node_position(node1, root) for node1 in after_these]
     except ValueError:
-        raise ValueError, node ###stub; need a better detail
+        raise ValueError(node) ###stub; need a better detail
     last_after = max(afterposns) # last chunk of the ones node must come after
     if ourpos > last_after:
         res = None
@@ -171,7 +171,7 @@ def move_one_node(node, root, newpos):
             # use of this code (though it's legal for this func in general),
             # so (for now) print an unobtrusive warning.
             # (Later make that atom_debug only. #e)
-            print "(fyi: moving node %r to where it already is in model tree)" % (node,)
+            print("(fyi: moving node %r to where it already is in model tree)" % (node,))
             return
     except IndexError: # nothing now at that pos (or pos itself doesn't exist)
         marker = node_at(root, newpos[0:-1]) # use group as marker
@@ -213,9 +213,9 @@ def node_at(root, pos):
     try:
         child = root.members[ind1]
     except AttributeError: # no .members
-        raise IndexError, "tried to index into a leaf node"
+        raise IndexError("tried to index into a leaf node")
     except IndexError: # ind1 out of range
-        raise IndexError, "nothing at that position in group"
+        raise IndexError("nothing at that position in group")
     return node_at(child, rest)
 
 def fix_one_or_complain(node, root, errmsgfunc): # TODO: rename
@@ -247,7 +247,7 @@ def fix_one_or_complain(node, root, errmsgfunc): # TODO: rename
     """
     try:
         return fix_one_node(node, root)
-    except ValueError, msg:
+    except ValueError as msg:
 # removing this assert, since no longer needed, and has import issues
 # re package classification: [bruce 071214]
 ##        # redundant check to avoid disaster from bugs in this new code:

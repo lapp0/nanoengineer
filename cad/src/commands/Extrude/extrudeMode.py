@@ -86,6 +86,7 @@ from utilities.constants import common_prefix
 
 from ne1_ui.NE1_QWidgetAction import NE1_QWidgetAction
 from ne1_ui.toolbars.Ui_ExtrudeFlyout import ExtrudeFlyout
+import imp
 
 # ==
 
@@ -127,7 +128,7 @@ def reinit_extrude_controls(win, glpane = None, length = None, attr_target = Non
             if not length:
                 length = 7.0 #k needed?
         except:
-            print "fyi (bug?): in extrude: x,y,z = glpane.right failed"
+            print("fyi (bug?): in extrude: x,y,z = glpane.right failed")
             pass
     if length:
         # adjust the length to what the caller desires [Enter passes this]
@@ -237,8 +238,8 @@ class extrudeMode(basicMode):
             try:
                 hset = self.nice_offsets_handleset
             except AttributeError:
-                print "must be too early to patch self.nice_offsets_handleset -- " \
-                      "could be a problem, it will miss this event" ###@@@
+                print("must be too early to patch self.nice_offsets_handleset -- " \
+                      "could be a problem, it will miss this event") ###@@@
             else:
                 hset.radius_multiplier = self.bond_tolerance
 
@@ -270,7 +271,7 @@ class extrudeMode(basicMode):
                 # (since we don't bother to figure out whether it changed)
                 if repaintQ:
                     self.needs_repaint = 1
-                    print "shouldn't happen in current code - needless repaint"
+                    print("shouldn't happen in current code - needless repaint")
             pass
         self.repaint_if_needed()
 
@@ -961,7 +962,7 @@ class extrudeMode(basicMode):
         self.show_bond_offsets_handlesets = [] # for now, assume no other function wants to keep things in this list
         hset = self.basemol_atoms_handleset = repunitHandleSet(target = self)
         for mol in self.separate_basemols:#bruce 070407
-            for atom in mol.atoms.values():
+            for atom in list(mol.atoms.values()):
                 # make a handle for it... to use in every copy we show
                 pos = atom.posn() ###e make this relative?
                 dispdef = mol.get_dispdef(self.o)
@@ -1016,7 +1017,7 @@ class extrudeMode(basicMode):
                 s2 = sings2[i2]
                 (ok, ideal, err) = mergeable_singlets_Q_and_offset(s1, s2)
                 if _EXTRUDE_LOOP_DEBUG:
-                    print "extrude loop %d, %d got %r" % (i1, i2, (ok, ideal, err))
+                    print("extrude loop %d, %d got %r" % (i1, i2, (ok, ideal, err)))
                 if ok:
                     mergeables[(i1,i2)] = (ideal, err)
         #e self.mergeables is in an obs format... but we still use it to look up (i1,i2) or their swapped form
@@ -1038,7 +1039,7 @@ class extrudeMode(basicMode):
         # self.broken_externs -- if we didn't, singlet[i1] in base unit would
         # need to bond to unit2 *and* to the outside stuff.
         excluded = 0
-        for (i1,i2),(ideal,err) in mergeables.items():
+        for (i1,i2),(ideal,err) in list(mergeables.items()):
             pos = ideal
             radius = err
             radius *= (1.1/0.77) * 1.0 # see a removed "bruce 041101" comment for why
@@ -1056,14 +1057,14 @@ class extrudeMode(basicMode):
                 else:
                     excluded += 1
             else:
-                print "fyi: singlet %d is mergeable with itself (should never happen, except maybe in ring mode)" % i1
+                print("fyi: singlet %d is mergeable with itself (should never happen, except maybe in ring mode)" % i1)
             # handle has dual purposes: click to change the offset to the ideal,
             # or find (i1,i2) from an offset inside the (pos, radius) ball.
         msg = "scanned %d open-bond pairs; %d pairs could bond at some offset (as shown by bond-offset spheres)" % \
             ( len(sings1) * len(sings2) , len(hset.handles) )
         self.status_msg(msg)
         if excluded:
-            print "fyi: %d pairs excluded due to external bonds to extruded unit" % excluded ###@@@
+            print("fyi: %d pairs excluded due to external bonds to extruded unit" % excluded) ###@@@
         return
 
     def recompute_for_new_bend(self):
@@ -1102,7 +1103,7 @@ class extrudeMode(basicMode):
             hset = self.nice_offsets_handleset
             hset.special_pos = self.offset_for_bonds # tells the white balls who contain this offset to be slightly blue
         except:
-            print "fyi: hset2/hset kluge failed"
+            print("fyi: hset2/hset kluge failed")
         # don't call recompute_bonds, our callers do that if nec.
         return
 
@@ -1264,7 +1265,7 @@ class extrudeMode(basicMode):
                 try:
                     unit.internal_merge()
                 except AttributeError:
-                    print "following exception in unit.internal_merge() concerns unit = %r" % (unit,)
+                    print("following exception in unit.internal_merge() concerns unit = %r" % (unit,))
                     raise
             self.basemol = self.molcopies[0]
             self.separate_basemols = [self.basemol] # needed only if still used (unlikely); but harmless, so do it to be safe
@@ -1316,7 +1317,7 @@ class extrudeMode(basicMode):
     def prep_to_make_inter_unit_bonds(self):
         self.i1_to_mark = {}
         #e keys are a range of ints, could have used an array -- but entire alg needs revision anyway
-        for i1, s1 in zip(range(len(self.basemol_singlets)), self.basemol_singlets):
+        for i1, s1 in zip(list(range(len(self.basemol_singlets))), self.basemol_singlets):
             self.i1_to_mark[i1] = s1.info # used by self.find_singlet
             #e find_singlet could just look directly in self.basemol_singlets *right now*,
             # but not after we start removing the singlets from basemol!
@@ -1357,7 +1358,7 @@ class extrudeMode(basicMode):
                 bond_at_singlets(s1, s2, move = False)
             else:
                 #e will be printed lots of times, oh well
-                print "extrude warning: one or both of singlets %d,%d slated to bond in more than one way, not all bonds made" % (i1,i2)
+                print("extrude warning: one or both of singlets %d,%d slated to bond in more than one way, not all bonds made" % (i1,i2))
         return
 
     def find_singlet(self, unit, i1):
@@ -1373,10 +1374,10 @@ class extrudeMode(basicMode):
             # note: mark is basemol key [i guess that means: singlet's Atom.key in basemol],
             # but unrelated to other mols' keys
         for unitmol in true_Chunks_in(unit):
-            for atm in unitmol.atoms.itervalues(): #e optimize this someday -- its speed can probably matter
+            for atm in unitmol.atoms.values(): #e optimize this someday -- its speed can probably matter
                 if atm.info == mark:
                     return atm
-        print "extrude bug (trying to ignore it): singlet not found",unit,i1
+        print("extrude bug (trying to ignore it): singlet not found",unit,i1)
         # can happen until we remove dup i1,i2 from bonds
         return None
 
@@ -1854,7 +1855,7 @@ class extrudeMode(basicMode):
         [But it did work at least once!]
         """
         global extrudeMode
-        print "extrude_reload: here goes.... (not fully working as of 080805)"
+        print("extrude_reload: here goes.... (not fully working as of 080805)")
 
         # status as of 080805: mostly works, but:
         # - warns about duplicate featurename;
@@ -1864,7 +1865,7 @@ class extrudeMode(basicMode):
         try:
             self.propMgr.extrudeSpinBox_n.setValue(1)
             self.update_from_controls()
-            print "reset ncopies to 1, to avoid dialog from exit_is_forced, and ease next use of the mode"
+            print("reset ncopies to 1, to avoid dialog from exit_is_forced, and ease next use of the mode")
         except:
             print_compact_traceback("exception in resetting ncopies to 1 and updating, ignored: ")
 
@@ -1883,9 +1884,9 @@ class extrudeMode(basicMode):
         self.commandSequencer.remove_command_object( self.commandName) #bruce 080805
 
         import graphics.drawables.handles as handles
-        reload(handles)
+        imp.reload(handles)
         import commands.Extrude.extrudeMode as _exm
-        reload(_exm)
+        imp.reload(_exm)
         from commands.Extrude.extrudeMode import extrudeMode # note global declaration above
 
 ##        try:
@@ -1900,12 +1901,12 @@ class extrudeMode(basicMode):
             # note: this does NOT do whatever recreation of a cached command
             # object might be needed (that's done only in _reinit_modes)
 
-        print "about to reset command sequencer"
+        print("about to reset command sequencer")
         # need to revise following to use some cleaner interface
         self.commandSequencer._reinit_modes() # leaves mode as nullmode as of 050911
         self.commandSequencer.start_using_initial_mode( '$DEFAULT_MODE' )
             ###e or could use commandName of prior self.commandSequencer.currentCommand
-        print "done with _reinit_modes, now we'll try to reenter extrudeMode"
+        print("done with _reinit_modes, now we'll try to reenter extrudeMode")
         self.commandSequencer.userEnterCommand( self.commandName) #bruce 080805
         return
 
@@ -1961,7 +1962,7 @@ def assy_fix_selmol_bugs(assy):
                 it = " (%r) " % mol
             except:
                 it = " (exception in its repr) "
-            print "fyi: pruning bad mol %s left by prior bugs" % it
+            print("fyi: pruning bad mol %s left by prior bugs" % it)
             try:
                 mol.unpick()
             except:
@@ -2075,8 +2076,8 @@ def mergeable_singlets_Q_and_offset(s1, s2, offset2 = None, tol = 1.0):
     closeness = - dot(dir1, dir2) # ideal is 1.0, terrible is -1.0
     if closeness < cosine_of_permitted_noncollinearity:
         if _EXTRUDE_LOOP_DEBUG and closeness >= 0.0:
-            print "rejected nonneg closeness of %r since less than %r" % \
-                  (closeness, cosine_of_permitted_noncollinearity)
+            print("rejected nonneg closeness of %r since less than %r" % \
+                  (closeness, cosine_of_permitted_noncollinearity))
         return res_bad
     # ok, we'll merge. Just figure out the offset. At the end, compare to offset2.
     # For now, we'll just bend the half-bonds by the same angle to make them
@@ -2101,12 +2102,12 @@ try:
 except:
     _already_loaded = 1
 else:
-    print "reloading extrudeMode.py"
+    print("reloading extrudeMode.py")
 pass
 
 def mark_singlets(separate_basemols, colorfunc):
     for basemol in separate_basemols:#bruce 070407 [#e or could use true_Chunks_in]
-        for a in basemol.atoms.itervalues():
+        for a in basemol.atoms.values():
             ## a.info = a.key
             a.set_info(a.key) #bruce 060322
         basemol._colorfunc = colorfunc # maps atoms to colors (due to a hack i will add)
@@ -2221,7 +2222,7 @@ class fake_merged_mol( virtual_group_of_Chunks): #e rename? 'extrude_unit_holder
         return
     def __getattr__(self, attr): # in class fake_merged_mol
         if attr.startswith('__'):
-            raise AttributeError, attr
+            raise AttributeError(attr)
         if attr == 'externs':
             return self._get_externs() # don't cache, since not constant (too slow?? ###)
         if attr == 'singlets':
@@ -2230,7 +2231,7 @@ class fake_merged_mol( virtual_group_of_Chunks): #e rename? 'extrude_unit_holder
             return getattr(self._mols[0], attr)
         # update 070411: self.center is computed and cached in full_inval_and_update;
         # before that, it's illegal to ask for it
-        raise AttributeError, "%r has no %r" % (self, attr)
+        raise AttributeError("%r has no %r" % (self, attr))
 ##    def copy(self, dad):
 ##        self.copy_single_chunk(dad)
     def copy_single_chunk(self, dad):
@@ -2276,7 +2277,7 @@ class fake_merged_mol( virtual_group_of_Chunks): #e rename? 'extrude_unit_holder
                     # [bruce 080626]
             else:
                 # can this ever happen? if so, we'll print way too much here...
-                print "warning: extrude ignoring failed copy"
+                print("warning: extrude ignoring failed copy")
         ###k will we also need assy.update_parts()??
         copies = newnodes
         return fake_copied_mol(copies, self)

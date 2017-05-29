@@ -169,7 +169,7 @@ def qlayoutiterator_items(qlayoutiterator):
     res = []
     res.append(qlayoutiterator.current()) #k not sure if needed, but apparently doesn't cause redundant item
     while 1:
-        n1 = qlayoutiterator.next()
+        n1 = next(qlayoutiterator)
         if not n1:
             break
         res.append(n1) # the ref to this might be needed to make the iterator keep going after it...

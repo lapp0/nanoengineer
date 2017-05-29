@@ -105,7 +105,7 @@ class DragANode(DragCommand):
     # print_node_mod_demo = True # 070130 - works, disabling again for now
 
     if print_node_mod_demo:
-        print "our node symexpr has:",node._e_dir_added()
+        print("our node symexpr has:",node._e_dir_added())
 ##    for attr in dir(node):
 ##        if attr.startswith('_e_') or attr.startswith('__'):
 ##            pass
@@ -119,7 +119,7 @@ class DragANode(DragCommand):
     node.pos2.subattr2 = 1
 
     if print_node_mod_demo:
-        print "now it has:",node._e_dir_added() ###BUG [before i had _PERMIT_SETS_INSIDE_() above] - where is pos2?
+        print("now it has:",node._e_dir_added()) ###BUG [before i had _PERMIT_SETS_INSIDE_() above] - where is pos2?
     #print "dir is",dir(node) # it's not in here either! OH, I never made it, I only asked for it (for val of node.pos2)
      # and I got a getattr_Expr of node and pos2! Can that be fixed? As it is I can't even see that getattr_Expr,
      # it was discarded. Can/should I capture the setattr of attr in symbolic getattr_Expr? Guess: probably I can. ###k
@@ -141,8 +141,8 @@ class DragANode(DragCommand):
     node.blorg = node.blorg + 1 # hopefully this will set it to a OpExpr of a getattr_Expr, equiv to the expr node.blorg + 1
 
     if print_node_mod_demo:
-        print "and now it has:",node._e_dir_added()
-        print "node.blorg is now",node.blorg # it does!
+        print("and now it has:",node._e_dir_added())
+        print("node.blorg is now",node.blorg) # it does!
     ####
     pass # end of class DragANode
 

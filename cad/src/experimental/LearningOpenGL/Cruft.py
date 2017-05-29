@@ -48,7 +48,7 @@ class MyGLWidget(QGLWidget):
             format = shareWidget.format()
             QGLWidget.__init__(self, format, parent, name, shareWidget)
             if not self.isSharing():
-                print "Request of display list sharing is failed."
+                print("Request of display list sharing is failed.")
                 return
         else:
             QGLWidget.__init__(self, parent, name)
@@ -180,7 +180,7 @@ class Cruft(CruftDialog.CruftDialog):
         """
         foo.foo()
         if False:
-            print 'paintEvent',
+            print('paintEvent', end=' ')
             sys.stdout.flush()
         if False:
             # Here is how to draw stuff using PyQt

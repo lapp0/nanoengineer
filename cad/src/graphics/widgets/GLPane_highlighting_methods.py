@@ -238,16 +238,16 @@ class GLPane_highlighting_methods(object):
                 ## Temp fix: Ignore the last byte, which always comes back 255 on Windows.
                 glname = (bytes[0] << 16 | bytes[1] << 8 | bytes[2])
                 if debugPicking:
-                    print ("shader mouseover xy %d %d, " %  (wX, wY) +
+                    print(("shader mouseover xy %d %d, " %  (wX, wY) +
                            "rgba bytes (0x%x, 0x%x, 0x%x, 0x%x), " % bytes +
-                           "Z %f, glname 0x%x" % (pixZ, glname))
+                           "Z %f, glname 0x%x" % (pixZ, glname)))
                     pass
 
                 ### XXX This ought to be better-merged with the DL selection below.
                 if glname:
                     obj = self.object_for_glselect_name(glname)
                     if debugPicking:
-                        print "shader mouseover glname=%r, obj=%r." % (glname, obj)
+                        print("shader mouseover glname=%r, obj=%r." % (glname, obj))
                     if obj is None:
                         # REVIEW: does this happen for mouse over a non-shader primitive?
                         # [bruce 090105 question]
@@ -274,7 +274,7 @@ class GLPane_highlighting_methods(object):
                         # so I'll add it as a check in the 'else' clause below.
                         # [bruce 090311]
                         if debug_flags.atom_debug:
-                            print "bug: object_for_glselect_name returns None for glname %r (color %r)" % (glname, bytes)
+                            print("bug: object_for_glselect_name returns None for glname %r (color %r)" % (glname, bytes))
                     else:
                         if self.graphicsMode.selobj_still_ok(obj):
                             #bruce 090311 added condition, explained above
@@ -283,7 +283,7 @@ class GLPane_highlighting_methods(object):
                             # This should be rare but possible. Leave it on briefly and see
                             # if it's ever common. If possible, gate it by atom_debug before
                             # the release. [bruce 090311]
-                            print "fyi: glname-color selobj %r rejected since not selobj_still_ok" % obj
+                            print("fyi: glname-color selobj %r rejected since not selobj_still_ok" % obj)
                         pass
                     pass
                 pass
@@ -348,7 +348,7 @@ class GLPane_highlighting_methods(object):
             glFlush()
             hit_records = list(glRenderMode(GL_RENDER))
             if debugPicking:
-                print "DLs %d hits" % len(hit_records)
+                print("DLs %d hits" % len(hit_records))
             for (near, far, names) in hit_records: # see example code, renderpass.py
                 ## print "hit record: near, far, names:", near, far, names
                     # e.g. hit record: near, far, names: 1439181696 1453030144 (1638426L,)
@@ -360,7 +360,7 @@ class GLPane_highlighting_methods(object):
                     # partial workaround for bug 1527. This can be removed once that bug (in drawer.py)
                     # is properly fixed. This exists in two places -- GLPane.py and modes.py. [bruce 060217]
                     if names and names[-1] == 0:
-                        print "%d(g) partial workaround for bug 1527: removing 0 from end of namestack:" % env.redraw_counter, names
+                        print("%d(g) partial workaround for bug 1527: removing 0 from end of namestack:" % env.redraw_counter, names)
                         names = names[:-1]
                 if names:
                     # For now, we only use the last element of names,
@@ -380,7 +380,7 @@ class GLPane_highlighting_methods(object):
                     if debug_flags.atom_debug and len(names) > 1: # bruce 060725
                         if len(names) == 2 and names[0] == names[1]:
                             if not env.seen_before("dual-names bug"): # this happens for Atoms (colorsorter bug??)
-                                print "debug (once-per-session message): why are some glnames duplicated on the namestack?", names
+                                print("debug (once-per-session message): why are some glnames duplicated on the namestack?", names)
                         else:
                             # Note: as of sometime before 080411, this became common --
                             # I guess that chunks (which recently acquired glselect names)
@@ -393,12 +393,12 @@ class GLPane_highlighting_methods(object):
                             if len(names) == 2 and \
                                isinstance( self.object_for_glselect_name(names[0]), self.assy.Chunk ):
                                 if not env.seen_before("nested names for Chunk"):
-                                    print "debug (once-per-session message): nested glnames for a Chunk: ", names
+                                    print("debug (once-per-session message): nested glnames for a Chunk: ", names)
                             else:
-                                print "debug fyi: len(names) == %d (names = %r)" % (len(names), names)
+                                print("debug fyi: len(names) == %d (names = %r)" % (len(names), names))
                     obj = self.object_for_glselect_name(names[-1]) #k should always return an obj
                     if obj is None:
-                        print "bug: object_for_glselect_name returns None for name %r at end of namestack %r" % (names[-1], names)
+                        print("bug: object_for_glselect_name returns None for name %r at end of namestack %r" % (names[-1], names))
                     else:
                         self.glselect_dict[id(obj)] = obj
                             # note: outside of this method, one of these will be
@@ -602,7 +602,7 @@ class GLPane_highlighting_methods(object):
         #bruce 050702 try sorting this, see if it helps pick bonds rather than
         # invisible selatoms -- it seems to help.
         # This removes a bad side effect of today's earlier fix of bug 715-1.
-        objects = self.glselect_dict.values()
+        objects = list(self.glselect_dict.values())
         items = [] # (order, obj) pairs, for sorting objects
         for obj in objects:
             ### MAYBE TODO: add a special order for the object found previously
@@ -641,8 +641,8 @@ class GLPane_highlighting_methods(object):
             try:
                 method = obj.draw_in_abs_coords
             except AttributeError:
-                print "bug? ignored: %r has no draw_in_abs_coords method" % (obj,)
-                print "   items are:", items
+                print("bug? ignored: %r has no draw_in_abs_coords method" % (obj,))
+                print("   items are:", items)
             else:
                 try:
                     colorsorter_safe = getattr(obj, '_selobj_colorsorter_safe', False)
@@ -711,13 +711,13 @@ class GLPane_highlighting_methods(object):
 
         if newpicked is not None:
             if debug_prefix and len(items) > 1: #bruce 081209
-                print "%s (%d): complete list of candidates were:" % (debug_prefix, env.redraw_counter), items
+                print("%s (%d): complete list of candidates were:" % (debug_prefix, env.redraw_counter), items)
             hicolor = self.selobj_hicolor( newpicked)
             if hicolor is None:
                 if report_failures:
-                    print "debug_pref: preDraw_glselect_dict failure: " \
+                    print("debug_pref: preDraw_glselect_dict failure: " \
                           "it worked, but %r hicolor is None, so discarding it" % \
-                          (newpicked,) #bruce 081209
+                          (newpicked,)) #bruce 081209
                 newpicked = None
                 # [note: there are one or two other checks of the same thing,
                 #  e.g. to cover preexisting selobjs whose hicolor might have changed [bruce 060726 comment]]
@@ -728,7 +728,7 @@ class GLPane_highlighting_methods(object):
             # (though I didn't reanalyze my reasons for thinking it might be a bug, so I don't know if it's a real one or not).
             #070115 changing condition from if 0 to a debug_pref, and revised message
             if report_failures:
-                print "debug_pref: preDraw_glselect_dict failure: targetdepth is %r, items are %r" % (self.targetdepth, items)
+                print("debug_pref: preDraw_glselect_dict failure: targetdepth is %r, items are %r" % (self.targetdepth, items))
         ###e try printing it all -- is the candidate test just wrong?
         return newpicked # might be None in case of errors (or if selobj_hicolor returns None)
 
@@ -787,14 +787,14 @@ class GLPane_highlighting_methods(object):
             # (no choice unless we re-cleared depth buffer now, which btw we could do... #e).
             if debug_prefix:
                 counter = env.redraw_counter
-                print "%s (%d): target depth %r reached by %r at %r" % \
-                      (debug_prefix, counter, targetdepth, candidate, newdepth)
+                print("%s (%d): target depth %r reached by %r at %r" % \
+                      (debug_prefix, counter, targetdepth, candidate, newdepth))
                 if newdepth > targetdepth:
-                    print "  (too deep by %r, but fudge factor is %r)" % \
-                          (newdepth - targetdepth, fudge)
+                    print("  (too deep by %r, but fudge factor is %r)" % \
+                          (newdepth - targetdepth, fudge))
                 elif newdepth < targetdepth:
-                    print "  (in fact, object is nearer than targetdepth by %r)" % \
-                          (targetdepth - newdepth,)
+                    print("  (in fact, object is nearer than targetdepth by %r)" % \
+                          (targetdepth - newdepth,))
                 pass
             return candidate
                 # caller should not call us again without clearing depth buffer,
@@ -802,10 +802,10 @@ class GLPane_highlighting_methods(object):
                 # depth is too deep
         if debug_prefix:
             counter = env.redraw_counter
-            print "%s (%d): target depth %r NOT reached by %r at %r" % \
-                  (debug_prefix, counter, targetdepth, candidate, newdepth)
-            print "  (too deep by %r, but fudge factor is only %r)" % \
-                  (newdepth - targetdepth, fudge)
+            print("%s (%d): target depth %r NOT reached by %r at %r" % \
+                  (debug_prefix, counter, targetdepth, candidate, newdepth))
+            print("  (too deep by %r, but fudge factor is only %r)" % \
+                  (newdepth - targetdepth, fudge))
         return None
 
     pass

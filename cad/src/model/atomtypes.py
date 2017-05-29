@@ -85,11 +85,11 @@ class AtomType(IdentityCopyMixin):
         elif name.startswith("sp") and (name == "sp" or not name[2].isdigit()):
             spX = 1
         else:
-            print "warning: bug: atomtype name in %r does not start with sp, sp2, or sp3; assuming sp3 in bonds code" % self.fullname
+            print("warning: bug: atomtype name in %r does not start with sp, sp2, or sp3; assuming sp3 in bonds code" % self.fullname)
             spX = 3
         self.spX = spX
         if 0 and debug_flags.atom_debug and (spX != 3 or self.openbond):
-            print "atom_debug: fyi: %r has spX == %d" % (self.fullname, spX)
+            print("atom_debug: fyi: %r has spX == %d" % (self.fullname, spX))
         self.rcovalent = covalentRadius
 
         self.base = None
@@ -357,7 +357,7 @@ class AtomType(IdentityCopyMixin):
             return
 
         if 0 and debug_flags.atom_debug:
-            print "atom_debug: (%d) %s permits these v6's besides single(6): %r" % (self.element.eltnum, self.fullname, res)
+            print("atom_debug: (%d) %s permits these v6's besides single(6): %r" % (self.element.eltnum, self.fullname, res))
 
         res.append(V_SINGLE)
             # Note: we do this even for O(sp2) and S(sp2), even though a bond1 as their sole bond is always a valence error.

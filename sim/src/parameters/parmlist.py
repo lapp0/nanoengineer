@@ -65,15 +65,15 @@ if __name__ == "__main__":
         m = parmpat.match(lin)
         which = m.group(1),m.group(2),m.group(3)
 
-        ks,r0,de = map(lambda p: float(m.group(p)),[4,5,6])
+        ks,r0,de = [float(m.group(p)) for p in [4,5,6]]
 
         bt=sqrt(ks/(2.0*de))/10.0
         r0=r0*100.0
 
-        print '  addInitialBondStretch(',
-        print '%2d,'%sym2num[which[0]],
-        print '%2d,'%sym2num[which[2]],
-        print "'%s',"%bontyp[which[1]],
+        print('  addInitialBondStretch(', end=' ')
+        print('%2d,'%sym2num[which[0]], end=' ')
+        print('%2d,'%sym2num[which[2]], end=' ')
+        print("'%s',"%bontyp[which[1]], end=' ')
 
-        print '%6.1f,%6.1f,%7.4f,%7.4f); //'%(ks,r0,de,bt),
-        print which[0]+which[1]+which[2]
+        print('%6.1f,%6.1f,%7.4f,%7.4f); //'%(ks,r0,de,bt), end=' ')
+        print(which[0]+which[1]+which[2])

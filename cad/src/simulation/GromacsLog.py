@@ -159,11 +159,11 @@ class GromacsLog(object):
         return joules * 1e21
 
     def _getSingleEnergy(self, key):
-        if (self._values.has_key(key)):
+        if (key in self._values):
             try:
                 value = float(self._values[key])
             except:
-                print "_getSingleEnergy(): malformed value for %s: '%s'" % (key, self._values[key])
+                print("_getSingleEnergy(): malformed value for %s: '%s'" % (key, self._values[key]))
                 value = 0.0
             return self.kJ_per_mol_to_zJ(value)
         return 0.0

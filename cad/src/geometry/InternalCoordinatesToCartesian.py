@@ -119,7 +119,7 @@ class InternalCoordinatesToCartesian(object):
             return
 
         if (i != self._nextIndex):
-            raise IndexError, "next index is %d not %r" % (self._nextIndex, i)
+            raise IndexError("next index is %d not %r" % (self._nextIndex, i))
 
         cos_theta = cos(DEG2RAD * theta)
         xb = self._coords[nb][0] - self._coords[na][0]
@@ -206,4 +206,4 @@ class InternalCoordinatesToCartesian(object):
             return V(self._coords[index][0],
                      self._coords[index][1],
                      self._coords[index][2])
-        raise IndexError, "%r not defined" % index
+        raise IndexError("%r not defined" % index)

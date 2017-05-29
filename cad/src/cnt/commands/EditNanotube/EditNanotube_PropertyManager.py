@@ -201,13 +201,13 @@ class EditNanotube_PropertyManager( DnaOrCnt_PropertyManager ):
             self.command.struct.nanotube.computeEndPointsFromChunk(nanotubeChunk)
 
         if 0:
-            print "\n--------------"
-            print "setParameters():"
-            print "Struct=", self.command.struct
-            print "N, M:", self.n, self.m
-            print "type:", self.type
-            print "endings:", self.endings
-            print "pt1, pt2:", self.endPoint1, self.endPoint2
+            print("\n--------------")
+            print("setParameters():")
+            print("Struct=", self.command.struct)
+            print("N, M:", self.n, self.m)
+            print("type:", self.type)
+            print("endings:", self.endings)
+            print("pt1, pt2:", self.endPoint1, self.endPoint2)
 
     def getParameters(self):
         """
@@ -215,13 +215,13 @@ class EditNanotube_PropertyManager( DnaOrCnt_PropertyManager ):
         any have changed. If any have, then the nanotube will be modified.
         """
         if 0:
-            print "\n--------------"
-            print "getParameters():"
-            print "Struct=", self.command.struct
-            print "N, M:", self.n, self.m
-            print "type:", self.type
-            print "endings:", self.endings
-            print "pt1, pt2:", self.endPoint1, self.endPoint2
+            print("\n--------------")
+            print("getParameters():")
+            print("Struct=", self.command.struct)
+            print("N, M:", self.n, self.m)
+            print("type:", self.type)
+            print("endings:", self.endings)
+            print("pt1, pt2:", self.endPoint1, self.endPoint2)
 
         return (self.n, self.m,
                 self.type,

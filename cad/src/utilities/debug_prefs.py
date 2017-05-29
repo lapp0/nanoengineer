@@ -114,7 +114,7 @@ class Pref:
                 msg = "Note: %s (default %r) starts out %r" % \
                       (self, self._dfltval, self.value) ## + " %s" % self.starts_out_from_where
                 if not getattr(env.history, 'too_early', False):
-                    print msg
+                    print(msg)
                 env.history.message(msg, quote_html = True, color = 'orange')
             pass
         self.non_debug = non_debug # show up in debug_prefs submenu even when ATOM-DEBUG is not set?
@@ -180,7 +180,7 @@ class Pref:
                 ###e change to ask dtype, since most of them won't have a list of values!!! this method is specific to Choice.
             if self.current_value() == newval: #bruce 060126; revised 060209 to use self.current_value() rather than self.value
                 if self.print_changes:
-                    print "redundant change:",
+                    print("redundant change:", end=' ')
                 ##return??
             self.value = newval
             extra = ""
@@ -191,7 +191,7 @@ class Pref:
             if self.print_changes:
                 ## msg = "changed %r to %r%s" % (self, newval, extra)
                 msg = "changed %s to %r%s" % (self, newval, extra) # shorter version for console too [bruce 080215]
-                print msg
+                print(msg)
                 msg = "changed %s to %r%s" % (self, newval, extra) # shorter version (uses %s) for history [bruce 060126]
                 env.history.message(msg, quote_html = True, color = 'gray') #bruce 060126 new feature
             for sub in self.subscribers[:]:
@@ -275,7 +275,7 @@ class DataType:
     pass
 
 def autoname(thing):
-    return `thing` # for now
+    return repr(thing) # for now
 
 class Choice(DataType):
     #e might be renamed ChoicePrefType, or renamed ChoicePref and merged
@@ -302,7 +302,7 @@ class Choice(DataType):
             i = len(names) # first index whose value needs a name
             names.append( autoname(values[i]) )
         if names_to_values:
-            items = names_to_values.items()
+            items = list(names_to_values.items())
             items.sort()
             for name, value in items:
                 names.append(name)
@@ -339,7 +339,7 @@ class Choice(DataType):
     def changer_menuspec( self, instance_name, newval_receiver_func, curval = None): # for Choice (aka ChoicePrefType)
         #e could have special case for self.values == [True, False] or the reverse
         text = self.changer_menu_text( instance_name, curval) # e.g. "instance_name: curval"
-        submenu = submenu_from_name_value_pairs( zip(self.names, self.values),
+        submenu = submenu_from_name_value_pairs( list(zip(self.names, self.values)),
                                                  newval_receiver_func,
                                                  curval = curval,
                                                  indicate_defaultValue = True, #bruce 070518 new feature
@@ -435,7 +435,7 @@ class ColorType(DataType): #e might be renamed ColorPrefType or ColorPref
         return "%d,%d,%d" % self.value_as_int_tuple(value)
     def value_as_int_tuple(self, value):
         r, g, b = value # assume floats
-        return tuple(map( lambda component: int(component * 255 + 0.5), (r, g, b) ))
+        return tuple([int(component * 255 + 0.5) for component in (r, g, b)])
     def value_as_QColor(self, value = None): ###k untested??
         #e API is getting a bit klugy... we're using a random instance as knowing about the superset of colors,
         # and using its default value as the value here...
@@ -454,10 +454,10 @@ class ColorType(DataType): #e might be renamed ColorPrefType or ColorPref
         values = [black, white, red, green, blue, gray, orange, yellow, magenta, pink] #e need better order, maybe submenus
             ##e self.recent_values()
             #e should be able to put color names in menu - maybe even translate numbers to those?
-        values = map( self.normalize_value, values) # needed for comparison
+        values = list(map( self.normalize_value, values)) # needed for comparison
         if curval not in values:
             values.insert(0, curval)
-        names = map( self.short_name_of_value, values)
+        names = list(map( self.short_name_of_value, values))
         # include the actual color in the menu item (in place of the checkmark-position; looks depressed when "checked")
         def mitem_value_func( mitem, value):
             """
@@ -468,7 +468,7 @@ class ColorType(DataType): #e might be renamed ColorPrefType or ColorPref
             iconset = iconset_from_color( value)
                 #e need to improve look of "active" icon in these iconsets (checkmark inside? black border?)
             return mitem + (('iconset',iconset),)
-        submenu = submenu_from_name_value_pairs( zip(names, values),
+        submenu = submenu_from_name_value_pairs( list(zip(names, values)),
                                                  newval_receiver_func,
                                                  curval = curval,
                                                  mitem_value_func = mitem_value_func )
@@ -639,7 +639,7 @@ def debug_prefs_menuspec( atom_debug): #bruce 080312 split this up
 
     non_default_submenu = True # could be enabled by its own debug_pref if desired
 
-    items = [(name.lower(), name, pref) for name, pref in debug_prefs.items()]
+    items = [(name.lower(), name, pref) for name, pref in list(debug_prefs.items())]
         # use name.lower() as sortkey, in this function and some of the subfunctions;
         # name is included to disambiguate cases where sortkey is identical
     items.sort()
@@ -793,6 +793,6 @@ def debug_pref_History_print_every_selected_object(): #bruce 070504
 if __name__ == '__main__':
     spinsign = debug_pref("spinsign",Choice([1,-1]))
     testcolor = debug_pref("test color", ColorType(green))
-    print debug_prefs_menuspec(True)
+    print(debug_prefs_menuspec(True))
 
 # end

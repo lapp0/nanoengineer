@@ -66,13 +66,13 @@ class ObjectDescender:
             else:
                 r = repr(type(v))
             return "%s at %x" % (r, id(v))
-        if type(v) in (types.ListType, types.TupleType):
+        if type(v) in (list, tuple):
             self.outf.write(self.prefix(depth, pn) + trepr(v))
             if len(v) == 0:
                 self.outf.write(" (empty)")
             self.outf.write("\n")
-        elif type(v) in (types.StringType, types.IntType,
-                         types.FloatType, types.ComplexType):
+        elif type(v) in (bytes, int,
+                         float, complex):
             self.outf.write(self.prefix(depth, pn) + repr(v) + "\n")
         else:
             self.outf.write(self.prefix(depth, pn) + trepr(v) + "\n")
@@ -80,12 +80,12 @@ class ObjectDescender:
     def getAttributes(self, obj):
         lst = dir(obj)
         if hasattr(obj, "__dict__"):
-            for x in obj.__dict__.keys():
+            for x in list(obj.__dict__.keys()):
                 if x not in lst:
                     lst.append(x)
         def no_double_underscore(x):
             return not x.startswith('__')
-        lst = filter(no_double_underscore, lst)
+        lst = list(filter(no_double_underscore, lst))
         lst.sort()
         return lst
 
@@ -97,7 +97,7 @@ class ObjectDescender:
             self.handleLeaf(obj, depth, pathname)
         if depth >= self.maxdepth:
             return
-        if type(obj) in (types.ListType, types.TupleType):
+        if type(obj) in (list, tuple):
             lst = [ ]
             if len(pathname) > 0:
                 lastitem = pathname[-1]
@@ -114,8 +114,8 @@ class ObjectDescender:
                     self.handleLeaf(v, depth+1, pn)
             for i, v, pn in lst:
                 self.descend(v, depth+1, pn)
-        elif type(obj) in (types.DictType,):
-            keys = obj.keys()
+        elif type(obj) in (dict,):
+            keys = list(obj.keys())
             lst = [ ]
             if len(pathname) > 0:
                 lastitem = pathname[-1]
@@ -133,7 +133,7 @@ class ObjectDescender:
             for k, v, pn in lst:
                 self.descend(v, depth+1, pn)
         elif (hasattr(obj, "__class__") or
-            type(obj) in (types.InstanceType, types.ClassType,
+            type(obj) in (types.InstanceType, type,
                           types.ModuleType, types.FunctionType)):
             ckeys = [ ]
             if True:
@@ -145,7 +145,7 @@ class ObjectDescender:
                 ckeys = ( )
             keys = self.getAttributes(obj)
             if excludeClassVars:
-                keys = filter(lambda x: x not in ckeys, keys)
+                keys = [x for x in keys if x not in ckeys]
             lst = [ ]
             for k in keys:
                 x = getattr(obj, k)
@@ -189,7 +189,7 @@ def testDescend():
     y.b = "Apres moi, le deluge"
     y.c = z
     z.a = [x, y, z]
-    z.b = range(12)
+    z.b = list(range(12))
     x.e = {'y': y, 'z': z}
     objectBrowse(x)
     def test(name, val):

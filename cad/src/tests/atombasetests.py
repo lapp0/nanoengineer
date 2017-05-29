@@ -55,7 +55,7 @@ class Structure:
         self.atomset = AtomDict()
         self.bondset = BondDict()
     def __len__(self):
-        return len(self.atomset.keys())
+        return len(list(self.atomset.keys()))
 
 def water(x = 0.0, y = 0.0, z = 0.0):
     w = Structure()
@@ -146,11 +146,11 @@ class BondTests(TestCase):
         bondset.add(bond2)
         bondset.add(bond1)
         # they better come out forwards
-        assert bondset.keys() == [ 2, 3, 4, 5, 6 ]
-        assert bondset.values() == [
+        assert list(bondset.keys()) == [ 2, 3, 4, 5, 6 ]
+        assert list(bondset.values()) == [
             bond1, bond2, bond3, bond4, bond5
             ]
-        assert bondset.items() == [
+        assert list(bondset.items()) == [
             (2, bond1), (3, bond2), (4, bond3),
             (5, bond4), (6, bond5)
             ]
@@ -176,11 +176,11 @@ class BondTests(TestCase):
         bondset.add(bond2)
         bondset.add(bond3)
         # check if they're in keys() correctly
-        assert bond1.key in bondset.keys()
-        assert bond2.key in bondset.keys()
-        assert bond3.key in bondset.keys()
-        assert bond4.key not in bondset.keys()
-        assert bond5.key not in bondset.keys()
+        assert bond1.key in list(bondset.keys())
+        assert bond2.key in list(bondset.keys())
+        assert bond3.key in list(bondset.keys())
+        assert bond4.key not in list(bondset.keys())
+        assert bond5.key not in list(bondset.keys())
         # test the __contains__/sq_contains method
         assert bond1.key in bondset
         assert bond2.key in bondset
@@ -226,10 +226,10 @@ class BondTests(TestCase):
         bondset = BondDict()
         for a in alst:
             bondset.add(a)
-        assert bondset.keys() == [ 1, 2, 3, 4, 5 ]
+        assert list(bondset.keys()) == [ 1, 2, 3, 4, 5 ]
         bondset2 = BondDict()
         bondset2.update(bondset)
-        assert bondset2.keys() == [ 1, 2, 3, 4, 5 ]
+        assert list(bondset2.keys()) == [ 1, 2, 3, 4, 5 ]
 
     def test_bondset_updateFromDict(self):
         """
@@ -241,7 +241,7 @@ class BondTests(TestCase):
             adct[a.key] = a
         bondset = BondDict()
         bondset.update(adct)
-        assert bondset.keys() == [ 1, 2, 3, 4, 5 ]
+        assert list(bondset.keys()) == [ 1, 2, 3, 4, 5 ]
 
     def test_bondset_removeFromEmpty(self):
         bondset = BondDict()
@@ -255,7 +255,7 @@ class BondTests(TestCase):
     def test_bondset_filter(self):
         w = water()
         bondset = BondDict()
-        for bond in filter(selectSingle, w.bondset.values()):
+        for bond in filter(selectSingle, list(w.bondset.values())):
             bondset.add(bond)
         bondinfo = bondset.bondInfo()
         assert type(bondinfo) == Numeric.arraytype
@@ -288,8 +288,8 @@ class AtomDictTests(TestCase):
         atom1 = Atom()
         atom2 = Atom()
         atomset.add(atom1)
-        assert atomset.has_key(atom1.key)
-        assert not atomset.has_key(atom2.key)
+        assert atom1.key in atomset
+        assert atom2.key not in atomset
         assert atom1.key in atomset
         assert atom2.key not in atomset
 
@@ -313,11 +313,11 @@ class AtomDictTests(TestCase):
         atomset.add(atom2)
         atomset.add(atom1)
         # they better come out forwards
-        assert atomset.keys() == [ 2, 3, 4, 5, 6 ]
-        assert atomset.values() == [
+        assert list(atomset.keys()) == [ 2, 3, 4, 5, 6 ]
+        assert list(atomset.values()) == [
             atom1, atom2, atom3, atom4, atom5
             ]
-        assert atomset.items() == [
+        assert list(atomset.items()) == [
             (2, atom1), (3, atom2), (4, atom3),
             (5, atom4), (6, atom5)
             ]
@@ -339,11 +339,11 @@ class AtomDictTests(TestCase):
         atomset.add(atom2)
         atomset.add(atom3)
         # check if they're in keys() correctly
-        assert atom1.key in atomset.keys()
-        assert atom2.key in atomset.keys()
-        assert atom3.key in atomset.keys()
-        assert atom4.key not in atomset.keys()
-        assert atom5.key not in atomset.keys()
+        assert atom1.key in list(atomset.keys())
+        assert atom2.key in list(atomset.keys())
+        assert atom3.key in list(atomset.keys())
+        assert atom4.key not in list(atomset.keys())
+        assert atom5.key not in list(atomset.keys())
         # test the __contains__/sq_contains method
         assert atom1.key in atomset
         assert atom2.key in atomset
@@ -385,10 +385,10 @@ class AtomDictTests(TestCase):
         atomset = AtomDict()
         for a in alst:
             atomset.add(a)
-        assert atomset.keys() == [ 1, 2, 3, 4, 5 ]
+        assert list(atomset.keys()) == [ 1, 2, 3, 4, 5 ]
         atomset2 = AtomDict()
         atomset2.update(atomset)
-        assert atomset2.keys() == [ 1, 2, 3, 4, 5 ]
+        assert list(atomset2.keys()) == [ 1, 2, 3, 4, 5 ]
 
     def test_atomset_updateFromDict(self):
         """
@@ -400,7 +400,7 @@ class AtomDictTests(TestCase):
             adct[a.key] = a
         atomset = AtomDict()
         atomset.update(adct)
-        assert atomset.keys() == [ 1, 2, 3, 4, 5 ]
+        assert list(atomset.keys()) == [ 1, 2, 3, 4, 5 ]
 
     def test_atomset_removeFromEmpty(self):
         atomset = AtomDict()
@@ -414,7 +414,7 @@ class AtomDictTests(TestCase):
     def test_atomset_filter(self):
         w = water()
         atomset = AtomDict()
-        for atm in filter(selectH, w.atomset.values()):
+        for atm in filter(selectH, list(w.atomset.values())):
             atomset.add(atm)
         atominfo = atomset.atomInfo()
         assert type(atominfo) == Numeric.arraytype
@@ -425,7 +425,7 @@ class AtomDictTests(TestCase):
 
     def test_atomset_map(self):
         w = water()
-        map(transmuteOC, w.atomset.values())
+        list(map(transmuteOC, list(w.atomset.values())))
         atominfo = w.atomset.atomInfo()
         assert type(atominfo) == Numeric.arraytype
         assert atominfo.tolist() == [
@@ -446,23 +446,23 @@ class DiffTests(TestCase):
 
     def test_basicdiffs(self):
         w = water()
-        db = DiffFactoryBase(w.atomset.values())
+        db = DiffFactoryBase(list(w.atomset.values()))
 
-        map(transmuteOC, w.atomset.values())
+        list(map(transmuteOC, list(w.atomset.values())))
         diffobj = db.snapshot()
         keys, olds, news = unpack(diffobj._eltnum)
         assert keys == [4]
         assert olds == [8]
         assert news == [6]
 
-        map(transmuteHN, w.atomset.values())
+        list(map(transmuteHN, list(w.atomset.values())))
         diffobj = db.snapshot()
         keys, olds, news = unpack(diffobj._eltnum)
         assert keys == [3, 5]
         assert olds == [1, 1]
         assert news == [7, 7]
 
-        for atom in w.atomset.values():
+        for atom in list(w.atomset.values()):
             p = atom._posn
             atom._posn = Numeric.array((p[0], p[1], p[2] + 1))
         diffobj = db.snapshot()
@@ -474,10 +474,10 @@ class DiffTests(TestCase):
     def test_diffDicts(self):
 
         w = water()
-        db = DiffFactoryBase(w.atomset.values())
+        db = DiffFactoryBase(list(w.atomset.values()))
 
         atomdict = AtomDict()
-        for x in w.atomset.values():
+        for x in list(w.atomset.values()):
             atomdict.add(x)
         diffobj = db.snapshot()
         keys, olds, news = unpack(diffobj.sets)
@@ -488,7 +488,7 @@ class DiffTests(TestCase):
     def test_diffFactoryAddObject(self):
 
         w = water()
-        db = DiffFactoryBase(w.atomset.values())
+        db = DiffFactoryBase(list(w.atomset.values()))
 
         # Create a new atom and add it to the atomset
         a = Atom()
@@ -511,14 +511,14 @@ class DiffTests(TestCase):
         assert news[0][0] == 3.1416
 
         # Move the whole structure, the diff includes all the x changes
-        for atm in w.atomset.values():
+        for atm in list(w.atomset.values()):
             p = atm._posn
             atm._posn = Numeric.array((p[0] + 2, p[1], p[2]))
         diffobj = db.snapshot()
         keys, olds, news = unpack(diffobj._posn)
         assert keys == [3, 4, 5, 8]
-        assert map(lambda x: x[0], olds) == [-0.983, 0.017, 0.276, 3.1416]
-        assert map(lambda x: x[0], news) == [1.017, 2.017, 2.276, 5.1416]
+        assert [x[0] for x in olds] == [-0.983, 0.017, 0.276, 3.1416]
+        assert [x[0] for x in news] == [1.017, 2.017, 2.276, 5.1416]
 
 class Tests(AtomTests, BondTests, AtomDictTests, DiffTests):
     pass

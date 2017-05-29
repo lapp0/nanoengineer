@@ -248,12 +248,12 @@ class DirectionArrow(DragHandler_API, Selobj_API):
             if owner is not our_selobj:
                 res = False
                 # Do debug prints.
-                print "%r no longer owns glname %r, instead %r does" \
-                      % (self, glname, owner) # [perhaps never seen as of 061121]
+                print("%r no longer owns glname %r, instead %r does" \
+                      % (self, glname, owner)) # [perhaps never seen as of 061121]
                 pass
             pass
         if not res and env.debug():
-            print "debug: selobj_still_ok is false for %r" % self
+            print("debug: selobj_still_ok is false for %r" % self)
         return res
 
         ###============== selobj interface Ends===============###

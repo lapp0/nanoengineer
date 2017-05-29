@@ -59,6 +59,7 @@ from PM.PM_Constants import PM_RESTORE_DEFAULTS_BUTTON
 from PM.PM_Constants import PM_PREVIEW_BUTTON
 from PM.PM_Constants import PM_WHATS_THIS_BUTTON
 from utilities.icon_utilities import geticon
+import collections
 
 DEBUG = True
 #global display preferences
@@ -588,7 +589,7 @@ class PreferencesDialog(QDialog, Ui_PreferencesDialog):
 
         if (type(pagenameList[0]) == list or \
             type(pagenameList[0]) == tuple):
-            print "Invalid tree structure with no root page."
+            print("Invalid tree structure with no root page.")
             return
         # Run through the list and add the pages into the tree.
         # This is recursive so that it interpretes nested sublists based on
@@ -598,7 +599,7 @@ class PreferencesDialog(QDialog, Ui_PreferencesDialog):
             x = x + 1
             name = pagenameList[x]
             if DEBUG:
-                print name
+                print(name)
             page_widget = PageWidget(name)
             # Create a dictionary entry for the page name and it's index
             self.pagenameDict[name] = len(self.pagenameDict)
@@ -710,15 +711,15 @@ class PreferencesDialog(QDialog, Ui_PreferencesDialog):
             # Make sure the class has that object defined before calling it.
             if hasattr(self, fname):
                 fcall = getattr(self, fname)
-                if callable(fcall):
+                if isinstance(fcall, collections.Callable):
                     if DEBUG:
-                        print "method defined: %s" % fname
+                        print("method defined: %s" % fname)
                     fcall(name)
                 else:
-                    print "Attribute %s exists, but is not a callable method."
+                    print("Attribute %s exists, but is not a callable method.")
             else:
                 if DEBUG:
-                    print "method missing: %s" % fname
+                    print("method missing: %s" % fname)
         return
 
     def showPage(self, pagename = ""):
@@ -762,7 +763,7 @@ class PreferencesDialog(QDialog, Ui_PreferencesDialog):
         """
         Populate the General page
         """
-        print "populate_General: %s" % pagename
+        print("populate_General: %s" % pagename)
         page_widget = self.getPage(pagename)
         _pageContainer = page_widget.getPageContainers()
         _pageContainer = _pageContainer[0]
@@ -798,7 +799,7 @@ class PreferencesDialog(QDialog, Ui_PreferencesDialog):
         return
 
     def populate_Tooltips(self, pagename):
-        print "populate_Tooltips: %s" % pagename
+        print("populate_Tooltips: %s" % pagename)
         page_widget = self.getPage(pagename)
         _pageContainer = page_widget.getPageContainers()
         _pageContainer = _pageContainer[0]
@@ -847,7 +848,7 @@ class PreferencesDialog(QDialog, Ui_PreferencesDialog):
         return
 
     def populate_Reports(self, pagename):
-        print "populate_Reports: %s" % pagename
+        print("populate_Reports: %s" % pagename)
         page_widget = self.getPage(pagename)
         _pageContainer = page_widget.getPageContainers()
         _pageContainer = _pageContainer[0]
@@ -865,7 +866,7 @@ class PreferencesDialog(QDialog, Ui_PreferencesDialog):
         return
 
     def populate_DNA(self, pagename):
-        print "populate_DNA: %s" % pagename
+        print("populate_DNA: %s" % pagename)
         page_widget = self.getPage(pagename)
         _pageContainer = page_widget.getPageContainers()
         _pageContainer = _pageContainer[0]
@@ -918,7 +919,7 @@ class PreferencesDialog(QDialog, Ui_PreferencesDialog):
         return
 
     def populate_Bonds(self, pagename):
-        print "populate_Bonds: %s" % pagename
+        print("populate_Bonds: %s" % pagename)
         page_widget = self.getPage(pagename)
         _pageContainer = page_widget.getPageContainers()
         _pageContainer = _pageContainer[0]
@@ -968,7 +969,7 @@ class PreferencesDialog(QDialog, Ui_PreferencesDialog):
         return
 
     def populate_Rulers(self, pagename):
-        print "populate_Rules: %s" % pagename
+        print("populate_Rules: %s" % pagename)
         page_widget = self.getPage(pagename)
         _pageContainer = page_widget.getPageContainers()
         _pageContainer = _pageContainer[0]
@@ -999,7 +1000,7 @@ class PreferencesDialog(QDialog, Ui_PreferencesDialog):
         return
 
     def populate_Plugins(self, pagename):
-        print "populate_Plugins: %s" % pagename
+        print("populate_Plugins: %s" % pagename)
         page_widget = self.getPage(pagename)
         _pageContainer = page_widget.getPageContainers()
         _pageContainer = _pageContainer[0]
@@ -1036,12 +1037,12 @@ class PreferencesDialog(QDialog, Ui_PreferencesDialog):
                              widgetList = aWidgetList,
                              labelColumn  = 0)
         if DEBUG:
-            print self.checkboxes
-            print self.choosers
+            print(self.checkboxes)
+            print(self.choosers)
         return
 
     def populate_Adjust(self, pagename):
-        print "populate_Adjust: %s" % pagename
+        print("populate_Adjust: %s" % pagename)
         page_widget = self.getPage(pagename)
         _pageContainer = page_widget.getPageContainers()
         _pageContainer = _pageContainer[0]
@@ -1108,7 +1109,7 @@ class PreferencesDialog(QDialog, Ui_PreferencesDialog):
         return
 
     def populate_Atoms(self, pagename):
-        print "populate_Atoms: %s" % pagename
+        print("populate_Atoms: %s" % pagename)
         page_widget = self.getPage(pagename)
         _pageContainer = page_widget.getPageContainers()
         _pageContainer = _pageContainer[0]
@@ -1171,7 +1172,7 @@ class PreferencesDialog(QDialog, Ui_PreferencesDialog):
         return
 
     def populate_Window(self, pagename):
-        print "populate_Window: %s" % pagename
+        print("populate_Window: %s" % pagename)
         page_widget = self.getPage(pagename)
         _pageContainer = page_widget.getPageContainers()
         _pageContainer = _pageContainer[0]
@@ -1274,11 +1275,11 @@ class PreferencesDialog(QDialog, Ui_PreferencesDialog):
         return
 
     def populate_Graphics_Area(self, pagename):
-        print "populate_Graphics_Area: %s" % pagename
+        print("populate_Graphics_Area: %s" % pagename)
         page_widget = self.getPage(pagename)
         _pageContainer = page_widget.getPageContainers()
         _pageContainer = _pageContainer[0]
-        gdsIconDist = dict(zip(GDS_NAMES, GDS_ICONS))
+        gdsIconDist = dict(list(zip(GDS_NAMES, GDS_ICONS)))
 
         _choices = []
         self.globalDisplayStyleStartupComboBox = PM_ComboBox(_pageContainer,
@@ -1356,7 +1357,7 @@ class PreferencesDialog(QDialog, Ui_PreferencesDialog):
         return
 
     def populate_Base_orientation_indicator(self, pagename):
-        print "populate_Base_orientation_indicator: %s" % pagename
+        print("populate_Base_orientation_indicator: %s" % pagename)
         page_widget = self.getPage(pagename)
         _pageContainer = page_widget.getPageContainers()
         _pageContainer = _pageContainer[0]
@@ -1395,7 +1396,7 @@ class PreferencesDialog(QDialog, Ui_PreferencesDialog):
         return
 
     def populate_Undo(self, pagename):
-        print "populate_Undo: %s" % pagename
+        print("populate_Undo: %s" % pagename)
         page_widget = self.getPage(pagename)
         _pageContainer = page_widget.getPageContainers()
         _pageContainer = _pageContainer[0]
@@ -1420,7 +1421,7 @@ class PreferencesDialog(QDialog, Ui_PreferencesDialog):
         return
 
     def populate_Zoom_Pan_and_Rotate(self, pagename):
-        print "populate_Zoom_Pan_and_Rotate: %s" % pagename
+        print("populate_Zoom_Pan_and_Rotate: %s" % pagename)
         page_widget = self.getPage(pagename)
         _pageContainer = page_widget.getPageContainers()
         _pageContainer = _pageContainer[0]
@@ -1486,7 +1487,7 @@ class PreferencesDialog(QDialog, Ui_PreferencesDialog):
         return
 
     def populate_Lighting(self, pagename):
-        print "populate_Lighting: %s" % pagename
+        print("populate_Lighting: %s" % pagename)
         page_widget = self.getPage(pagename)
         _pageContainer = page_widget.getPageContainers()
         _pageContainer = _pageContainer[0]
@@ -1607,7 +1608,7 @@ class PreferencesDialog(QDialog, Ui_PreferencesDialog):
         return
 
     def populate_Minor_groove_error_indicator(self, pagename):
-        print "populate_Minor_groove_error_indicator: %s" % pagename
+        print("populate_Minor_groove_error_indicator: %s" % pagename)
         page_widget = self.getPage(pagename)
         _pageContainer = page_widget.getPageContainers()
         _pageContainer = _pageContainer[0]

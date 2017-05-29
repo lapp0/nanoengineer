@@ -145,7 +145,7 @@ class MakeCrossovers_Command(SelectChunks_Command,
                 return True
             return False
 
-        segments_to_add = filter(lambda seg: func(seg), segments)
+        segments_to_add = [seg for seg in segments if func(seg)]
 
         raw_number_of_segments = len(segments_to_add) + len(self._structList)
 

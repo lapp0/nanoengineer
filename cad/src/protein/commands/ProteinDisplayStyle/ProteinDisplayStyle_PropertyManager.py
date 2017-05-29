@@ -137,7 +137,7 @@ def writeDnaFavoriteFile( filename ):
         elif isinstance(val, bool):
             f.write("%s = %d\n" % (pref_key, val))
         else:
-            print "Not sure what pref_key '%s' is." % pref_key
+            print("Not sure what pref_key '%s' is." % pref_key)
 
     f.close()
 
@@ -897,7 +897,7 @@ class ProteinDisplayStyle_PropertyManager(Command_PropertyManager):
                     ok2, text = writeProteinDisplayStyleSettingsToFavoritesFile(name)
                     indexOfDuplicateItem = self.favoritesComboBox.findText(name)
                     self.favoritesComboBox.removeItem(indexOfDuplicateItem)
-                    print "Add Favorite: removed duplicate favorite item."
+                    print("Add Favorite: removed duplicate favorite item.")
                 else:
                     env.history.message("Add Favorite: cancelled overwriting favorite item.")
                     return

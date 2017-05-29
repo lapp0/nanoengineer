@@ -499,9 +499,9 @@ class Select_basicGraphicsMode( Select_GraphicsMode_MouseHelpers_preMixin,
                 #(probably) update_selobj does it?
                 if old_selobj is not self.o.selobj:
                     if 0 and env.debug():
-                        print "debug fyi: selobj change noticed by " \
+                        print("debug fyi: selobj change noticed by " \
                               "dragHandlerDrag, %r -> %r" % (old_selobj ,
-                                                             self.o.selobj)
+                                                             self.o.selobj))
                         # WARNING: this is not a good enough detection, if any
                         # outside code also does update_selobj and changes it,
                         # since those changes won't be detected here. Apparently
@@ -536,7 +536,7 @@ class Select_basicGraphicsMode( Select_GraphicsMode_MouseHelpers_preMixin,
                                                           #070324; see also
                                                           #testmode.leftDouble
         if env.debug():
-            print "debug fyi: dragHandlerLeftDouble is nim"
+            print("debug fyi: dragHandlerLeftDouble is nim")
         return
 
        # == Selection Curve helper methods
@@ -706,7 +706,7 @@ class Select_basicGraphicsMode( Select_GraphicsMode_MouseHelpers_preMixin,
                 elif self.selSense == DELETE_SELECTION:
                     self.o.assy.delete_at_event(event)
                 else:
-                    print 'Error in end_selection_curve(): Invalid selSense=', self.selSense
+                    print('Error in end_selection_curve(): Invalid selSense=', self.selSense)
 
             # Huaicai 1/29/05: to fix zoom messing up selection bug
             # In window zoom mode, even for a big selection window, the
@@ -820,9 +820,9 @@ class Select_basicGraphicsMode( Select_GraphicsMode_MouseHelpers_preMixin,
                     #-- I doubt they do, but I'm not sure about Jigs [bruce 060728]
                     # (this does happen for Jigs, see below)
                     if isinstance(obj, Atom):
-                        print "debug fyi: likely bug: selobj is Atom but not in selatom: %r" % (obj,)
+                        print("debug fyi: likely bug: selobj is Atom but not in selatom: %r" % (obj,))
                     elif isinstance(obj, Jig):
-                        print "debug fyi: selobj is a Jig in get_obj_under_cursor (comment is wrong), for %r" % (obj,)
+                        print("debug fyi: selobj is a Jig in get_obj_under_cursor (comment is wrong), for %r" % (obj,))
                         # I suspect some jigs can occur here
                         # (and if not, we should put them here
                         #-- I know of no excuse for jig highlighting
@@ -835,7 +835,7 @@ class Select_basicGraphicsMode( Select_GraphicsMode_MouseHelpers_preMixin,
                             #misleading, it might really be nothing -- bruce 060726]
                 obj = self.get_jig_under_cursor(event) # [this can be slow -- bruce comment 070322]
                 if env.debug(): #######
-                    print "debug fyi: get_jig_under_cursor returns %r" % (obj,) # [bruce 060721]
+                    print("debug fyi: get_jig_under_cursor returns %r" % (obj,)) # [bruce 060721]
             pass
 
         else: # No hover highlighting
@@ -1198,12 +1198,12 @@ class Select_basicGraphicsMode( Select_GraphicsMode_MouseHelpers_preMixin,
         hit_records = list(glRenderMode(GL_RENDER))
         for (near,far,names) in hit_records: # see example code, renderpass.py
             if debug_flags.atom_debug and 0:
-                print "hit record: near,far,names:",near,far,names
+                print("hit record: near,far,names:",near,far,names)
             if 1:
                 # partial workaround for bug 1527. This can be removed once that bug (in drawer.py)
                 # is properly fixed. This exists in two places -- GLPane.py and modes.py. [bruce 060217]
                 if names and names[-1] == 0:
-                    print "%d(m) partial workaround for bug 1527: removing 0 from end of namestack:" % env.redraw_counter, names
+                    print("%d(m) partial workaround for bug 1527: removing 0 from end of namestack:" % env.redraw_counter, names)
                     names = names[:-1]
             if names:
                 obj = assy.object_for_glselect_name(names[-1])
@@ -1422,7 +1422,7 @@ class Select_basicGraphicsMode( Select_GraphicsMode_MouseHelpers_preMixin,
             #thing, depending on its type.
             # If not, we can probably just kluge it by self.this or self.that,
             # if they all get reset each drag. ###@@@
-        print "unexpected selobj class in mode.selobj_highlight_color:", selobj
+        print("unexpected selobj class in mode.selobj_highlight_color:", selobj)
         # Return black color so that an error becomes more obvious
         #(bruce comments)
         return black
@@ -1528,13 +1528,13 @@ class Select_basicGraphicsMode( Select_GraphicsMode_MouseHelpers_preMixin,
 
         hit_records = list(glRenderMode(GL_RENDER))
         if debug_flags.atom_debug and 0:
-            print "%d hits" % len(hit_records)
+            print("%d hits" % len(hit_records))
         for (near,far,names) in hit_records: # see example code, renderpass.py
             if 1:
                 # partial workaround for bug 1527. This can be removed once that bug (in drawer.py)
                 # is properly fixed. This exists in two places -- GLPane.py and modes.py. [bruce 060217]
                 if names and names[-1] == 0:
-                    print "%d(m) partial workaround for bug 1527: removing 0 from end of namestack:" % env.redraw_counter, names
+                    print("%d(m) partial workaround for bug 1527: removing 0 from end of namestack:" % env.redraw_counter, names)
                     names = names[:-1]
             if names:
                 obj = assy.object_for_glselect_name(names[-1])

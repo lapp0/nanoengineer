@@ -61,9 +61,9 @@ def _f_get_homeless_dna_markers(): # MISNAMED, see is_homeless docstring in supe
      would cause it to miss newly homeless markers,
      causing serious bugs.]
     """
-    res = _homeless_dna_markers.values()
+    res = list(_homeless_dna_markers.values())
     _homeless_dna_markers.clear()
-    res = filter( lambda marker: marker.is_homeless(), res ) # review: is filtering needed?
+    res = [marker for marker in res if marker.is_homeless()] # review: is filtering needed?
     return res
 
 def _f_are_there_any_homeless_dna_markers(): # MISNAMED, see _f_get_homeless_dna_markers docstring
@@ -208,7 +208,7 @@ class DnaMarker( ChainAtomMarker):
         _marker_newness_counter += 1
         self._newness = _marker_newness_counter
         if debug_flags.DEBUG_DNA_UPDATER_VERBOSE: # made verbose on 080201
-            print "dna updater: made %r" % (self,)
+            print("dna updater: made %r" % (self,))
         return
 
     def kill(self):
@@ -217,7 +217,7 @@ class DnaMarker( ChainAtomMarker):
         """
         if debug_flags.DEBUG_DNA_UPDATER_VERBOSE:
             msg = "dna updater: killing %r" % (self,)
-            print msg
+            print(msg)
         if self.wholechain:
             self.wholechain._f_marker_killed(self)
             self._clear_wholechain()
@@ -461,10 +461,10 @@ class DnaMarker( ChainAtomMarker):
             # and just print a warning here, trusting that in the future
             # the group cleanup of just-read mmp files will fix things better.
             if chunk.parent_node_of_class(DnaStrandOrSegment):
-                print "dna updater: " \
+                print("dna updater: " \
                       "will discard preexisting %r which was not in a DnaGroup" \
                       % (chunk.parent_node_of_class(DnaStrandOrSegment),), \
-                      "(bug or unfixed mmp file)"
+                      "(bug or unfixed mmp file)")
             dnaGroup = find_or_make_DnaGroup_for_homeless_object(chunk)
                 # Note: all our chunks will eventually get moved from
                 # whereever they are now into this new DnaGroup.
@@ -529,7 +529,7 @@ class DnaMarker( ChainAtomMarker):
         # REVIEW: should we not return anything and just make callers check marker.killed()?
 
         if self._info_for_step2 is not None:
-            print "bug? _info_for_step2 is not None as _f_move_to_live_atompair_step1 starts in %r" % self
+            print("bug? _info_for_step2 is not None as _f_move_to_live_atompair_step1 starts in %r" % self)
 
         self._info_for_step2 = None
 
@@ -543,12 +543,12 @@ class DnaMarker( ChainAtomMarker):
             # was an assert, but now I worry that some code plops us onto that list
             # for other reasons so this might not always be true, so make it safe
             # and find out (ie debug print) [bruce 080306]
-            print "bug or ok?? not %r.is_homeless() in _f_move_to_live_atompair_step1" % self # might be common after undo??
+            print("bug or ok?? not %r.is_homeless() in _f_move_to_live_atompair_step1" % self) # might be common after undo??
 
         old_wholechain = self.wholechain
         if not old_wholechain:
             if debug_flags.DEBUG_DNA_UPDATER:
-                print "fyi: no wholechain in %r._f_move_to_live_atompair_step1()" % self
+                print("fyi: no wholechain in %r._f_move_to_live_atompair_step1()" % self)
                 # I think this might be common after mmp read. If so, perhaps remove debug print.
                 # In any case, tolerate it. Don't move, but do require new wholechain
                 # to find us. Note: this seems to happen a lot for 1-atom chains, not sure why. @@@ DIAGNOSE
@@ -582,11 +582,11 @@ class DnaMarker( ChainAtomMarker):
             # either this means the wholechain has length 1 or there's a bug.
             # So don't try to move in this case.
             if len(old_wholechain) != 1:
-                print "bug? marker %r has only one atom but its wholechain %r is length %d (not 1)" % \
-                      (self, len(old_wholechain))
+                print("bug? marker %r has only one atom but its wholechain %r is length %d (not 1)" % \
+                      (self, len(old_wholechain)))
             assert old_atom1.killed() # checked by prior code
             if debug_flags.DEBUG_DNA_UPDATER:
-                print "kill %r since we can't move a 1-atom marker" % self
+                print("kill %r since we can't move a 1-atom marker" % self)
             self.kill()
             return False
 
@@ -635,8 +635,8 @@ class DnaMarker( ChainAtomMarker):
                     popped = _check_atoms.pop(0)
                     ## assert atom is popped - fails when i delete a few duplex atoms, then make bare axis atom
                     if not (atom is popped):
-                        print "\n*** BUG: not (atom %r is _check_atoms.pop(0) %r), remaining _check_atoms %r, other data %r" % \
-                              (atom, popped, _check_atoms, (unkilled_atoms_posns, self, self._position_holder))
+                        print("\n*** BUG: not (atom %r is _check_atoms.pop(0) %r), remaining _check_atoms %r, other data %r" % \
+                              (atom, popped, _check_atoms, (unkilled_atoms_posns, self, self._position_holder)))
                 if not atom.killed():
                     unkilled_atoms_posns.append( (atom, pos) )
                 else:
@@ -657,7 +657,7 @@ class DnaMarker( ChainAtomMarker):
         # didn't find a good position to the right or left.
 
         if debug_flags.DEBUG_DNA_UPDATER_VERBOSE:
-            print "kill %r since we can't find a place to move it to" % self
+            print("kill %r since we can't find a place to move it to" % self)
         self.kill()
         return False
 
@@ -726,7 +726,7 @@ class DnaMarker( ChainAtomMarker):
         [friend method, called from WholeChain.__init__ during dna_updater run]
         """
         if debug_flags.DEBUG_DNA_UPDATER: # SOON: _VERBOSE
-            print "_f_kill_during_move(%r, %r %r)" % (self, new_wholechain, why)
+            print("_f_kill_during_move(%r, %r %r)" % (self, new_wholechain, why))
         # I think we're still on an old wholechain, so we can safely
         # die in the usual way (which calls a friend method on it).
         assert self.wholechain is not new_wholechain
@@ -734,13 +734,13 @@ class DnaMarker( ChainAtomMarker):
         # actually this will be normal for mmp read, or other ways external code
         # can create markers, so remove when seen: @@@@
         if self.wholechain is None:
-            print "\nfyi: remove when seen: self.wholechain is None during _f_kill_during_move(%r, %r, %r)" % \
-                  ( self, new_wholechain, why)
+            print("\nfyi: remove when seen: self.wholechain is None during _f_kill_during_move(%r, %r, %r)" % \
+                  ( self, new_wholechain, why))
         self.kill()
         self._info_for_step2 = None # for debug, record no need to do more to move self
         return
 
-    def _f_new_position_for(self, new_wholechain, (atom1info, atom2info)): # 080311
+    def _f_new_position_for(self, new_wholechain, xxx_todo_changeme): # 080311
         """
         Assuming self.marked_atom has the position info atom1info
         (a pair of rail and baseindex) and self.next_atom has atom2info
@@ -764,6 +764,7 @@ class DnaMarker( ChainAtomMarker):
 
         Never have side effects.
         """
+        (atom1info, atom2info) = xxx_todo_changeme
         rail1, baseindex1 = atom1info
         rail2, baseindex2 = atom2info
 
@@ -844,7 +845,7 @@ class DnaMarker( ChainAtomMarker):
         if self.killed():
             return
         if self._info_for_step2: # TODO: fix in _undo_update @@@@@
-            print "bug? marker %r was not killed or fixed after move" % self
+            print("bug? marker %r was not killed or fixed after move" % self)
         # Note about why we can probably assert this: Any marker
         # that moves either finds new atoms whose chain has a change
         # somewhere that leads us to find it (otherwise that chain would

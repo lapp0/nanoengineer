@@ -38,7 +38,7 @@ import socket
 import string
 import threading
 import types
-import urllib
+import urllib.request, urllib.parse, urllib.error
 
 from xml.dom.minidom import parseString
 
@@ -150,7 +150,7 @@ def _get_remote_file(filename, prefix):
     for host in _sponsor_servers:
         url = host + filename
         try:
-            fileHandle = urllib.urlopen(url)
+            fileHandle = urllib.request.urlopen(url)
             fileContents = fileHandle.read()
             fileHandle.close()
             if fileContents.startswith(prefix):
@@ -194,8 +194,7 @@ def _load_sponsor_info(xmlfile, win):
                 sp_name = getXmlText(sp_info, 'name')
                 sp_imgfile = os.path.join(_sponsordir, 'logo_%s.png' % sp_name)
                 sp_keywords = getXmlText(sp_info, 'keywords')
-                sp_keywords = map(lambda x: x.strip(),
-                                  sp_keywords.split(','))
+                sp_keywords = [x.strip() for x in sp_keywords.split(',')]
                 sp_text = _fixHtml(getXmlText(sp_info, 'text'))
                 if not os.path.exists(sp_imgfile) or \
                    os.path.getctime(sp_imgfile) < os.path.getctime(xmlfile):
@@ -203,7 +202,7 @@ def _load_sponsor_info(xmlfile, win):
                     open(sp_imgfile, 'wb').write(sp_png)
                 sp = _Sponsor(sp_name, sp_text, sp_imgfile)
                 for keyword in sp_keywords:
-                    if not _sponsors.has_key(keyword):
+                    if keyword not in _sponsors:
                         _sponsors[keyword] = [ ]
                     _sponsors[keyword].append(sp)
         except:
@@ -413,7 +412,7 @@ class SponsorableMixin:
 
     def setSponsor(self):
         keyword = self.sponsor_keyword
-        if type(keyword) in (types.ListType, types.TupleType):
+        if type(keyword) in (list, tuple):
             keyword = random.choice(keyword)
         try:
             sponsor = random.choice(_sponsors[keyword])

@@ -16,10 +16,10 @@ class A(object):
         try:
             lenother = len(other)
         except:
-            print "fyi: can't get len(%r)" % (other,)
+            print("fyi: can't get len(%r)" % (other,))
             return False
         if len(self) != lenother:
-            print "fyi: diff lens"
+            print("fyi: diff lens")
             return False
         bad = [i for i in range(lenother) if self[i] != other[i]]
 ##        if bad:
@@ -117,7 +117,7 @@ def _test():
 
     assert unitVector(V(3,4)) == V(3,4)/5.0
     assert rotate2d_90(V(100,3)) == V(-3,100)
-    print "tests done"
+    print("tests done")
 
 if __name__ == '__main__':
     _test()

@@ -117,7 +117,7 @@ class NamedView(SimpleCopyMixin, Node):
             # note: we depend on our own _um_initargs returning enough info for a full copy,
             # though it doesn't have to in general.
         if 0 and debug_flags.atom_debug:
-            print "atom_debug: copying namedView:", self
+            print("atom_debug: copying namedView:", self)
         return NamedView( *args, **kws )
 
     def __str__(self):
@@ -206,7 +206,7 @@ class NamedView(SimpleCopyMixin, Node):
 
         @warning: Not implemented yet. Mark 2008-02-14
         """
-        print "Not implemented yet."
+        print("Not implemented yet.")
         return
 
     def _set_to_current_view(self): #mark 060122

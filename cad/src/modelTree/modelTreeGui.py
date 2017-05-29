@@ -319,7 +319,7 @@ def _describe( flags, name_val_dict):
     origflags = flags
     flags = int(flags)
     res = []
-    items = name_val_dict.items()
+    items = list(name_val_dict.items())
     items.sort() #e suboptimal order
     for name, val in items:
         val = int(val)
@@ -490,9 +490,9 @@ class ModelTreeGui_common(ModelTreeGUI_api):
         if you want to refuse this drag (also after emitting a suitable warning).
         """
         if drag_type == 'move':
-            nodes_ok = filter( lambda n: n.drag_move_ok(), nodes)
+            nodes_ok = [n for n in nodes if n.drag_move_ok()]
         else:
-            nodes_ok = filter( lambda n: n.drag_copy_ok(), nodes)
+            nodes_ok = [n for n in nodes if n.drag_copy_ok()]
         oops = len(nodes) - len(nodes_ok)
         if oops:
             ## msg = "some selected nodes can't be dragged that way -- try again" ###e improve msg
@@ -641,7 +641,7 @@ class ModelTreeGui_common(ModelTreeGUI_api):
         """
         nn = len(nodes)
         if not nn:
-            print nodes,"no nodes??" # when i try to drag the clipboard?? because unselected.
+            print(nodes,"no nodes??") # when i try to drag the clipboard?? because unselected.
             # need to filter it somehow... should be done now, so this should no longer happen.
             # also the history warning is annoying... otoh i am not *supposed* to drag it so nevermind.
             return
@@ -731,7 +731,7 @@ class ModelTreeGui_common(ModelTreeGUI_api):
             # (thus, don't leave this for drop_on_ok to find)
             # (not verified by test that it *will* find it, though it ought to)
             if _DEBUG2:
-                print "debug warning: MT DND: targetnode in nodes, refusing drop" # new behavior, bruce 070509
+                print("debug warning: MT DND: targetnode in nodes, refusing drop") # new behavior, bruce 070509
             #e should generalize based on what Qt3 code does [obs cmt?]
             raise DoNotDrop()
         ok, whynot = Node_as_MT_DND_Target(targetnode).drop_on_ok(drag_type, nodes)
@@ -825,7 +825,7 @@ class ModelTreeGui_common(ModelTreeGUI_api):
 
     def mouseMoveEvent(self, event):
         if _DEBUG3:
-            print "begin mouseMoveEvent"
+            print("begin mouseMoveEvent")
 
         try:
             if self._mousepress_info_for_move is None:
@@ -861,7 +861,7 @@ class ModelTreeGui_common(ModelTreeGUI_api):
             return
         finally:
             if _DEBUG3:
-                print "end mouseMoveEvent"
+                print("end mouseMoveEvent")
         pass
 
     # ==
@@ -910,13 +910,13 @@ class ModelTreeGui_common(ModelTreeGUI_api):
             del self.mouse_press_scrollpos
 
         if _DEBUG2:
-            print "\nMT mousePressEvent: button %r, buttons %s, modifiers %s, globalPos %r, pos %r" % \
+            print("\nMT mousePressEvent: button %r, buttons %s, modifiers %s, globalPos %r, pos %r" % \
                   (button,
                    describe_buttons(buttons), # str and repr only show the class, which is PyQt4.QtCore.MouseButtons; int works
                    describe_modifiers(modifiers),
                    (qp.x(), qp.y()),
                    (event.pos().x(), event.pos().y())
-                  )
+                  ))
 
         self.mouse_press_qpoint = QPoint(qp.x(), qp.y()) # used in mouseMoveEvent to see if drag length is long enough
 
@@ -932,20 +932,20 @@ class ModelTreeGui_common(ModelTreeGUI_api):
                 #  though it did a few days ago -- don't know why.)
             alreadySelected = item.node.picked #bruce 070509
             if _DEBUG2:
-                print "visualRect coords",rect.left(), rect.right(), rect.top(), rect.bottom()
+                print("visualRect coords",rect.left(), rect.right(), rect.top(), rect.bottom())
             qfm = QFontMetrics(QLineEdit(self).font())
             rect.setWidth(qfm.width(item.node.name) + _ICONSIZE[0] + 4)
             if _DEBUG2:
-                print "visualRect coords, modified:",rect.left(), rect.right(), rect.top(), rect.bottom()
+                print("visualRect coords, modified:",rect.left(), rect.right(), rect.top(), rect.bottom())
                 # looks like icon and text, a bit taller than text (guesses)
             eventInRect = rect.contains(event.pos())
             if _DEBUG2:
-                print "real item: eventInRect = %r, item = %r, alreadySelected = %r" % \
-                      (eventInRect, item, alreadySelected)
+                print("real item: eventInRect = %r, item = %r, alreadySelected = %r" % \
+                      (eventInRect, item, alreadySelected))
         else:
             alreadySelected = False # bruce 070509
             if _DEBUG2:
-                print "no item"
+                print("no item")
             pass
 
         if _doubleclick:
@@ -969,7 +969,7 @@ class ModelTreeGui_common(ModelTreeGUI_api):
             # we're on item's row, and item has an openclose decoration (or should have one anyway) -- are we on it?
             left_delta = rect.left() - event.pos().x()
             if _DEBUG2:
-                print "left_delta is %r" % left_delta
+                print("left_delta is %r" % left_delta)
             if 0 < left_delta < 20:
                 # guess; precise value doesn't matter for correctness, only for "feel" of the UI
                 # (see also OPENCLOSE_AREA_WIDTH, but that's defined only for one of our two implems)
@@ -979,7 +979,7 @@ class ModelTreeGui_common(ModelTreeGUI_api):
                 self.mt_update()
 ##                self.win.glpane.gl_update()
                 if _DEBUG3:
-                    print "returning from mousePressEvent (openclose case)"
+                    print("returning from mousePressEvent (openclose case)")
                 return
             pass
 
@@ -1041,15 +1041,15 @@ class ModelTreeGui_common(ModelTreeGUI_api):
                         unselectOthers = True
 
         if _DEBUG:
-            print
-            print "unselectOthers", unselectOthers
-            print "selectThis", selectThis
-            print "unselectThis", unselectThis
-            print "toggleThis", toggleThis
-            print "contextMenu", contextMenu
-            print "SELECTED BEFORE <<<"
-            print self.topmost_selected_nodes( whole_nodes_only = False)
-            print ">>>"
+            print()
+            print("unselectOthers", unselectOthers)
+            print("selectThis", selectThis)
+            print("unselectThis", unselectThis)
+            print("toggleThis", toggleThis)
+            print("contextMenu", contextMenu)
+            print("SELECTED BEFORE <<<")
+            print(self.topmost_selected_nodes( whole_nodes_only = False))
+            print(">>>")
 
         assert not (selectThis and toggleThis)   # confusing case to be avoided
         assert not (selectThis and unselectThis)   # confusing case to be avoided
@@ -1114,36 +1114,36 @@ class ModelTreeGui_common(ModelTreeGUI_api):
             pass
 
         if _DEBUG:
-            print "SELECTED AFTER <<<"
-            print self.topmost_selected_nodes( whole_nodes_only = False)
-            print ">>>"
+            print("SELECTED AFTER <<<")
+            print(self.topmost_selected_nodes( whole_nodes_only = False))
+            print(">>>")
 
         if updateGui: # this is often overkill, needs optim
             if _DEBUG3:
-                print "doing updateGui at end of mousePressEvent"
+                print("doing updateGui at end of mousePressEvent")
             self.mt_update()
             self.win.glpane.gl_update()
             if _DEBUG4:
                 ###### BUG: clicks in MT do gl_update as this shows,
                 # but don't always redraw with the correct picked state!
                 # Not yet reproducable except when testing fixed bug 2948.
-                print "mt did gl_update, selected nodes are", self.topmost_selected_nodes()
+                print("mt did gl_update, selected nodes are", self.topmost_selected_nodes())
 
         if _DEBUG3:
-            print "end mousePressEvent"
+            print("end mousePressEvent")
 
         return # from mousePressEvent
 
     def mouseReleaseEvent(self, event):
         if _DEBUG3:
-            print "begin/end mouseReleaseEvent (almost-noop method)"
+            print("begin/end mouseReleaseEvent (almost-noop method)")
         self._ongoing_DND_info = None
 
     # ==
 
     def contextMenuEvent(self, event): ###bruce hack, temporary, just to make sure it's no longer called directly
         if 1:
-            print "\n *** fyi: MT: something called self.contextMenuEvent directly -- likely bug ***\n"
+            print("\n *** fyi: MT: something called self.contextMenuEvent directly -- likely bug ***\n")
             print_compact_stack("hmm, who called it?: ")
                 # Note: this can be called directly by app.exec_() in main.py,
                 # and is, if we use microsoft mouse right click on iMac G5 in Qt 4.2.2, *or* control-left-click;
@@ -1166,7 +1166,7 @@ class ModelTreeGui_common(ModelTreeGUI_api):
 
     def _renamed_contextMenuEvent(self, event):
         if _DEBUG3:
-            print "begin _renamed_contextMenuEvent"
+            print("begin _renamed_contextMenuEvent")
             # See TreeWidget.selection_click() call from TreeWidget.menuReq(), in the Qt 3 code...
             # but that's done by our caller, not us. We're no longer called directly from Qt, only from other methods here.
             # [bruce 070509]
@@ -1186,7 +1186,7 @@ class ModelTreeGui_common(ModelTreeGUI_api):
             # (e.g. Hide/Unhide).
         if 0:
             if len(nodeset_whole) != len(nodeset):
-                print "len(nodeset_whole) = %d,  len(nodeset) = %d" % (len(nodeset_whole) , len(nodeset)) ###
+                print("len(nodeset_whole) = %d,  len(nodeset) = %d" % (len(nodeset_whole) , len(nodeset))) ###
                 assert len(nodeset_whole) < len(nodeset)
             pass
         ###TODO: we should consolidate the several checks for the optflag condition into one place, maybe mousePressEvent.
@@ -1197,7 +1197,7 @@ class ModelTreeGui_common(ModelTreeGUI_api):
             #bruce 070514 fix bug 2374 and probably others by using makemenu_helper
         menu.exec_(event.globalPos())
         if _DEBUG3:
-            print "end _renamed_contextMenuEvent"
+            print("end _renamed_contextMenuEvent")
         return
 
     # ==
@@ -1227,7 +1227,7 @@ class ModelTreeGui_common(ModelTreeGUI_api):
         if _DEBUG3:
             if msg:
                 msg = " (%s)" % (msg,)
-            print "get_scrollpos%s returns %r" % (msg, res,)
+            print("get_scrollpos%s returns %r" % (msg, res,))
         return res
 
     def set_scrollpos(self, pos): # used only in QTreeView implem, but should be correct in QScrollArea implem too
@@ -1240,17 +1240,17 @@ class ModelTreeGui_common(ModelTreeGUI_api):
             hsb.setValue(x) # even if x is 0, since we don't know if the current value is 0
         else:
             if x and _DEBUG3:
-                print "warning: can't set scrollpos x = %r since no horizontalScrollBar" % (x,)
+                print("warning: can't set scrollpos x = %r since no horizontalScrollBar" % (x,))
         vsb = self.verticalScrollBar()
         if vsb:
             vsb.setValue(y)
         else:
             if y and _DEBUG3:
-                print "warning: can't set scrollpos y = %r since no verticalScrollBar" % (y,)
+                print("warning: can't set scrollpos y = %r since no verticalScrollBar" % (y,))
         pos1 = self.get_scrollpos("verifying set_scrollpos")
         if pos != pos1:
             if _DEBUG3:
-                print "warning: tried to set scrollpos to %r, but it's now %r" % (pos,pos1)
+                print("warning: tried to set scrollpos to %r, but it's now %r" % (pos,pos1))
         return
 
     def rename_node_using_dialog(self, node): #bruce 070531
@@ -1368,7 +1368,7 @@ class MT_View(QtGui.QWidget):
         # Question: would this change cliprect?
         ## painter.setViewport(0, 0, self.width(), self.height())
         if self.modeltreegui.MT_debug_prints():
-            print 'paint' # note: this worked once we called update (it didn't require sizeHint to be defined)
+            print('paint') # note: this worked once we called update (it didn't require sizeHint to be defined)
         self._setup_full_repaint_variables()
             # needed before _paintnode can use us as its option_holder,
             # and for other reasons
@@ -1579,14 +1579,14 @@ class ModelTreeGui(QScrollArea, ModelTreeGui_common):
         return hsb, vsb
 
     def _debug_scrollbars(self, when): # not normally called except when debugging
-        print "debug_scrollbars (%s)" % when
+        print("debug_scrollbars (%s)" % when)
         hsb, vsb = self._scrollbars() # they are always there, even when not shown, it seems
 ##        if hsb:
 ##            print "hsb pageStep = %r, singleStep = %r, minimum = %r, maximum = %r" % \
 ##                  (hsb.pageStep(), hsb.singleStep(), hsb.minimum(), hsb.maximum())
         if vsb:
-            print "vsb pageStep = %r, singleStep = %r, minimum = %r, maximum = %r" % \
-                  (vsb.pageStep(), vsb.singleStep(), vsb.minimum(), vsb.maximum())
+            print("vsb pageStep = %r, singleStep = %r, minimum = %r, maximum = %r" % \
+                  (vsb.pageStep(), vsb.singleStep(), vsb.minimum(), vsb.maximum()))
         return
 
     def nodeItem(self, node):
@@ -1600,7 +1600,7 @@ class ModelTreeGui(QScrollArea, ModelTreeGui_common):
         - _do_widget_updates to make sure we get redrawn soon
         """
         if self.MT_debug_prints():
-            print "mt_update", time.asctime()
+            print("mt_update", time.asctime())
 
         # probably we need to scan the nodes and decide what needs remaking
         # (on next paintevent) and how tall it is; should we do this in MT_View? yes.
@@ -1614,7 +1614,7 @@ class ModelTreeGui(QScrollArea, ModelTreeGui_common):
         self.__count += NUMBER_OF_BLANK_ITEMS_AT_BOTTOM
         height = self.__count * ITEM_HEIGHT
         if self.MT_debug_prints():
-            print "mt_update: total height", height
+            print("mt_update: total height", height)
 
 ##        self._debug_scrollbars("mt_update pre-resize")
 

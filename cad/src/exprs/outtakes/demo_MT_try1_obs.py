@@ -40,7 +40,7 @@ Node = Stub # [later note 061215: this is probably the same as Utility.Node; it'
 
 def _make_new_MT_viewer_for_object(key):
     obj, essential_data, reload_counter = key
-    print "viewing node %r, reload_counter = %r" % (obj, reload_counter) # leave this in, since it's only used by deprecated MT_try1
+    print("viewing node %r, reload_counter = %r" % (obj, reload_counter)) # leave this in, since it's only used by deprecated MT_try1
     # obj is a Node or equivalent
     mt_instance = MT_try1(obj) # but will this work, with arg1 being already instantiated -- will it make an instance? not yet! ###IMPLEM that
     ###BUG (presumed, 070206, old): this is actually an expr, not an instance.
@@ -102,7 +102,7 @@ class MT_kids_try1(InstanceMacro):
     def _C__value(self): # we need this since we don't yet have a way of including " * map(func,expr)" in a toplevel expr.
         kids = self.kids
         assert type(kids) == type([])
-        elts = map(MT_viewer_for_object, kids) ###BUG (presumed, 070206): elts is a list of exprs; intention was a list of instances.
+        elts = list(map(MT_viewer_for_object, kids)) ###BUG (presumed, 070206): elts is a list of exprs; intention was a list of instances.
             # The effect is that, if this is recomputed (which does not happen in testexpr_18, but does in testexpr_30h, 070206 10pm),
             # it evals to itself and returns a different expr to be instantiated (by code in InstanceMacro) using the same index,
             # which prints

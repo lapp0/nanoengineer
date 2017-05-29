@@ -51,7 +51,7 @@ class RotateChunks_GraphicsMode(Move_GraphicsMode):
         elif self.o.modkeys == 'Shift+Control':
             self.o.setCursor(self.w.DeleteCursor)
         else:
-            print "Error in update_cursor_for_no_MB(): Invalid modkey=", self.o.modkeys
+            print("Error in update_cursor_for_no_MB(): Invalid modkey=", self.o.modkeys)
 
         return
 
@@ -99,8 +99,8 @@ class RotateChunks_GraphicsMode(Move_GraphicsMode):
                 return
 
             else:
-                print "Move_Command: Error - unknown rotateOption value =", \
-                      self.rotateOption
+                print("Move_Command: Error - unknown rotateOption value =", \
+                      self.rotateOption)
                 return
 
             ma = norm(V(dot(ma,self.o.right),dot(ma,self.o.up)))
@@ -190,8 +190,8 @@ class RotateChunks_GraphicsMode(Move_GraphicsMode):
         elif self.rotateOption == 'ROTATEZ':
             ma = V(0,0,1) # Z Axis
         else:
-            print "rotateChunks_GraphicsMode.leftDrag Error: unknown rotateOption value:",\
-                  self.rotateOption
+            print("rotateChunks_GraphicsMode.leftDrag Error: unknown rotateOption value:",\
+                  self.rotateOption)
             return
 
         qrot = Q(ma,-dy) # Quat for rotation delta.

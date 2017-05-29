@@ -150,17 +150,17 @@ class GromacsProcess(Process):
         Process.standardOutputLine(self, line)
         if (self.verboseGromacsOutput):
             if (self.runningGrompp and False):
-                print "grompp stdout: " + line.rstrip()
+                print("grompp stdout: " + line.rstrip())
             if (self.runningMdrun and False):
-                print "mdrun stdout: " + line.rstrip()
+                print("mdrun stdout: " + line.rstrip())
 
     def standardErrorLine(self, line):
         Process.standardErrorLine(self, line)
         if (self.verboseGromacsOutput):
             if (self.runningGrompp and False):
-                print "grompp stderr: " + line.rstrip()
+                print("grompp stderr: " + line.rstrip())
             if (self.runningMdrun):
-                print "mdrun stderr: " + line.rstrip()
+                print("mdrun stderr: " + line.rstrip())
         if (line.startswith("ERROR:")):
             msg = redmsg("Gromacs " + line.rstrip().rstrip("-"))
             env.history.message(msg)
@@ -663,7 +663,7 @@ class SimRunner:
             if debug_flags.atom_debug:
                 # since I expect this is possible for "save movie file" until fixed...
                 # [bruce 050404] (maybe not? it had assert 0)
-                print "BUG (worked around??): movie object being reused unexpectedly"
+                print("BUG (worked around??): movie object being reused unexpectedly")
             movie.alist = None
         movie.alist_fits_entire_part = False # might be changed below
         if not self.simaspect:
@@ -774,7 +774,7 @@ class SimRunner:
         located in dylib_path. Return a success flag.
         """
         import sys
-        if not sys.modules.has_key('sim'):
+        if 'sim' not in sys.modules:
             oldpath = sys.path
             sys.path = [dylib_path] + oldpath
                 ##k Do we need to include oldpath here? if not, we get better error detection if we leave it out.
@@ -785,7 +785,7 @@ class SimRunner:
                 # So it's probably not worth improving this error handling code.
             try:
                 import sim
-                assert sys.modules.has_key('sim')
+                assert 'sim' in sys.modules
                 worked = True
             except:
                 print_compact_traceback("error trying to import dylib sim: ")
@@ -817,12 +817,12 @@ class SimRunner:
 
         if mflag == 1: # single-frame XYZ file
             if movie.filename and debug_flags.atom_debug:
-                print "atom_debug: warning: ignoring filename %r, bug??" % movie.filename
+                print("atom_debug: warning: ignoring filename %r, bug??" % movie.filename)
             movie.filename = self.tmp_file_prefix + ".xyz"  ## "sim-%d.xyz" % pid
 
         if mflag == 2: #multi-frame DPB file
             if movie.filename and debug_flags.atom_debug:
-                print "atom_debug: warning: ignoring filename %r, bug??" % movie.filename
+                print("atom_debug: warning: ignoring filename %r, bug??" % movie.filename)
             movie.filename = self.tmp_file_prefix + ".dpb"  ## "sim-%d.dpb" % pid
 
         if movie.filename:
@@ -838,7 +838,7 @@ class SimRunner:
             # Don't recognize the moviefile extension.
             msg = redmsg("Movie [" + moviefile + "] has unsupported extension.")
             env.history.message(self.cmdname + ": " + msg)
-            print "writeMovie: " + msg
+            print("writeMovie: " + msg)
             return -1
         movie.filetype = ext #bruce 050404 added this
 
@@ -901,7 +901,7 @@ class SimRunner:
             # and probably runs for all whole-part Adjust, Minimize, or
             # Dynamics operations. [bruce 080325 comment]
             if DEBUG_SIM:
-                print "part.writemmpfile(%r)" % (mmpfile,)
+                print("part.writemmpfile(%r)" % (mmpfile,))
             stats = {}
             part.writemmpfile( mmpfile,
                                leave_out_sim_disabled_nodes = True,
@@ -925,7 +925,7 @@ class SimRunner:
             # (from its glpane cmenu), and probably runs for all part-subset
             # Adjust, Minimize, or Dynamics operations. [bruce 080325 comment]
             if DEBUG_SIM:
-                print "simaspect.writemmpfile(%r)" % (mmpfile,)
+                print("simaspect.writemmpfile(%r)" % (mmpfile,))
             # note: simaspect has already been used to set up movie.alist; simaspect's own alist copy is used in following:
             self.simaspect.writemmpfile( mmpfile, add_atomids_to_dict = self.used_atoms)
                 # this also turns singlets into H
@@ -964,7 +964,7 @@ class SimRunner:
         """
         if DEBUG_SIM:
             #bruce 051115 confirmed this is always called for any use of sim (Minimize or Run Sim)
-            print "calling spawn_process"
+            print("calling spawn_process")
         # First figure out process arguments
         # [bruce 050401 doing this later than before, used to come before writing sim-input file]
         self.setup_sim_args() # stores them in an attribute, whose name and value depends on self.use_dylib_sim
@@ -1088,8 +1088,8 @@ class SimRunner:
                 args.insert(2, '%f' % timestep)
             args += [ "--system-parameters", self.system_parameters_file ]
             if DEBUG_SIM:
-                print  "program = ",program
-                print  "Spawnv args are %r" % (args,) # note: we didn't yet remove args equal to "", that's done below
+                print("program = ",program)
+                print("Spawnv args are %r" % (args,)) # note: we didn't yet remove args equal to "", that's done below
             arguments = QStringList()
             for arg in args:
                 # wware 051213  sim's getopt doesn't like empty arg strings
@@ -1102,7 +1102,7 @@ class SimRunner:
             sim.setup(mflag, infile)
             simobj = sim.sim
             if DebugMenuMixin.sim_params_set:
-                for attr, value in DebugMenuMixin.sim_param_values.items():
+                for attr, value in list(DebugMenuMixin.sim_param_values.items()):
                     setattr(simobj, attr, value)
             simopts = simobj
             # order of set of remaining options should not matter;
@@ -1199,7 +1199,7 @@ class SimRunner:
             env.history.message(orangemsg("Warning: ") + quote_html(msg))
         try:
             if env.debug():
-                print "debug: running set_minimize_threshhold_prefs"
+                print("debug: running set_minimize_threshhold_prefs")
             ###obs design scratch:
             # we'll probably use different prefs keys depending on an arg that tells us which command-class to use,
             # Adjust, Minimize, or Adjust Atoms; maybe some function in prefs_constants will return the prefs_key,
@@ -1326,9 +1326,9 @@ class SimRunner:
                 outf.write("\n")
                 outf.close()
                 def blabout():
-                    print "stdout:", simProcess.readStdout()
+                    print("stdout:", simProcess.readStdout())
                 def blaberr():
-                    print "stderr:", simProcess.readStderr()
+                    print("stderr:", simProcess.readStderr())
                 QObject.connect(simProcess, SIGNAL("readyReadStdout()"), blabout)
                 QObject.connect(simProcess, SIGNAL("readyReadStderr()"), blaberr)
             simProcess.setArguments(arguments)
@@ -1392,7 +1392,7 @@ class SimRunner:
             #bruce 050407 moving this into the try, since it can fail if we lack write permission
             # (and it's a good idea to give up then, so we're not fooled by an old file)
             if DEBUG_SIM:
-                print "deleting moviefile: [",moviefile,"]"
+                print("deleting moviefile: [",moviefile,"]")
             os.remove (moviefile) # Delete before spawning simulator.
         return
         #bruce 051231: here is an old comment related to remove_old_moviefile;
@@ -1497,10 +1497,10 @@ class SimRunner:
         """
         movie = self._movie
         if debug_flags.atom_debug and movie.duration:
-            print "atom_debug: possible bug: movie.duration was already set to", movie.duration
+            print("atom_debug: possible bug: movie.duration was already set to", movie.duration)
         movie.duration = 0.0 #k hopefully not needed
         # provide a reference frame for later movie-playing (for complete fix of bug 1297) [bruce 060112]
-        movie.ref_frame = (self.__frame_number,  A(map(lambda a: a.sim_posn(), movie.alist))) # see similar code in class Movie
+        movie.ref_frame = (self.__frame_number,  A([a.sim_posn() for a in movie.alist])) # see similar code in class Movie
             #e this could be slow, and the simobj already knows it, but I don't think getFrame has access to it [bruce 060112]
         simopts = self._simopts
         simobj = self._simobj
@@ -1567,7 +1567,7 @@ class SimRunner:
                 from sim import SimulatorInterrupted #bruce 060112 - not sure this will work here vs outside 'def' ###k
                 self.sim_frame_callback_prep()
                 if DebugMenuMixin.sim_params_set:
-                    for attr, expected in DebugMenuMixin.sim_param_values.items():
+                    for attr, expected in list(DebugMenuMixin.sim_param_values.items()):
                         found = getattr(simobj, attr)
                         if found != expected:
                             env.history.message(orangemsg(attr + ' expected=' + str(expected) + ' found=' + str(found)))
@@ -1583,7 +1583,7 @@ class SimRunner:
                         #  but as of 060111 there's a bug in which that doesn't happen since all callbacks
                         #  are turned off by Interrupted).
                     if debug_flags.atom_debug:
-                        print "atom_debug: pyrex sim: returned normally"
+                        print("atom_debug: pyrex sim: returned normally")
                 except SimulatorInterrupted:
                     self.pyrexSimInterrupted = True   # wware 060323 bug 1725
                     # This is the pyrex sim's new usual exit from a user abort, as of sometime 060111.
@@ -1597,7 +1597,7 @@ class SimRunner:
                     # better to wait until it's a new subclass of RuntimeError I can test for [bruce 060111]
                     env.history.statusbar_msg("Aborted")
                     if debug_flags.atom_debug:
-                        print "atom_debug: pyrex sim: aborted"
+                        print("atom_debug: pyrex sim: aborted")
                     if self.PREPARE_TO_CLOSE:
                         # wware 060406 bug 1263 - exiting the program is an acceptable way to leave this loop
                         self.errcode = -1
@@ -1607,8 +1607,8 @@ class SimRunner:
                             print_compact_traceback("fyi: sim.go aborted with this: ")
                         msg3 = "possible bug in simulator: abort not caused by abortbutton"
                         env.history.message(redmsg(msg3)) #bruce 060712
-                        print "error: abort without abortbutton doing it (did a subtask intervene and finish it?)"
-                        print " (or this can happen due to sim bug in which callback exceptions turn into RuntimeErrors)"####@@@@
+                        print("error: abort without abortbutton doing it (did a subtask intervene and finish it?)")
+                        print(" (or this can happen due to sim bug in which callback exceptions turn into RuntimeErrors)")####@@@@
                         self.abortHandler.finish()
                         self.abortHandler = None
                     ## bug: this fails to cause an abort to be reported by history. might relate to bug 1303.
@@ -1616,7 +1616,7 @@ class SimRunner:
                     # Initial attempt to fix that -- need to improve errcode after reviewing them all
                     # (check for errorcode spelling error too? or rename it?) ####@@@@
                     if not self.errcode:
-                        print "self.errcode was not set, using -1"
+                        print("self.errcode was not set, using -1")
                         self.errcode = -1 # simulator failure [wrong errorcode for user abort, fix this]
                     pass
                 pass
@@ -1688,7 +1688,7 @@ class SimRunner:
         "Per-frame callback function for simulator object."
         from sim import SimulatorInterrupted
         if last_frame and env.debug():
-            print "debug: last_frame is true" #bruce 060712
+            print("debug: last_frame is true") #bruce 060712
         # Note: this was called 3550 times for minimizing a small C3 sp3 hydrocarbon... better check the elapsed time quickly.
         #e Maybe we should make this into a lambda, or even code it in C, to optimize it.
         if self.PREPARE_TO_CLOSE:
@@ -1700,10 +1700,10 @@ class SimRunner:
             from sim import theSimulator
             if debug_sim_exceptions:
                 # intentionally buggy code
-                print "frame %d" % self.__frame_number, self._simobj.getTheFrame() # this is a bug, that attr should not exist
+                print("frame %d" % self.__frame_number, self._simobj.getTheFrame()) # this is a bug, that attr should not exist
             else:
                 # correct code
-                print "frame %d" % self.__frame_number, theSimulator().getFrame()[debug_all_frames_atom_index]
+                print("frame %d" % self.__frame_number, theSimulator().getFrame()[debug_all_frames_atom_index])
             pass
         try:
             # Decide whether to update the 3D view and/or the progress indicators.
@@ -1722,7 +1722,7 @@ class SimRunner:
             # now we know whether we want to update the 3d view (and save new values for the __last variables used above).
             if update_3dview:
                 if debug_pyrex_prints:
-                    print "sim hit frame %d in" % self.__frame_number, simtime
+                    print("sim hit frame %d in" % self.__frame_number, simtime)
                         #e maybe let frame number be an arg from C to the callback in the future?
                 self.__last_3dupdate_frame = self.__frame_number
                 self.__last_3dupdate_time = now_start = now
@@ -1791,7 +1791,7 @@ class SimRunner:
                 pytime = self.__last_3dupdate_time - now_start
                 self.__last_pytime = pytime
                 if debug_pyrex_prints:
-                    print "python stuff when update_3dview took", pytime
+                    print("python stuff when update_3dview took", pytime)
                     # old results of that, before we did nearly so much sbar updating:
                     # python stuff took 0.00386619567871 -- for when no real work done, just overhead; small real egs more like 0.03
                 if debug_timing_loop_on_sbar:
@@ -1802,7 +1802,7 @@ class SimRunner:
                 pass
             pass
 
-        except SimulatorInterrupted, e:
+        except SimulatorInterrupted as e:
             # With the precautions on the sim side, in sim.pyx and simhelp.c, the only time we'll
             # ever get a SimulatorInterrupted exception is as the result of an actual interruption
             # of the simulator, not as a result of any exception thrown by a Python callback or by
@@ -1921,7 +1921,7 @@ class SimRunner:
                 simopts = self._simopts
             except:
                 # I don't know if this can happen, no time to find out, not safe for A8 to assume it can't [bruce 060705]
-                print "no _simopts"
+                print("no _simopts")
                 simopts = None
             self.tracefileProcessor = TracefileProcessor(self, simopts = simopts)
                 # this might change self.said_we_are_done and/or use self.traceFileName, now and/or later
@@ -1966,8 +1966,8 @@ class SimRunner:
                           used when writing the file for that Part)
         """
         #brian & bruce 080325
-        print "writeTrajectoryAtomIdMapFile", filename, \
-            len(used_atoms), len(all_atoms) # remove when works @@@@@
+        print("writeTrajectoryAtomIdMapFile", filename, \
+            len(used_atoms), len(all_atoms)) # remove when works @@@@@
         try:
             fileHandle = open(filename, 'w')
 
@@ -1981,16 +1981,16 @@ class SimRunner:
 
             # compute the data
             data = {}
-            for key, used_atom_id in used_atoms.iteritems():
+            for key, used_atom_id in used_atoms.items():
                 all_atoms_id = all_atoms.get(key, -1)
                 if all_atoms_id == -1:
-                    print "error: atom %r is in used_atoms (id %r) " \
-                          "but not all_atoms" % (key, used_atom_id)
+                    print("error: atom %r is in used_atoms (id %r) " \
+                          "but not all_atoms" % (key, used_atom_id))
                     # todo: if this ever happens, also print
                     # a red summary message to history
                 data[used_atom_id] = all_atoms_id
                 continue
-            items = data.items()
+            items = list(data.items())
             items.sort()
 
             # write the data
@@ -2083,7 +2083,7 @@ class TracefileProcessor: #bruce 060109 split this out of SimRunner to support c
                 if len(words) >= 4 and words[3] == 'gradient': # 4th word -- see also self.progress_text()
                     self.__last_plain_line_words = words
                 elif debug_flags.atom_debug:
-                    print "atom_debug: weird tracef line:", line ####@@@@ remove this? it happens normally at the end of many runs
+                    print("atom_debug: weird tracef line:", line) ####@@@@ remove this? it happens normally at the end of many runs
             return
         if _print_sim_comments_to_history: #e add checkbox or debug-pref for this??
             env.history.message("tracefile: " + line)
@@ -2123,12 +2123,12 @@ class TracefileProcessor: #bruce 060109 split this out of SimRunner to support c
             try:
                 endRMS = simopts.MinimizeThresholdEndRMS
             except AttributeError:
-                print "simopts %r had no MinimizeThresholdEndRMS"
+                print("simopts %r had no MinimizeThresholdEndRMS")
                 endRMS = 1.0 # was 2.0
             try:
                 endMax = simopts.MinimizeThresholdEndMax
             except AttributeError:
-                print "simopts %r had no MinimizeThresholdEndMax"
+                print("simopts %r had no MinimizeThresholdEndMax")
                 endMax = 5.0 # was 2.0
             epsilon = 0.000001 # guess; goal is to avoid orangemsg due to roundoff when printing/reading values
             pass
@@ -2170,7 +2170,7 @@ class TracefileProcessor: #bruce 060109 split this out of SimRunner to support c
         elif (start == "# Pattern setType:"):
             self.gotPatternSetType(rest)
         else:
-            print "gotPattern(): unknown type: ", start, rest
+            print("gotPattern(): unknown type: ", start, rest)
 
         # if debug_pref is set, create graphical indicators for it
         # (possibly using info created by the always-on processing of the line)
@@ -2338,9 +2338,9 @@ class TracefileProcessor: #bruce 060109 split this out of SimRunner to support c
                 pass
             num_parents = int(num_parents)
             function_id = int(function_id)
-            parent_atoms = map( self.interpret_pattern_atom_id, \
-                [parentID1, parentID2, parentID3, parentID4][:num_parents] )
-            A, B, C = map(float, [A, B, C])
+            parent_atoms = list(map( self.interpret_pattern_atom_id, \
+                [parentID1, parentID2, parentID3, parentID4][:num_parents] ))
+            A, B, C = list(map(float, [A, B, C]))
             if (num_parents, function_id) == (3, 1):
                 # the only style of virtual site currently in use (as of 20080501)
                 from model.virtual_site_indicators import add_virtual_site
@@ -2354,7 +2354,7 @@ class TracefileProcessor: #bruce 060109 split this out of SimRunner to support c
                 assy.w.win_update() ### IMPORTANT OPTIM: do this only once, later (not in this method)
                 ## self.needs_win_update = True -- how often to check this and do a real update??
             else:
-                print "unrecognized kind of virtual site:", start + " " + rest.strip()
+                print("unrecognized kind of virtual site:", start + " " + rest.strip())
             pass
         elif patterntype == "makeBond":
             # note: similar code is present in gotPatternMakeBond
@@ -2412,12 +2412,12 @@ class TracefileProcessor: #bruce 060109 split this out of SimRunner to support c
         pass
 
     def define_new_pattern_atom_id( self, id_string, atom):
-        if self._pattern_atom_id_cache.has_key( id_string ):
+        if id_string in self._pattern_atom_id_cache:
             old_atom = self._pattern_atom_id_cache[ id_string ]
-            print "killing old_atom", old_atom # should not happen by the time we're done, maybe never
+            print("killing old_atom", old_atom) # should not happen by the time we're done, maybe never
             old_atom.kill() ###k
         self._pattern_atom_id_cache[ id_string ] = atom
-        print "defined", id_string, atom #####
+        print("defined", id_string, atom) #####
         return
 
     pass # end of class TracefileProcessor
@@ -2450,7 +2450,7 @@ def part_contains_pam_atoms(part, kill_leftover_sim_feedback_atoms = False):
 
     def check_for_pam(n):
         if (isinstance(n, Chunk)):
-            for a in n.atoms.itervalues():
+            for a in n.atoms.values():
                 elt = a.element
                 if (elt is Singlet):
                     continue
@@ -2624,7 +2624,7 @@ def readxyz(filename, alist):
 
     if len(lines) < 3: ##Invalid file format
         msg = "readxyz: %s: File format error (fewer than 3 lines)." % xyzFile
-        print msg
+        print(msg)
         return msg
 
     atomList = alist ## was assy.alist, with assy passed as an arg
@@ -2637,7 +2637,7 @@ def readxyz(filename, alist):
         rms_junk = float(lines[1][4:])
     except ValueError:
         msg = "readxyz: %s: File format error in Line 1 and/or Line 2" % xyzFile
-        print msg
+        print(msg)
         return msg
 
     atomIndex = 0
@@ -2646,7 +2646,7 @@ def readxyz(filename, alist):
         if len(words) != 4:
             msg = "readxyz: %s: Line %d format error." % (xyzFile, lines.index(line) + 1)
                 #bruce 050404 fixed order of printfields, added 1 to index
-            print msg
+            print(msg)
             return msg
         try:
             if words[0] != atomList[atomIndex].element.symbol:
@@ -2659,18 +2659,18 @@ def readxyz(filename, alist):
                         # (to make it agree with likely number in mmp file)
                         # and the atom name from the model.
                         ###@@@ need to fix this for H vs singlet (then do we revise posn here or in caller?? probably in caller)
-                    print msg
+                    print(msg)
                     return msg
-            newAtomsPos += [map(float, words[1:])]
+            newAtomsPos += [list(map(float, words[1:]))]
         except ValueError:
             msg = "readxyz: %s: atom %d (%s) position number format error." % (xyzFile, atomIndex+1, atomList[atomIndex])
                 #bruce 050404: same revisions as above.
-            print msg
+            print(msg)
             return msg
         except:
             #bruce 060108 added this case (untested) since it looks necessary to catch atomList[atomIndex] attributeerrors
             msg = "readxyz: %s: error (perhaps fewer atoms in model than in xyz file)" % (xyzFile,)
-            print msg
+            print(msg)
             return msg
 
         atomIndex += 1
@@ -2678,7 +2678,7 @@ def readxyz(filename, alist):
     if (len(newAtomsPos) != len(atomList)): #bruce 050225 added some parameters to this error message
         msg = "readxyz: The number of atoms from %s (%d) is not matching with the current model (%d)." % \
             (xyzFile, len(newAtomsPos), len(atomList))
-        print msg
+        print(msg)
         return msg #bruce 050404 added error return after the above print statement; not sure if its lack was new or old bug
 
     return newAtomsPos
@@ -2713,7 +2713,7 @@ def readGromacsCoordinates(filename, atomList, tracefileProcessor = None):
         lines = open(filename, "rU").readlines()
     except IOError:
         msg = "readGromacsCoordinates: %s: Can't open or read file." % filename
-        print msg
+        print(msg)
         return msg
     except:
         msg = "readGromacsCoordinates: %s: Exception opening or reading file" % filename
@@ -2722,7 +2722,7 @@ def readGromacsCoordinates(filename, atomList, tracefileProcessor = None):
 
     if len(lines) < 3: ##Invalid file format
         msg = "readGromacsCoordinates: %s: File format error (fewer than 3 lines)." % filename
-        print msg
+        print(msg)
         return msg
 
     newAtomsPos = []
@@ -2732,7 +2732,7 @@ def readGromacsCoordinates(filename, atomList, tracefileProcessor = None):
         numAtoms_junk = int(lines[1])
     except ValueError:
         msg = "readGromacsCoordinates: %s: File format error in Line 2" % filename
-        print msg
+        print(msg)
         return msg
 
     atomIndex = 0
@@ -2752,7 +2752,7 @@ def readGromacsCoordinates(filename, atomList, tracefileProcessor = None):
             x = float(xstr) * 10.0 + dX
             y = float(ystr) * 10.0 + dY
             z = float(zstr) * 10.0 + dZ
-        except ValueError, e:
+        except ValueError as e:
             return "Error parsing GROMACS minimize results: [%s][%s][%s]" % (xstr, ystr, zstr)
         atomIndex += 1
         if (atomIndex <= len(atomList)):
@@ -2763,7 +2763,7 @@ def readGromacsCoordinates(filename, atomList, tracefileProcessor = None):
     if (len(newAtomsPos) != len(atomList)):
         msg = "readGromacsCoordinates: The number of atoms from %s (%d) is not matching with the current model (%d)." % \
             (filename, len(newAtomsPos), len(atomList))
-        print msg
+        print(msg)
         return msg
 
     if (tracefileProcessor):

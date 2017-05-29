@@ -129,8 +129,8 @@ class SelectAtoms_Command(Select_Command):
                                        #take a list or pair of atoms, other
                                        #options
         if debug_flags.atom_debug:
-            print "debug: reloading sim_commandruns on each use, for development"\
-                  "[localmin %s, %d]" % (atom, nlayers)
+            print("debug: reloading sim_commandruns on each use, for development"\
+                  "[localmin %s, %d]" % (atom, nlayers))
             import simulation.sim_commandruns as sim_commandruns
             reload_once_per_event(sim_commandruns) #bruce 060705 revised this
         if 1:

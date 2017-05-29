@@ -182,7 +182,7 @@ class Jello(JelloGui):
     def timeout(self):
         try:
             self.oneFrame()
-        except AssertionError, e:
+        except AssertionError as e:
             import traceback
             traceback.print_exc()
             self.quit()
@@ -241,7 +241,7 @@ if __name__ == "__main__":
             main(4, maxTime=30.0)
         prof.runcall(m)
         prof.close()
-        print 'Profiling run is finished, figuring out stats'
+        print('Profiling run is finished, figuring out stats')
         stats = hotshot.stats.load("jello.prof")
         stats.strip_dirs()
         stats.sort_stats('time', 'calls')

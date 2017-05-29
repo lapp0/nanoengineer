@@ -16,13 +16,13 @@ import os, sys, types, threading, time, string
 worker_list = [ 'localhost' ]
 
 DEBUG = 0
-if os.environ.has_key("DEBUG"):
+if "DEBUG" in os.environ:
     DEBUG = string.atoi(os.environ["DEBUG"])
 
 all_workers_stop = False
 
 def do(cmd):
-    print cmd
+    print(cmd)
     if os.system(cmd) != 0:
         raise Exception(cmd)
 
@@ -97,7 +97,7 @@ class Job:
         self.outputfiles = outputfiles
 
     def shellScript(self):
-        raise Exception, 'overload me'
+        raise Exception('overload me')
 
     def preJob(self, worker):
         pass
@@ -112,7 +112,7 @@ class Job:
         script = ("(cd " + worker.workdir + "\n" +
                   (self.shellScript()) + ")\n")
         if DEBUG >= 1:
-            print worker.machine + ' <<<\n' + script + '>>>'
+            print(worker.machine + ' <<<\n' + script + '>>>')
         outf = open(longname, 'w')
         outf.write(script)
         outf.close()
@@ -136,7 +136,7 @@ class JobQueue:
                 machine, workdir = macdir
             except:
                 machine = macdir
-                assert type(machine) is types.StringType
+                assert type(machine) is bytes
                 workdir = '/tmp/jobqueue'
             worker = Worker(self, machine, workdir)
             worker_pool.append(worker)
@@ -161,8 +161,7 @@ class JobQueue:
     def wait(self):
         busy_workers = self.worker_pool[:]
         while True:
-            busy_workers = filter(lambda x: x.isAlive(),
-                                  busy_workers)
+            busy_workers = [x for x in busy_workers if x.isAlive()]
             if len(busy_workers) == 0:
                 break
             if all_workers_stop:

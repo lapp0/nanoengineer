@@ -149,8 +149,8 @@ class TestGraphics_GraphicsMode(Delegating_GraphicsMode):
         if test_globals.printFrames and int(now) > int(last_time):
             nframes = frame_count - last_frame_printed
             duration = now - last_time
-            print "  %4.1f fps     %4.1f msec/frame" % ( nframes / duration,
-                                                         duration * 1000.0 / nframes )
+            print("  %4.1f fps     %4.1f msec/frame" % ( nframes / duration,
+                                                         duration * 1000.0 / nframes ))
             last_frame_printed = frame_count
             last_time = now
             pass
@@ -207,11 +207,11 @@ class TestGraphics_Command(Command):
     # bypass_paintgl
 
     def _get_bypass_paintgl(self):
-        print "bypass_paintgl starts out as %r" % (GLPane_rendering_methods.TEST_DRAWING,) #
+        print("bypass_paintgl starts out as %r" % (GLPane_rendering_methods.TEST_DRAWING,)) #
         return GLPane_rendering_methods.TEST_DRAWING
 
     def _set_bypass_paintgl(self, enabled):
-        print "bypass_paintgl = %r" % (enabled,) #
+        print("bypass_paintgl = %r" % (enabled,)) #
         GLPane_rendering_methods.TEST_DRAWING = enabled
         if enabled:
             # BUG in test_drawing.py as of 081008
@@ -219,7 +219,7 @@ class TestGraphics_Command(Command):
             # even in a test case that doesn't use shaders, eg testCase 1,
             # an error in setting up shaders makes the test fail;
             # trying again gets past this somehow. Print warning about this:
-            print "\n*** advice about a possible bug: if shader error traceback occurs below, disable and reenable to retry ***\n" ###
+            print("\n*** advice about a possible bug: if shader error traceback occurs below, disable and reenable to retry ***\n") ###
         self.glpane.gl_update()
 
     bypass_paintgl = property( _get_bypass_paintgl,
@@ -275,7 +275,7 @@ class TestGraphics_Command(Command):
         for testCase, desc in AVAILABLE_TEST_CASES_ITEMS:
             if test_drawing.testCase == testCase:
                 return AVAILABLE_TEST_CASES_ITEMS.index((testCase, desc))
-        print "bug in _get_testCaseIndex"
+        print("bug in _get_testCaseIndex")
         return 0 # fallback to first choice
 
     def _set_testCaseIndex(self, index): # BUG: doesn't yet work well when done during a test run
@@ -308,8 +308,8 @@ class TestGraphics_Command(Command):
                            doc = "number on a side of a square of spheres"
                          )
 
-    _NSPHERES_CHOICES = map(str, [1, 2, 5, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100,
-                                  132, 200, 300, 400, 500, 600])
+    _NSPHERES_CHOICES = list(map(str, [1, 2, 5, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100,
+                                  132, 200, 300, 400, 500, 600]))
 
     # detailLevel
 
@@ -321,7 +321,7 @@ class TestGraphics_Command(Command):
     def _set_detailLevel(self, detailLevel):
 
         if detailLevel not in (0, 1, 2, -1):
-            print "bug: illegal detailLevel", detailLevel
+            print("bug: illegal detailLevel", detailLevel)
             detailLevel = -1
 
         env.prefs[levelOfDetail_prefs_key] = detailLevel
@@ -381,10 +381,10 @@ def enter_TestGraphics_Command_at_startup(win):
     if currentCommand.commandName == 'TEST_GRAPHICS':
         win.update() # try to make sure new PM becomes visible (BUG: doesn't
             # work, requires click to make PM show up; don't know why ###)
-        print "\n*** bug workaround: click in GLPane to show Test Graphics PM ***" ###
+        print("\n*** bug workaround: click in GLPane to show Test Graphics PM ***") ###
     else:
-        print "bug: tried to startup in %r, but currentCommand.commandName == %r" % \
-              ('TEST_GRAPHICS', currentCommand.commandName)
+        print("bug: tried to startup in %r, but currentCommand.commandName == %r" % \
+              ('TEST_GRAPHICS', currentCommand.commandName))
     return
 
 # end

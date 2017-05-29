@@ -51,7 +51,7 @@ else:
     # increment the counter only when the module got recompiled, not just when it got reloaded from the same .pyc file
     if __file__.endswith(".py"):
         _recompile_counter += 1
-        print "_recompile_counter incremented to", _recompile_counter
+        print("_recompile_counter incremented to", _recompile_counter)
     else:
         pass ## print "_recompile_counter unchanged at", _recompile_counter
     pass
@@ -69,7 +69,7 @@ def bond_get_pi_info(bond, **kws):
         if obj._recompile_counter != _recompile_counter:
             # it would not be good to do this except when the module got recompiled due to being modified
             # (ie not merely when it got reloaded), since that would defeat persistence of these objects, which we need to debug
-            print "destroying %r of obsolete class" % obj # happens when we reload this module at runtime, during development
+            print("destroying %r of obsolete class" % obj) # happens when we reload this module at runtime, during development
             obj.destroy()
             obj = None
     # special case for triple bonds [bruce 050728 to fix bug 821]: they are always arbitrarily oriented and not twisted
@@ -150,10 +150,10 @@ class PiBondSpChain(PerceivedStructureType):
         assert len(listb) > 0
         #e could assert each bond's atoms are same as prior and next corresponding atom in lista
         # now add ourselves into each bond, exclusively (for cleaner code, this should be a separate method, called by init caller #e)
-        for i, bond in zip( range(len(listb)), listb ):
+        for i, bond in zip( list(range(len(listb))), listb ):
             if bond.pi_bond_obj is not None:
                 if debug_flags.atom_debug:
-                    print "atom_debug: bug: obs pi_bond_obj found (and discarded) on %r" % (bond,)
+                    print("atom_debug: bug: obs pi_bond_obj found (and discarded) on %r" % (bond,))
                 bond.pi_bond_obj.destroy()
             bond.pi_bond_obj = self
             bond.pi_obj_memo = i
@@ -185,7 +185,7 @@ class PiBondSpChain(PerceivedStructureType):
                 bond.pi_obj_memo = None # only needed to cause an exception if something tries to misuse it
             elif bond.pi_bond_obj is not None:
                 if debug_flags.atom_debug:
-                    print "atom_debug: bug: wrong pi_bond_obj %r found (not changed) on %r as we destroy %r" % (bond.pi_bond_obj, bond, self)
+                    print("atom_debug: bug: wrong pi_bond_obj %r found (not changed) on %r as we destroy %r" % (bond.pi_bond_obj, bond, self))
         super.destroy(self)
     def changed_structure(self, atom):
         # ideally this should react differently to neighbor atoms and others; but even neighbors might be brought in, eg C(sp3)-C#C;
@@ -209,7 +209,7 @@ class PiBondSpChain(PerceivedStructureType):
     def get_pi_info(self, bond, out = DFLT_OUT, up = DFLT_UP, abs_coords = False):
         if len(self.listb) == 1:
             if debug_flags.atom_debug:
-                print "atom_debug: should never happen (but should work if it does): optim for len1 PiBondSpChain object %r" % self
+                print("atom_debug: should never happen (but should work if it does): optim for len1 PiBondSpChain object %r" % self)
             return pi_vectors(self.listb[0], out = out, up = up, abs_coords = abs_coords)
                 # optimization; should never happen since it's done instead of creating this object
         if not self.have_geom:
@@ -293,14 +293,14 @@ class PiBondSpChain(PerceivedStructureType):
 ##        #  and if another is poss, probably don't even make it form a chain like this
 ##        self.twist90 = ( bonds[0].v6 == V_DOUBLE )
 
-        posns = A( map( lambda atom: atom.posn(), lista ) )
+        posns = A( [atom.posn() for atom in lista] )
         self.axes = axes = posns[1:] - posns[:-1] # axes along bonds, all in consistent directions & abs coords
-        quats_incr = map( lambda (axis1, axis2): Q(axis1, axis2), zip( axes[:-1], axes[1:] ) )
+        quats_incr = [Q(axis1_axis2[0], axis1_axis2[1]) for axis1_axis2 in zip( axes[:-1], axes[1:] )]
             # how to transform vectors perp to one bond, to those perp to the next
         # cumulative quats (there might be a more compact python notation for this, and/or a way to do more of it in Numeric)
         qq = Q(1,0,0,0)
         quats_cum = [qq] # how to get from bonds[0] to each bonds[i] starting from i == 0, using only bend-projections at atoms
-        for qi, i in zip( quats_incr, range(len(quats_incr)) ):
+        for qi, i in zip( quats_incr, list(range(len(quats_incr))) ):
             # qi tells us how to map (perps to axes[i]) to (perps to axes[i+1])
             qq = qq + qi # make a new quat, don't use +=
             ###e ideally we'd now enforce qq turning axes[0] into axes[i], to compensate for cumulative small errors [nim]
@@ -609,7 +609,7 @@ def pi_orders(bond):
         ord_pi_y, ord_pi_z = pi_order_table[bond.v6]
     except:
         if debug_flags.atom_debug:
-            print "atom_debug: bug: pi_order_table[bond.v6] for unknown v6 %r in %r" % (bond.v6, bond)
+            print("atom_debug: bug: pi_order_table[bond.v6] for unknown v6 %r in %r" % (bond.v6, bond))
         ord_pi_y, ord_pi_z = 0.5, 0.5 # this combo is not otherwise possible
     return ord_pi_y, ord_pi_z
 
@@ -658,7 +658,7 @@ def p_vector_from_3_bonds(atom, bond, out = DFLT_OUT, up = DFLT_UP):
        We don't verify the atom is sp2, since we don't need to for this code to work,
     though our result would probably not make sense otherwise.
     """
-    others = map( lambda bond: bond.other(atom), atom.bonds)
+    others = [bond.other(atom) for bond in atom.bonds]
     assert len(others) == 3
     other1 = bond.other(atom)
     others.remove(other1)
@@ -701,7 +701,7 @@ def p_vector_from_3_bonds(atom, bond, out = DFLT_OUT, up = DFLT_UP):
     pass
 
 def p_vector_from_sp2_2_bonds(atom, bond, out = DFLT_OUT, up = DFLT_UP):
-    others = map( lambda bond: bond.other(atom), atom.bonds)
+    others = [bond.other(atom) for bond in atom.bonds]
     assert len(others) == 2
     other1 = bond.other(atom)
     others.remove(other1)

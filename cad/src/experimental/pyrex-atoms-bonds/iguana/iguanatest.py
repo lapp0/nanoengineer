@@ -104,7 +104,7 @@ class IguanaTests(unittest.TestCase):
         for i in range(20):
             T = self.prog.thread("foo")
             self.prog.run()
-            print T.pop()
+            print(T.pop())
 
 def test():
     suite = unittest.makeSuite(IguanaTests, 'test')

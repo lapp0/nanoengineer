@@ -78,7 +78,7 @@ def update_bonds_after_each_event( changed_structure_atoms):
     mols_changed = {} #bruce 060126, so atom._changed_structure() doesn't need
         # to call atom.changed() directly
 
-    for atm in changed_structure_atoms.values():
+    for atm in list(changed_structure_atoms.values()):
         #bruce 060405 precaution: itervalues -> values,
         # due to jig.changed_structure calls
 
@@ -177,14 +177,14 @@ def update_bonds_after_each_event( changed_structure_atoms):
         #
         # (above cmts are obs, see paper notes about the alg)
 
-    for mol in mols_changed.itervalues():
+    for mol in mols_changed.values():
         if mol is not None:
             mol.changed() # should be safe for nullMol (but not for None)
 
     if not bonds_to_fix:
         return # optim [will be wrong once we have atom valence checks below]
 
-    for bond in bonds_to_fix.itervalues():
+    for bond in bonds_to_fix.values():
         # every one of these bonds is wrong, in a direct local way
         # (ie due to its atoms)!
         # figure out what to change it to, and [someday] initiate our scan
@@ -254,7 +254,7 @@ def _best_corrected_v6(bond):
     for v6 in lis:
         if v6 == V_SINGLE or atype1.permits_v6(v6) and atype2.permits_v6(v6):
             return v6
-    print "bug: no legal replacement for v6 = %r in %r" % (bond.v6, bond)
+    print("bug: no legal replacement for v6 = %r in %r" % (bond.v6, bond))
     return V_SINGLE
 
 # map a now-illegal v6 to the list of replacements to try (legal ones only,
@@ -284,7 +284,7 @@ def process_changed_bond_types( changed_bond_types):
     Tell whoever needs to know that some bond types changed.
     For now, that means only bond.pi_bond_obj objects on those very bonds.
     """
-    for bond in changed_bond_types.values():
+    for bond in list(changed_bond_types.values()):
         #bruce 060405 precaution: itervalues -> values, due to calls of code
         # we don't control here
         obj = bond.pi_bond_obj

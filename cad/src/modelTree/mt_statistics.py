@@ -25,13 +25,13 @@ class all_attrs_act_as_counters: #bruce 081216 renamed from statsclass
     def __getattr__(self, attr): # in class all_attrs_act_as_counters
         if not attr.startswith('_'):
             return 0 # no need to set it
-        raise AttributeError, attr
+        raise AttributeError(attr)
     def __iadd__(self, other):
         """
         this implements self += other for objects of this class,
         which adds corresponding counter-attributes separately
         """
-        for attr in other.__dict__.keys():
+        for attr in list(other.__dict__.keys()):
             setattr( self, attr, getattr( self, attr) + getattr( other, attr) )
         return self ###k why would this retval be needed??
             # what could it mean in general for += to return something else?
@@ -40,7 +40,7 @@ class all_attrs_act_as_counters: #bruce 081216 renamed from statsclass
             # I need to check out the python doc for __iadd__. [bruce 050125]
     def __str__(self): # mainly for debugging
         res1 = ""
-        keys = self.__dict__.keys()
+        keys = list(self.__dict__.keys())
         keys.sort()
         for attr in keys:
             if res1:

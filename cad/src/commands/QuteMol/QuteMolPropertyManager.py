@@ -193,7 +193,7 @@ class QuteMolPropertyManager(Command_PropertyManager):
         elif optionText == self._axes_display_choices[1]:
             self._axesFlags = EXCLUDE_HIDDEN_ATOMS | EXCLUDE_DNA_AXIS_BONDS
         else:
-            print "Unknown axes display option: ", optionText
+            print("Unknown axes display option: ", optionText)
 
         #print "Axes display option=", optionText
         #print "Axes Flags=", self._axesFlags
@@ -212,7 +212,7 @@ class QuteMolPropertyManager(Command_PropertyManager):
             # Cannot display axesif axis atoms are excluded.
             self.axesCombobox.setCurrentIndex(1)
         else:
-            print "Unknown bases display option: ", optionText
+            print("Unknown bases display option: ", optionText)
 
         #print "Bases display option=", optionText
         #print "Bases Flags=", self._basesFlags

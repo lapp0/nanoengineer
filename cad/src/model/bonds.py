@@ -79,6 +79,7 @@ from graphics.model_drawing.bond_drawer import writepov_bond
 from graphics.model_drawing.special_drawing import USE_CURRENT
 
 from graphics.drawables.Selobj import Selobj_API
+import imp
 
 # bond length constants
 # (note: these ought to be moved to bond_constants.py
@@ -117,7 +118,7 @@ if usePyrexAtomsAndBonds(): #bruce 080220 revised this
                       "before. (Before this, it probably had at least a" \
                       "rare bug due to that nonuniqueness.)" #bruce 080229
             bdkey = 'stub' # NIM
-            self.key = bdkey.next() # FIX: Undefined variable 'bdkey'.
+            self.key = next(bdkey) # FIX: Undefined variable 'bdkey'.
                 # This bdkey should be distinct from the atKey used by
                 # class Atom, i think (and thus needs a different name,
                 # and no import atKey).
@@ -129,7 +130,7 @@ if usePyrexAtomsAndBonds(): #bruce 080220 revised this
                 # [bruce 071107/080223 comment; renamed atKey -> bdkey, 080327]
             return
         pass
-    print "Using atombase.pyx in bonds.py"
+    print("Using atombase.pyx in bonds.py")
 else:
     def BondDict():
         return { }
@@ -137,7 +138,7 @@ else:
         def __init__(self):
             pass
         def __getattr__(self, attr): # in class BondBase
-            raise AttributeError, attr
+            raise AttributeError(attr)
         pass
     pass
 
@@ -176,8 +177,8 @@ def bond_atoms_oldversion(a1, a2):
     # already bonded). The test for a prior bond makes more sense outside of the
     # Bond constructor.
     if a1 is a2: #bruce 041119, partial response to bug #203
-        print "BUG: bond_atoms was asked to bond %r to itself." % a1
-        print "Doing nothing (but further bugs may be caused by this)."
+        print("BUG: bond_atoms was asked to bond %r to itself." % a1)
+        print("Doing nothing (but further bugs may be caused by this).")
         print_compact_stack("stack when same-atom bond attempted: ")
         return
 
@@ -187,9 +188,9 @@ def bond_atoms_oldversion(a1, a2):
     b1 = find_bond(a1, a2) # a Bond or None
     b2 = find_bond(a2, a1)
     if b1 is not b2:
-        print "bug warning: bond between %r and %r inconsistent in " \
+        print("bug warning: bond between %r and %r inconsistent in " \
               " their .bonds lists; %r (id %#x) vs %r (id %#x)" \
-              % (a1, a2, b1, id(b1), b2, id(b2))
+              % (a1, a2, b1, id(b1), b2, id(b2)))
         msg = "will remove one or both existing bonds, then make requested new one"
         print_compact_stack(msg + ": ")
         if b1:
@@ -215,13 +216,13 @@ def bond_atoms_oldversion(a1, a2):
                 # slow, but should be ok since this case should be rare
                 # known cases as of 051216 include only one:
                 # reading pdb files with redundant CONECT records
-            if not _bond_atoms_oldversion_noops_seen.has_key(blame):
+            if blame not in _bond_atoms_oldversion_noops_seen:
                 msg = "atom_debug: note: bond_atoms_oldversion doing nothing " \
                       "since %r and %r already bonded" % (a1, a2)
                 print_compact_stack( msg + ": ")
                 if not _bond_atoms_oldversion_noops_seen:
-                    print "(above message (bond_atoms_oldversion noop) is " \
-                          "only printed once for each compact_stack that calls it)"
+                    print("(above message (bond_atoms_oldversion noop) is " \
+                          "only printed once for each compact_stack that calls it)")
                 _bond_atoms_oldversion_noops_seen[blame] = None
             pass
         return
@@ -476,8 +477,8 @@ def bond_atoms(a1, a2, vnew = None, s1 = None, s2 = None, no_corrections = False
 
             if 0 and debug_flags.atom_debug and \
                (dir1 or dir2 or want_dir_a1 or want_dir_a2 or want_dir):
-                print "bond at open bonds with directions, %r and %r, => %r" % \
-                      (s1 and s1.bonds[0], s2 and s2.bonds[0], want_dir)
+                print("bond at open bonds with directions, %r and %r, => %r" % \
+                      (s1 and s1.bonds[0], s2 and s2.bonds[0], want_dir))
 
         pass
 
@@ -727,8 +728,8 @@ class Bond(BondBase, StateMixin, Selobj_API): #bruce 041109 partial rewrite
         res1 = a1 is not None and archive.trackedobj_liveQ(a1) and self in a1.bonds
         res2 = a2 is not None and archive.trackedobj_liveQ(a2) and self in a2.bonds
         if res1 != res2:
-            print "bug: Bond._undo_aliveQ gets different answer on " \
-                  "each atom; relevant data:", res1, res2, self
+            print("bug: Bond._undo_aliveQ gets different answer on " \
+                  "each atom; relevant data:", res1, res2, self)
             return True
                 # not sure if this or False would be safer; using True so
                 # we're covered if any live atom refers to us
@@ -789,8 +790,8 @@ class Bond(BondBase, StateMixin, Selobj_API): #bruce 041109 partial rewrite
             assert self.bond_direction_from(self.other(atom)) == - direction
         if old != self._direction:
             if 0 and debug_flags.atom_debug:
-                print "fyi: changed direction of %r from %r to %r" % \
-                      (self, old, self._direction)
+                print("fyi: changed direction of %r from %r to %r" % \
+                      (self, old, self._direction))
             self._changed_bond_direction()
         if propogate:
             # propogate self's direction both ways, as far as possible,
@@ -943,7 +944,7 @@ class Bond(BondBase, StateMixin, Selobj_API): #bruce 041109 partial rewrite
             #e (could extend API to let us return "" in this case)
         if direction < 0:
             atom, other = other, atom
-        atomcodes = map( mapping.encode_atom, (atom, other) )
+        atomcodes = list(map( mapping.encode_atom, (atom, other) ))
         return "bond_direction " + " ".join(atomcodes)
 
     #- DNA helper functions. ------------------------------------------
@@ -1177,7 +1178,7 @@ class Bond(BondBase, StateMixin, Selobj_API): #bruce 041109 partial rewrite
             else:
                 msg = "bug: can't find assy for dealloc_my_glselect_name in " \
                       "%r.destroy()" % self
-                print msg
+                print(msg)
             del self.glname
         try:
             self.bust() #bruce 080702 precaution
@@ -1254,14 +1255,14 @@ class Bond(BondBase, StateMixin, Selobj_API): #bruce 041109 partial rewrite
             else:
                 else_reached = 1
                 if debug_flags.atom_debug:
-                    print "debug: else clause reached"
+                    print("debug: else clause reached")
                     # i don't know python's rules about this;
                     # it might relate to #iters == 0
             if debug_flags.atom_debug:
                 if not (did_break != else_reached):
                     # this is what I hope it means (whether we fell out the
                     # end or not) but fear it doesn't
-                    print "debug: hoped for did_break != else_reached, but not true"
+                    print("debug: hoped for did_break != else_reached, but not true")
             if not did_break:
                 # no valence is legal! Not yet sure what to do in this case.
                 # (Or whether it ever happens.)
@@ -1316,11 +1317,11 @@ class Bond(BondBase, StateMixin, Selobj_API): #bruce 041109 partial rewrite
             else:
                 else_reached = 1
                 if debug_flags.atom_debug:
-                    print "atom_debug: else reached in increase_valence_noupdate"
+                    print("atom_debug: else reached in increase_valence_noupdate")
             if debug_flags.atom_debug:
                 if not (did_break != else_reached):
-                    print "atom_debug: i hoped for did_break != else_reached " \
-                          "but it's not true, in increase_valence_noupdate"
+                    print("atom_debug: i hoped for did_break != else_reached " \
+                          "but it's not true, in increase_valence_noupdate")
             if not did_break:
                 # no valence is legal! Not yet sure what to do in this case.
                 # (Or whether it ever happens.)
@@ -1331,9 +1332,9 @@ class Bond(BondBase, StateMixin, Selobj_API): #bruce 041109 partial rewrite
         if v_want != v_have:
             self.v6 = v_want
             if debug_1951:
-                print "debug_1951: increase_valence_noupdate changes " \
+                print("debug_1951: increase_valence_noupdate changes " \
                       "%r.v6 from %r to %r, returns %r" % \
-                      (self, v_have, v_want, v_want - v_have)
+                      (self, v_have, v_want, v_want - v_have))
             self._changed_v6()
         return v_want - v_have # return actual increase
             # (WARNING: order of subtraction differs in sister method)
@@ -1732,7 +1733,7 @@ class Bond(BondBase, StateMixin, Selobj_API): #bruce 041109 partial rewrite
         except AttributeError:
             pass
         if attr[0] == '_':
-            raise AttributeError, attr # be fast since probably common for __xxx__
+            raise AttributeError(attr) # be fast since probably common for __xxx__
         # after this, attr is either an updated_attr or a bug, so it's ok to
         # assume we need to recompute if invalid... if any of the attrs used
         # by recomputing geom are missing, we'll get infinite recursion; these
@@ -1772,7 +1773,7 @@ class Bond(BondBase, StateMixin, Selobj_API): #bruce 041109 partial rewrite
             # a2pos - a1pos (not normalized); in relative coords
             return geom[4] - geom[0]
         else:
-            raise AttributeError, attr
+            raise AttributeError(attr)
         pass
 
     # ==
@@ -1958,8 +1959,8 @@ class Bond(BondBase, StateMixin, Selobj_API): #bruce 041109 partial rewrite
             old.unbond(self, make_bondpoint = False)
             self.atom2 = new
         else:
-            print "fyi: bug: rebond: %r doesn't contain atom %r to replace " \
-                  "with atom %r" % (self, old, new)
+            print("fyi: bug: rebond: %r doesn't contain atom %r to replace " \
+                  "with atom %r" % (self, old, new))
             # no changes in the structure
             return
         # bruce 041109 worries slightly about order of the following:
@@ -1989,11 +1990,11 @@ class Bond(BondBase, StateMixin, Selobj_API): #bruce 041109 partial rewrite
             #  could make that false, so we check both.) [bruce 041203]
             A = self.other(new)
             if A.bonds.count(self) > 1:
-                print "rebond bug (%r): A.bonds.count(self) == %r" % \
-                      (self, A.bonds.count(self))
+                print("rebond bug (%r): A.bonds.count(self) == %r" % \
+                      (self, A.bonds.count(self)))
             if new.bonds.count(self) > 1:
-                print "rebond bug (%r): new.bonds.count(self) == %r" % \
-                      (self, new.bonds.count(self))
+                print("rebond bug (%r): new.bonds.count(self) == %r" % \
+                      (self, new.bonds.count(self)))
         return
 
     # ==
@@ -2316,7 +2317,7 @@ class Bond(BondBase, StateMixin, Selobj_API): #bruce 041109 partial rewrite
         """
         if debug_flags.atom_debug:
             import operations.bond_utils as bond_utils
-            reload(bond_utils) # at least during development
+            imp.reload(bond_utils) # at least during development
         from operations.bond_utils import bond_menu_section
         return bond_menu_section(self, quat = quat)
 
@@ -2349,7 +2350,7 @@ if is_new_style_class(Bond): #bruce 090205
     # making this true as an experiment. ### TODO: cleanup before release.
     msg = "WARNING: Bond (%r) is new-style -- possible Undo bugs related " \
           "to same_vals; see comments dated 090205" % Bond
-    print msg
+    print(msg)
 ##    assert 0, msg + ". Assert 0 to make sure this is noticed."
         # ok to remove this assertion for testing atombase
 
@@ -2448,8 +2449,8 @@ class _bonder_at_singlets:
         return
     def do_error(self, status, error_details):
         if self.print_error_details and error_details:
-            print "BUG: bond_at_singlets:", error_details
-            print "Doing nothing (but further bugs may be caused by this)."
+            print("BUG: bond_at_singlets:", error_details)
+            print("Doing nothing (but further bugs may be caused by this).")
             print_compact_stack()
         if error_details: # i.e. if it's an error
             flag = 2
@@ -2592,8 +2593,8 @@ class _bonder_at_singlets:
                 # old code can be used for now
                 if debug_flags.atom_debug \
                    and env.once_per_event("using OLD code for actually_bond"):
-                    print "atom_debug: fyi (once per event): " \
-                          "using OLD code for actually_bond"
+                    print("atom_debug: fyi (once per event): " \
+                          "using OLD code for actually_bond")
                 s1.kill()
                 s2.kill()
                 bond_atoms(a1, a2)

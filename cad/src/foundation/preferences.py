@@ -202,18 +202,18 @@ try:
     _junk # try to tell pylint we need this import [bruce 071023]
 except:
     dbname = "somedb"
-    print """\
+    print("""\
 
 Warning: import bsddb failed; using some other db format for preferences file;
  giving it a different name in case that uses an incompatible binary format;
- this means, when you upgrade to bsddb, you'll lose your preferences."""
+ this means, when you upgrade to bsddb, you'll lose your preferences.""")
     if EndUser.getAlternateSourcePath() != None:
         # [bruce 070704]
-        print "(Note: as of 070704 this is a common side-effect of using the"
-        print "ALTERNATE_CAD_SRC_PATH feature, since the built release has a"
-        print "patch to use bsddb3 which is not present in cvs code."
-        print "This situation will probably be fixed soon.)"
-    print
+        print("(Note: as of 070704 this is a common side-effect of using the")
+        print("ALTERNATE_CAD_SRC_PATH feature, since the built release has a")
+        print("patch to use bsddb3 which is not present in cvs code.")
+        print("This situation will probably be fixed soon.)")
+    print()
 else:
     dbname = "bsddb"
 
@@ -261,14 +261,14 @@ def _make_prefs_shelf():
     _cache.update(_shelf) # will this work?
     was_just_made = (not _cache) #bruce 080505
     if was_just_made:
-        print u"made prefs db, basename", _shelfname.encode("utf_8")
+        print("made prefs db, basename", _shelfname.encode("utf_8"))
     else:
-        print u"prefs db already existed, basename", _shelfname.encode("utf_8")
+        print("prefs db already existed, basename", _shelfname.encode("utf_8"))
     _defaults = {}
     _trackers = {}
     # zap obsolete contents
     obskeys = []
-    for key in _cache.keys():
+    for key in list(_cache.keys()):
         if key.isdigit() or key in ['_session_counter']:
             obskeys.append(key)
     for key in obskeys:
@@ -298,12 +298,12 @@ def _make_prefs_shelf():
             filename = os.path.join( nanorex, "Preferences", DEFAULT_PREFS_BASENAME )
             if not os.path.exists(filename):
                 lines = []
-                print u"didn't find", filename.encode("utf_8")
+                print("didn't find", filename.encode("utf_8"))
             else:
                 file = open( filename, "rU")
                 lines = file.readlines()
                 file.close()
-                print u"reading from", filename.encode("utf_8")
+                print("reading from", filename.encode("utf_8"))
             for line in lines:
                 line0 = line
                 try:
@@ -335,22 +335,22 @@ def _make_prefs_shelf():
                     # print "read key, val = (%r, %r)" % (key, val)
                     pass
                 except:
-                    print "ignoring exception in this line: %r" % (line0,)
+                    print("ignoring exception in this line: %r" % (line0,))
                     pass
                 continue
             pass
         except:
-            print "ignoring exception reading from", DEFAULT_PREFS_BASENAME
+            print("ignoring exception reading from", DEFAULT_PREFS_BASENAME)
             default_prefs_values = {}
             pass
-        items = default_prefs_values.items()
+        items = list(default_prefs_values.items())
         items.sort() # just to make the following console prints look nicer
         # now open, store the values, and close
         _shelf = shelve.open(_shelfname.encode("utf_8"))
         for key, val in items:
             pkey = _PREFS_KEY_TO_SHELF_KEY(key)
             _store_while_open( pkey, val)
-            print "stored key, val = (%r, %r)" % (key, val)
+            print("stored key, val = (%r, %r)" % (key, val))
         _close()
         pass
 
@@ -371,8 +371,8 @@ def _reopen():
     return
 
 def _store_new_while_open(key, val): # [not used as of 050804]
-    assert not _shelf.has_key(key) # checks _shelf, not merely _cache
-    assert not _cache.has_key(key)
+    assert key not in _shelf # checks _shelf, not merely _cache
+    assert key not in _cache
     _cache[key] = val
     _shelf[key] = val
     return
@@ -415,7 +415,7 @@ def _get_pkey_key(pkey, key): #bruce 050804 split this out of __getitem__ so I c
     try:
         return _cache[pkey]
     except KeyError:
-        raise KeyError, key # note: exception detail is key, not pkey as it would be if we just said "raise"
+        raise KeyError(key) # note: exception detail is key, not pkey as it would be if we just said "raise"
     pass
 
 def _get_pkey_faster(pkey): # optimization of _get_pkey_key(pkey, key) when the KeyError exception detail doesn't matter
@@ -435,8 +435,8 @@ def _record_default( pkey, dflt):
     if debug_flags.atom_debug:
         # also check consistency each time
         if dflt != _defaults[pkey]:
-            print "atom_debug: bug: ignoring inconsistent default %r for pref %r; retaining %r" % \
-                  ( dflt, pkey, _defaults[pkey] ) #e also print key if in future the key/pkey relation gets more complex
+            print("atom_debug: bug: ignoring inconsistent default %r for pref %r; retaining %r" % \
+                  ( dflt, pkey, _defaults[pkey] )) #e also print key if in future the key/pkey relation gets more complex
     return
 
 def _restore_default_while_open( pkey): #bruce 050805
@@ -451,13 +451,13 @@ def _restore_default_while_open( pkey): #bruce 050805
        If possible, don't track a use of the prefs value.
     """
     priorval = _cache.get(pkey) # might be None
-    if _shelf.has_key(pkey):
+    if pkey in _shelf:
         del _shelf[pkey]
     try:
         dflt = _defaults[pkey]
     except KeyError:
         if debug_flags.atom_debug:
-            print "atom_debug: fyi: restore defaults finds no default yet recorded for %r; using None" % pkey
+            print("atom_debug: fyi: restore defaults finds no default yet recorded for %r; using None" % pkey)
         _cache[pkey] = dflt = None
         del _cache[pkey]
     else:
@@ -534,7 +534,7 @@ class _prefs_context:
             same = (val == cached_val)
         if same:
             if 0 and debug_flags.atom_debug:
-                print "atom_debug: fyi: returning early from prefs.__setitem__(%r) since val == cached_val, %r == %r" % (key, val, cached_val)
+                print("atom_debug: fyi: returning early from prefs.__setitem__(%r) since val == cached_val, %r == %r" % (key, val, cached_val))
             return # see long comment above
         if _shelf:
             _shelf[pkey] = _cache[pkey] = val
@@ -578,7 +578,7 @@ class _prefs_context:
                 # no default value was yet recorded
                 dflt = None # but don't save None in _cache in this case
                 if debug_flags.atom_debug:
-                    print "atom_debug: warning: prefs.get(%r) returning None since no default value was yet recorded" % (key,)
+                    print("atom_debug: warning: prefs.get(%r) returning None since no default value was yet recorded" % (key,))
             else:
                 _cache[pkey] = dflt # store in cache but not in prefs-db
             return dflt
@@ -586,7 +586,7 @@ class _prefs_context:
     def update(self, dict1): #bruce 050117
         # note: unlike repeated setitem, this only opens and closes once.
         if _shelf:
-            for key, val in dict1.items():
+            for key, val in list(dict1.items()):
                 #e (on one KeyError, should we store the rest?)
                 #e (better, should we check all keys before storing anything?)
                 self[key] = val #e could optimize, but at least this leaves it open
@@ -613,7 +613,7 @@ class _prefs_context:
         """
         if _shelf:
             # already suspended -- briefly resume (so they're saved) before suspending (again)
-            print "bug: suspend_saving_changes when already suspended -- probably means resume was missing; saving them now"
+            print("bug: suspend_saving_changes when already suspended -- probably means resume was missing; saving them now")
             _close()
         _reopen()
         return
@@ -626,12 +626,12 @@ class _prefs_context:
         """
         if _shelf:
             if redundant_is_ok: # this case untested (no immediate use is planned as of 051205)
-                print "Warning: resume_saving_changes(redundant_is_ok = True) was in fact redundant --"
-                print " i.e. it may have been necessary to work around a bug and save prefs."
+                print("Warning: resume_saving_changes(redundant_is_ok = True) was in fact redundant --")
+                print(" i.e. it may have been necessary to work around a bug and save prefs.")
             _close()
         else:
             if not redundant_is_ok:
-                print "warning: redundant resume_saving_changes ignored"
+                print("warning: redundant resume_saving_changes ignored")
         return
     def restore_defaults(self, keys): #bruce 050805
         """
@@ -661,7 +661,7 @@ class _prefs_context:
         @param keys: a list of key strings (tuple not allowed; nested list not allowed)
         """
         assert type(keys) == type([])
-        return map( self.get_default_value, keys)
+        return list(map( self.get_default_value, keys))
 
     def get_default_value(self, key, _default_return_value = None): #bruce 080131/080201 UNTESTED @@@@
         """
@@ -747,7 +747,7 @@ def init_prefs_table( prefs_table): # sets env.prefs
     env.prefs = prefs_context() # this is only ok because all modules use the same prefs context.
 
     if 0 and debug_flags.atom_debug:
-        print "atom_debug: done with prefs_table" # remove when works
+        print("atom_debug: done with prefs_table") # remove when works
     return
 
 init_prefs_table( prefs_table)
@@ -795,6 +795,6 @@ if __name__ == '__main__':
     # now try this:
     testprefs = prefs_context()
     testprefs['x'] = 7
-    print "should be 7:",testprefs['x']
+    print("should be 7:",testprefs['x'])
 
 # end

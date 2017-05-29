@@ -50,7 +50,7 @@ def is_interned(ipath):
     "is ipath a legal interned ipath value? True if yes, False if no, exception if illegal as uninterned or interned ipath."
     if type(ipath) == type(0):
         if not (ipath < -100 or ipath >= 0):
-            print "ERROR: this int is not allowed as an ipath:",ipath # not an assert in case someone uses -1 -- we'll change spec if so
+            print("ERROR: this int is not allowed as an ipath:",ipath) # not an assert in case someone uses -1 -- we'll change spec if so
         return True # true either way: < -100 is an interned tuple, >= 0 is an interned int
     if type(ipath) in (str, bool):
         return True
@@ -88,7 +88,7 @@ def intern_ipath(ipath):
     if is_interned(ipath):
         return ipath
     assert type(ipath) == type(())
-    parts = map(intern_ipath, ipath)
+    parts = list(map(intern_ipath, ipath))
     ipath = tuple(parts)
     return _find_or_make_interned_ipath(ipath)
 

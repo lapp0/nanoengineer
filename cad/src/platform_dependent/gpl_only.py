@@ -36,9 +36,9 @@ $Id$
 # Here are those functions we can't allow Qt3 Windows users to run:
 
 def _execfile_in_globals(filename, globals):
-    execfile(filename, globals)
+    exec(compile(open(filename).read(), filename, 'exec'), globals)
 
 def _exec_command_in_globals( command, globals):
-    exec command in globals
+    exec(command, globals)
 
 # end

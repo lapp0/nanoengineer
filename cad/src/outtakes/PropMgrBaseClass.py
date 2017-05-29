@@ -150,23 +150,23 @@ def printSizePolicy(widget):
     Prints the horizontal and vertical policy of <widget>.
     """
     sizePolicy = widget.sizePolicy()
-    print "-----------------------------------"
-    print "Widget name =", widget.objectName()
-    print "Horizontal SizePolicy =", getSizePolicyName(sizePolicy.horizontalPolicy())
-    print "Vertical SizePolicy =",   getSizePolicyName(sizePolicy.verticalPolicy()
-    )
+    print("-----------------------------------")
+    print("Widget name =", widget.objectName())
+    print("Horizontal SizePolicy =", getSizePolicyName(sizePolicy.horizontalPolicy()))
+    print("Vertical SizePolicy =",   getSizePolicyName(sizePolicy.verticalPolicy()
+    ))
 def printSizeHints(widget):
     """Special method for debugging Qt size hints.
     Prints the minimumSizeHint (width and height)
     and the sizeHint (width and height) of <widget>.
     """
-    print "-----------------------------------"
-    print "Widget name =", widget.objectName()
-    print "Current Width, Height =", widget.width(), widget.height()
+    print("-----------------------------------")
+    print("Widget name =", widget.objectName())
+    print("Current Width, Height =", widget.width(), widget.height())
     minSize = widget.minimumSizeHint()
-    print "Min Width, Height =", minSize.width(), minSize.height()
+    print("Min Width, Height =", minSize.width(), minSize.height())
     sizeHint = widget.sizeHint()
-    print "SizeHint Width, Height =", sizeHint.width(), sizeHint.height()
+    print("SizeHint Width, Height =", sizeHint.width(), sizeHint.height())
 
 # PropMgr helper functions ##########################################
 
@@ -429,7 +429,7 @@ class PropMgrBaseClass(PropertyManager_common): #bruce 070615 inherit PropertyMa
         #    expandedTo(self.minimumSizeHint()))
 
         if 0:
-            print "PropMgr.fitContents(): Width, Height =", self.width(), self.height()
+            print("PropMgr.fitContents(): Width, Height =", self.width(), self.height())
 
     def addHeader(self):
         """Creates the Property Manager header, which contains
@@ -794,7 +794,7 @@ class PropMgrWidgetMixin:
 
         if 0: # Debugging. Mark 2007-05-25
             if self.setAsDefault:
-                print "Restoring default for ", self.objectName()
+                print("Restoring default for ", self.objectName())
 
         if isinstance(self, PropMgrGroupBox):
             for widget in self.widgets:
@@ -1103,7 +1103,7 @@ class PropMgrGroupBox(QGroupBox, PropMgrWidgetMixin):
                     widget.expand()
                 self.expanded = True
         else:
-            print "Groupbox has no widgets. Clicking on groupbox button has no effect"
+            print("Groupbox has no widgets. Clicking on groupbox button has no effect")
 
     # GroupBox palette and stylesheet methods. ##############################3
 
@@ -1236,9 +1236,9 @@ class PropMgrTextEdit(QTextEdit, PropMgrWidgetMixin, PropertyManager_common):
         """
 
         if 0: # Debugging code
-            print "QTextEdit.__init__():"
-            print "  label=", label
-            print "  spanWidth=",spanWidth
+            print("QTextEdit.__init__():")
+            print("  label=", label)
+            print("  spanWidth=",spanWidth)
 
         if not parent:
             return
@@ -1341,15 +1341,15 @@ class PropMgrTextEdit(QTextEdit, PropMgrWidgetMixin, PropertyManager_common):
         new_height = num_lines * self.fontMetrics().lineSpacing() + margin
 
         if 0: # Debugging code for me. Mark 2007-05-24
-            print "--------------------------------"
-            print "Widget name =", self.objectName()
-            print "minLines =", minLines
-            print "maxLines =", maxLines
-            print "num_lines=", num_lines
-            print "New height=", new_height
-            print "text =", text
-            print "Text width=", text_width
-            print "current_width (of PropMgrTextEdit)=", current_width
+            print("--------------------------------")
+            print("Widget name =", self.objectName())
+            print("minLines =", minLines)
+            print("maxLines =", maxLines)
+            print("num_lines=", num_lines)
+            print("New height=", new_height)
+            print("text =", text)
+            print("Text width=", text_width)
+            print("current_width (of PropMgrTextEdit)=", current_width)
 
         # Reset height of PropMgrTextEdit.
         self.setMinimumSize(QSize(pmMinWidth * 0.5, new_height))
@@ -1394,16 +1394,16 @@ class PropMgrDoubleSpinBox(QDoubleSpinBox, PropMgrWidgetMixin):
         """
 
         if 0: # Debugging code
-            print "PropMgrSpinBox.__init__():"
-            print "  label=", label
-            print "  val =", val
-            print "  setAsDefault =", setAsDefault
-            print "  min =", min
-            print "  max =", max
-            print "  singleStep =", singleStep
-            print "  decimals =", decimals
-            print "  suffix =", suffix
-            print "  spanWidth =", spanWidth
+            print("PropMgrSpinBox.__init__():")
+            print("  label=", label)
+            print("  val =", val)
+            print("  setAsDefault =", setAsDefault)
+            print("  min =", min)
+            print("  max =", max)
+            print("  singleStep =", singleStep)
+            print("  decimals =", decimals)
+            print("  suffix =", suffix)
+            print("  spanWidth =", spanWidth)
 
         if not parent:
             return
@@ -1474,14 +1474,14 @@ class PropMgrSpinBox(QSpinBox, PropMgrWidgetMixin):
         """
 
         if 0: # Debugging code
-            print "PropMgrSpinBox.__init__():"
-            print "  label=", label
-            print "  val =", val
-            print "  setAsDefault =", setAsDefault
-            print "  min =", min
-            print "  max =", max
-            print "  suffix =", suffix
-            print "  spanWidth =", spanWidth
+            print("PropMgrSpinBox.__init__():")
+            print("  label=", label)
+            print("  val =", val)
+            print("  setAsDefault =", setAsDefault)
+            print("  min =", min)
+            print("  max =", max)
+            print("  suffix =", suffix)
+            print("  spanWidth =", spanWidth)
 
         if not parent:
             return
@@ -1552,12 +1552,12 @@ class PropMgrComboBox(QComboBox, PropMgrWidgetMixin):
         """
 
         if 0: # Debugging code
-            print "PropMgrComboBox.__init__():"
-            print "  label=",label
-            print "  choices =", choices
-            print "  idx =", idx
-            print "  setAsDefault =", setAsDefault
-            print "  spanWidth =", spanWidth
+            print("PropMgrComboBox.__init__():")
+            print("  label=",label)
+            print("  choices =", choices)
+            print("  idx =", idx)
+            print("  setAsDefault =", setAsDefault)
+            print("  spanWidth =", spanWidth)
 
         if not parent:
             return
@@ -1613,11 +1613,11 @@ class PropMgrPushButton(QPushButton, PropMgrWidgetMixin):
         """
 
         if 0: # Debugging code
-            print "PropMgrPushButton.__init__():"
-            print "  label=",label
-            print "  text =", text
-            print "  setAsDefault =", setAsDefault
-            print "  spanWidth =", spanWidth
+            print("PropMgrPushButton.__init__():")
+            print("  label=",label)
+            print("  text =", text)
+            print("  setAsDefault =", setAsDefault)
+            print("  spanWidth =", spanWidth)
 
         if not parent:
             return
@@ -1669,11 +1669,11 @@ class PropMgrLineEdit(QLineEdit, PropMgrWidgetMixin):
         """
 
         if 0: # Debugging code
-            print "PropMgrLineEdit.__init__():"
-            print "  label=", label
-            print "  text =", text
-            print "  setAsDefault =", setAsDefaultfix
-            print "  spanWidth =", spanWidth
+            print("PropMgrLineEdit.__init__():")
+            print("  label=", label)
+            print("  text =", text)
+            print("  setAsDefault =", setAsDefaultfix)
+            print("  spanWidth =", spanWidth)
 
         if not parent:
             return
@@ -1729,11 +1729,11 @@ class PropMgrCheckBox(QCheckBox, PropMgrWidgetMixin):
         """
 
         if 0: # Debugging code
-            print "PropMgrCheckBox.__init__():"
-            print "  label=", label
-            print "  state =", state
-            print "  setAsDefault =", setAsDefaultfix
-            print "  spanWidth =", spanWidth
+            print("PropMgrCheckBox.__init__():")
+            print("  label=", label)
+            print("  state =", state)
+            print("  setAsDefault =", setAsDefaultfix)
+            print("  spanWidth =", spanWidth)
 
         if not parent:
             return
@@ -1805,13 +1805,13 @@ class PropMgrListWidget(QListWidget, PropMgrWidgetMixin):
         """
 
         if 0: # Debugging code
-            print "PropMgrListWidget.__init__():"
-            print "  label=",label
-            print "  items =", items
-            print "  row =",row
-            print "  setAsDefault =", setAsDefault
-            print "  numRows =",numRows
-            print "  spanWidth =", spanWidth
+            print("PropMgrListWidget.__init__():")
+            print("  label=",label)
+            print("  items =", items)
+            print("  row =",row)
+            print("  setAsDefault =", setAsDefault)
+            print("  numRows =",numRows)
+            print("  spanWidth =", spanWidth)
 
         if not parent:
             return
@@ -1850,7 +1850,7 @@ class PropMgrListWidget(QListWidget, PropMgrWidgetMixin):
         in the widget. <row> is ignored. This is considered a bug. Mark 2007-06-04
         """
 
-        if row <> 0:
+        if row != 0:
             msg = "PropMgrListWidget.insertItems(): <row> must be zero. See docstring for details:"
             print_compact_traceback(msg)
             return

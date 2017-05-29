@@ -82,7 +82,7 @@ class TestNode(Node_api):
         """
         s = (indent * '\t') + repr(self)
         if self.picked: s += ' PICKED'
-        print s
+        print(s)
         for ch in self.members:
             ch.showTree(indent + 1)
     # beginning of official API
@@ -181,7 +181,7 @@ class TestNe1Model(ModelTree_api):
         for node in nodeset:
             def thunk(str):
                 def _thunk(str=str):
-                    print str
+                    print(str)
                 return _thunk
             if isinstance(node, TestNode):
                 disableTuple = ('Disable', lambda node=node: self.cm_disable(node))
@@ -236,7 +236,7 @@ class TestNe1Model(ModelTree_api):
 
 class TestGLPane:
     def gl_update(self):
-        print "GLPane update"
+        print("GLPane update")
 class TestMainWindow:
     def __init__(self):
         self.glpane = TestGLPane()
@@ -310,7 +310,7 @@ class TestWrapper(QGroupBox):
         """
         Selected
         """
-        print self.view.topmost_selected_nodes()
+        print(self.view.topmost_selected_nodes())
 
 # ===
 

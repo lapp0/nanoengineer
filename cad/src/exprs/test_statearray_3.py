@@ -93,7 +93,7 @@ class _height_dragger_3(DelegatingInstanceOrExpr):
     pass
 
 class test_StateArrayRefs_3( DelegatingInstanceOrExpr): # testexpr_35b, _35c
-    indices = range(3)
+    indices = list(range(3))
     heights = StateArrayRefs(Width, 0.0)
     direction = Arg(Vector, DX, "direction of permitted motion -- DZ is the goal but DX is easier for testing")
         ### DX for initial test (testexpr_35b), then DZ (testexpr_35c)
@@ -115,7 +115,7 @@ class test_StateArrayRefs_3( DelegatingInstanceOrExpr): # testexpr_35b, _35c
         ActionButton( _self.printit, "button: print state") ###e idea: define on special attr, let UI assemble debug info viewer
      )
     def printit(self): #e can PrintAction do this for us?
-        print [h.value for i,h in sorted_items(self.heights)] ###KLUGE, assumes they're StateRefs -- maybe just rename StateArray -> StateArrayRefs
+        print([h.value for i,h in sorted_items(self.heights)]) ###KLUGE, assumes they're StateRefs -- maybe just rename StateArray -> StateArrayRefs
     pass
 
 # end

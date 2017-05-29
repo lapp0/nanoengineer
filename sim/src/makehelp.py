@@ -60,21 +60,21 @@ def hString(name, s, prefix=""):
 
 ######################################
 
-print hString("TRACE_PREFIX",
+print(hString("TRACE_PREFIX",
               "uname -a: " + sys.argv[3] + "\n",
-              "# ")
+              "# "))
 
-print hString("TRACE_PREFIX_NON_DISTUTILS",
+print(hString("TRACE_PREFIX_NON_DISTUTILS",
               "CFLAGS: " + sys.argv[1] + "\n" +
               "LDFLAGS: " + sys.argv[2] + "\n",
-              "# ")
+              "# "))
 
 if DISTUTILS_FLAGS != None:
     distutils = " ".join(DISTUTILS_FLAGS)
 else:
     distutils = "None"
 
-print hString("TRACE_PREFIX_DISTUTILS",
+print(hString("TRACE_PREFIX_DISTUTILS",
               "Python " + sys.version.replace("\n", " ") + "\n" +
               distutils + "\n",
-              "# ")
+              "# "))

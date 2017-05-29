@@ -30,7 +30,7 @@ class SimulatorParameters(object):
 
         self._parameterValues = {}
         try:
-            print "sim parameters used by NE1 read from: [%s]" % fileName
+            print("sim parameters used by NE1 read from: [%s]" % fileName)
             parametersFile = open(fileName)
             for line in parametersFile:
                 s = line.split()
@@ -49,7 +49,7 @@ class SimulatorParameters(object):
             self._parameterValues = {}
 
     def _getFloatParameter(self, parameterName, defaultValue = 0.0):
-        if (self._parameterValues.has_key(parameterName)):
+        if (parameterName in self._parameterValues):
             try:
                 value = float(self._parameterValues[parameterName])
                 return value
@@ -59,7 +59,7 @@ class SimulatorParameters(object):
         return defaultValue
 
     def _getBooleanParameter(self, parameterName, defaultValue = False):
-        if (self._parameterValues.has_key(parameterName)):
+        if (parameterName in self._parameterValues):
             if (self._parameterValues[parameterName]):
                 return True
             return False

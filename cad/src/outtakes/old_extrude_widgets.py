@@ -16,7 +16,7 @@ from utilities.qt4transition import qt4warning, qt4todo
 
 # These don't exist in Qt4 but we can make begin(QVBox) and
 # begin(QHBox) act the same as before.
-QVBox, QHBox = range(2)
+QVBox, QHBox = list(range(2))
 
 class widget_filler:
     """
@@ -73,10 +73,10 @@ class widget_filler:
         if len(self.where) > 1:
             p.setLayout(layout)
         if False:  # debug
-            print '<<<'
+            print('<<<')
             for x, y in map(None, self.where, self.layoutstack):
-                print x, y
-            print '>>>'
+                print(x, y)
+            print('>>>')
         return 1
         # return value is so you can say "if begin(): ..." if you want to
         # use python indentation to show the widget nesting structure

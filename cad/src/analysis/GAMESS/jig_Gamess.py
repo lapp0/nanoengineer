@@ -340,8 +340,8 @@ class Gamess(Jig):
             #bruce 050225 added some parameters to this error message
             #bruce 050406 comment: but it probably never comes out, since readxyz checks this,
             # so I won't bother to print it to history here. But leaving it in is good for safety.
-            print "move_atoms: The number of atoms from GAMESS file (%d) is not matching with that of the current model (%d)" % \
-                  (len(newPositions), len(atomList))
+            print("move_atoms: The number of atoms from GAMESS file (%d) is not matching with that of the current model (%d)" % \
+                  (len(newPositions), len(atomList)))
             return
         move_atoms_and_normalize_bondpoints(atomList, newPositions)
             #bruce 051221 fix a bug analogous to bug 1239 by letting this new function (containing a loop)
@@ -380,7 +380,7 @@ class Gamess(Jig):
         """
         if len(key) != 2 or not key[0].isdigit():
             if debug_flags.atom_debug:
-                print "atom_debug: fyi: info gamess with unrecognized key %r (not an error)" % (key,)
+                print("atom_debug: fyi: info gamess with unrecognized key %r (not an error)" % (key,))
             return
         pset_index, name = key
         pset_index = int(pset_index)
@@ -390,7 +390,7 @@ class Gamess(Jig):
         except:
             # not an error -- future mmp formats might use non-existent indices and expect readers to create new psets.
             if debug_flags.atom_debug:
-                print "atom_debug: fyi: info gamess with non-existent pset index in key %r (not an error)" % (key,)
+                print("atom_debug: fyi: info gamess with non-existent pset index in key %r (not an error)" % (key,))
             return
         # the rest of the work should be done by the pset.
         try:
@@ -416,7 +416,7 @@ class Gamess(Jig):
                 newval = val.deepcopy()#for item in val]
                 setattr(self, attr, newval)
             else:
-                print "bug: don't know how to copy attr %r in %r", attr, self
+                print("bug: don't know how to copy attr %r in %r", attr, self)
             pass
         return
 
@@ -693,14 +693,14 @@ class gamessParms(state_utils.DataMixin): #bruce 060306 added superclass
             # the next bit of code is just to work around bugs in valstrings without completely failing to write them.
             valstring = valstring.strip() # the reader does this, so we might as well not fool ourselves and do it now
             if '\n' in valstring:
-                print "error: multiline valstring in gamess writemmp. workaround: writing only the first line."
+                print("error: multiline valstring in gamess writemmp. workaround: writing only the first line.")
                 valstring = valstring.split('\n',1)[0]
                 valstring = valstring.strip()
             line = "info gamess %s %s = %s\n" % (pset_index, name, valstring)
             if len(line) > 511:
                 msg = "can't write this mmp line (too long for mmp format): " + line
                     #bruce 050913 comment: this restriction might no longer be valid for sim executables as of a few days ago
-                print msg
+                print(msg)
                 env.history.message( redmsg( "Error: " + msg) )
                 mapping.write("# didn't write too-long valstring for info gamess %s %s = ...\n" % (pset_index, name))
             else:
@@ -831,9 +831,9 @@ class gamessParms(state_utils.DataMixin): #bruce 060306 added superclass
         else:
             if error_if_name_not_known:
                 #bruce 050704, only correct when this method is used internally to copy an object of this class
-                print "error: unrecognized parameter name %r in info_gamess_setitem" % (name,)
+                print("error: unrecognized parameter name %r in info_gamess_setitem" % (name,))
             elif debug_flags.atom_debug:
-                print "atom_debug: fyi: info gamess with unrecognized parameter name %r (not an error)" % (name,)
+                print("atom_debug: fyi: info gamess with unrecognized parameter name %r (not an error)" % (name,))
             # this is not an error, since old code might read newer mmp files which know about more gamess params;
             # it's better (in general) to ignore those than for this to make it impossible to read the mmp file.
             # If non-debug warnings were added, that might be ok in this case since not many lines per file will trigger them.
@@ -851,7 +851,7 @@ for p in gamessParms.boolparms:
 class ctlRec:
     def __init__(self, name, parms):
         self.name = name
-        self.parms = parms.keys()
+        self.parms = list(parms.keys())
         self.parms.sort() # Sort parms.
 
         # WARNING: Bugs will be caused if any of ctlRec's own methods or

@@ -44,7 +44,7 @@ def dissolve_or_fragment_invalid_ladders( changed_atoms):
 
     changed_chunks = {}
 
-    for atom in changed_atoms.itervalues():
+    for atom in changed_atoms.values():
         chunk = atom.molecule
         ## print "DEBUG: changed atom %r -> chunk %r" % (atom, chunk)
         changed_chunks[id(chunk)] = chunk
@@ -69,10 +69,10 @@ def dissolve_or_fragment_invalid_ladders( changed_atoms):
             pass
         continue
 
-    for chunk in changed_chunks.itervalues():
+    for chunk in changed_chunks.values():
         if debug_flags.DEBUG_DNA_UPDATER_VERBOSE: # was useful for bug 080120 9pm
-            print "dna updater: fyi: tell changed chunk %r -> inval its ladder %r" % \
-                  (chunk, getattr(chunk, 'ladder', "<has none>"))
+            print("dna updater: fyi: tell changed chunk %r -> inval its ladder %r" % \
+                  (chunk, getattr(chunk, 'ladder', "<has none>")))
             pass
         # todo: assert not killed, not nullMol, is a Chunk
         ## chunk.invalidate_ladder()
@@ -123,7 +123,7 @@ def dissolve_or_fragment_invalid_ladders( changed_atoms):
         # itself (even on already invalidated ladders). # todo: clarify.
 
         if debug_flags.DEBUG_DNA_UPDATER_VERBOSE: # was useful for bug 080120 9pm
-            print "dna updater: fyi: adding all atoms from dissolved ladder %r" % ladder
+            print("dna updater: fyi: adding all atoms from dissolved ladder %r" % ladder)
         for rail in ladder.all_rails():
             for atom in rail.baseatoms: # probably overkill, maybe just one atom is enough -- not sure
                 # note: atom is in a ladder that was valid a moment ago,
@@ -186,7 +186,7 @@ class chains_to_break:
         breaks = self._set_of_breakpoints_for_chain[chain]
         assert abs(index1 - index2) == 1
         break_before = max(index1, index2)
-        return breaks.has_key(break_before)
+        return break_before in breaks
     def breakit(self, chain):
         """
         Return a sequence of (start_index, length) pairs,
@@ -199,7 +199,7 @@ class chains_to_break:
 
         @return: sequence of (start_index, length) pairs
         """
-        breaks = self._set_of_breakpoints_for_chain[chain].keys() # might be empty
+        breaks = list(self._set_of_breakpoints_for_chain[chain].keys()) # might be empty
         breaks.sort()
         start_index = chain.start_baseindex() # modified during loop
         limit_index = chain.baselength() + start_index
@@ -215,7 +215,7 @@ class chains_to_break:
             start_index = break_before
             continue
         if debug_flags.DEBUG_DNA_UPDATER_VERBOSE: # made verbose on 080201
-            print "will break %r -> %d pieces == %r" % (chain, len(res), res)
+            print("will break %r -> %d pieces == %r" % (chain, len(res), res))
         assert num_bases == chain.baselength()
         return res
     pass
@@ -381,12 +381,12 @@ def make_new_ladders(axis_chains, strand_chains):
                 except KeyError:
                     # this happens in a bug tom reported thismorning, so try to survive it and print debug info
                     # [bruce 080219]
-                    print "\n***BUG: dna updater: ladder_locator lacks %r -- specialcase might cause bugs" % (atom,) # @@@@@
+                    print("\n***BUG: dna updater: ladder_locator lacks %r -- specialcase might cause bugs" % (atom,)) # @@@@@
                     # specialcase is variant of single strand code above
                     for atom2 in strand_rail.baseatoms:
                         if not (atom2.axis_neighbor() is None):
-                            print " sub-bug: %r has %r with an axis_neighbor, %r" % \
-                                  (strand_rail, atom2, atom2.axis_neighbor())
+                            print(" sub-bug: %r has %r with an axis_neighbor, %r" % \
+                                  (strand_rail, atom2, atom2.axis_neighbor()))
                     singlestrand = DnaSingleStrandDomain(strand_rail)
                     singlestrands.append(singlestrand)
                 else:
@@ -472,7 +472,7 @@ def split_ladders(ladders): # STUB but should cause no harm @@@@
     for ladder in ladders:
         # REVIEW: higher threshhold for split than merge, for "hysteresis"?? maybe not needed...
         if len(ladder) > MAX_LADDER_LENGTH:
-            print "NIM: split long ladder %r" % ladder
+            print("NIM: split long ladder %r" % ladder)
             res0 = [ladder] # the pieces
                 # (real split function should inval original, then validate pieces)
             res.extend(res0)
@@ -506,8 +506,8 @@ def merge_and_split_ladders(ladders, debug_msg = ""):
             # note: _DEBUG_FINISH_AND_MERGE(sp?) is in another file
             if debug_msg:
                 debug_msg = " (%s)" % debug_msg
-            print "dna updater: merge_and_split_ladders%s: %d ladders, merged to %d, split to %d" % \
-                  (debug_msg, len1, len2, len3)
+            print("dna updater: merge_and_split_ladders%s: %d ladders, merged to %d, split to %d" % \
+                  (debug_msg, len1, len2, len3))
     return ladders
 
 # end

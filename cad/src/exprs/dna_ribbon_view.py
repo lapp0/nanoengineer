@@ -356,7 +356,7 @@ class Cylinder_Ribbon(Widget): #070129 #e rename?? #e super?
         if some:
             i,j = some
             points = points[i:j]
-        normals = map( cyl.perpvec_at_surfacepoint, points)
+        normals = list(map( cyl.perpvec_at_surfacepoint, points))
             ####IMPLEM perpvec_at_surfacepoint for any Surface, e.g. Cylinder (treat as infinite length; ignore end-caps)
             ####e points on it might want to keep their intrinsic coords around, to make this kind of thing efficient & well defined,
             # esp for a cyl with caps, whose caps also counted as part of the surface! (unlike in present defn of cyl.perpvec_at_surfacepoint)
@@ -662,7 +662,7 @@ class DNA_Cylinder(ModelObject): #070215 DIorE -> ModelObject (affects _e_model_
         self.KLUGE_gl_update() ###BUG: without this, doesn't do gl_update until selobj changes, or at least until mouse moves, or so
 
     def _cmd_show_potential_crossovers(self):
-        print "_cmd_show_potential_crossovers is NIM"
+        print("_cmd_show_potential_crossovers is NIM")
 
     # ModelTreeNodeInterface formulae
     mt_node_id = getattr_Expr( _self, '_e_serno') # ipath might be more correct, but this also doesn't change upon reload in practice,
@@ -781,7 +781,7 @@ class World_dna_holder(InstanceMacro): #070201 modified from GraphDrawDemo_Fixed
                     newcyl.motion = cyls[-2].motion - DY * 2.7 ###KLUGE: assumes current alignment
                         # Note: chosen distance 2.7 nm includes "exploded view" effect (I think).
                 else:
-                    print "added in unexpected order" ###should never happen as long as _e_serno is ordered like cyl creation order
+                    print("added in unexpected order") ###should never happen as long as _e_serno is ordered like cyl creation order
         return
     def _cmd_Make_some_rects(self): #070206 just to show we can make something else and not mess up adding/moving the next cyl
         world = self.world

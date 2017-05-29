@@ -64,7 +64,7 @@ def fix_local_bond_directions( changed_atoms):
     # change this. This scheme is chosen mainly to optimize the case
     # when the number of atoms with errors is small or zero.
 
-    for atom in changed_atoms.itervalues():
+    for atom in changed_atoms.values():
         # look for new errors
         error_info = None # might be changed below
         if atom.element is Singlet:
@@ -87,13 +87,13 @@ def fix_local_bond_directions( changed_atoms):
             # and console prints
             try:
                 error_info = _fix_atom_or_return_error_info(atom)
-            except AssertionError, e:
+            except AssertionError as e:
                 e_string = "%s" % (e,)
                 if not e_string.startswith("__ERROR:"):
                     raise
                 # it's a specially labelled exception meant to become
                 # an updater error string
-                print "%s: %r (neighbors: %r)" % (e_string, atom, atom.neighbors())
+                print("%s: %r (neighbors: %r)" % (e_string, atom, atom.neighbors()))
                 # TODO: history summary needed? better error_data string?
                 prefix = "" # STUB
                 error_data = prefix + e_string[len("__ERROR:"):].strip()
@@ -105,8 +105,8 @@ def fix_local_bond_directions( changed_atoms):
             assert error_type == _ATOM_HAS_ERROR
             assert error_data and type(error_data) == type("")
             if _DEBUG_PRINT_BOND_DIRECTION_ERRORS:
-                print "bond direction error for %r: %s" % (atom, error_data)
-                print
+                print("bond direction error for %r: %s" % (atom, error_data))
+                print()
             _atom_set_dna_updater_error( atom, error_data)
             atom.molecule.changeapp(0) #k probably not needed
             new_error_atoms[atom.key] = atom
@@ -127,20 +127,20 @@ def fix_local_bond_directions( changed_atoms):
 
     new_all_error_atoms_after_propogation = {}
 
-    for atom in _global_direct_error_atoms.itervalues():
+    for atom in _global_direct_error_atoms.values():
         for atom2 in _same_base_pair_atoms(atom):
             new_all_error_atoms_after_propogation[atom2.key] = atom2
 
     _all_error_atoms_after_propogation = new_all_error_atoms_after_propogation
 
-    for atom in old_all_error_atoms_after_propogation.itervalues():
+    for atom in old_all_error_atoms_after_propogation.values():
         if atom.key not in new_all_error_atoms_after_propogation:
             if atom._dna_updater__error: # should always be true
                 del atom._dna_updater__error
                 if not atom.killed():
                     atom.molecule.changeapp(0) #k needed?
 
-    for atom in new_all_error_atoms_after_propogation.itervalues():
+    for atom in new_all_error_atoms_after_propogation.values():
         if atom.key not in _global_direct_error_atoms:
             _atom_set_dna_updater_error( atom, PROPOGATED_DNA_UPDATER_ERROR)
                 # note: the propogated error is deterministic,
@@ -187,18 +187,18 @@ def _same_base_pair_atoms(atom):
         found.update(look_at_these)
         next = {}
         next_role = (have_role == 'axis' and 'strand' or 'axis')
-        for atom1 in look_at_these.itervalues():
+        for atom1 in look_at_these.values():
             assert have_role == atom1.element.role # remove when works
             for atom2 in atom1.neighbors():
                 # maybe add atom2 to next, if suitable and not in found
-                if atom2.element.role == next_role and not found.has_key(atom2.key):
+                if atom2.element.role == next_role and atom2.key not in found:
                     next[atom2.key] = atom2
                 continue
             continue
         look_at_these = next
         have_role = next_role
         continue
-    return found.values()
+    return list(found.values())
 ##    if atom.element.role == 'strand':
 ##        axis_atom = atom.axis_neighbor() # might be None (for Pl or single-stranded)
 ##        if not axis_atom:
@@ -342,7 +342,7 @@ def _fix_atom_or_return_error_info(atom):
     else:
         # should never happen, so no valence or neighbor checks are
         # implemented here, but print a nim warning
-        print "BUG: fix_bond_directions got %r of unexpected element %s" % (atom, element.symbol)
+        print("BUG: fix_bond_directions got %r of unexpected element %s" % (atom, element.symbol))
         msg = "BUG: fix_bond_directions got [N] atom(s) of unexpected element %s" % element.symbol
         summary_format = redmsg( msg )
         env.history.deferred_summary_message(summary_format)
@@ -378,19 +378,19 @@ def _fix_atom_or_return_error_info(atom):
         # (too bad we can't print the return value easily)
         # print info that tells me what cases need handling ASAP, @@@
         # vs cases that can wait
-        print "\n*** dna updater: fix_local_bond_directions ought to fix %r but is NIM" % (atom,)
-        print " data about that atom:", \
+        print("\n*** dna updater: fix_local_bond_directions ought to fix %r but is NIM" % (atom,))
+        print(" data about that atom:", \
               num_plus_real, num_minus_real, num_unset_real, \
-              num_plus_open, num_minus_open, num_unset_open
+              num_plus_open, num_minus_open, num_unset_open)
             # that form is for sorting output text lines;
             # the next form is for readability (make it once only?):
-        print "  num_plus_real =", num_plus_real
-        print "  num_minus_real =", num_minus_real
-        print "  num_unset_real =", num_unset_real
-        print "  num_plus_open =", num_plus_open
-        print "  num_minus_open =", num_minus_open
-        print "  num_unset_open =", num_unset_open
-        print
+        print("  num_plus_real =", num_plus_real)
+        print("  num_minus_real =", num_minus_real)
+        print("  num_unset_real =", num_unset_real)
+        print("  num_plus_open =", num_plus_open)
+        print("  num_minus_open =", num_minus_open)
+        print("  num_unset_open =", num_unset_open)
+        print()
 
     if num_plus_real + num_minus_real + num_unset_real > 2:
         # Too many real directional bonds -- no way to fully fix
@@ -418,8 +418,8 @@ def _fix_atom_or_return_error_info(atom):
     def _dir(bond): # for assertions (could be done as a lambda)
         return bond.bond_direction_from(atom)
 
-    assert num_plus == _number_of_bonds_with_direction(atom, +1), "%r" % (num_plus, atom, atom.bonds, map( _dir, atom.bonds))
-    assert num_minus == _number_of_bonds_with_direction(atom, -1), "%r" % (num_minus, atom, atom.bonds, map( _dir, atom.bonds))
+    assert num_plus == _number_of_bonds_with_direction(atom, +1), "%r" % (num_plus, atom, atom.bonds, list(map( _dir, atom.bonds)))
+    assert num_minus == _number_of_bonds_with_direction(atom, -1), "%r" % (num_minus, atom, atom.bonds, list(map( _dir, atom.bonds)))
 
     if num_plus > 1 or num_minus > 1 or num_plus + num_minus + num_unset_real > 2:
         # too much is set, or *would be* if all real bonds were set
@@ -443,15 +443,15 @@ def _fix_atom_or_return_error_info(atom):
             _unset_some_open_bond_direction(atom, +1)
             num_plus_open -= 1
             num_plus -= 1
-            assert num_plus == _number_of_bonds_with_direction(atom, +1), "%r" % (num_plus, atom, atom.bonds, map( _dir, atom.bonds))
-            assert num_minus == _number_of_bonds_with_direction(atom, -1), "%r" % (num_minus, atom, atom.bonds, map( _dir, atom.bonds))
+            assert num_plus == _number_of_bonds_with_direction(atom, +1), "%r" % (num_plus, atom, atom.bonds, list(map( _dir, atom.bonds)))
+            assert num_minus == _number_of_bonds_with_direction(atom, -1), "%r" % (num_minus, atom, atom.bonds, list(map( _dir, atom.bonds)))
 
         while num_minus_open and num_minus > 1:
             _unset_some_open_bond_direction(atom, -1)
             num_minus_open -= 1
             num_minus -= 1
-            assert num_plus == _number_of_bonds_with_direction(atom, +1), "%r" % (num_plus, atom, atom.bonds, map( _dir, atom.bonds))
-            assert num_minus == _number_of_bonds_with_direction(atom, -1), "%r" % (num_minus, atom, atom.bonds, map( _dir, atom.bonds))
+            assert num_plus == _number_of_bonds_with_direction(atom, +1), "%r" % (num_plus, atom, atom.bonds, list(map( _dir, atom.bonds)))
+            assert num_minus == _number_of_bonds_with_direction(atom, -1), "%r" % (num_minus, atom, atom.bonds, list(map( _dir, atom.bonds)))
 
         if not (num_unset_real or num_plus != 1 or num_minus != 1):
             # if not still bad, then declare atom as ok
@@ -471,7 +471,7 @@ def _fix_atom_or_return_error_info(atom):
     assert num_plus <= 1
     assert num_minus <= 1, \
            "num_minus = %r, num_minus_open = %r, num_minus_real = %r, atom = %r, bonds = %r, dirs = %r" % \
-           (num_minus, num_minus_open, num_minus_real, atom, atom.bonds, map( _dir, atom.bonds) )
+           (num_minus, num_minus_open, num_minus_real, atom, atom.bonds, list(map( _dir, atom.bonds)) )
 
     if (1 - num_plus) + (1 - num_minus) <= num_unset_open:
         # fully fixable case (given that we're willing to pick an open bond arbitrarily)
@@ -636,7 +636,7 @@ def _f_detailed_dna_updater_error_string( atom):
     assert direct_errors # otherwise where did the error come from?
         # (could happen if unsetting obs error strings has a bug)
     error_reports = [ "%s: %s" % (str(atom2), error)
-                      for atom2, error in direct_errors.items() ]
+                      for atom2, error in list(direct_errors.items()) ]
     if len(error_reports) <= 1:
         header = "error elsewhere in basepair:"
     else:

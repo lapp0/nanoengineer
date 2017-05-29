@@ -144,7 +144,7 @@ class Part( jigmakers_Mixin, InvalMixin, StateMixin,
         # (though to be honest, that's due to a kluge, as of 060224 -- it won't yet run this on any other class!)
         attrs = self.invalidatable_attrs()
         if debug_1855:
-            print "debug_1855: part %r _undo_update_always will inval %r" % (self, attrs,)
+            print("debug_1855: part %r _undo_update_always will inval %r" % (self, attrs,))
             # this looks ok
         self.invalidate_attrs( attrs) # especially selmols, selatoms, and molecules, but i guess all of them matter
             ###e should InvalMixin *always* do this? (unless overridden somehow?) guess: not quite.
@@ -247,7 +247,7 @@ class Part( jigmakers_Mixin, InvalMixin, StateMixin,
         self.alive = True # we're not yet destroyed
 
         if debug_parts:
-            print "debug_parts: fyi: created Part:", self
+            print("debug_parts: fyi: created Part:", self)
 
         return # from Part.__init__
 
@@ -294,7 +294,7 @@ class Part( jigmakers_Mixin, InvalMixin, StateMixin,
         if node.part is not None:
             if debug_parts:
                 # this will be common
-                print "debug_parts: fyi: node added to new part so removed from old part first:", node, self, node.part
+                print("debug_parts: fyi: node added to new part so removed from old part first:", node, self, node.part)
             node.part.remove(node)
         assert node.part is None
         # this is a desired assertion, but make it a debug print
@@ -338,8 +338,8 @@ class Part( jigmakers_Mixin, InvalMixin, StateMixin,
         if isinstance(node, Chunk):
             # need to unpick the atoms? [would be better to let the node itself have a method for this]
             ###@@@ (fix atom.unpick to not remake selatoms if missing, or to let this part maintain it)
-            if (not self.__dict__.has_key('selatoms')) or self.selatoms:
-                for atm in node.atoms.itervalues():
+            if ('selatoms' not in self.__dict__) or self.selatoms:
+                for atm in node.atoms.values():
                     atm.unpick(filtered = False)
                         #bruce 060331 precaution: added filtered = False, to fix potential serious bugs (unconfirmed)
                         #e should optimize this by inlining and keeping selatoms test outside of loop
@@ -350,7 +350,7 @@ class Part( jigmakers_Mixin, InvalMixin, StateMixin,
         if self.topnode is node:
             self.topnode = None #k can this happen when any nodes are left??? if so, is it bad?
             if debug_parts:
-                print "debug_parts: fyi: topnode leaves part, %d nodes remain" % self.nodecount
+                print("debug_parts: fyi: topnode leaves part, %d nodes remain" % self.nodecount)
             # it can happen when I drag a Group out of clipboard: "debug_parts: fyi: topnode leaves part, 2 nodes remain"
             # and it doesn't seem to be bad (the other 2 nodes were pulled out soon).
         if self.nodecount <= 0:
@@ -383,7 +383,7 @@ class Part( jigmakers_Mixin, InvalMixin, StateMixin,
         #bruce 050527 added requirement (already true in current implem) that this not forget views,
         # so node.prior_part needn't prevent destroy, but can be used to retrieve default initial views for node.
         if debug_parts:
-            print "debug_parts: fyi: destroying part", self
+            print("debug_parts: fyi: destroying part", self)
         assert self.nodecount == 0, "can't destroy a Part which still has nodes" # esp. since it doesn't have a list of them!
             # actually it could scan self.assy.root to find them... but for now, we'll enforce this anyway.
         if self.assy and self.assy.o: #e someday change this to self.glpane??
@@ -416,13 +416,13 @@ class Part( jigmakers_Mixin, InvalMixin, StateMixin,
     # incremental update methods
 
     def selmols_append(self, mol):
-        if self.__dict__.has_key('selmols'):
+        if 'selmols' in self.__dict__:
             assert mol not in self.selmols
             self.selmols.append(mol)
         return
 
     def selmols_remove(self, mol):
-        if self.__dict__.has_key('selmols'):
+        if 'selmols' in self.__dict__:
             ## might not always be true in current code, though it should be:
             ## assert mol in self.selmols
             try:
@@ -436,7 +436,7 @@ class Part( jigmakers_Mixin, InvalMixin, StateMixin,
         """
         adjust the number of atoms, if known. Useful since drawLevel depends on this and is often recomputed.
         """
-        if self.__dict__.has_key('natoms'):
+        if 'natoms' in self.__dict__:
             self.natoms += delta
         return
 
@@ -484,7 +484,7 @@ class Part( jigmakers_Mixin, InvalMixin, StateMixin,
         [overrides InvalMixin.__getattr__]
         """
         if attr.startswith('_'): # common case, be fast (even though it's done redundantly by InvalMixin.__getattr__)
-            raise AttributeError, attr
+            raise AttributeError(attr)
         if attr in self.assy_attrs_all:
             # delegate to self.assy
             return getattr(self.assy, attr) ###@@@ detect error of infrecur, since assy getattr delegates to here??
@@ -504,7 +504,7 @@ class Part( jigmakers_Mixin, InvalMixin, StateMixin,
             if isinstance(n, Chunk):
                 # check for duplicates (mol at two places in tree) using a dict, whose values accumulate our mols list
                 if seen.get(id(n)):
-                    print "bug: some chunk occurs twice in this part's topnode tree; semi-tolerated but not fixed"
+                    print("bug: some chunk occurs twice in this part's topnode tree; semi-tolerated but not fixed")
                     msg = " that chunk is %r, and this part is %r, in assy %r, with topnode %r" % \
                           (n, self, self.assy, self.topnode) #bruce 080403, since this happened to tom
                     print_compact_stack(msg + ": ")
@@ -512,7 +512,7 @@ class Part( jigmakers_Mixin, InvalMixin, StateMixin,
                 seen[id(n)] = n
             return # from func only
         self.topnode.apply2all( func)
-        self.molecules = seen.values()
+        self.molecules = list(seen.values())
             # warning: not in the same order as they are in the tree!
             # even if it was, it might elsewhere be incrementally updated.
         return
@@ -631,12 +631,12 @@ class Part( jigmakers_Mixin, InvalMixin, StateMixin,
         # ungroup if it has one or no members.
         if ejected_anything != (orig_topnode is not self.topnode):
             if ejected_anything:
-                print "\n***BUG: sanitize_dnagroups ejected from topnode %r " \
-                      "but didn't replace it" % orig_topnode
+                print("\n***BUG: sanitize_dnagroups ejected from topnode %r " \
+                      "but didn't replace it" % orig_topnode)
             else:
-                print "\n***BUG: sanitize_dnagroups replaced topnode %r " \
+                print("\n***BUG: sanitize_dnagroups replaced topnode %r " \
                       "with %r but didn't eject anything" % \
-                      (orig_topnode, self.topnode)
+                      (orig_topnode, self.topnode))
             pass
         else:
             # no bug, safe to proceed
@@ -647,11 +647,11 @@ class Part( jigmakers_Mixin, InvalMixin, StateMixin,
                 ejected_anything = self.topnode.is_group() and \
                     self.topnode._f_move_nonpermitted_members(**opts)
                 if ejected_anything:
-                    print "\n***BUG: sanitize_dnagroups ejected from new topnode in %r" % self
+                    print("\n***BUG: sanitize_dnagroups ejected from new topnode in %r" % self)
                     # don't print new topnode, we don't know whether or not it changed --
                     # if this ever happens, revise to print more info
                 elif not self.topnode.is_group():
-                    print "\n***BUG: sanitize_dnagroups replaced topnode with a non-Group in %r" % self
+                    print("\n***BUG: sanitize_dnagroups replaced topnode with a non-Group in %r" % self)
                 else:
                     # still no bug, safe to proceed
                     if len(self.topnode) <= 1:
@@ -749,7 +749,7 @@ class Part( jigmakers_Mixin, InvalMixin, StateMixin,
                     if obj.display == diINVISIBLE:
                         continue
                 if isinstance(obj, Chunk):
-                    for a in obj.atoms.itervalues():
+                    for a in obj.atoms.values():
                         pointList.append(a.posn())
                 elif isinstance(obj, Jig):
                     pointList.append(obj.center)
@@ -827,14 +827,14 @@ class Part( jigmakers_Mixin, InvalMixin, StateMixin,
                 if debug_flags.atom_debug:
                     print_compact_stack(msg)
                 else:
-                    print msg
+                    print(msg)
         return
 
     _inputs_for_selatoms = [] # only inval directly (same reasons as selmols; this one is *usually* updated incrementally, for speed)
     def _recompute_selatoms(self):
         if debug_1855:
-            print "debug_1855: part %r _recompute_selatoms, self.selwhat is %r, so we %s assume result is {} without checking" % \
-                  ( self, self.selwhat, {False:"WON'T",True:"WILL (not anymore)"}[self.selwhat != SELWHAT_ATOMS] )
+            print("debug_1855: part %r _recompute_selatoms, self.selwhat is %r, so we %s assume result is {} without checking" % \
+                  ( self, self.selwhat, {False:"WON'T",True:"WILL (not anymore)"}[self.selwhat != SELWHAT_ATOMS] ))
             # Note: this optim (below, now removed) was wrong after undo in that bug...
             # I don't trust it to be always right even aside from Undo, so I'll remove it for A7.
             # For A8 maybe we should replace it with an optim based on an accurate per-part count of picked atoms?
@@ -858,19 +858,19 @@ class Part( jigmakers_Mixin, InvalMixin, StateMixin,
         def func_selatoms(nn):
             "run this exactly once on all molecules (or other nodes) in this part (in any order)"
             if isinstance(nn, Chunk):
-                for atm in nn.atoms.itervalues():
+                for atm in nn.atoms.values():
                     if atm.picked:
                         res[atm.key] = atm
             return # from func_selatoms only
         self.topnode.apply2all( func_selatoms)
         self.selatoms = res
         if debug_1855:
-            print "debug_1855: part %r _recompute_selatoms did so, stores %r" % (self, res,)
+            print("debug_1855: part %r _recompute_selatoms did so, stores %r" % (self, res,))
             # guess: maybe this runs too early, before enough is updated, due to smth asking for it, maybe for incr update purposes
         if res and self.selwhat != SELWHAT_ATOMS and debug_flags.atom_debug:
             #bruce 060415; this prints, even after fix (or mitigation to nothing but debug prints) of bug 1855,
             # and I don't yet see an easy way to avoid that, so making it debug-only for A7.
-            print "debug: bug: part %r found %d selatoms, even though self.selwhat != SELWHAT_ATOMS (not fixed)" % (self,len(res))
+            print("debug: bug: part %r found %d selatoms, even though self.selwhat != SELWHAT_ATOMS (not fixed)" % (self,len(res)))
         return
 
     def selatoms_list(self): #bruce 051031
@@ -880,7 +880,7 @@ class Part( jigmakers_Mixin, InvalMixin, StateMixin,
         doesn't change; therefore its API looks like a method rather than like an attribute.
            Intended usage: use .selatoms_list() instead of .selatoms.values() for anything which might care about atom order.
         """
-        items = [(atm.pick_order(), atm) for atm in self.selatoms.itervalues()]
+        items = [(atm.pick_order(), atm) for atm in self.selatoms.values()]
         items.sort()
         return [pair[1] for pair in items]
 
@@ -898,7 +898,7 @@ class Part( jigmakers_Mixin, InvalMixin, StateMixin,
             #   and change our spec to return all atoms in order of selection
             #   (using arb or mmp file order within picked chunks)]
             for chunk in self.selmols:
-                for atom in chunk.atoms.itervalues():
+                for atom in chunk.atoms.values():
                     if not atom.is_singlet():
                         res.append(atom)
         return res

@@ -416,7 +416,7 @@ def readElementColors(fileName):
     try:
         lines = open(fileName, "rU").readlines()
     except:
-        print "Exception occurred to open file: ", fileName
+        print("Exception occurred to open file: ", fileName)
         return None
 
     elemColorTable = []
@@ -424,22 +424,22 @@ def readElementColors(fileName):
         if not line.startswith('#'):
             try:
                 words = line.split()
-                row = map(int, words[:4])
+                row = list(map(int, words[:4]))
                 # Check Element Number validity
                 if row[0] >= 0 and row[0] <= 54:
                     # Check RGB index values
                     if row[1] < 0 or row[1] > 255 \
                     or row[2] < 0 or row[2] > 255 \
                     or row[3] < 0 or row[3] > 255:
-                        raise ValueError, "An RGB index value not in a valid range (0-255)."
+                        raise ValueError("An RGB index value not in a valid range (0-255).")
                     elemColorTable += [row]
                 else:
-                    raise ValueError, "Element number value not in a valid range."
+                    raise ValueError("Element number value not in a valid range.")
             except:
                 # todo: env.history.redmsg
-                print "Error in element color file [%s]." % (fileName,)
-                print "Invalid value in line: %s" % (line,)
-                print "Element color file not loaded."
+                print("Error in element color file [%s]." % (fileName,))
+                print("Invalid value in line: %s" % (line,))
+                print("Element color file not loaded.")
                 return None
 
     return elemColorTable
@@ -457,13 +457,13 @@ def saveElementColors(fileName, elemTable):
     try:
         f = open(fileName, "w")
     except:
-        print "Exception occurred to open file %s to write: " % fileName
+        print("Exception occurred to open file %s to write: " % fileName)
         return None
 
     f.write("# NanoEngineer-1.com Element Color File, Version 050311\n")
     f.write("# File format: ElementNumber r(0-255) g(0-255) b(0-255) \n")
 
-    for eleNum, elm in elemTable.items():
+    for eleNum, elm in list(elemTable.items()):
         col = elm.color
         r = int(col[0] * 255 + 0.5)
         g = int(col[1] * 255 + 0.5)

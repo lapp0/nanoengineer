@@ -150,14 +150,14 @@ class Chirality:
                     raise FoundMOffset()
             # If we get to this point, we never found m offset.
             # If this ever happens, it indicates a bug.
-            raise Exception, "can't find m offset"
+            raise Exception("can't find m offset")
         except FoundMOffset:
             pass
 
         # Use the bond information to bond the atoms
         for (dict1, dict2) in [(evenAtomDict, oddAtomDict),
                                (oddAtomDict, evenAtomDict)]:
-            for n, m in dict1.keys():
+            for n, m in list(dict1.keys()):
                 atm = dict1[(n, m)]
                 for n2, m2 in bondDict[atm]:
                     try:
@@ -199,8 +199,7 @@ def addEndcap(mol, length, radius, bondlength):
         # a buckyball has no more than about 6*r**2 atoms, r in angstroms
         # each cap is ideally a half-buckyball
         for i in range(int(3.0 * R**2)):
-            regional_singlets = filter(lambda atm: chopSpace(atm) and atm.is_singlet(),
-                                       mol.atoms.values())
+            regional_singlets = [atm for atm in list(mol.atoms.values()) if chopSpace(atm) and atm.is_singlet()]
             for s in regional_singlets:
                 s.setposn(projectOntoSphere(s.posn()))
             if len(regional_singlets) < 3:
@@ -232,8 +231,7 @@ def addEndcap(mol, length, radius, bondlength):
             else:
                 # otherwise choose any pre-existing bond and stick the newguy on him
                 # prefer a bond whose real atom already has two real neighbors
-                preferred = filter(lambda atm: len(atm.realNeighbors()[0].realNeighbors()) == 2,
-                                   regional_singlets)
+                preferred = [atm for atm in regional_singlets if len(atm.realNeighbors()[0].realNeighbors()) == 2]
                 if preferred:
                     sing = preferred[0]
                 else:
@@ -241,7 +239,7 @@ def addEndcap(mol, length, radius, bondlength):
                 owner = sing.realNeighbors()[0]
                 newpos = walk_great_circle(owner.posn(), sing.posn(), bondlength)
                 regional_singlets.remove(sing)
-            ngen = NeighborhoodGenerator(mol.atoms.values(), 1.1 * bondlength)
+            ngen = NeighborhoodGenerator(list(mol.atoms.values()), 1.1 * bondlength)
             # do not include new guy in neighborhood, add him afterwards
             newguy = Atom('C', newpos, mol)
             newguy.set_atomtype('sp2')
@@ -269,7 +267,7 @@ def addEndcap(mol, length, radius, bondlength):
                     cleanupSinglets(newguy)
                     cleanupSinglets(oldguy)
             if len(newguy.realNeighbors()) > 3:
-                print 'warning: too many bonds on newguy'
+                print('warning: too many bonds on newguy')
             # Try moving the new guy around to make his bonds closer to bondlength but
             # keep him on or near the surface of the sphere. Use Newton's method in
             # three dimensions.
@@ -388,20 +386,20 @@ class NanotubeGenerator(NanotubeGeneratorPropertyManager, GeneratorBaseClass):
         # OK for stretching, but with compression it can fail. BTW,
         # "Z distortion" is a misnomer, we're stretching in the Y
         # direction.
-        for atm in atoms.values():
+        for atm in list(atoms.values()):
             # twist
             x, y, z = atm.posn()
             twistRadians = twist * z
             c, s = cos(twistRadians), sin(twistRadians)
             x, y = x * c + y * s, -x * s + y * c
             atm.setposn(V(x, y, z))
-        for atm in atoms.values():
+        for atm in list(atoms.values()):
             # z distortion
             x, y, z = atm.posn()
             z *= (zdist + length) / length
             atm.setposn(V(x, y, z))
         length += zdist
-        for atm in atoms.values():
+        for atm in list(atoms.values()):
             # xy distortion
             x, y, z = atm.posn()
             radius = self.chirality.R
@@ -419,7 +417,7 @@ class NanotubeGenerator(NanotubeGeneratorPropertyManager, GeneratorBaseClass):
 
         # trim all the carbons that fall outside our desired length
         # by doing this, we are introducing new singlets
-        for atm in atoms.values():
+        for atm in list(atoms.values()):
             x, y, z = atm.posn()
             if (z > .5 * (length + LENGTH_TWEAK) or
                 z < -.5 * (length + LENGTH_TWEAK)):
@@ -428,7 +426,7 @@ class NanotubeGenerator(NanotubeGeneratorPropertyManager, GeneratorBaseClass):
         # Apply bend. Equations are anomalous for zero bend.
         if abs(bend) > pi / 360:
             R = length / bend
-            for atm in atoms.values():
+            for atm in list(atoms.values()):
                 x, y, z = atm.posn()
                 theta = z / R
                 x, z = R - (R - x) * cos(theta), (R - x) * sin(theta)
@@ -437,7 +435,7 @@ class NanotubeGenerator(NanotubeGeneratorPropertyManager, GeneratorBaseClass):
         def trimCarbons():
             # trim all the carbons that only have one carbon neighbor
             for i in range(2):
-                for atm in atoms.values():
+                for atm in list(atoms.values()):
                     if not atm.is_singlet() and len(atm.realNeighbors()) == 1:
                         atm.kill()
 
@@ -448,25 +446,25 @@ class NanotubeGenerator(NanotubeGeneratorPropertyManager, GeneratorBaseClass):
             addEndcap(mol, length, self.chirality.R)
         if endings == "Hydrogen":
             # hydrogen terminations
-            for atm in atoms.values():
+            for atm in list(atoms.values()):
                 atm.Hydrogenate()
         elif endings == "Nitrogen":
             # nitrogen terminations
             dstElem = PeriodicTable.getElement('N')
             atomtype = dstElem.find_atomtype('sp2')
-            for atm in atoms.values():
+            for atm in list(atoms.values()):
                 if len(atm.realNeighbors()) == 2:
                     atm.Transmute(dstElem, force=True, atomtype=atomtype)
 
         # Translate structure to desired position
-        for atm in atoms.values():
+        for atm in list(atoms.values()):
             v = atm.posn()
             atm.setposn(v + position)
 
         if PROFILE:
             t = sw.now()
             env.history.message(greenmsg("%g seconds to build %d atoms" %
-                                         (t, len(atoms.values()))))
+                                         (t, len(list(atoms.values())))))
 
         if numwalls > 1:
             n += int(spacing * 3 + 0.5)  # empirical tinkering

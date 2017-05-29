@@ -179,7 +179,7 @@ class DrawingSet:
             # in that case we'd start with csdldict, which we own.
             # guess: it's not more efficient, since add is usually smaller
             # than half of want (we assume).
-        for csdl_id in csdldict.iterkeys():
+        for csdl_id in csdldict.keys():
             # we want csdl_id; do we have it?
             csdl_if_have = remove.pop(csdl_id, None)
             if csdl_if_have is not None:
@@ -201,7 +201,7 @@ class DrawingSet:
             continue
         # now remove and add are correct
         if remove:
-            for csdl_id in remove.iterkeys():
+            for csdl_id in remove.keys():
                 del have[csdl_id] # modifies self.CSDLs
             self._primSet = None
         if add:
@@ -230,7 +230,7 @@ class DrawingSet:
         # clear the _primSet cache if so.  (Possible optimization: regenerate
         # only some affected parts of the _primSet.)
         if self._primSet is not None:
-            for csdl in self.CSDLs.itervalues():
+            for csdl in self.CSDLs.values():
                 if csdl.changed > self._primSet.created:
                     self._primSet = None
                     break
@@ -243,7 +243,7 @@ class DrawingSet:
         # if so, fix updateTransform somehow. [bruce 090224 comment]
 
         if self._primSet is None:
-            self._primSet = GLPrimitiveSet(self.CSDLs.values())
+            self._primSet = GLPrimitiveSet(list(self.CSDLs.values()))
             pass
 
         # Draw the shader primitives and the OpenGL display lists.

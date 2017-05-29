@@ -204,8 +204,8 @@ class realtime_update_controller: #bruce 060705, consolidate code from runSim.py
             return False #e someday we might do this at the end, if the subsequent code is extended to save some prefs
         update_as_fast_as_possible = (update_as_fast_as_possible_data != 1)
         if env.debug():
-            print "debug: using update_as_fast_as_possible = %r,  update_number, update_units = %r, %r" % \
-                  ( update_as_fast_as_possible,  update_number, update_units )
+            print("debug: using update_as_fast_as_possible = %r,  update_number, update_units = %r, %r" % \
+                  ( update_as_fast_as_possible,  update_number, update_units ))
             pass
         if update_as_fast_as_possible:
             # This radiobutton might be misnamed; it really means "use the old code,
@@ -223,7 +223,7 @@ class realtime_update_controller: #bruce 060705, consolidate code from runSim.py
         elif update_units == 'hours':
             update_cond = ( lambda simtime, pytime, nframes, _timelimit = update_number * 3600:  simtime + pytime >= _timelimit )
         else:
-            print "don't know how to set update_cond from (%r, %r)" % (update_number, update_units)
+            print("don't know how to set update_cond from (%r, %r)" % (update_number, update_units))
             update_cond = None # some callers can tolerate this, though it's always a reportable error
         return update_cond
     def get_update_cond_from_widgets(self):

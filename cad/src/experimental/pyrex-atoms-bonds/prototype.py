@@ -25,9 +25,9 @@ def genkey():
     return n
 
 def pointer(x):
-    if type(x) not in (types.IntType, types.LongType):
+    if type(x) not in (int, int):
         x = id(x)
-    x = long(x)
+    x = int(x)
     if x < 0:
         x += 1 << 32
     return hex(x)[:-1]   # lose "L"
@@ -61,7 +61,7 @@ int followbond(int fromAtom, struct bond *b)
 # Make sure that whatever we're getting, it will fit into the field of
 # a struct.
 def isSmallInteger(x):
-    return type(x) == types.IntType
+    return type(x) == int
 def isNumericArray(x):
     return type(x) == Numeric.ArrayType
 
@@ -70,7 +70,7 @@ class CStruct:
         self.__struct__ = { }
     def kids(self):
         lst = [ ]
-        for k in self.STRUCTINFO.keys():
+        for k in list(self.STRUCTINFO.keys()):
             lst.append((k, getattr(self, k)))
         return lst
     def dumpInfo(self, index=None, indent=0):
@@ -84,11 +84,11 @@ class CStruct:
             else:
                 r += ind + ("    %s=%s\n" % (key, repr(value)))
         if indent == 0:
-            print r
+            print(r)
         return r
     def __setattr__(self, attr, value):
-        if DEBUG > 2: print "SET", attr, pointer(value)
-        if attr in self.STRUCTINFO.keys():
+        if DEBUG > 2: print("SET", attr, pointer(value))
+        if attr in list(self.STRUCTINFO.keys()):
             assert self.STRUCTINFO[attr](value), \
                    attr + " fails " + repr(self.STRUCTINFO[attr])
             self.__struct__[attr] = value
@@ -96,22 +96,22 @@ class CStruct:
         self.__dict__[attr] = value
     def __getattr__(self, attr):
         if attr == "__repr__":
-            raise AttributeError, attr
-        if attr in self.STRUCTINFO.keys():
+            raise AttributeError(attr)
+        if attr in list(self.STRUCTINFO.keys()):
             try:
                 value = self.__struct__[attr]
             except KeyError:
                 value = 0
         else:
             value = self.__dict__[attr]
-        if DEBUG > 2: print "GET", attr, value
+        if DEBUG > 2: print("GET", attr, value)
         return value
 
 class CStructWithKey(CStruct):
     def __init__(self):
         CStruct.__init__(self)
         assert hasattr(self, "STRUCTINFO")
-        assert "key" in self.STRUCTINFO.keys()
+        assert "key" in list(self.STRUCTINFO.keys())
         self.key = genkey()
 
 class AtomBase(CStructWithKey):
@@ -150,7 +150,7 @@ class AtomSetBase(CStruct):
         self._dct = { }
     def kids(self):
         lst = [ ]
-        for k in self.keys():
+        for k in list(self.keys()):
             lst.append((k, self[k]))
         return lst
     def __setitem__(self, key, atom):
@@ -170,43 +170,43 @@ class AtomSetBase(CStruct):
             def __init__(self, lst):
                 self.lst = lst
                 self.pointer = 0
-            def next(self):
+            def __next__(self):
                 if self.pointer == len(self.lst):
                     raise StopIteration
                 i = self.lst[self.pointer]
                 self.pointer += 1
                 return i
-        return MyIterator(self.values())
+        return MyIterator(list(self.values()))
     def keys(self):
-        return self._dct.keys()
+        return list(self._dct.keys())
     def add(self, atom):
         self[atom.key] = atom
     def remove(self, atom):
         del self[atom.key]
     def update(self, other):
-        for k in other.keys():
+        for k in list(other.keys()):
             self[k] = other[k]
     def values(self):
         lst = [ ]
-        for k in self.keys():
+        for k in list(self.keys()):
             lst.append(self[k])
         return lst
     def items(self):
-        return self.values()
+        return list(self.values())
     def clear(self):
-        for k in self.keys():
+        for k in list(self.keys()):
             del self[k]
     def filter(self, predicate):
         other = AtomSetBase()
-        for k in self.keys():
+        for k in list(self.keys()):
             if predicate(self[k]):
                 other.add(self[k])
         return other
     # should there also be methods for map and reduce?
     def atomInfo(self):
-        ar = Numeric.zeros((len(self.keys()), 4), 'd')
+        ar = Numeric.zeros((len(list(self.keys())), 4), 'd')
         i = 0
-        for k in self.keys():
+        for k in list(self.keys()):
             atm = self[k]
             ar[i] = atm.array[atm.arrayIndex]
             i += 1
@@ -276,9 +276,9 @@ class PerformanceLog:
         self.records.append("%s: %.2f nanoseconds per element"
                             % (name, (t2 - t1) / n))
     def dump(self):
-        print "Performance information"
+        print("Performance information")
         for x in self.records:
-            print x
+            print(x)
 
 PL = PerformanceLog()
 
@@ -321,8 +321,8 @@ class Tests(unittest.TestCase):
         atomset.add(atom2)
         atomset.add(atom1)
         # they better come out forwards
-        assert atomset.keys() == [ 1, 2, 3, 4, 5 ]
-        assert atomset.values() == [
+        assert list(atomset.keys()) == [ 1, 2, 3, 4, 5 ]
+        assert list(atomset.values()) == [
             atom1, atom2, atom3, atom4, atom5
             ]
 
@@ -360,10 +360,10 @@ class Tests(unittest.TestCase):
         atomset = AtomSetBase()
         for a in alst:
             atomset.add(a)
-        assert atomset.keys() == [ 1, 2, 3, 4, 5 ]
+        assert list(atomset.keys()) == [ 1, 2, 3, 4, 5 ]
         atomset2 = AtomSetBase()
         atomset2.update(atomset)
-        assert atomset2.keys() == [ 1, 2, 3, 4, 5 ]
+        assert list(atomset2.keys()) == [ 1, 2, 3, 4, 5 ]
 
     def test_atomset_updateFromDict(self):
         adct = { }
@@ -372,7 +372,7 @@ class Tests(unittest.TestCase):
             adct[a.key] = a
         atomset = AtomSetBase()
         atomset.update(adct)
-        assert atomset.keys() == [ 1, 2, 3, 4, 5 ]
+        assert list(atomset.keys()) == [ 1, 2, 3, 4, 5 ]
 
     def test_atomset_removeFromEmpty(self):
         atomset = AtomSetBase()
@@ -422,7 +422,7 @@ class Tests(unittest.TestCase):
             if e == 8:
                 # change oxygen to carbon
                 atom.array[atom.arrayIndex][0] = 6
-        map(transmute, w.atomset)
+        list(map(transmute, w.atomset))
         atominfo = w.atomset.atomInfo()
         assert atominfo.tolist() == [
             [1.0, -0.983, -0.008, 0.000],

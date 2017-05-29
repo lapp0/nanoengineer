@@ -45,7 +45,7 @@ def readGlobalsFile(filename, changeToPackageFormat):
             continue
         if (definitionFile in filesToIgnore):
             continue
-        if (ret.has_key(globalSymbol)):
+        if (globalSymbol in ret):
             fileSet = ret[globalSymbol]
         else:
             fileSet = set([])
@@ -64,7 +64,7 @@ def readGlobalsFile(filename, changeToPackageFormat):
     return ret
 
 def printDuplicateGlobals(globalsDict):
-    keys = globalsDict.keys()
+    keys = list(globalsDict.keys())
     keys.sort()
     for key in keys:
         if (key.startswith("_")):
@@ -75,9 +75,9 @@ def printDuplicateGlobals(globalsDict):
         if (len(fileSet) > 1):
             fileList = list(fileSet)
             fileList.sort()
-            print "\n%s\n" % key
+            print("\n%s\n" % key)
             for filename in fileList:
-                print "  %s \\" % filename
+                print("  %s \\" % filename)
 
 def toModule(filename):
     if (filename.startswith("./src/")):
@@ -90,18 +90,18 @@ def toModule(filename):
     return filename
 
 def resolveSymbol(sym):
-    if (globalsDict.has_key(sym)):
+    if (sym in globalsDict):
         fileSet = globalsDict[sym]
         fileList = list(fileSet)
         if (len(fileList) > 1):
-            print "ambiguous definitions of symbol %s:" % sym
+            print("ambiguous definitions of symbol %s:" % sym)
             fileList.sort()
             for filename in fileList:
-                print "  " + filename
+                print("  " + filename)
         else:
-            print "from %s import %s" % (toModule(fileList[0]), sym)
+            print("from %s import %s" % (toModule(fileList[0]), sym))
     else:
-        print "import " + sym
+        print("import " + sym)
 
 def findPycheckerGlobals():
     for line in sys.stdin:
@@ -125,34 +125,34 @@ _s_ignoreModuleSet = set([
 
 def checkOneImport(fileName, moduleName, symbolName, globalsDict):
     if (symbolName == '*'):
-        print "import * in " + fileName
+        print("import * in " + fileName)
         return
     if (symbolName == '\\'):
-        print "import \\ in " + fileName
+        print("import \\ in " + fileName)
         return
-    if (_s_symbolToModule.has_key(symbolName)):
+    if (symbolName in _s_symbolToModule):
         previousModule = _s_symbolToModule[symbolName]
         if (previousModule != moduleName):
             if ((previousModule == "math" and moduleName == "Numeric") or
                 (previousModule == "Numeric" and moduleName == "math")):
                 pass
             else:
-                print "%s importing %s from %s, elsewhere imported from %s" % (fileName, symbolName, moduleName, previousModule)
+                print("%s importing %s from %s, elsewhere imported from %s" % (fileName, symbolName, moduleName, previousModule))
     if (moduleName in _s_ignoreModuleSet):
         return
     _s_symbolToModule[symbolName] = moduleName
-    if (globalsDict.has_key(symbolName)):
+    if (symbolName in globalsDict):
         moduleSet = globalsDict[symbolName]
         if (not moduleName in moduleSet):
-            print "%s importing %s from %s, not defined there" % (fileName, symbolName, moduleName)
+            print("%s importing %s from %s, not defined there" % (fileName, symbolName, moduleName))
         if (len(moduleSet) > 1):
             if (len(moduleSet) == 2 and "math" in moduleSet and "Numeric" in moduleSet):
                 return
-            print "%s importing %s from %s, is available from:" % (fileName, symbolName, moduleName)
+            print("%s importing %s from %s, is available from:" % (fileName, symbolName, moduleName))
             for mod in moduleSet:
-                print "    " + mod
+                print("    " + mod)
     else:
-        print "can't check up on file %s symbol %s module %s" % (fileName, symbolName, moduleName)
+        print("can't check up on file %s symbol %s module %s" % (fileName, symbolName, moduleName))
 
 def checkImportStatements(globalsDict):
     """

@@ -103,12 +103,12 @@ def draw_filled_rect(origin, dx, dy, color):
     try:
         len(color)
     except:
-        print "following exception in len(color) for color = %r" % (color,) # 061212 -- why didn't caller's fix_color catch it? ##k
+        print("following exception in len(color) for color = %r" % (color,)) # 061212 -- why didn't caller's fix_color catch it? ##k
         raise
     if len(color) == 4:
         glColor4fv(color)
         if 0 and color[3] != 1.0:
-            print "color has alpha",color ####@@@@
+            print("color has alpha",color) ####@@@@
     else:
         glColor3fv(color)
 ##    glRectfv(origin, origin + dx + dy) # won't work for most coords! also, ignores Z. color still not working.

@@ -21,14 +21,14 @@ parameterPattern = re.compile(r"^([^=]+)\s*\=\s*(\S+)\s*(.*)")
 existing = sys.argv[1]
 allfiles = sys.argv[1:]
 
-print "existing parameter file: " + existing
+print("existing parameter file: " + existing)
 newfile = open(existing + ".new", 'w')
 
 # accumulates canonicalized lines for each unique "bond hybridization" pair
 results = {}
 
 for f in allfiles:
-    print "processing " + f
+    print("processing " + f)
     lines = open(f).readlines();
     for l in lines:
         # remove leading and trailing whitespace
@@ -62,7 +62,7 @@ for f in allfiles:
             sortfield = bond + " " + hybrid
             results[sortfield] = canonical
 
-bondkeys = results.keys()
+bondkeys = list(results.keys())
 bondkeys.sort()
 for key in bondkeys:
     newfile.write(results[key] + "\n")

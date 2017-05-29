@@ -112,8 +112,8 @@ class ModelNode(InstanceOrExpr): #e rename since not a Node anymore (unless I ac
         replace self with an updated version using the latest code, for self *and* self's data!
         """
         name = self.__class__.__name__
-        print "name is",name # "DebugNode"
-        print self.__class__.__module__
+        print("name is",name) # "DebugNode"
+        print(self.__class__.__module__)
         #e rest is nim; like copy_val but treats instances differently, maps them through an upgrader
 
     # new code:
@@ -232,7 +232,7 @@ def dictmap(dict1, list1): ##e does this have another name in py_utils, or is th
     return [dict1[key] for key in list1]
 
 if 0:
-    print "rcmd maps 1 to %r, 2 to %r, 1 to %r" % tuple(dictmap(rcmd, [1,2,1])) #e change time to counter so you can tell it didn't recompute
+    print("rcmd maps 1 to %r, 2 to %r, 1 to %r" % tuple(dictmap(rcmd, [1,2,1]))) #e change time to counter so you can tell it didn't recompute
 
 # end
 

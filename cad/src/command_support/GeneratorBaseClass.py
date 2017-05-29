@@ -159,8 +159,8 @@ class GeneratorBaseClass:
                 self.cmdname = cmdname
             except:
                 if debug_flags.atom_debug:
-                    print "fyi: %r guessed wrong about format of self.cmd == %r" \
-                          % (self, self.cmd,)
+                    print("fyi: %r guessed wrong about format of self.cmd == %r" \
+                          % (self, self.cmd,))
                 pass
         elif self.cmdname and not self.cmd:
             # this is intended to be the usual situation, but isn't yet, as of
@@ -237,12 +237,12 @@ class GeneratorBaseClass:
         # this class.
         # [070724 code review]
         if debug_flags.atom_debug:
-            print 'restore defaults button clicked'
+            print('restore defaults button clicked')
 
     def preview_btn_clicked(self):
         """Slot for the Preview button."""
         if debug_flags.atom_debug:
-            print 'preview button clicked'
+            print('preview button clicked')
         self.change_random_seed()
         self._ok_or_preview(previewing = True)
 
@@ -257,7 +257,7 @@ class GeneratorBaseClass:
         # (Maybe this is true for some other _btn_clicked methods as well.)
         # [070724 code review]
         if debug_flags.atom_debug:
-            print 'ok button clicked'
+            print('ok button clicked')
         self._gensym_data_for_reusing_name = None # make sure gensym-assigned
             # name won't be reused next time
         self._ok_or_preview(doneMsg = True)
@@ -298,13 +298,13 @@ class GeneratorBaseClass:
         self.pluginException = False
         try:
             return aCallable()
-        except CadBug, e:
+        except CadBug as e:
             reason = "Bug in the CAD system"
-        except PluginBug, e:
+        except PluginBug as e:
             reason = "Bug in the plug-in"
-        except UserError, e:
+        except UserError as e:
             reason = "User error"
-        except Exception, e:
+        except Exception as e:
             #bruce 070518 revised the message in this case,
             # and revised subsequent code to set self.pluginException
             # even in this case (since I am interpreting it as a bug)
@@ -437,13 +437,13 @@ class GeneratorBaseClass:
     def done_btn_clicked(self):
         "Slot for the Done button"
         if debug_flags.atom_debug:
-            print "done button clicked"
+            print("done button clicked")
         self.ok_btn_clicked()
 
     def cancel_btn_clicked(self):
         "Slot for the Cancel button"
         if debug_flags.atom_debug:
-            print "cancel button clicked"
+            print("cancel button clicked")
         self.win.assy.current_command_info(cmdname = self.cmdname + " (Cancel)")
         self.remove_struct()
         self._revert_number()
@@ -461,7 +461,7 @@ class GeneratorBaseClass:
         When the user closes the dialog by clicking the 'X' button
         on the dialog title bar, do whatever the cancel button does.
         """
-        print "\nfyi: GeneratorBaseClass.close(%r) was called" % (e,)
+        print("\nfyi: GeneratorBaseClass.close(%r) was called" % (e,))
             # I think this is never called anymore,
             # and would lead to infinite recursion via cancel_btn_clicked
             # (causing bugs) if it was. [bruce 070829]

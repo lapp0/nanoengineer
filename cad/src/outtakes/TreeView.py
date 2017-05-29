@@ -127,7 +127,7 @@ class ModelTreeItem(QItemDelegate):
             painter.drawText(x + 20, y + 12, item.name)
 
     def pr(self, indent=""):
-        print indent, self
+        print(indent, self)
         for x in self.childItems:
             x.pr(indent + "    ")
 
@@ -150,7 +150,7 @@ class ModelTreeModel(QAbstractItemModel):
         return ModelTreeModel(self.rootItem)
 
     def pr(self):
-        print self
+        print(self)
         self.rootItem.pr("  ")
 
     # The following methods are the the official API required by
@@ -324,7 +324,7 @@ class TreeView(QTreeView):
         (though as of 050113 the current implem does not take advantage of this).
         """
         if debug_mt_updates:
-            print "debug_mt_updates: mt_update called"
+            print("debug_mt_updates: mt_update called")
         self.needs_update_state = 1 # we'll respond to this in our custom method during the next paintEvent
         if not self.updatesEnabled():
             if debug_flags.atom_debug:
@@ -345,8 +345,8 @@ class TreeView(QTreeView):
         import time
         stamp = time.asctime() #e improve
         if stamp != self._last_dprinttime_stamp:
-            print
-            print stamp
+            print()
+            print(stamp)
         self._last_dprinttime_stamp = stamp
         return
 
@@ -354,7 +354,7 @@ class TreeView(QTreeView):
         if not debug_prints: return
         if debug_flags.atom_debug:
             self.dprinttime()
-            print msg
+            print(msg)
         return
 
     # update-related functions, and related event-processing
@@ -364,14 +364,14 @@ class TreeView(QTreeView):
     def updateContents(self):
         if debug_prints:
             self.dprinttime()
-            print "fyi: modelTree.updateContents() called (by Qt, maybe by triggerUpdate)"
+            print("fyi: modelTree.updateContents() called (by Qt, maybe by triggerUpdate)")
             print_compact_stack("stack in updateContents(): ")
         self.update()
 
     def resize(self): #k does this get called? no.
         if debug_prints:
             self.dprinttime()
-            print "fyi: modelTree.resize() called (by Qt, presumably)"
+            print("fyi: modelTree.resize() called (by Qt, presumably)")
             print_compact_stack("stack in resize(): ")
         return QTreeView.resize(self)
 
@@ -428,7 +428,7 @@ class TreeView(QTreeView):
         # that it might avoid infrecur from repaint by QTreeView,
         # and even if not, might reduce screen flicker or other problems.
         if debug_mt_updates:
-            print "debug_mt_updates: update_state called"
+            print("debug_mt_updates: update_state called")
         old_UpdatesEnabled = self.updatesEnabled()
         if not old_UpdatesEnabled:
             self.dprint( "atom_debug: not old_UpdatesEnabled") # error?
@@ -442,7 +442,7 @@ class TreeView(QTreeView):
         # called when a repaint is about to happen! But an updateContents
         # might be good, here or in the sole caller or grandcaller. ###@@@
         if debug_mt_updates:
-            print "debug_mt_updates: update_state returning normally"
+            print("debug_mt_updates: update_state returning normally")
         return
 
     def update_state_0( self, paintevent):
@@ -568,7 +568,7 @@ class TreeView(QTreeView):
             try:
                 node.open ###@@@ obs, will be changed
             except:
-                print "fyi: bug? openable node has no .open attr: %r" % node ###@@@ soon, none will need this, i think...
+                print("fyi: bug? openable node has no .open attr: %r" % node) ###@@@ soon, none will need this, i think...
                 res['open'] = False
             else:
                 res['open'] = not not node.open
@@ -637,7 +637,7 @@ class TreeView(QTreeView):
         """Step through the nodes for this tree, and fill in the QToolTip for
         the ModelTreeItems in the viewport of the QlistView for the tree."""
         _node_items = self._node_items
-        for node in _node_items.keys():
+        for node in list(_node_items.keys()):
             name = node.name
             if len(name) > 12:
                 item = _node_items[node]
@@ -768,7 +768,7 @@ class TreeView(QTreeView):
         # Another fix would be to scan the item-tree here (as last made from a node-tree), not the new node-tree. #e]
         if not item:
             if debug_flags.atom_debug:
-                print "atom_debug: fyi: MT node with no item (still waiting for MT.update Qt event?)"
+                print("atom_debug: fyi: MT node with no item (still waiting for MT.update Qt event?)")
             return
         # bruce 050512 continues: Worse, it can happen that item is no longer valid -- the first time we call a method on it,
         # we get an exception from PyQt "RuntimeError: underlying C/C++ object has been deleted". My bug 620 comments give
@@ -777,7 +777,7 @@ class TreeView(QTreeView):
             item.text(0) # returns text in column 0
         except:
             if debug_flags.atom_debug:
-                print "atom_debug: fyi: MT node with invalid item (still waiting for MT.update Qt event?)"
+                print("atom_debug: fyi: MT node with invalid item (still waiting for MT.update Qt event?)")
             return
         # Now it should be safe to use item.
         if do_setOpen:

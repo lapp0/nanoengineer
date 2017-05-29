@@ -335,7 +335,7 @@ class _readmmp_state:
         (removing them from our artificial Group if any);
         but don't verify they are Groups or alter them, that's up to the caller.
         """
-        for marker in self.markers.values():
+        for marker in list(self.markers.values()):
             marker.kill() #bruce 050422; semi-guess
         self.markers = None
         if len(self.groupstack) > 1:
@@ -425,7 +425,7 @@ class _readmmp_state:
                 # print a debug-only warning except for a comment line
                 # (TODO: maybe only do this the first time we see it?)
                 if debug_flags.atom_debug and recordname != '#':
-                    print "atom_debug: fyi: unrecognized mmp record type ignored (not an error): %r" % recordname
+                    print("atom_debug: fyi: unrecognized mmp record type ignored (not an error): %r" % recordname)
             pass
 
         return linemethod, errmsg
@@ -467,7 +467,7 @@ class _readmmp_state:
         x = _name_pattern.search(card)
         if x:
             return x.group(1)
-        print "warning: mmp record without a valid name field: %r" % (card,) #bruce 071019
+        print("warning: mmp record without a valid name field: %r" % (card,)) #bruce 071019
         return gensym(default)
             # Note: I'm not sure it's safe/good to pass an assy argument
             # to this gensym, and I also think this probably never happens,
@@ -504,7 +504,7 @@ class _readmmp_state:
             rest = rest.strip()
         else:
             # format error
-            print "warning: mmp record without a valid name field: %r" % (card,) #bruce 071019
+            print("warning: mmp record without a valid name field: %r" % (card,)) #bruce 071019
             if type(default) == type(""):
                 name = gensym(default)
                     # Note: I'm not sure it's safe/good to pass an assy argument
@@ -596,7 +596,7 @@ class _readmmp_state:
     def _read_atom(self, card):
         m = atom1pat.match(card)
         if not m:
-            print card
+            print(card)
         n = int(m.group(1))
         try:
             element = PeriodicTable.getElement(int(m.group(2)))
@@ -647,19 +647,19 @@ class _readmmp_state:
         return self.read_bond_record(card, V_CARBOMERIC)
 
     def read_bond_record(self, card, valence):
-        list1 = map(int, re.findall("\d+", card[5:])) # note: this assumes all bond mmp-record-names are the same length, 5 chars.
+        list1 = list(map(int, re.findall("\d+", card[5:]))) # note: this assumes all bond mmp-record-names are the same length, 5 chars.
         try:
             for a in map((lambda n: self.ndix[n]), list1):
                 bond_atoms( self.prevatom, a, valence, no_corrections = True) # bruce 050502 revised this
         except KeyError:
-            print "error in MMP file: atom ", self.prevcard
-            print card
+            print("error in MMP file: atom ", self.prevcard)
+            print(card)
             #e better error action, like some exception?
 
     def _read_bond_direction(self, card): #bruce 070415
         atomcodes = card.strip().split()[1:] # note: these are strings, but self.ndix needs ints
         assert len(atomcodes) >= 2
-        atoms = map((lambda nstr: self.ndix[int(nstr)]), atomcodes)
+        atoms = list(map((lambda nstr: self.ndix[int(nstr)]), atomcodes))
         for atom1, atom2 in zip(atoms[:-1], atoms[1:]):
             bond = find_bond(atom1, atom2)
             bond.set_bond_direction_from(atom1, 1)
@@ -740,8 +740,8 @@ class _readmmp_state:
             assert isinstance(atom, Atom)
             return atom.element.role == 'axis' or \
                    (atom.element.role == 'strand' and not atom.element is Pl5)
-        atoms1 = filter(ok, atoms_in_range1)
-        atoms2 = filter(ok, atoms_in_range2)
+        atoms1 = list(filter(ok, atoms_in_range1))
+        atoms2 = list(filter(ok, atoms_in_range2))
         assert len(atoms1) == len(atoms2), \
                "qualifying atom counts %d and %d don't match in %r" % \
                (len(atoms1), len(atoms2), card)
@@ -783,12 +783,11 @@ class _readmmp_state:
         ngroups = len(m.groups()) # ngroups = number of fields found (12 = old, 15 = new)
         name = m.group(1)
         name = self.decode_name(name)
-        col = map(lambda (x): int(x) / 255.0,
-                  [m.group(2), m.group(3), m.group(4)] )
+        col = [int(x) / 255.0 for x in [m.group(2), m.group(3), m.group(4)]]
         torq = float(m.group(5))
         sped = float(m.group(6))
-        cxyz = A(map(float, [m.group(7), m.group(8), m.group(9)])) / 1000.0
-        axyz = A(map(float, [m.group(10), m.group(11), m.group(12)])) / 1000.0
+        cxyz = A(list(map(float, [m.group(7), m.group(8), m.group(9)]))) / 1000.0
+        axyz = A(list(map(float, [m.group(10), m.group(11), m.group(12)]))) / 1000.0
         if ngroups == 15: # if we have 15 fields, we have the length, radius and spoke radius.
             length = float(m.group(13))
             radius = float(m.group(14))
@@ -807,8 +806,8 @@ class _readmmp_state:
         self.prevmotor = motor # might not be needed if we just looked for it when we need it [bruce 050405 comment]
 
     def _read_shaft(self, card):
-        list1 = map(int, re.findall("\d+", card[6:]))
-        list1 = map((lambda n: self.ndix[n]), list1)
+        list1 = list(map(int, re.findall("\d+", card[6:])))
+        list1 = list(map((lambda n: self.ndix[n]), list1))
         self.prevmotor.setShaft(list1)
 
     # Read the MMP record for a Linear Motor as:
@@ -822,12 +821,11 @@ class _readmmp_state:
         ngroups = len(m.groups()) # ngroups = number of fields found (12 = old, 15 = new)
         name = m.group(1)
         name = self.decode_name(name)
-        col = map(lambda (x): int(x) / 255.0,
-                  [m.group(2), m.group(3), m.group(4)] )
+        col = [int(x) / 255.0 for x in [m.group(2), m.group(3), m.group(4)]]
         force = float(m.group(5))
         stiffness = float(m.group(6))
-        cxyz = A(map(float, [m.group(7), m.group(8), m.group(9)])) / 1000.0
-        axyz = A(map(float, [m.group(10), m.group(11), m.group(12)])) / 1000.0
+        cxyz = A(list(map(float, [m.group(7), m.group(8), m.group(9)]))) / 1000.0
+        axyz = A(list(map(float, [m.group(10), m.group(11), m.group(12)]))) / 1000.0
         if ngroups == 15: # if we have 15 fields, we have the length, width and spoke radius.
             length = float(m.group(13))
             width = float(m.group(14))
@@ -850,12 +848,12 @@ class _readmmp_state:
         m = gridplane_pat.match(card)
         name = m.group(1)
         name = self.decode_name(name)
-        border_color = map(lambda (x): int(x) / 255.0, [m.group(2), m.group(3), m.group(4)])
+        border_color = [int(x) / 255.0 for x in [m.group(2), m.group(3), m.group(4)]]
         width = float(m.group(5)); height = float(m.group(6));
-        center = A(map(float, [m.group(7), m.group(8), m.group(9)]))
-        quat = A(map(float, [m.group(10), m.group(11), m.group(12), m.group(13)]))
+        center = A(list(map(float, [m.group(7), m.group(8), m.group(9)])))
+        quat = A(list(map(float, [m.group(10), m.group(11), m.group(12), m.group(13)])))
         grid_type = int(m.group(14)); line_type = int(m.group(15)); x_space = float(m.group(16)); y_space = float(m.group(17))
-        grid_color = map(lambda (x): int(x) / 255.0, [m.group(18), m.group(19), m.group(20)])
+        grid_color = [int(x) / 255.0 for x in [m.group(18), m.group(19), m.group(20)]]
 
         gridPlane = GridPlane(self.assy, [], READ_FROM_MMP = True)
         gridPlane.setProps(name, border_color, width, height, center, quat, grid_type, \
@@ -874,10 +872,10 @@ class _readmmp_state:
         name = self.decode_name(name)
         #border_color = color of the border for front side of the reference plane.
         #user can't set it for now. -- ninad 20070104
-        border_color = map(lambda (x): int(x) / 255.0, [m.group(2), m.group(3), m.group(4)])
+        border_color = [int(x) / 255.0 for x in [m.group(2), m.group(3), m.group(4)]]
         width = float(m.group(5)); height = float(m.group(6));
-        center = A(map(float, [m.group(7), m.group(8), m.group(9)]))
-        quat = A(map(float, [m.group(10), m.group(11), m.group(12), m.group(13)]))
+        center = A(list(map(float, [m.group(7), m.group(8), m.group(9)])))
+        quat = A(list(map(float, [m.group(10), m.group(11), m.group(12), m.group(13)])))
 
         #@@HACK: Plane.setProps() accepts a tuple that must also contain values
         #for the grid related attrs such as gridColor, gridLineType etc.
@@ -916,13 +914,12 @@ class _readmmp_state:
         m = atomsetpat.match(card)
         name = m.group(1)
         name = self.decode_name(name)
-        col = map(lambda (x): int(x) / 255.0,
-                  [m.group(2), m.group(3), m.group(4)] )
+        col = [int(x) / 255.0 for x in [m.group(2), m.group(3), m.group(4)]]
 
         # Read in the list of atoms
         card = card[card.index(")") + 1:] # skip past the color field
-        list1 = map(int, re.findall("\d+", card[card.index(")") + 1:]))
-        list1 = map((lambda n: self.ndix[n]), list1)
+        list1 = list(map(int, re.findall("\d+", card[card.index(")") + 1:])))
+        list1 = list(map((lambda n: self.ndix[n]), list1))
 
         atomset = AtomSet(self.assy, list1) # create atom set and set props
         atomset.name = name
@@ -939,12 +936,12 @@ class _readmmp_state:
         m = esppat.match(card)
         name = m.group(1)
         name = self.decode_name(name)
-        border_color = map(lambda (x): int(x) / 255.0, [m.group(2), m.group(3), m.group(4)])
+        border_color = [int(x) / 255.0 for x in [m.group(2), m.group(3), m.group(4)]]
         width = float(m.group(5)); height = float(m.group(6)); resolution = int(m.group(7))
-        center = A(map(float, [m.group(8), m.group(9), m.group(10)]))
-        quat = A(map(float, [m.group(11), m.group(12), m.group(13), m.group(14)]))
+        center = A(list(map(float, [m.group(8), m.group(9), m.group(10)])))
+        quat = A(list(map(float, [m.group(11), m.group(12), m.group(13), m.group(14)])))
         trans = float(m.group(15))
-        fill_color = map(lambda (x): int(x) / 255.0, [m.group(16), m.group(17), m.group(18)])
+        fill_color = [int(x) / 255.0 for x in [m.group(16), m.group(17), m.group(18)]]
         show_bbox = int(m.group(19))
         win_offset = float(m.group(20)); edge_offset = float(m.group(21))
 
@@ -968,13 +965,12 @@ class _readmmp_state:
         m = groundpat.match(card)
         name = m.group(1)
         name = self.decode_name(name)
-        col = map(lambda (x): int(x) / 255.0,
-                  [m.group(2), m.group(3), m.group(4)] )
+        col = [int(x) / 255.0 for x in [m.group(2), m.group(3), m.group(4)]]
 
         # Read in the list of atoms
         card = card[card.index(")") + 1 :] # skip past the color field
-        list1 = map(int, re.findall("\d+", card[card.index(")") + 1 :]))
-        list1 = map((lambda n: self.ndix[n]), list1)
+        list1 = list(map(int, re.findall("\d+", card[card.index(")") + 1 :])))
+        list1 = list(map((lambda n: self.ndix[n]), list1))
 
         gr = Anchor(self.assy, list1) # create ground and set props
         gr.name = name
@@ -992,12 +988,11 @@ class _readmmp_state:
         assert len(m.groups()) == 8
         name = m.group(1)
         name = self.decode_name(name)
-        col = map(lambda (x): int(x) / 255.0,
-                  [m.group(2), m.group(3), m.group(4)] )
+        col = [int(x) / 255.0 for x in [m.group(2), m.group(3), m.group(4)]]
         font_name = m.group(5)
         font_size = int(m.group(6))
-        atomlist = map(int, [m.group(7), m.group(8)])
-        lst = map(lambda n: self.ndix[n], atomlist)
+        atomlist = list(map(int, [m.group(7), m.group(8)]))
+        lst = [self.ndix[n] for n in atomlist]
         mdist = MeasureDistance(self.assy, [ ])
         mdist.setProps(name, col, font_name, font_size, lst)
         self.addmember(mdist)
@@ -1010,12 +1005,11 @@ class _readmmp_state:
         assert len(m.groups()) == 9
         name = m.group(1)
         name = self.decode_name(name)
-        col = map(lambda (x): int(x) / 255.0,
-                  [m.group(2), m.group(3), m.group(4)] )
+        col = [int(x) / 255.0 for x in [m.group(2), m.group(3), m.group(4)]]
         font_name = m.group(5)
         font_size = int(m.group(6))
-        atomlist = map(int, [m.group(7), m.group(8), m.group(9)])
-        lst = map(lambda n: self.ndix[n], atomlist)
+        atomlist = list(map(int, [m.group(7), m.group(8), m.group(9)]))
+        lst = [self.ndix[n] for n in atomlist]
         mang = MeasureAngle(self.assy, [ ])
         mang.setProps(name, col, font_name, font_size, lst)
         self.addmember(mang)
@@ -1028,12 +1022,11 @@ class _readmmp_state:
         assert len(m.groups()) == 10
         name = m.group(1)
         name = self.decode_name(name)
-        col = map(lambda (x): int(x) / 255.0,
-                  [m.group(2), m.group(3), m.group(4)] )
+        col = [int(x) / 255.0 for x in [m.group(2), m.group(3), m.group(4)]]
         font_name = m.group(5)
         font_size = int(m.group(6))
-        atomlist = map(int, [m.group(7), m.group(8), m.group(9), m.group(10)])
-        lst = map(lambda n: self.ndix[n], atomlist)
+        atomlist = list(map(int, [m.group(7), m.group(8), m.group(9), m.group(10)]))
+        lst = [self.ndix[n] for n in atomlist]
         mdih = MeasureDihedral(self.assy, [ ])
         mdih.setProps(name, col, font_name, font_size, lst)
         self.addmember(mdih)
@@ -1056,8 +1049,7 @@ class _readmmp_state:
         m = jigpat.match(card)
         name = m.group(1)
         name = self.decode_name(name)
-        col = map(lambda (x): int(x) / 255.0,
-                  [m.group(2), m.group(3), m.group(4)] )
+        col = [int(x) / 255.0 for x in [m.group(2), m.group(3), m.group(4)]]
 
         # Read in the list of atoms
         # [max number of atoms used to be limited by max mmp-line length
@@ -1065,8 +1057,8 @@ class _readmmp_state:
         #  but this should be verified (in cad and sim readers)
         #  [bruce 080227 comment]]
         card = card[card.index(")") + 1:] # skip past the color field
-        list1 = map(int, re.findall("\d+", card[card.index(")") + 1:]))
-        list1 = map((lambda n: self.ndix[n]), list1)
+        list1 = list(map(int, re.findall("\d+", card[card.index(")") + 1:])))
+        list1 = list(map((lambda n: self.ndix[n]), list1))
 
         jig = constructor(self.assy, list1) # create jig and set some properties -- constructor must not put up a dialog
         jig.name = name
@@ -1082,14 +1074,13 @@ class _readmmp_state:
         m = statpat.match(card)
         name = m.group(1)
         name = self.decode_name(name)
-        col = map(lambda (x): int(x) / 255.0,
-                  [m.group(2), m.group(3), m.group(4)] )
+        col = [int(x) / 255.0 for x in [m.group(2), m.group(3), m.group(4)]]
         temp = m.group(5)
 
         # Read in the list of atoms
         card = card[card.index(")") + 1:] # skip past the color field
         card = card[card.index(")") + 1:] # skip past the temp field
-        list1 = map(int, re.findall("\d+", card[card.index(")") + 1:]))
+        list1 = list(map(int, re.findall("\d+", card[card.index(")") + 1:])))
 
         # We want "list1" to contain only the 3rd item, so let's remove
         # first_atom (1st item) and last_atom (2nd item) in list1.
@@ -1105,7 +1096,7 @@ class _readmmp_state:
             msg = "a thermostat record was found (" + name + ") in the part which contained extra atoms.  They will be ignored."
             self.warning(msg)
 
-        list1 = map((lambda n: self.ndix[n]), list1)
+        list1 = list(map((lambda n: self.ndix[n]), list1))
 
         sr = Stat(self.assy, list1) # create stat and set props
         sr.name = name
@@ -1120,12 +1111,11 @@ class _readmmp_state:
         m = thermopat.match(card)
         name = m.group(1)
         name = self.decode_name(name)
-        col = map(lambda (x): int(x) / 255.0,
-                  [m.group(2), m.group(3), m.group(4)] )
+        col = [int(x) / 255.0 for x in [m.group(2), m.group(3), m.group(4)]]
 
         # Read in the list of atoms
         card = card[card.index(")") + 1:] # skip past the color field
-        list1 = map(int, re.findall("\d+", card[card.index(")") + 1:]))
+        list1 = list(map(int, re.findall("\d+", card[card.index(")") + 1:])))
 
         # We want "list1" to contain only the 3rd item, so let's remove
         # first_atom (1st item) and last_atom (2nd item) in list1.
@@ -1141,7 +1131,7 @@ class _readmmp_state:
             msg = "a thermometer record was found in the part which contained extra atoms.  They will be ignored."
             self.warning(msg)
 
-        list1 = map((lambda n: self.ndix[n]), list1)
+        list1 = list(map((lambda n: self.ndix[n]), list1))
 
         sr = Thermo(self.assy, list1) # create stat and set props
         sr.name = name
@@ -1169,9 +1159,9 @@ class _readmmp_state:
         m = namedviewpat.match(card)
         name = m.group(1)
         name = self.decode_name(name)
-        wxyz = A(map(float, [m.group(2), m.group(3), m.group(4), m.group(5)]))
+        wxyz = A(list(map(float, [m.group(2), m.group(3), m.group(4), m.group(5)])))
         scale = float(m.group(6))
-        pov = A(map(float, [m.group(7), m.group(8), m.group(9)]))
+        pov = A(list(map(float, [m.group(7), m.group(8), m.group(9)])))
         zoomFactor = float(m.group(10))
         namedView = NamedView(self.assy, name, scale, pov, zoomFactor, wxyz)
         self.addmember(namedView)
@@ -1205,10 +1195,10 @@ class _readmmp_state:
         if m:
             name = m.group(1)
             name = self.decode_name(name)
-            wxyz = A(map(float, [m.group(2), m.group(3),
-                                 m.group(4), m.group(5)] ))
+            wxyz = A(list(map(float, [m.group(2), m.group(3),
+                                 m.group(4), m.group(5)] )))
             scale = float(m.group(6))
-            pov = A(map(float, [m.group(7), m.group(8), m.group(9)]))
+            pov = A(list(map(float, [m.group(7), m.group(8), m.group(9)])))
             zoomFactor = float(m.group(10))
             namedView = NamedView(self.assy, name, scale, pov, zoomFactor, wxyz)
             self.addmember(namedView)
@@ -1221,8 +1211,8 @@ class _readmmp_state:
             if m:
                 name = m.group(1)
                 name = self.decode_name(name)
-                wxyz = A(map(float, [m.group(2), m.group(3),
-                                     m.group(4), m.group(5)] ))
+                wxyz = A(list(map(float, [m.group(2), m.group(3),
+                                     m.group(4), m.group(5)] )))
                 scale = float(m.group(6))
                 homeView = NamedView(self.assy, "OldVersion", scale, V(0,0,0), 1.0, wxyz)
                     #bruce 050417 comment
@@ -1235,7 +1225,7 @@ class _readmmp_state:
                 self.addmember(homeView)
                 self.addmember(lastView)
             else:
-                print "bad format in csys record, ignored:", card
+                print("bad format in csys record, ignored:", card)
         return
 
     def _read_datum(self, card): # datum -- Datum object -- old version deprecated by bruce 050417
@@ -1435,7 +1425,7 @@ class mmp_interp: #bruce 050217; revised docstrings 050422
         except:
             # several kinds of exception are possible here, which are not errors
             if debug_flags.atom_debug:
-                print "atom_debug: fyi: some info record wants an int val but got this non-int (not an error): " + repr(val)
+                print("atom_debug: fyi: some info record wants an int val but got this non-int (not an error): " + repr(val))
                 # btw, the reason it's not an error is that the mmp file format might be extended to permit it, in that info record.
             return None
         pass
@@ -1450,7 +1440,7 @@ class mmp_interp: #bruce 050217; revised docstrings 050422
         if val in ['1', 'yes', 'true']:
             return True
         if debug_flags.atom_debug:
-            print "atom_debug: fyi: some info record wants a boolean val but got this instead (not an error): " + repr(val)
+            print("atom_debug: fyi: some info record wants a boolean val but got this instead (not an error): " + repr(val))
         return None
     pass # end of class mmp_interp
 
@@ -1494,15 +1484,15 @@ def readmmp_info( card, currents, interp ): #bruce 050217; revised 050421, 05051
             meth = getattr(thing, "readmmp_info_%s_setitem" % type) # should be safe regardless of the value of 'type'
         except AttributeError:
             if debug_flags.atom_debug:
-                print "atom_debug: fyi: object %r doesn't accept \"info %s\" keys (like %r); ignoring it (not an error)" \
-                      % (thing, type, name)
+                print("atom_debug: fyi: object %r doesn't accept \"info %s\" keys (like %r); ignoring it (not an error)" \
+                      % (thing, type, name))
         else:
             try:
                 meth( name, val, interp )
             except:
                 print_compact_traceback("internal error in %r interpreting %r, ignored: " % (thing, card) )
     elif debug_flags.atom_debug:
-        print "atom_debug: fyi: no object found for \"info %s\"; ignoring info record (not an error)" % (type,)
+        print("atom_debug: fyi: no object found for \"info %s\"; ignoring info record (not an error)" % (type,))
     return
 
 # ==
@@ -1613,7 +1603,7 @@ def _readmmp(assy, filename, isInsert = False, showProgressDialog = False):
             MMP file by pressing the "Cancel" button in the progress dialog.
             """
             try:
-                print "cancelled reading file"
+                print("cancelled reading file")
                 global _readmmp_aborted
                 _readmmp_aborted = True
                 win.disconnect(win.progressDialog, SIGNAL("canceled()"), abort_readmmp)
@@ -1623,7 +1613,7 @@ def _readmmp(assy, filename, isInsert = False, showProgressDialog = False):
                     # an exception and don't see it, so I'm adding some prints to
                     # find out, and try/except. These can remain since they are
                     # harmless. [bruce 080606]
-                print " (returning from abort_readmmp)"
+                print(" (returning from abort_readmmp)")
             except:
                 print_compact_traceback("exception in abort_readmmp ignored: ")
             return

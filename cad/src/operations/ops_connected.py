@@ -43,7 +43,7 @@ class ops_connected_Mixin:
             return
 
         if atomlist is None: # test for None since atomlist can be an empty list.
-            atomlist = self.selatoms.values()
+            atomlist = list(self.selatoms.values())
 
         catoms = self.getConnectedAtoms(atomlist)
         if not len(catoms):
@@ -78,7 +78,7 @@ class ops_connected_Mixin:
             return
 
         if atomlist is None: # test for None since atomlist can be an empty list.
-            atomlist = self.selatoms.values()
+            atomlist = list(self.selatoms.values())
 
         catoms = self.getConnectedAtoms(atomlist)
         if not len(catoms): return
@@ -111,7 +111,7 @@ class ops_connected_Mixin:
             return
 
         if atomlist is None: # test for None since atomlist can be an empty list.
-            atomlist = self.selatoms.values()
+            atomlist = list(self.selatoms.values())
 
         catoms = self.getConnectedAtoms(atomlist)
         if not len(catoms): return
@@ -162,11 +162,11 @@ class ops_connected_Mixin:
             env.history.message(cmd + msg)
             return
 
-        alreadySelected = len(self.selatoms.values())
+        alreadySelected = len(list(self.selatoms.values()))
         from operations.op_select_doubly import select_doubly # new code, bruce 050520
         #e could also reload it now to speed devel!
-        select_doubly(self.selatoms.values()) #e optim
-        totalSelected = len(self.selatoms.values())
+        select_doubly(list(self.selatoms.values())) #e optim
+        totalSelected = len(list(self.selatoms.values()))
 
         from platform_dependent.PlatformDependent import fix_plurals
         info = fix_plurals("%d new atom(s) selected (besides the %d initially selected)." % \
@@ -247,7 +247,7 @@ class ops_connected_Mixin:
 
         alist = []
 
-        for atom in marked.itervalues():
+        for atom in marked.values():
             if singlet_ok:
                 alist.append(atom)
             elif not atom.is_singlet():
@@ -267,7 +267,7 @@ class ops_connected_Mixin:
 
         slist = []
 
-        for atom in marked.itervalues():
+        for atom in marked.values():
             if atom.is_singlet():
                 slist.append(atom)
 

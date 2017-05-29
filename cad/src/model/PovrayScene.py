@@ -152,7 +152,7 @@ class PovrayScene(SimpleCopyMixin, Node):
         """
         if len(key) != 1:
             if debug_flags.atom_debug:
-                print "atom_debug: fyi: info povrayscene with unrecognized key %r (not an error)" % (key,)
+                print("atom_debug: fyi: info povrayscene with unrecognized key %r (not an error)" % (key,))
             return
         if key[0] == 'povrayscene_file':
             if val:

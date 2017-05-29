@@ -82,15 +82,15 @@ class Version:
         # http://aspn.activestate.com/ASPN/Cookbook/Python/Recipe/66531
         self.__dict__ = self.__shared_state
     def __setattr__(self, attr, value):  # attributes write-protected
-        raise AttributeError, attr
+        raise AttributeError(attr)
     def __repr__(self):
         major = self.__shared_state["major"]
         minor = self.__shared_state["minor"]
         str = "%d.%d" % (major, minor)
-        if self.__shared_state.has_key("tiny"):
+        if "tiny" in self.__shared_state:
             teensy = self.__shared_state["tiny"]
             str += ".%d" % teensy
-            if self.__shared_state.has_key("teensy"):
+            if "teensy" in self.__shared_state:
                 teensy = self.__shared_state["teensy"]
                 str += ".%d" % teensy
         return str
@@ -99,13 +99,13 @@ class Version:
 
 if __name__ == "__main__":
     v = Version()
-    print v
+    print(v)
     for x in dir(v):
-        print x + ":", getattr(v, x)
-        print
+        print(x + ":", getattr(v, x))
+        print()
     # test write protection
     try:
         v.foo = "bar"
-        print "WRITE PROTECTION IS BROKEN"
+        print("WRITE PROTECTION IS BROKEN")
     except AttributeError:
         pass

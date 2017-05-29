@@ -11,7 +11,7 @@ See  http://4suite.com/COPYRIGHT  for license and copyright information
 class Visitor:
     def visit(self, node):
         """Default behavior for the visitor is simply to print an informational message"""
-        print "Visiting %s node %s\n"%(node.nodeType, node.nodeName)
+        print("Visiting %s node %s\n"%(node.nodeType, node.nodeName))
         return None
 
 class WalkerInterface:

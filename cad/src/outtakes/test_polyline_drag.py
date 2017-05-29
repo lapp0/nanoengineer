@@ -80,7 +80,7 @@ class test_polyline_drag(State_preMixin, ExampleCommand):
         return
 
     def leftDown(self, event):
-        print "leftDown"
+        print("leftDown")
         # TODO:
         # get the point (mouseray in plane)
         # make a real point there (or mark it as real, if we have a point object for it already)

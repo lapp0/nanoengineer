@@ -182,7 +182,7 @@ class Shape:
             return maxb(f1(v), -f2(v), C)
         return Shape(f3, self.bbox.difference(other.bbox))
     def shell(self, gridsize):
-        print self.bbox
+        print(self.bbox)
         lst = [ ]
         x = self.bbox.xmin
         while x <= self.bbox.xmax:

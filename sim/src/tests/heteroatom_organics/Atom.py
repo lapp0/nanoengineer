@@ -47,7 +47,7 @@ class Atom:
     def clone(self):
         "permit deep cloning of structure files"
         a = Atom()
-        for key in self.__dict__.keys():
+        for key in list(self.__dict__.keys()):
             setattr(a, key, getattr(self, key))
         return a
     def fromXyz(self, element, x, y, z):

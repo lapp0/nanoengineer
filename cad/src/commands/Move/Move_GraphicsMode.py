@@ -238,8 +238,8 @@ class Move_GraphicsMode(SelectChunks_GraphicsMode):
             except:
                 # this might be obsolete, since leftADrag now tries to handle
                 #this (untested) [bruce 070605 comment]
-                print "Key A pressed after Left Down. controlled "\
-                      "translation will not be performed"
+                print("Key A pressed after Left Down. controlled "\
+                      "translation will not be performed")
 
         # end of leftDrag
 
@@ -412,10 +412,10 @@ class Move_GraphicsMode(SelectChunks_GraphicsMode):
 
         if 0: # looks ok; axis for 3-strand n=10 DNA is reasonably close to
             #axis of Axis strand [bruce 070605]
-            print "\nleftADown gets",self._leftADown_averaged_axis
-            print self._leftADown_indiv_axes
-            print movables
-            print self.Zmat
+            print("\nleftADown gets",self._leftADown_averaged_axis)
+            print(self._leftADown_indiv_axes)
+            print(movables)
+            print(self.Zmat)
 
 
         return # from leftADown

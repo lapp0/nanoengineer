@@ -350,12 +350,12 @@ def init_cyls():
     # respect to the other these are used as cylinder ends [not quite true
     # anymore, see comments just below]
     slices = 13
-    circ1 = map((lambda n: n*2.0*pi/slices), range(slices+1))
-    circ2 = map((lambda a: a+pi/slices), circ1)
-    drawing_globals.drum0 = drum0 = map((lambda a: (cos(a), sin(a), 0.0)),
-                                        circ1)
-    drum1 = map((lambda a: (cos(a), sin(a), 1.0)), circ2)
-    drum1n = map((lambda a: (cos(a), sin(a), 0.0)), circ2)
+    circ1 = list(map((lambda n: n*2.0*pi/slices), list(range(slices+1))))
+    circ2 = list(map((lambda a: a+pi/slices), circ1))
+    drawing_globals.drum0 = drum0 = list(map((lambda a: (cos(a), sin(a), 0.0)),
+                                        circ1))
+    drum1 = list(map((lambda a: (cos(a), sin(a), 1.0)), circ2))
+    drum1n = list(map((lambda a: (cos(a), sin(a), 0.0)), circ2))
 
     #grantham 20051213 I finally decided the look of the oddly twisted cylinder
     # bonds was not pretty enough, so I made a "drum2" which is just drum0 with
@@ -364,20 +364,20 @@ def init_cyls():
     # cylinder being "ragged" (letting empty space show through), which I fixed
     # by using drum2 for that cap rather than drum1.  drum1 is no longer used
     # except as an intermediate value in the next few lines.
-    drawing_globals.drum2 = drum2 = map((lambda a: (cos(a), sin(a), 1.0)),
-                                        circ1)
+    drawing_globals.drum2 = drum2 = list(map((lambda a: (cos(a), sin(a), 1.0)),
+                                        circ1))
 
     # This edge list zips up the "top" vertex and normal and then the "bottom"
     # vertex and normal.  Thus each tuple in the sequence would be (vtop, ntop,
     # vbot, nbot) [grantham 20051213]
     # (bruce 051215 simplified the python usage in a way which should create the
     # same list.)
-    drawing_globals.cylinderEdges = zip(drum0, drum0, drum2, drum0)
+    drawing_globals.cylinderEdges = list(zip(drum0, drum0, drum2, drum0))
 
-    circle = zip(drum0[:-1],drum0[1:],drum1[:-1]) +\
-           zip(drum1[:-1],drum0[1:],drum1[1:])
-    circlen = zip(drum0[:-1],drum0[1:],drum1n[:-1]) +\
-            zip(drum1n[:-1],drum0[1:],drum1n[1:])
+    circle = list(zip(drum0[:-1],drum0[1:],drum1[:-1])) +\
+           list(zip(drum1[:-1],drum0[1:],drum1[1:]))
+    circlen = list(zip(drum0[:-1],drum0[1:],drum1n[:-1])) +\
+            list(zip(drum1n[:-1],drum0[1:],drum1n[1:]))
 
     drawing_globals.cap0n = (0.0, 0.0, -1.0)
     drawing_globals.cap1n = (0.0, 0.0, 1.0)
@@ -388,13 +388,13 @@ init_cyls()
 def init_motors():
     ###data structure to construct the rotation sign for rotary motor
     numSeg = 20
-    rotS = map((lambda n: pi/2+n*2.0*pi/numSeg), range(numSeg*3/4 + 1))
+    rotS = list(map((lambda n: pi/2+n*2.0*pi/numSeg), list(range(numSeg*3/4 + 1))))
     zOffset = 0.005
     scaleS = 0.4
-    drawing_globals.rotS0n = rotS0n = map(
-        (lambda a: (scaleS*cos(a), scaleS*sin(a), 0.0 - zOffset)), rotS)
-    drawing_globals.rotS1n = rotS1n = map(
-        (lambda a: (scaleS*cos(a), scaleS*sin(a), 1.0 + zOffset)), rotS)
+    drawing_globals.rotS0n = rotS0n = list(map(
+        (lambda a: (scaleS*cos(a), scaleS*sin(a), 0.0 - zOffset)), rotS))
+    drawing_globals.rotS1n = rotS1n = list(map(
+        (lambda a: (scaleS*cos(a), scaleS*sin(a), 1.0 + zOffset)), rotS))
 
     ###Linear motor arrow sign data structure
     drawing_globals.halfHeight = 0.45

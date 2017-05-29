@@ -40,7 +40,7 @@ class _USE_CURRENT_class(object):
         #  used to define a constant value for use when a better one was
         #  not passed)
         if debug_flags.atom_debug:
-            print "fyi: getting %r from %r" % (key, self)
+            print("fyi: getting %r from %r" % (key, self))
             # This happens 5 or 6 times when entering Build Atoms command;
             # not sure why, but probably ok.
             # Historical note: On 081003 I fixed what I thought was a typo below
@@ -170,7 +170,7 @@ class UsedValueTrackerAndComparator(object):
         """
         # usage note: current code calls this (indirectly) in place of env.prefs
         # when drawing extra displist contents
-        if not self._keys_used.has_key(key):
+        if key not in self._keys_used:
             val = self._compute_current_value(key, context)
             # review [081223]: should we track usage by that in changes.py manner,
             # into self.invalidate? NO! instead, either we or certain clients
@@ -203,7 +203,7 @@ class UsedValueTrackerAndComparator(object):
         # REVIEW: perhaps this has no direct calls and can be removed?
         # NOTE: not directly related to env.track_use or the associated
         # usage tracking system in changes.py.
-        if not self._keys_used.has_key(key):
+        if key not in self._keys_used:
             self._keys_used[key] = val
             self._ordered_key_val_pairs += [(key, val)]
         return
@@ -333,7 +333,7 @@ class SpecialDrawing_UsedValueTrackerAndComparator( UsedValueTrackerAndComparato
         # wrap the "env-providing glpane" instead, i.e. the main one
         # for any ThumbView in current code.
         if debug_flags.atom_debug:
-            print "fyi: getting %r from %r" % (key, self)
+            print("fyi: getting %r from %r" % (key, self))
             # This happens a lot in Break Strands command, as expected.
             # See also the historical note about similar code above --
             # I mistakenly thought this code had an exception, but it didn't.
@@ -444,12 +444,12 @@ class ExtraChunkDisplayList(object, SubUsageTrackingMixin):
         if self.comparator.do_we_need_to_recompute(context):
             # maybe: also compare havelist, if some data not tracked
             if DEBUG_COMPARATOR:
-                print "_draw_by_remaking in %r; valid = %r" % \
-                      (self, self.comparator.valid)
+                print("_draw_by_remaking in %r; valid = %r" % \
+                      (self, self.comparator.valid))
             self._draw_by_remaking(glpane, selected, highlighted, wantlist, draw_now)
         elif draw_now:
             if DEBUG_COMPARATOR:
-                print "_draw_by_reusing in %r" % self
+                print("_draw_by_reusing in %r" % self)
             self._draw_by_reusing(glpane, selected, highlighted)
         return
 
@@ -597,7 +597,7 @@ class Chunk_SpecialDrawingHandler(object):
         return
     def should_defer(self, special_drawing_kind):
         assert special_drawing_kind in ALL_SPECIAL_DRAWING_KINDS
-        return self.classes.has_key(special_drawing_kind)
+        return special_drawing_kind in self.classes
 
     #e rename?
     def draw_by_calling_with_prefsvalues(self, special_drawing_kind, func):

@@ -224,7 +224,7 @@ class CrystalShape(shape):
         """
         This would work for shapes, if anyone called it.
         """
-        if self.layeredCurves.has_key(currentLayer):
+        if currentLayer in self.layeredCurves:
             curves = self.layeredCurves[currentLayer]
             if len(curves) > 1:
                 curves = curves[:-1]
@@ -255,7 +255,7 @@ class CrystalShape(shape):
         This can be used by user to decide if the shape object
         can be deleted.
         """
-        for cbs in self.layeredCurves.values():
+        for cbs in list(self.layeredCurves.values()):
             if len(cbs) > 1:
                 return True
         return False
@@ -265,7 +265,7 @@ class CrystalShape(shape):
         """
         # Experimental code to add all curves and bbox together
         # to make the molmake working. It may be removed later.
-        for cbs in self.layeredCurves.values():
+        for cbs in list(self.layeredCurves.values()):
             if cbs:
                 self.bbox.merge(cbs[0])
                 self.curves += cbs[1:]
@@ -312,7 +312,7 @@ class CrystalShape(shape):
             glCallList(self.displist.dl)
             return
         glNewList(self.displist.dl, GL_COMPILE_AND_EXECUTE)
-        for layer in self.layeredCurves.keys():
+        for layer in list(self.layeredCurves.keys()):
             bbox = self.layeredCurves[layer][0]
             curves = self.layeredCurves[layer][1:]
             if not curves:
@@ -355,19 +355,19 @@ class CrystalShape(shape):
         bblo, bbhi = c.bbox.data[1], c.bbox.data[0]
         #Without +(-) 1.6, crystal for lonsdaileite may not be right
         allCells = genDiam(bblo - 1.6, bbhi + 1.6, self.latticeType)
-        if self.carbonPosDict.has_key(layer):
+        if layer in self.carbonPosDict:
             carbons = self.carbonPosDict[layer]
         else:
             carbons = {}
 
-        if self.hedroPosDict.has_key(layer):
+        if layer in self.hedroPosDict:
             hedrons = self.hedroPosDict[layer]
         else:
             hedrons = {}
 
         if c.selSense == SUBTRACT_FROM_SELECTION:
             markedAtoms = self.markedAtoms
-            if not self.bondLayers or not self.bondLayers.has_key(layer):
+            if not self.bondLayers or layer not in self.bondLayers:
                 return
             else:
                 bonds = self.bondLayers[layer]
@@ -384,7 +384,7 @@ class CrystalShape(shape):
         elif c.selSense == OUTSIDE_SUBTRACT_FROM_SELECTION:
             #& This differs from the standard selection scheme for Shift + Drag. mark 060211.
             #& This is marked for removal.  mark 060320.
-            if not self.bondLayers or not self.bondLayers.has_key(layer):
+            if not self.bondLayers or layer not in self.bondLayers:
                 return
             bonds = self.bondLayers[layer]
             newBonds = {}; newCarbons = {}; newHedrons = {};
@@ -396,15 +396,15 @@ class CrystalShape(shape):
                     for ii in range(2):
                         if c.isin(pp[ii]):
                             pph[ii] = self._hashAtomPos(pp[ii])
-                            if bonds.has_key(pph[ii]):
+                            if pph[ii] in bonds:
                                 insideAtoms[pph[ii]] = pp[ii]
 
-                    if (not pph[0]) and pph[1] and carbons.has_key(pph[1]):
+                    if (not pph[0]) and pph[1] and pph[1] in carbons:
                         pph[0] = self._hashAtomPos(pp[0])
-                        if bonds.has_key(pph[0]):
+                        if pph[0] in bonds:
                             newCarbons[pph[1]] = pp[1]
                             newHedrons[pph[0]] = pp[0]
-                            if not newBonds.has_key(pph[0]):
+                            if pph[0] not in newBonds:
                                 newBonds[pph[0]] = [(pph[1], 1)]
                             else:
                                 newBonds[pph[0]] += [(pph[1], 1)]
@@ -413,7 +413,7 @@ class CrystalShape(shape):
             bonds, carbons, hedrons = newStorage
 
         elif c.selSense == ADD_TO_SELECTION:
-            if self.bondLayers.has_key(layer):
+            if layer in self.bondLayers:
                 bonds = self.bondLayers[layer]
             else:
                 bonds = {}
@@ -476,17 +476,17 @@ class CrystalShape(shape):
                     del bonds[pph[0]]
                 #print "Delete half bond: ", pph[0], (pph[1], which_in)
             except:
-                print "No such half bond: ", pph[0], (pph[1], which_in)
+                print("No such half bond: ", pph[0], (pph[1], which_in))
 
         def _changeFull2Half(del_id, which_in):
             """
             internal function: If there is a full bond and when the value
             (2nd in a bond pair) carbon atom is removed, change it to half bond
             """
-            if not hedrons.has_key(pph[del_id]):
+            if pph[del_id] not in hedrons:
                 hedrons[pph[del_id]] = pp[del_id]
             markedAtoms[pph[del_id]] = pp[del_id]
-            if bonds.has_key(pph[0]):
+            if pph[0] in bonds:
                 values = bonds[pph[0]]
                 idex = values.index(pph[1])
                 values[idex] = (pph[1], which_in)
@@ -498,7 +498,7 @@ class CrystalShape(shape):
         pph += [self._hashAtomPos(pp[1])]
         if ppInside[0] and ppInside[1]:
             # Delete full bond
-            if carbons.has_key(pph[0]) and carbons.has_key(pph[1]):
+            if pph[0] in carbons and pph[1] in carbons:
                 markedAtoms[pph[0]] = pp[0]
                 markedAtoms[pph[1]] = pp[1]
                 values = bonds[pph[0]]
@@ -507,27 +507,27 @@ class CrystalShape(shape):
                 if len(values) == 0:
                     del bonds[pph[0]]
             # Delete half bond
-            elif carbons.has_key(pph[0]):
+            elif pph[0] in carbons:
                 #markedAtoms[pph[0]] = pp[0]
                 _deleteHalfBond(0)
             # Delete half bond
-            elif carbons.has_key(pph[1]):
+            elif pph[1] in carbons:
                 _deleteHalfBond(1)
         elif ppInside[0]:
             # Full bond becomes half bond, carbon becomes hedron
-            if carbons.has_key(pph[0]) and carbons.has_key(pph[1]):
+            if pph[0] in carbons and pph[1] in carbons:
                 markedAtoms[pph[0]] = pp[0]
                 #_changeFull2Half(0, 1)
             # Delete half bond
-            elif carbons.has_key(pph[0]):
+            elif pph[0] in carbons:
                 #markedAtoms[pph[0]] = pp[0]
                 _deleteHalfBond(0)
         elif ppInside[1]:
             # Full bond becomes half bond, carbon becomes hedron
-            if carbons.has_key(pph[1]) and carbons.has_key(pph[0]):
+            if pph[1] in carbons and pph[0] in carbons:
                 _changeFull2Half(1, 0)
             # Delete half bond
-            elif carbons.has_key(pph[1]):
+            elif pph[1] in carbons:
                 _deleteHalfBond(1)
 
 
@@ -623,41 +623,41 @@ class CrystalShape(shape):
         """
         newBonds, newCarbons, newHedrons = newStorage
 
-        for a in insideAtoms.keys():
+        for a in list(insideAtoms.keys()):
             values = bonds[a]
             newValues = []
             # The key <a> is carbon:
-            if carbons.has_key(a):
-                if not newCarbons.has_key(a):
+            if a in carbons:
+                if a not in newCarbons:
                     newCarbons[a] = insideAtoms[a]
                 for b in values:
                     if type(b) == type(1): #Full bond
                         # If the carbon inside, keep the bond
-                        if insideAtoms.has_key(b):
-                            if not newCarbons.has_key(b):
+                        if b in insideAtoms:
+                            if b not in newCarbons:
                                 newCarbons[b] = insideAtoms[b]
                             newValues += [b]
                         else: # outside carbon, change it to h-bond
-                            if not newHedrons.has_key(b):
+                            if b not in newHedrons:
                                 newHedrons[b] = carbons[b]
                             newValues += [(b, 0)]
                     else: # Half bond, keep it
-                        if insideAtoms.has_key(b[0]):
+                        if b[0] in insideAtoms:
                             p = insideAtoms[b[0]]
-                        elif hedrons.has_key(b[0]):
+                        elif b[0] in hedrons:
                             p = hedrons[b[0]]
                         else:
-                            raise ValueError, (a, b[0])
-                        if not newHedrons.has_key(b[0]):
+                            raise ValueError(a, b[0])
+                        if b[0] not in newHedrons:
                             newHedrons[b[0]] = p
                         newValues += [b]
             else: # The key <a> is not a carbon
-                if not newHedrons.has_key(a):
+                if a not in newHedrons:
                     newHedrons[a] = insideAtoms[a]
                 for b in values:
                     # Inside h-bond, keep it
-                    if insideAtoms.has_key(b[0]):
-                        if not newHedrons.has_key(b[0]):
+                    if b[0] in insideAtoms:
+                        if b[0] not in newHedrons:
                             newHedrons[b[0]] = insideAtoms[b[0]]
                         newValues += [b]
             if newValues: newBonds[a] = newValues
@@ -672,10 +672,10 @@ class CrystalShape(shape):
         half bond or change it to half bond if it was full bond, and find its
         carbon position in markedAtoms{}
         """
-        for ph in markedAtoms.keys():
-            if carbons.has_key(ph):
+        for ph in list(markedAtoms.keys()):
+            if ph in carbons:
                 ## print "Remove carbon: ", ph
-                if bonds.has_key(ph):
+                if ph in bonds:
                     values = bonds[ph]
                     for b in values[:]:
                         if type(b) == type(1):
@@ -701,7 +701,7 @@ class CrystalShape(shape):
         """
         foundHalfBond = False
 
-        if bonds.has_key(key):
+        if key in bonds:
             values = bonds[key]
             for ii in range(len(values)):
                 if type(values[ii]) == type((1, 1)) and values[ii][0] == value:
@@ -711,7 +711,7 @@ class CrystalShape(shape):
             if not foundHalfBond:
                 values += [value]
             ## bonds[key] = values
-        elif not bonds.has_key(key):
+        elif key not in bonds:
             bonds[key] = [value]
 
 
@@ -804,19 +804,19 @@ class CrystalShape(shape):
         #russ 080225: displist side effect allocates a ColorSortedDisplayList.
         ColorSorter.start(glpane, self.displist) # grantham 20051205
         try:
-            for layer, bonds in self.bondLayers.items():
+            for layer, bonds in list(self.bondLayers.items()):
                 color = layerColor[layer]
                 self.layeredCurves[layer][-1].draw()
                 bonds = self.bondLayers[layer]
                 carbons = self.carbonPosDict[layer]
                 hedrons = self.hedroPosDict[layer]
 
-                for cK, bList in bonds.items():
-                    if carbons.has_key(cK):  p0 = carbons[cK]
+                for cK, bList in list(bonds.items()):
+                    if cK in carbons:  p0 = carbons[cK]
                     for b in bList[:]:
                         carbonAt = -1
                         if type(b) == type(1): #Full bond
-                            if carbons.has_key(b):
+                            if b in carbons:
                                 p1 = carbons[b]
                             else:
                                 #which means the carbon was removed
@@ -830,9 +830,9 @@ class CrystalShape(shape):
                         else: #Half bond
                             carbonAt = b[1]
                             if b[1]:
-                                if carbons.has_key(b[0]): # otherwise, means the carbon has been removed.
+                                if b[0] in carbons: # otherwise, means the carbon has been removed.
                                     p1 = carbons[b[0]]
-                                    if hedrons.has_key(cK):
+                                    if cK in hedrons:
                                         p0 = hedrons[cK]
                                         p0 = (p0 + p1) / 2.0
                                     else:
@@ -848,7 +848,7 @@ class CrystalShape(shape):
                                         break
                                     continue
                             else:
-                                if hedrons.has_key(b[0]):
+                                if b[0] in hedrons:
                                     p1 = hedrons[b[0]]
                                     p1 = (p0 + p1) / 2.0
                                 else:
@@ -864,7 +864,7 @@ class CrystalShape(shape):
             # list, or OpenGL will be left in an unusable state (due to the lack
             # of a matching glEndList) in which any subsequent glNewList is an
             # invalid operation. (Also done in chem.py; see more comments there.)
-            print "cK: ", cK
+            print("cK: ", cK)
             print_compact_traceback( "bug: exception in shape.draw's displist; ignored: ")
         self.markedAtoms = {}
 
@@ -888,23 +888,23 @@ class CrystalShape(shape):
 
             #Copy the bonds, carbons and hedron from the first layer
             for ii in range(numLayers):
-                if self.bondLayers.has_key(ii):
-                    for bKey, bValue in self.bondLayers[ii].items():
+                if ii in self.bondLayers:
+                    for bKey, bValue in list(self.bondLayers[ii].items()):
                         allBonds[bKey] = bValue
 
                     del self.bondLayers[ii]
                     break
 
-            for carbons in self.carbonPosDict.values():
-                for cKey, cValue in carbons.items():
+            for carbons in list(self.carbonPosDict.values()):
+                for cKey, cValue in list(carbons.items()):
                     allCarbons[cKey] = cValue
 
-            for hedrons in self.hedroPosDict.values():
-                for hKey, hValue in hedrons.items():
+            for hedrons in list(self.hedroPosDict.values()):
+                for hKey, hValue in list(hedrons.items()):
                     allCarbons[hKey] = hValue
 
-            for bonds in self.bondLayers.values():
-                for bKey, bValues in bonds.items():
+            for bonds in list(self.bondLayers.values()):
+                for bKey, bValues in list(bonds.items()):
                     if bKey in allBonds:
                         existValues = allBonds[bKey]
                         for bValue in bValues:
@@ -928,7 +928,7 @@ class CrystalShape(shape):
 
             carbonAtoms = {}
             mol = Chunk(assy, gensym("Crystal", assy))
-            for bKey, bBonds in allBonds.items():
+            for bKey, bBonds in list(allBonds.items()):
                 keyHedron = True
                 if len(bBonds):
                     for bond in bBonds:
@@ -943,7 +943,7 @@ class CrystalShape(shape):
 
                         if keyHedron:
                             if type(bond) != type((1, 1)):
-                                raise ValueError, (bKey, bond, bBonds)
+                                raise ValueError(bKey, bond, bBonds)
                             else:
                                 xp = (allCarbons[bKey] + allCarbons[bond[0]])/2.0
                                 keyAtom = Atom("X", xp, mol)

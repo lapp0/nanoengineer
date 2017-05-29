@@ -98,11 +98,12 @@ from utilities.prefs_constants import displayRulers_prefs_key
 from utilities.prefs_constants import mouseWheelDirection_prefs_key
 from utilities.prefs_constants import zoomInAboutScreenCenter_prefs_key
 from utilities.prefs_constants import zoomOutAboutScreenCenter_prefs_key
+import imp
 
 eCCBtab1 = [1,2, 5,6,7,8,9,10, 13,14,15,16,17,18, 32,33,34,35,36, 51,52,53,54]
 
 eCCBtab2 = {}
-for i, elno in zip(range(len(eCCBtab1)), eCCBtab1):
+for i, elno in zip(list(range(len(eCCBtab1))), eCCBtab1):
     eCCBtab2[elno] = i
 
 # Debugging for "Open Recent Files" menu. Mark 2007-12-28
@@ -111,10 +112,10 @@ recentfiles_use_QSettings = True # bruce 050919 debug flag
 
 if debug_recent_files:
     def debug_fileList(fileList):
-        print "BEGIN fileList"
+        print("BEGIN fileList")
         for x in fileList:
-            print x
-        print "END fileList"
+            print(x)
+        print("END fileList")
 else:
     def debug_fileList(fileList):
         pass
@@ -254,7 +255,7 @@ class MWsemantics(QMainWindow,
                       # (this change didn't make it into .rc2)
                       prefs_key = "A10/Use QWorkspace"):
 
-            print "QWorkspace for MDI support is enabled (experimental)"
+            print("QWorkspace for MDI support is enabled (experimental)")
 
             from PyQt4.Qt import QWorkspace
             self.workspace = QWorkspace()
@@ -927,7 +928,7 @@ class MWsemantics(QMainWindow,
         for _object in _renameList:
             if _object.rename_enabled():
                 _new_name = _object.name + new_name
-                print "new name = ", _new_name
+                print("new name = ", _new_name)
                 ok, info = _object.try_rename(_new_name)
                 if ok:
                     _number_renamed += 1
@@ -1379,9 +1380,9 @@ class MWsemantics(QMainWindow,
         Creates a movie of a molecular dynamics simulation.
         """
         if debug_flags.atom_debug: #bruce 060106 added this (fixing trivial bug 1260)
-            print "atom_debug: reloading sim_commandruns on each use, for development"
+            print("atom_debug: reloading sim_commandruns on each use, for development")
             import simulation.sim_commandruns as sim_commandruns
-            reload(sim_commandruns)
+            imp.reload(sim_commandruns)
         from simulation.sim_commandruns import simSetup_CommandRun
         cmdrun = simSetup_CommandRun( self)
         cmdrun.run()
@@ -2219,7 +2220,7 @@ class MWsemantics(QMainWindow,
             if 0: #debug_recent_files:
                 # confirm that the information really made it into the QSetting.
                 fileListTest = prefsSetting.value(RECENTFILES_QSETTINGS_KEY).toStringList()
-                fileListTest = map(str, list(fileListTest))
+                fileListTest = list(map(str, list(fileListTest)))
                 assert len(fileListTest) == len(fileList)
                 for i in range(len(fileList)):
                     assert str_or_unicode(fileList[i]) == str_or_unicode(fileListTest[i])

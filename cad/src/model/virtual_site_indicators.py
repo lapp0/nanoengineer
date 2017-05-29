@@ -211,7 +211,7 @@ class VirtualSiteJig( VisualFeedbackJig):
         if self._function_id == 1:
             self._x, self._y = props[1:]
         else:
-            print "%r.setProps: don't recognize those props" % self, props
+            print("%r.setProps: don't recognize those props" % self, props)
         return
 
     def site_position(self):
@@ -231,7 +231,7 @@ class VirtualSiteJig( VisualFeedbackJig):
             pos3 = parentID3.posn()
             return pos1 + (pos2 - pos1) * A + (pos3 - pos1) * B
         else:
-            print "bug: unsupported kind of virtual site:", self._props
+            print("bug: unsupported kind of virtual site:", self._props)
             return average_value( [a.posn() for a in self.parent_atoms()] )
         pass
 
@@ -371,7 +371,7 @@ class VirtualBondJig( VisualFeedbackJig):
 class VirtualSiteChunkDrawer( Chunk._drawer_class ): #bruce 090212 split this out (###UNTESTED)
     def _draw_outside_local_coords(self, glpane, disp, drawLevel, is_chunk_visible):
         Chunk._drawer_class._draw_outside_local_coords(self, glpane, disp, drawLevel, is_chunk_visible)
-        for atom in self._chunk.atoms.itervalues():
+        for atom in self._chunk.atoms.values():
             if hasattr(atom, '_site_atom_jig'):
                 color = 'not used'
                 atom._site_atom_jig._draw_jig(glpane, color) # note: needs to be in abs coords
@@ -487,7 +487,7 @@ from utilities.debug import register_debug_menu_command
 
 def virtual_site_from_selatoms_command(glpane):
     assy = glpane.assy
-    atoms = assy.selatoms.values() # arbitrary order, nevermind
+    atoms = list(assy.selatoms.values()) # arbitrary order, nevermind
     if len(atoms) != 3:
         errormsg = "select exactly 3 atoms to make a test virtual site"
         env.history.redmsg( errormsg)

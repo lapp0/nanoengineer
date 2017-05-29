@@ -245,19 +245,19 @@ class nullCommand(anyCommand):
 
     def noop_method(self, *args, **kws):
         if debug_flags.atom_debug:
-            print "fyi: atom_debug: nullCommand noop method called -- " \
-                  "probably ok; ignored"
+            print("fyi: atom_debug: nullCommand noop method called -- " \
+                  "probably ok; ignored")
         return None #e print a warning?
     def __getattr__(self, attr): # in class nullCommand
         # note: this is not inherited by other Command classes,
         # since we are not their superclass
         if not attr.startswith('_'):
             if debug_flags.atom_debug:
-                print "fyi: atom_debug: nullCommand.__getattr__(%r) -- " \
-                      "probably ok; returned noop method" % attr
+                print("fyi: atom_debug: nullCommand.__getattr__(%r) -- " \
+                      "probably ok; returned noop method" % attr)
             return self.noop_method
         else:
-            raise AttributeError, attr #e args?
+            raise AttributeError(attr) #e args?
 
     # Command-specific attribute null values
 
@@ -378,12 +378,12 @@ class basicCommand(anyCommand):
             def same_method(m1, m2):
                 # m1/m2.im_class will differ (it's the class of the query,
                 # not where func is defined), so only test im_func
-                return m1.im_func == m2.im_func
+                return m1.__func__ == m2.__func__
             if not same_method( getattr(self, attr) ,
                                 getattr(basicCommand, attr) ):
-                print "fyi (for developers): subclass %s overrides basicCommand.%s; " \
+                print("fyi (for developers): subclass %s overrides basicCommand.%s; " \
                       "this is deprecated after mode changes of 040924." % \
-                      (self.__class__.__name__, attr)
+                      (self.__class__.__name__, attr))
 
         # other inits
         self.glpane = glpane # REVIEW: needed?
@@ -901,7 +901,7 @@ class basicCommand(anyCommand):
 
         # always print it so there's a semi-permanent record they can refer to
 
-        print msg
+        print(msg)
 
         if use_status_bar: # do this first
             ## [this would work again as of 050107:] self.win.statusBar().message( msg)

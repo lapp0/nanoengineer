@@ -157,7 +157,7 @@ class RotateTranslate(DelegatingInstanceOrExpr):#070225
             a,b,c,d = q.angle*180.0/pi, q.x, q.y, q.z
         except:
             ###UNTESTED
-            print "exception in a,b,c,d = q.angle*180.0/pi, q.x, q.y, q.z for q == %r" % (q,)
+            print("exception in a,b,c,d = q.angle*180.0/pi, q.x, q.y, q.z for q == %r" % (q,))
                 # does my quat bug print this? no, it happily permits a quat to become Q(nan, nan, nan, nan) with no exception...
             a,b,c,d = 0,1,0,0
         glPushMatrix()

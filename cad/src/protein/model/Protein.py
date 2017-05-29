@@ -61,7 +61,7 @@ def is_amino_acid(resName):
     @param resName: PDB residue name (3-letter string)
     @type resName: string
     """
-    if AA_3_TO_1.has_key(resName[:3]):
+    if resName[:3] in AA_3_TO_1:
         return True
 
     return False
@@ -73,7 +73,7 @@ def is_nucleotide(resName):
     @param resName: PDB residue name (3-letter string)
     @type resName: string
     """
-    if NUC_3_TO_1.has_key(resName[:3]):
+    if resName[:3] in NUC_3_TO_1:
         return True
 
     return False
@@ -180,7 +180,7 @@ class Protein:
 
         @return: residue the atom has been added to (Residue)
         """
-        if self.residues.has_key(resId):
+        if resId in self.residues:
             # Find an existing residue.
             aa = self.residues[resId]
         else:
@@ -404,7 +404,7 @@ class Protein:
         @param resId: residue ID for secondary structure assignment
         @type resId: int
         """
-        if self.residues.has_key(resId):
+        if resId in self.residues:
             aa = self.residues[resId]
             aa.set_secondary_structure(SS_HELIX)
 
@@ -425,7 +425,7 @@ class Protein:
         @param resId: residue ID for secondary structure assignment
         @type resId: int
         """
-        if self.residues.has_key(resId):
+        if resId in self.residues:
             aa = self.residues[resId]
             aa.set_secondary_structure(SS_STRAND)
 
@@ -441,7 +441,7 @@ class Protein:
         @param resId: residue ID for secondary structure assignment
         @type resId: int
         """
-        if self.residues.has_key(resId):
+        if resId in self.residues:
             aa = self.residues[resId]
             aa.set_secondary_structure(SS_TURN)
 
@@ -482,7 +482,7 @@ class Protein:
         """
         self.residues_dl = None
         self.residues_hi_dl = None
-        for aa in self.residues.values():
+        for aa in list(self.residues.values()):
             aa.collapse()
 
     def expand_all_rotamers(self):
@@ -491,7 +491,7 @@ class Protein:
         """
         self.residues_dl = None
         self.residues_hi_dl = None
-        for aa in self.residues.values():
+        for aa in list(self.residues.values()):
             aa.expand()
 
     def get_residue(self, atom):
@@ -503,7 +503,7 @@ class Protein:
 
         @return: residue the atom belongs to, or None if not found
         """
-        for aa in self.residues.itervalues():
+        for aa in self.residues.values():
             if aa.has_atom(atom):
                 return aa
 
@@ -643,8 +643,8 @@ class Protein:
         Returns a (deep copy) of the residues dict.
         @note: NIY
         """
-        for aa in self.residues.values():
-            print aa
+        for aa in list(self.residues.values()):
+            print(aa)
         return
 
     # override abstract method of DataMixin
@@ -683,7 +683,7 @@ class Protein:
 
         protein.residues_dl = None # DL gets rebuilt in ProteinChunks.drawchunk_realtime
 
-        print "Protein._copyOfObject(): HERE!"
+        print("Protein._copyOfObject(): HERE!")
         return protein
 
     # override abstract method of DataMixin.
@@ -692,7 +692,7 @@ class Protein:
         """
         Compare self with other.
         """
-        print "Protein.__eq__(): HERE!"
+        print("Protein.__eq__(): HERE!")
         if self.chain_id != other.chain_id:
             return False
         elif self.pdb_id != other.pdb_id:

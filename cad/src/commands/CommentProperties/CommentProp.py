@@ -111,7 +111,7 @@ class CommentProp(QDialog, Ui_CommentPropDialog):
             self._create_comment()
             self._done_history_msg()
             self.comment = None
-        except Exception, e:
+        except Exception as e:
             print_compact_traceback("Bug: exception in CommentProp.accept: ") #bruce Qt4 070502
             env.history.message(cmd + redmsg("Bug: " + quote_html(" - ".join(map(str, e.args)))))
                 #bruce Qt4 070502 bugfixes: use quote_html, say it's a bug (could say "internal error" if desired)

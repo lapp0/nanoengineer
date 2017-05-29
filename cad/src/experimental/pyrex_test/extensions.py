@@ -102,8 +102,8 @@ try:
 except:
     if debug_pyrex_test: ### this condition will become "if 1" when developers are required to have Pyrex installed
         print_compact_traceback("debug_pyrex_test: exception importing pyrex_test or something inside it: ")
-        print "debug_pyrex_test: Can't import pyrex_test; we'll define stub functions for its functions,"
-        print "but trying to use them will raise an exception; see README-Pyrex for how to fix this."
+        print("debug_pyrex_test: Can't import pyrex_test; we'll define stub functions for its functions,")
+        print("but trying to use them will raise an exception; see README-Pyrex for how to fix this.")
 
     def nbonds(mols): # stub function; in some cases it might be useful to define a correct but slow stub instead of a NIM stub
         "stub function for nbonds"

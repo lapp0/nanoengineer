@@ -84,7 +84,7 @@ def fix_whatsthis_text_and_links(parent):
     (bug 1421). (Note that it hardcodes the set of actions which need this.)
     """
     if _DEBUG_WHATSTHIS_LINKS:
-        print "running fix_whatsthis_text_and_links"
+        print("running fix_whatsthis_text_and_links")
     if _IS_MACINTOSH or ENABLE_WHATSTHIS_LINKS:
         # fix text in 1 or 2 ways for all QAction objects
         # (which are not widgets)
@@ -92,7 +92,7 @@ def fix_whatsthis_text_and_links(parent):
         # objList only includes QAction widgets that appear in the Main Menu
         # bar. This is a bug since some widgets only appear in toolbars on the
         # Main Window, but not the main menu bar. --Mark and Tom 2007-12-19
-        objList = filter(lambda x: isinstance(x, QAction), parent.children())
+        objList = [x for x in parent.children() if isinstance(x, QAction)]
         for obj in objList:
             fix_QAction_whatsthis(obj)
             continue
@@ -104,7 +104,7 @@ def fix_whatsthis_text_and_links(parent):
         # (and also fix their text if it's not fixed already --
         #  needed in case it didn't come from a QAction; maybe that never
         #  happens as of 060120)
-        objList = filter(lambda x: isinstance(x, QWidget), parent.children())
+        objList = [x for x in parent.children() if isinstance(x, QWidget)]
             # this includes QMenuBar, QPopupMenu for each main menu and cmenu
             # (I guess), but not menuitems themselves. (No hope of including
             # dynamic cmenu items, but since we make those, we could set their
@@ -153,7 +153,7 @@ def fix_whatsthis_text_and_links(parent):
                 # mac-modified text) also assumes we're doing this
                 # [REVIEW: what code creates such an object? Is the above
                 #  old comment still accurate? bruce 080509 questions]
-                print text
+                print(text)
                 obj.setWhatsThis(text)
                 pass
             continue
@@ -304,17 +304,17 @@ def turn_featurenames_into_links(text, savekey = None, saveplace = None):
                 # We use it in the link but not in the displayed WhatsThis text.
                 split2 = debracket(rest, "[[Feature:", "]]")
                 if not split2:
-                    print "syntax error in Feature: link for WhatsThis text \
-                    for %r" % name
+                    print("syntax error in Feature: link for WhatsThis text \
+                    for %r" % name)
                     return text
                 junk, featurename, junk2 = split2
             #e should verify featurename is one or more capitalized words
             # separated by ' '; could use split, isalpha (or so) ###@@@
             if _DEBUG_WHATSTHIS_LINKS:
                 if featurename != name:
-                    print "web help name for %r: %r" % (name, featurename,)
+                    print("web help name for %r: %r" % (name, featurename,))
                 else:
-                    print "web help name: %r" % (featurename,)
+                    print("web help name: %r" % (featurename,))
             if saveplace is not None:
                 saveplace[savekey] = featurename
             link = "Feature:" + featurename.replace(' ', '_')

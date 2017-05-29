@@ -102,11 +102,11 @@ class LeftFrame(QFrame):
         if delta < 10: # 10 pixels. Value chosen based on experimentation.
             self.parent.splitterPosition = size.width()
             if _DEBUG:
-                print "New Size: ", self.parent.splitterPosition
+                print("New Size: ", self.parent.splitterPosition)
         else:
             self.parent.splitterPosition = oldSize.width()
             if _DEBUG:
-                print "Old Size: ", self.parent.splitterPosition
+                print("Old Size: ", self.parent.splitterPosition)
         QWidget.resizeEvent(self, event)
         return
 
@@ -522,8 +522,8 @@ class Ui_PartWindow(QWidget):
         """
         self.pwSplitter.moveSplitter(pos, 1)
         if _DEBUG:
-            print "New Splitter Position: %d (setDefault=%d)" \
-                  % (pos, setDefault)
+            print("New Splitter Position: %d (setDefault=%d)" \
+                  % (pos, setDefault))
         if setDefault:
             self.splitterPosition = pos
         return

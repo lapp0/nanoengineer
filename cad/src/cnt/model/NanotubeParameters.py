@@ -112,11 +112,11 @@ class NanotubeParameters:
         self.A = self.R * AoverR
 
         if 0:
-            print "--------------"
-            print "angle =", angle
-            print "A =", self.A
-            print "B =", self.B
-            print "R =", self.R
+            print("--------------")
+            print("angle =", angle)
+            print("A =", self.A)
+            print("B =", self.B)
+            print("R =", self.R)
 
     def x1y1(self, n, m):
         c, s = self.__cos, self.__sin
@@ -536,14 +536,14 @@ class NanotubeParameters:
                     raise FoundMOffset()
             # If we get to this point, we never found m offset.
             # If this ever happens, it indicates a bug.
-            raise Exception, "can't find m offset"
+            raise Exception("can't find m offset")
         except FoundMOffset:
             pass
 
         # Use the bond information to bond the atoms
         for (dict1, dict2) in [(evenAtomDict, oddAtomDict),
                                (oddAtomDict, evenAtomDict)]:
-            for n, m in dict1.keys():
+            for n, m in list(dict1.keys()):
                 atm = dict1[(n, m)]
                 for n2, m2 in bondDict[atm]:
                     try:
@@ -589,20 +589,20 @@ class NanotubeParameters:
         # OK for stretching, but with compression it can fail. BTW,
         # "Z distortion" is a misnomer, we're stretching in the Y
         # direction.
-        for atm in atoms.values():
+        for atm in list(atoms.values()):
             # twist
             x, y, z = atm.posn()
             twistRadians = self.twist * z
             c, s = cos(twistRadians), sin(twistRadians)
             x, y = x * c + y * s, -x * s + y * c
             atm.setposn(V(x, y, z))
-        for atm in atoms.values():
+        for atm in list(atoms.values()):
             # z distortion
             x, y, z = atm.posn()
             z *= (self.zdist + length) / length
             atm.setposn(V(x, y, z))
         length += self.zdist
-        for atm in atoms.values():
+        for atm in list(atoms.values()):
             # xy distortion
             x, y, z = atm.posn()
             radius = self.getRadius()
@@ -620,7 +620,7 @@ class NanotubeParameters:
 
         # trim all the carbons that fall outside our desired length
         # by doing this, we are introducing new singlets
-        for atm in atoms.values():
+        for atm in list(atoms.values()):
             x, y, z = atm.posn()
             if (z > .5 * (length + LENGTH_TWEAK) or
                 z < -.5 * (length + LENGTH_TWEAK)):
@@ -629,7 +629,7 @@ class NanotubeParameters:
         # Apply bend. Equations are anomalous for zero bend.
         if abs(self.bend) > pi / 360:
             R = length / self.bend
-            for atm in atoms.values():
+            for atm in list(atoms.values()):
                 x, y, z = atm.posn()
                 theta = z / R
                 x, z = R - (R - x) * cos(theta), (R - x) * sin(theta)
@@ -640,7 +640,7 @@ class NanotubeParameters:
             Trim all the carbons that only have one carbon neighbor.
             """
             for i in range(2):
-                for atm in atoms.values():
+                for atm in list(atoms.values()):
                     if not atm.is_singlet() and len(atm.realNeighbors()) == 1:
                         atm.kill()
 
@@ -652,7 +652,7 @@ class NanotubeParameters:
             addEndcap(mol, length, self.getRadius())
         if self.endings == "Hydrogen":
             # hydrogen terminations
-            for atm in atoms.values():
+            for atm in list(atoms.values()):
                 atm.Hydrogenate()
         elif self.endings == "Nitrogen":
             # nitrogen terminations.
@@ -660,19 +660,19 @@ class NanotubeParameters:
             # in the PM. 2008-05-02 --mark
             dstElem = PeriodicTable.getElement('N')
             atomtype = dstElem.find_atomtype('sp2')
-            for atm in atoms.values():
+            for atm in list(atoms.values()):
                 if len(atm.realNeighbors()) == 2:
                     atm.Transmute(dstElem, force=True, atomtype=atomtype)
 
         # Translate structure to desired position
-        for atm in atoms.values():
+        for atm in list(atoms.values()):
             v = atm.posn()
             atm.setposn(v + position)
 
         if PROFILE:
             t = sw.now()
             env.history.message(greenmsg("%g seconds to build %d atoms" %
-                                         (t, len(atoms.values()))))
+                                         (t, len(list(atoms.values())))))
 
         if self.numwalls > 1:
             n += int(self.spacing * 3 + 0.5)  # empirical tinkering
@@ -721,15 +721,15 @@ class NanotubeParameters:
         rawOffset = b * scalar
 
         if 0: # Debugging code.
-            print ""
-            print "uVector  a = ", a
-            print "uVector  b = ", b
-            print "cross(a,b) =", axis
-            print "theta      =", theta
-            print "cntRise   =", self.getCntRise()
-            print "# of cells =", self.getNumberOfCells()
-            print "scalar     =", scalar
-            print "rawOffset  =", rawOffset
+            print("")
+            print("uVector  a = ", a)
+            print("uVector  b = ", b)
+            print("cross(a,b) =", axis)
+            print("theta      =", theta)
+            print("cntRise   =", self.getCntRise())
+            print("# of cells =", self.getNumberOfCells())
+            print("scalar     =", scalar)
+            print("rawOffset  =", rawOffset)
 
         if theta == 0.0 or theta == 180.0:
             axis = V(0, 1, 0)

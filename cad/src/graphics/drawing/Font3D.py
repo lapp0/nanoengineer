@@ -408,12 +408,12 @@ class Font3D:
             def drawSequence(seq, tfm=tfmgen(i)):
                 if len(seq) == 0:
                     return  # a space character has an empty sequence
-                if type(seq[0][0]) is not types.IntType:
+                if type(seq[0][0]) is not int:
                     # handle multi-stroke characters
                     for x in seq:
                         drawSequence(x)
                     return
-                seq = map(lambda tpl: apply(tfm,tpl), seq)
+                seq = [tfm(*tpl) for tpl in seq]
                 for i in range(len(seq) - 1):
                     pos1, pos2 = seq[i], seq[i+1]
                     if self.glBegin:

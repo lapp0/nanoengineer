@@ -213,7 +213,7 @@ def pref_fix_after_readmmp_after_updaters():
     # (described in checkin mail today)
     # (only needed in "after" version) [bruce 080319]
     if not dna_updater_is_enabled():
-        print "bug: the permanent version of this fix is not working, noticed in pref_fix_after_readmmp_after_updaters"
+        print("bug: the permanent version of this fix is not working, noticed in pref_fix_after_readmmp_after_updaters")
     res = debug_pref("DNA: do fix_after_readmmp_after_updaters? ",
                       Choice_boolean_True, # same comment as for before_updaters version
                       ## non_debug = True,

@@ -770,7 +770,7 @@ class PeptideGenerator:
 
         # Assign proper bond orders.
         i = 1
-        for atom in mol.atoms.itervalues():
+        for atom in mol.atoms.values():
             if atom.bonds:
                 for bond in atom.bonds:
                     if bond.atom1.getAtomTypeName()=="sp2" and \
@@ -786,7 +786,7 @@ class PeptideGenerator:
             i += 1
 
         # Remove temporary attributes.
-        for atom in mol.atoms.itervalues():
+        for atom in mol.atoms.values():
             del atom._is_aromatic
             del atom._is_single
 

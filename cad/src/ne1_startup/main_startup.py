@@ -69,7 +69,7 @@ def startup_script( main_globals):
         if not sys.executable.upper().endswith("PYTHON.EXE") and \
            not sys.executable.upper().endswith("PYTHON"):
             try:
-                capture_file = u"".join((sys.executable[:-4], "_console.log"))
+                capture_file = "".join((sys.executable[:-4], "_console.log"))
                 sys.stdout = open(capture_file, 'w')
                 capture_console = True # already trapped, don't try more.
             except:
@@ -89,23 +89,22 @@ def startup_script( main_globals):
             if capture_console or os.path.isdir(tmpFilePath):
                 try: # We made the directory or it already existed, try
                      # creating the log file.
-                    capture_file = os.path.normpath(u"".join((tmpFilePath, \
+                    capture_file = os.path.normpath("".join((tmpFilePath, \
                                              "/NE1_console.log")))
                     sys.stdout = open(capture_file, 'w')
                     capture_console = True
                 except:
-                    print >> sys.__stderr__, \
-                          "Failed to create any console log file."
+                    print("Failed to create any console log file.", file=sys.__stderr__)
                     capture_console = False
         if capture_console:
             # Next two lines are specifically printed to the original console
-            print >> sys.__stdout__, "The console has been redirected into:"
-            print >> sys.__stdout__, capture_file.encode("utf_8")
-            print
-            print "starting NanoEngineer-1 in [%s]," % os.getcwd(), time.asctime()
-            print "using Python: " + sys.version
+            print("The console has been redirected into:", file=sys.__stdout__)
+            print(capture_file.encode("utf_8"), file=sys.__stdout__)
+            print()
+            print("starting NanoEngineer-1 in [%s]," % os.getcwd(), time.asctime())
+            print("using Python: " + sys.version)
             try:
-                print "on path: " + sys.executable
+                print("on path: " + sys.executable)
             except:
                 pass
 
@@ -113,12 +112,12 @@ def startup_script( main_globals):
     # print the version information including official release candidate if it
     # is not 0 (false)
     if NE1_Build_Constants.NE1_OFFICIAL_RELEASE_CANDIDATE:
-        print "Version: NanoEngineer-1 v%s_RC%s" % \
+        print("Version: NanoEngineer-1 v%s_RC%s" % \
               (NE1_Build_Constants.NE1_RELEASE_VERSION, \
-               NE1_Build_Constants.NE1_OFFICIAL_RELEASE_CANDIDATE)
+               NE1_Build_Constants.NE1_OFFICIAL_RELEASE_CANDIDATE))
     else:
-        print "Version: NanoEngineer-1 v%s" % \
-              NE1_Build_Constants.NE1_RELEASE_VERSION
+        print("Version: NanoEngineer-1 v%s" % \
+              NE1_Build_Constants.NE1_RELEASE_VERSION)
 
     # "Do things that should be done before most imports occur."
 
@@ -168,7 +167,7 @@ def startup_script( main_globals):
             # I intend to add a user pref for MINIMUM_SPLASH_TIME for A7. mark 060131.
         splash_start = time.time()
     else:
-        print "note: splash.png was not found"
+        print("note: splash.png was not found")
 
 
     # connect the lastWindowClosed signal
@@ -297,10 +296,10 @@ def startup_script( main_globals):
                 # more than 20% of the time (not sure what that means exactly)
                 # (seems safe, but from log file, i guess it doesn't do much)
             psyco.profile(0.05) # "aggressive"
-            print "using psyco"
+            print("using psyco")
             pass
         except ImportError:
-            print "not using psyco"
+            print("not using psyco")
             pass
         pass
 
@@ -334,31 +333,31 @@ def startup_script( main_globals):
         # p.strip_dirs().sort_stats('cumulative').print_stats(100) # order by cumulative time
         atom_debug_profile_filename = main_globals.get('atom_debug_profile_filename')
         if atom_debug_profile_filename:
-            print ("\nUser's .atom-debug-rc requests profiling into file %r" %
-                   (atom_debug_profile_filename,))
-            if not type(atom_debug_profile_filename) in [type("x"), type(u"x")]:
-                print "error: atom_debug_profile_filename must be a string"
+            print(("\nUser's .atom-debug-rc requests profiling into file %r" %
+                   (atom_debug_profile_filename,)))
+            if not type(atom_debug_profile_filename) in [type("x"), type("x")]:
+                print("error: atom_debug_profile_filename must be a string")
                 assert 0 # caught and ignored, turns off profiling
             if PROFILE_WITH_HOTSHOT:
                 try:
                     import hotshot
                 except:
-                    print "error during 'import hotshot'"
+                    print("error during 'import hotshot'")
                     raise # caught and ignored, turns off profiling
             else:
                 try:
                     import cProfile as py_Profile
                 except ImportError:
-                    print "Unable to import cProfile. Using profile module instead."
+                    print("Unable to import cProfile. Using profile module instead.")
                     py_Profile = None
                 if py_Profile is None:
                     try:
                         import profile as py_Profile
                     except:
-                        print "error during 'import profile'"
+                        print("error during 'import profile'")
                         raise # caught and ignored, turns off profiling
     except:
-        print "exception setting up profiling (hopefully reported above); running without profiling"
+        print("exception setting up profiling (hopefully reported above); running without profiling")
         atom_debug_profile_filename = None
 
 
@@ -386,14 +385,14 @@ def startup_script( main_globals):
     # (such as run optional startup commands for debugging).
     startup_misc.just_before_event_loop()
 
-    if os.environ.has_key('WINGDB_ACTIVE'):
+    if 'WINGDB_ACTIVE' in os.environ:
         # Hack to burn some Python bytecode periodically so Wing's
         # debugger can remain responsive while free-running
         # [from http://wingware.com/doc/howtos/pyqt; added by bruce 081227]
         # Addendum [bruce 090107]: this timer doesn't noticeably slow down NE1,
         # but with or without it, NE1 is about 4x slower in Wing than running
         # alone, at least when running test_selection_redraw.py.
-        print "running under Wing IDE debugger; setting up timer"
+        print("running under Wing IDE debugger; setting up timer")
         from PyQt4 import QtCore
         timer = QtCore.QTimer()
         def donothing(*args):
@@ -417,8 +416,8 @@ def startup_script( main_globals):
         else:
             py_Profile.run('from ne1_startup.main_startup import app; app.exec_()',
                            atom_debug_profile_filename)
-        print ("\nProfile data was presumably saved into %r" %
-               (atom_debug_profile_filename,))
+        print(("\nProfile data was presumably saved into %r" %
+               (atom_debug_profile_filename,)))
     else:
         # if you change this code, also change both string literals just above
         app.exec_()

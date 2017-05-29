@@ -438,8 +438,8 @@ class MovePropertyManager(Ui_MovePropertyManager):
                 lbl.setBold(False)
                 lbl.show()
         else:
-            print "MovePropertyManager.updateRotationDeltaLabels:\
-                  Error - unknown rotateOption value :", self.rotateOption
+            print("MovePropertyManager.updateRotationDeltaLabels:\
+                  Error - unknown rotateOption value :", self.rotateOption)
 
     def toggleRotationDeltaLabels(self, show = False):
         """

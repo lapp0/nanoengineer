@@ -243,7 +243,7 @@ class MultipleDnaSegmentResize_PropertyManager( DnaOrCnt_PropertyManager ):
         """
         self.segmentListWidget.deleteSelection()
         itemDict = self.segmentListWidget.getItemDictonary()
-        self.command.setResizeStructList(itemDict.values())
+        self.command.setResizeStructList(list(itemDict.values()))
         self.updateListWidgets()
         self.win.win_update()
 

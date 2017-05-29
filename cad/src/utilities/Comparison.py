@@ -35,7 +35,7 @@ try:
     import numpy
     numpy.ndarray # make sure this exists
 except:
-    print "fyi: python same_vals can't import numpy.ndarray, won't handle it" ###
+    print("fyi: python same_vals can't import numpy.ndarray, won't handle it") ###
     _haveNumpy = False
 
 import foundation.env as env
@@ -65,7 +65,7 @@ if SAMEVALS_SPEEDUP:
         from samevals import setArrayType
         import Numeric
         setArrayType(type(Numeric.array((1,2,3))))
-        print "SAMEVALS_SPEEDUP is True, and import samevals succeeded"
+        print("SAMEVALS_SPEEDUP is True, and import samevals succeeded")
     except ImportError:
         # Note: this error could be from importing samevals
         # (an optional dll built from samevals.c) or Numeric.
@@ -74,7 +74,7 @@ if SAMEVALS_SPEEDUP:
         # setArrayType was never called, so I'll let this code
         # continue to disable SAMEVALS_SPEEDUP in either case.
         # [bruce 071005]
-        print "samevals.so/dll or Numeric not available, not using SAMEVALS_SPEEDUP"
+        print("samevals.so/dll or Numeric not available, not using SAMEVALS_SPEEDUP")
         SAMEVALS_SPEEDUP = False
 
 # ==
@@ -154,14 +154,14 @@ def same_vals(v1, v2): #060303
         _same_vals_helper(v1, v2)
     except _NotTheSame:
         if _debug_same_vals and not (v1 != v2):
-            print "debug_same_vals: " \
-                  "same_vals says False but 'not !=' says True, for", v1, v2
+            print("debug_same_vals: " \
+                  "same_vals says False but 'not !=' says True, for", v1, v2)
                 # happens for bug 1869 (even though it's fixed;
                 # cause is understood)
         return False
     if _debug_same_vals and (v1 != v2):
-        print "debug_same_vals: " \
-              "same_vals says True but '!=' also says True, for", v1, v2
+        print("debug_same_vals: " \
+              "same_vals says True but '!=' also says True, for", v1, v2)
               ##@@ remove when pattern seen
     return True
 
@@ -172,7 +172,7 @@ def _same_list_helper(v1, v2):
     n = len(v1)
     if n != len(v2):
         raise _NotTheSame
-    for i in xrange(n):
+    for i in range(n):
         _same_vals_helper(v1[i], v2[i])
     return
 
@@ -181,8 +181,8 @@ _same_tuple_helper = _same_list_helper
 def _same_dict_helper(v1, v2):
     if len(v1) != len(v2):
         raise _NotTheSame
-    for key, val1 in v1.iteritems():
-        if not v2.has_key(key):
+    for key, val1 in v1.items():
+        if key not in v2:
             raise _NotTheSame
         _same_vals_helper(val1, v2[key])
     # if we get this far, no need to check for extra keys in v2,
@@ -319,11 +319,11 @@ def _same_Numeric_array_helper(obj1, obj2):
         raise _NotTheSame
     if obj1.typecode() == PyObject:
         if env.debug():
-            print "atom_debug: ran _same_Numeric_array_helper, PyObject case"
+            print("atom_debug: ran _same_Numeric_array_helper, PyObject case")
                 # remove when works once ###@@@
         # assume not multi-dimensional (if we are, this should work [untested]
         # but it will be inefficient)
-        for i in xrange(len(obj1)):
+        for i in range(len(obj1)):
             # two PyObjects (if obj1 is 1-dim) or two lower-dim Numeric arrays
             _same_vals_helper(obj1[i], obj2[i])
     else:
@@ -382,7 +382,7 @@ _known_type_same_helpers[ InstanceType ] = _same_InstanceType_helper
 
 if _haveNumeric:
     # note: related code exists in state_utils.py.
-    numeric_array_type = type(array(range(2)))
+    numeric_array_type = type(array(list(range(2))))
         # __name__ is 'array', but Numeric.array itself is a built-in function,
         # not a type
     assert numeric_array_type != InstanceType

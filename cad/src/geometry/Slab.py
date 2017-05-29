@@ -29,7 +29,7 @@ class Slab:
         return d >= 0 and d <= self.thickness
 
     def __str__(self):
-        return '<slab of '+`self.thickness`+' at '+`self.point`+'>'
+        return '<slab of '+repr(self.thickness)+' at '+repr(self.point)+'>'
 
     pass
 

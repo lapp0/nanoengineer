@@ -780,7 +780,7 @@ class DnaStrand(DnaStrandOrSegment):
         atomList = []
         rawAtomList = self.get_strand_atoms_in_bond_direction()
 
-        atomList = filter(lambda atm: not atm.is_singlet(), rawAtomList)
+        atomList = [atm for atm in rawAtomList if not atm.is_singlet()]
 
         for atm in atomList:
             atomIndex = atomList.index(atm)
@@ -813,7 +813,7 @@ class DnaStrand(DnaStrandOrSegment):
                 # do the same for all complementary chunks
                 # [note: could be optimized]
                 prev_cc = None
-                for atom in c.atoms.itervalues():
+                for atom in c.atoms.values():
                     atm_mate = atom.get_strand_atom_mate()
                     if atm_mate:
                         cc = atm_mate.molecule
@@ -872,7 +872,7 @@ class DnaStrand(DnaStrandOrSegment):
         else:
             for c in self.members:
                 if isinstance(c, DnaStrandChunk):
-                    rawAtomList.extend(c.atoms.itervalues())
+                    rawAtomList.extend(iter(c.atoms.values()))
 
 
         startAtom = None
@@ -1017,7 +1017,7 @@ class DnaStrand(DnaStrandOrSegment):
         #[bruce 080205 comment]
 
         if filterBondPoints:
-            atomList = filter(lambda atm: not atm.is_singlet(), atomList)
+            atomList = [atm for atm in atomList if not atm.is_singlet()]
 
         return atomList
 
@@ -1061,7 +1061,7 @@ class DnaStrand(DnaStrandOrSegment):
         else:
             for c in self.members:
                 if isinstance(c, DnaStrandChunk):
-                    rawAtomList.extend(c.atoms.itervalues())
+                    rawAtomList.extend(iter(c.atoms.values()))
 
 
         #Choose startAtom randomly (make sure that it's a Sugar atom
@@ -1206,7 +1206,7 @@ class DnaStrand(DnaStrandOrSegment):
                    atm.element.symbol == 'Ss5' or \
                    atm.element.symbol == 'X'
 
-        atomList = filter(filter_sugars, atomList)
+        atomList = list(filter(filter_sugars, atomList))
         return atomList
 
     pass

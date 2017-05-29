@@ -18,6 +18,7 @@ from platform_dependent.PlatformDependent import find_or_make_Nanorex_subdir
 from foundation.FeatureDescriptor import find_or_make_descriptor_for_possible_feature_object
 from foundation.FeatureDescriptor import command_package_part_of_module_name
 from foundation.FeatureDescriptor import otherCommandPackage_Descriptor
+import imp
 
 # ==
 
@@ -53,8 +54,8 @@ def import_all_modules_cmd(glpane): #bruce 080721
         file1.close
         os.remove(tmpfile)
 
-        print
-        print "will scan %d source files from AllPyFiles" % len(modules) # 722 files as of 080721!
+        print()
+        print("will scan %d source files from AllPyFiles" % len(modules)) # 722 files as of 080721!
 
         modules.sort()
 
@@ -80,26 +81,26 @@ def import_all_modules_cmd(glpane): #bruce 080721
                 # those funny chars can happen when developers have junk files lying around
                 # todo: do a real regexp match, permit identifiers and '/' only;
                 # or, only do this for files known to svn?
-                print "skipping import of", basename
+                print("skipping import of", basename)
                 continue
             import_these.append(module.replace('/', '.'))
             continue
         if cinit:
-            print "(skipping direct import of %d __init__.py files)" % cinit
-        print
+            print("(skipping direct import of %d __init__.py files)" % cinit)
+        print()
 
-        print "will import %d modules" % len(import_these)
+        print("will import %d modules" % len(import_these))
 
         for module in import_these:
             statement = "import " + module
             try:
-                exec statement
+                exec(statement)
             except:
                 print_compact_traceback("ignoring exception in %r: " % statement)
                 pass
 
-        print "done importing all modules"
-        print
+        print("done importing all modules")
+        print()
 
     except:
         print_compact_traceback("ignoring exception: ")
@@ -119,7 +120,7 @@ def export_command_table_cmd(glpane, _might_reload = True): #bruce 080721, unfin
         try:
             import operations.ops_debug as _this_module
                 # (to be precise: new version of this module)
-            reload(_this_module)
+            imp.reload(_this_module)
             _this_module.export_command_table_cmd # make sure it's there
         except:
             print_compact_traceback("fyi: auto-reload failed: ")
@@ -136,7 +137,7 @@ def export_command_table_cmd(glpane, _might_reload = True): #bruce 080721, unfin
 
     all_command_packages_dict = {}
 
-    for module in sys.modules.itervalues():
+    for module in sys.modules.values():
         if module:
             # Note: this includes built-in and extension modules.
             # If they were easy to exclude, we'd exclude them here,
@@ -148,36 +149,36 @@ def export_command_table_cmd(glpane, _might_reload = True): #bruce 080721, unfin
                 value = getattr(module, name)
                 global_values[id(value)] = value # also store module and name?
             if 0:
-                print module # e.g. <module 'commands.Move' from '/Nanorex/trunk/cad/src/commands/Move/__init__.pyc'>
-                print getattr(module, '__file__', '<no file>') # e.g. /Nanorex/trunk/cad/src/commands/Move/__init__.pyc
+                print(module) # e.g. <module 'commands.Move' from '/Nanorex/trunk/cad/src/commands/Move/__init__.pyc'>
+                print(getattr(module, '__file__', '<no file>')) # e.g. /Nanorex/trunk/cad/src/commands/Move/__init__.pyc
                     # e.g. <module 'imp' (built-in)> has no file; name is 'imp'
-                print getattr(module, '__name__', '<no name>') # e.g. commands.Move
+                print(getattr(module, '__name__', '<no name>')) # e.g. commands.Move
                     # all modules have a name.
-                print
+                print()
             cp = command_package_part_of_module_name( module.__name__)
             if cp:
                 all_command_packages_dict[ cp] = cp
             pass
         continue
 
-    print "found %d distinct global values in %d modules" % ( len(global_values), mcount)
+    print("found %d distinct global values in %d modules" % ( len(global_values), mcount))
     if 1:
         # not really needed, just curious how many types of global values there are
         global_value_types = {} # maps type -> type (I assume all types are hashable)
-        for v in global_values.itervalues():
+        for v in global_values.values():
             t = type(v)
             global_value_types[t] = t
-        print "of %d distinct types" % len(global_value_types)
+        print("of %d distinct types" % len(global_value_types))
             # 745 types!
             # e.g. one class per OpenGL function, for some reason;
             # and some distinct types which print the same,
             # e.g. many instances of <class 'ctypes.CFunctionType'>.
 
         # print global_value_types.values() # just to see it...
-        print
+        print()
 
-    print "found %d command_packages" % len(all_command_packages_dict) # a dict, from and to their names
-    all_command_packages_list = all_command_packages_dict.values()
+    print("found %d command_packages" % len(all_command_packages_dict)) # a dict, from and to their names
+    all_command_packages_list = list(all_command_packages_dict.values())
     all_command_packages_list.sort()
 
     # print "\n".join( all_command_packages_list)
@@ -185,7 +186,7 @@ def export_command_table_cmd(glpane, _might_reload = True): #bruce 080721, unfin
 
     # find command descriptors in global_values
     descriptors = {}
-    for thing in global_values.itervalues():
+    for thing in global_values.values():
         d = find_or_make_descriptor_for_possible_feature_object( thing)
         if d is not None:
             descriptors[d] = d # duplicates can occur
@@ -197,10 +198,10 @@ def export_command_table_cmd(glpane, _might_reload = True): #bruce 080721, unfin
         cp = d.command_package
         if cp:
             if cp not in all_command_packages_dict:
-                print "bug: command package not found in initial scan:", cp
-            if command_packages_with_commands.has_key(cp):
+                print("bug: command package not found in initial scan:", cp)
+            if cp in command_packages_with_commands:
                 # this is normal now; todo: print at most once per cp
-                print "fyi: command package with more than one command:", cp
+                print("fyi: command package with more than one command:", cp)
             command_packages_with_commands[ cp] = cp
 
     for cp in all_command_packages_list:
@@ -216,14 +217,14 @@ def export_command_table_cmd(glpane, _might_reload = True): #bruce 080721, unfin
 
     # print results
 
-    print "found %d commands:" % len(descriptors)
-    print
+    print("found %d commands:" % len(descriptors))
+    print()
 
     for descriptor in descriptors:
         descriptor.print_plain() # todo: add more info to that; print into a file
-        print
+        print()
 
-    print "done"
+    print("done")
 
     return # from export_command_table_cmd
 

@@ -78,8 +78,8 @@ def parse_arg_pattern(argpat):
     if not argpat[0]:
         argpat = argpat[1:]
     assert argpat
-    assert argpat == filter(None, argpat), \
-           "argpat %r should equal filtered one %r" % (argpat, filter(None, argpat))
+    assert argpat == [_f for _f in argpat if _f], \
+           "argpat %r should equal filtered one %r" % (argpat, [_f for _f in argpat if _f])
             # no other empty strings are legal
     return argpat
 
@@ -114,9 +114,9 @@ class PluginlikeGenerator:
             instance = subclass(win)
             if instance.ok_to_install_in_UI:
                 instance.install_in_UI()
-                if debug_install: print "debug: registered", instance
+                if debug_install: print("debug: registered", instance)
             else:
-                if debug_install: print "debug: didn't register", instance
+                if debug_install: print("debug: didn't register", instance)
         except:
             print_compact_traceback("bug in instantiating %r or installing its instance: " % subclass)
         return
@@ -134,15 +134,15 @@ class PluginlikeGenerator:
         and sets self.errorcode and self.errortext.
         """
         if not errorcode:
-            print "bug: fatal errorcode must be a boolean-true value, not %r" % (errorcode,)
+            print("bug: fatal errorcode must be a boolean-true value, not %r" % (errorcode,))
             errorcode = 1
         if self.errorcode:
-            print "plugin %r bug: self.errorcode was already set before fatal was called" % (self.plugin_name,)
+            print("plugin %r bug: self.errorcode was already set before fatal was called" % (self.plugin_name,))
         if not self.errorcode or not self.errortext:
             self.errortext = errortext # permanent record for use by callers
         self.errorcode = errorcode
         msg = "plugin %r fatal error: %s" % (self.plugin_name, errortext,)
-        print msg
+        print(msg)
         env.history.message(redmsg(quote_html(msg))) # it might be too early for this to be seen
         return errorcode
 
@@ -171,7 +171,7 @@ class PluginlikeGenerator:
         #  since they might be created in a session-specific place)
         self.working_directory = None
 
-        if debug_install: print "plugin init is permitting ok_to_install_in_UI = True"
+        if debug_install: print("plugin init is permitting ok_to_install_in_UI = True")
         self.ok_to_install_in_UI = True
         return
 
@@ -213,7 +213,7 @@ class PluginlikeGenerator:
                 # (it might be a file or a symlink, and I'm not sure if isfile works across symlinks;
                 #  if it does, we'd want to use isfile here, and warn if exists but not isfile #k)
                 self.executable_path = executable_path
-                if debug_install: print "plugin exec path = %r" % (executable_path,)
+                if debug_install: print("plugin exec path = %r" % (executable_path,))
                 break
             continue
         if not self.executable_path:
@@ -265,7 +265,7 @@ class PluginlikeGenerator:
         # not only to this menu item, but to the generated dialog as well. this code to find it will be in setup_from_plugin_dir
         # I think. or maybe (also) called again each time we make the dialog?
         if not os.path.isfile(icon_path):
-            print "didn't find [%s], using modeltree/junk.png" % icon_path
+            print("didn't find [%s], using modeltree/junk.png" % icon_path)
             icon_path = "modeltree/junk.png"
         # icon_path will be found later by imagename_to_pixmap I think; does it work with an abspath too?? #####@@@@@
         return icon_path
@@ -316,7 +316,7 @@ class PluginlikeGenerator:
             pass
         if not self.dialog:
             if debug_run():
-                print "making dialog from", self.parameter_set_filename
+                print("making dialog from", self.parameter_set_filename)
             dialog_env = self
                 # KLUGE... it needs to be something with an imagename_to_pixmap function that knows our icon_path.
                 # the easiest way to make one is self... in future we want our own env, and to modify it by inserting that path...
@@ -358,7 +358,7 @@ class PluginlikeGenerator:
         self.create_working_directory_if_needed()
         assert not self.errorcode
         if debug_run():
-            print 'ought to insert a', self.what_we_generate
+            print('ought to insert a', self.what_we_generate)
         self.make_dialog_if_needed()
         dialog = self.dialog
         ###e Not yet properly handled: retaining default values from last time it was used. (Should pass dict of them to the maker.)
@@ -391,7 +391,7 @@ class PluginlikeGenerator:
         exitcode = self.run_command(program, args)
         #e look at exitcode?
         if exitcode and debug_run():
-            print "generator exitcode: %r" % (exitcode,)
+            print("generator exitcode: %r" % (exitcode,))
         if exitcode:
             # treat this as a fatal error for this run [to test, use an invalid chirality with m > n]
             msg = "Plugin %r exitcode: %r" % (self.plugin_name, exitcode)
@@ -411,7 +411,7 @@ class PluginlikeGenerator:
         ###@@@ WARNING: the following repositioning code is not correct for all kinds of "things",
         # only for single-chunk things like for CoNTub
         # (and also it probably belongs inside insert_output, not here):
-        for atom in thing.atoms.values():
+        for atom in list(thing.atoms.values()):
             atom.setposn(atom.posn() + position)
         self.remove_outfiles(outfiles)
         return thing
@@ -431,11 +431,11 @@ class PluginlikeGenerator:
         self.outputfiles_pattern # make sure subclass defines these
         self.executable_args_pattern
 
-        self.outfile_pats = map( parse_arg_pattern, self.outputfiles_pattern.split())
-        self.cmdline_pats = map( parse_arg_pattern, self.executable_args_pattern.split())
+        self.outfile_pats = list(map( parse_arg_pattern, self.outputfiles_pattern.split()))
+        self.cmdline_pats = list(map( parse_arg_pattern, self.executable_args_pattern.split()))
 
         if debug_install:
-            print "got these parsed argpats: %r\nand outfiles: %r" % (self.cmdline_pats, self.outfile_pats)
+            print("got these parsed argpats: %r\nand outfiles: %r" % (self.cmdline_pats, self.outfile_pats))
 
         self.paramnames_dict = {} # for now, maps pn -> $pn
         self.outfile_paramname_extension_pairs = []
@@ -473,10 +473,10 @@ class PluginlikeGenerator:
         assert self.outfile_paramname_extension_pairs
 
         if debug_install:
-            print "outfile_paramname_extension_pairs:", self.outfile_paramname_extension_pairs
-            print "paramnames_dict", self.paramnames_dict
-            print "outfile_paramnames", self.outfile_paramnames
-            print "paramnames_order", self.paramnames_order
+            print("outfile_paramname_extension_pairs:", self.outfile_paramname_extension_pairs)
+            print("paramnames_dict", self.paramnames_dict)
+            print("outfile_paramnames", self.outfile_paramnames)
+            print("paramnames_order", self.paramnames_order)
 
         # see command_line_args_and_outfiles() for how all this is used
         return
@@ -516,7 +516,7 @@ class PluginlikeGenerator:
 
     def run_command(self, program, args):
         if debug_run():
-            print "will run this command:", program, args
+            print("will run this command:", program, args)
         from PyQt4.Qt import QStringList, QProcess, QObject, SIGNAL, QDir
         # modified from runSim.py
         arguments = QStringList()
@@ -532,11 +532,11 @@ class PluginlikeGenerator:
         if 1:
             # report stdout/stderr
             def blabout():
-                print "stdout:", simProcess.readStdout()
+                print("stdout:", simProcess.readStdout())
                 ##e should also mention its existence in history, but don't copy it all there in case a lot
             def blaberr():
                 text = str(simProcess.readStderr()) # str since it's QString (i hope it can't be unicode)
-                print "stderr:", text
+                print("stderr:", text)
                 env.history.message(redmsg("%s stderr: " % self.plugin_name + quote_html(text)))
                 # examples from CoNTub/bin/HJ:
                 # stderr: BAD INPUT
@@ -545,21 +545,21 @@ class PluginlikeGenerator:
             QObject.connect(simProcess, SIGNAL("readyReadStderr()"), blaberr)
         started = simProcess.start() ###k what is this code? i forget if true means ok or error
         if debug_run():
-            print "qprocess started:",started
+            print("qprocess started:",started)
         while 1:
             ###e need to make it abortable! from which abort button? ideally, one on the dialog; maybe cancel button??
             # on exception: simProcess.kill()
             if simProcess.isRunning():
                 if debug_run():
-                    print "still running"
+                    print("still running")
                     time.sleep(1)
                 else:
                     time.sleep(0.1)
             else:
                 break
         if debug_run():
-            print "process done i guess: normalExit = %r, (if normal) exitStatus = %r" % \
-                  (simProcess.normalExit(), simProcess.exitStatus())
+            print("process done i guess: normalExit = %r, (if normal) exitStatus = %r" % \
+                  (simProcess.normalExit(), simProcess.exitStatus()))
         if 1:
             QObject.disconnect(simProcess, SIGNAL("readyReadStdout()"), blabout)
             QObject.disconnect(simProcess, SIGNAL("readyReadStderr()"), blaberr)
@@ -571,7 +571,7 @@ class PluginlikeGenerator:
     def insert_output(self, outfiles, params, name):
         ## return self.create_methane_test(params, name)
         if debug_run():
-            print "inserting output from",outfiles ###@@@
+            print("inserting output from",outfiles) ###@@@
         # modified from dna generator's local function insertmmp(filename, tfm)
         assert len(outfiles) == 1 # for now
         filename = outfiles[0]
@@ -593,13 +593,13 @@ class PluginlikeGenerator:
         # wware 060704 - fix valence problems on the ends
         while True:
             found_one = False
-            for atm in thing.atoms.values():
+            for atm in list(thing.atoms.values()):
                 if atm.element.symbol == 'C' and len(atm.realNeighbors()) == 1:
                     atm.kill()
                     found_one = True
             if not found_one:
                 break
-        for atm in thing.atoms.values():
+        for atm in list(thing.atoms.values()):
             if atm.element.symbol == 'C' and len(atm.realNeighbors()) == 2:
                 atm.set_atomtype('sp2', always_remake_bondpoints = True)
         # problem: for some kinds of errors, the only indication is that we're inserting a 0-atom mol, not a many-atom mol. hmm.
@@ -607,11 +607,11 @@ class PluginlikeGenerator:
         return thing # doesn't actually insert it, GBC does that
 
     def remove_outfiles(self, outfiles):
-        print "removing these files is nim:", outfiles ###@@@
+        print("removing these files is nim:", outfiles) ###@@@
 
     def create_methane_test(self, params, name):
         # example: build some methanes
-        print "create_methane_test"
+        print("create_methane_test")
         assy = self.win.assy
         from geometry.VQT import V
         from model.chunk import Chunk

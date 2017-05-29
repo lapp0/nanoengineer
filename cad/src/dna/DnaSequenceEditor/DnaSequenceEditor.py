@@ -249,13 +249,13 @@ class DnaSequenceEditor(Ui_DnaSequenceEditor):
 
         if False: # Set to True for debugging statements.
             if theSequence == self._previousSequence:
-                print "The sequence did not change (YOU SHOULD NEVER SEE THIS)."
+                print("The sequence did not change (YOU SHOULD NEVER SEE THIS).")
             elif len(theSequence) < len(self._previousSequence):
-                print "Character(s) were deleted from the sequence."
+                print("Character(s) were deleted from the sequence.")
             elif len(theSequence) == len(self._previousSequence):
-                print "A character was replaced. The sequence length is the same."
+                print("A character was replaced. The sequence length is the same.")
             else:
-                print "Character(s) where added to the sequence."
+                print("Character(s) where added to the sequence.")
             pass
 
         # Insert the sequence; it will be "stylized" by _setSequence().
@@ -683,7 +683,7 @@ class DnaSequenceEditor(Ui_DnaSequenceEditor):
         Clear the sequence and mate fields.
         """
         if 0:
-            print "Cleared"
+            print("Cleared")
         self.sequenceTextEdit.insertHtml("<font color=gray></font>")
         self.sequenceTextEdit_mate.insertHtml("<font color=gray></font>")
         return
@@ -902,7 +902,7 @@ class DnaSequenceEditor(Ui_DnaSequenceEditor):
         try:
             lines = open(self.sequenceFileName, "rU").readlines()
         except:
-            print "Exception occurred to open file: ", self.sequenceFileName
+            print("Exception occurred to open file: ", self.sequenceFileName)
             return
 
         sequence = lines[0]
@@ -919,7 +919,7 @@ class DnaSequenceEditor(Ui_DnaSequenceEditor):
         try:
             f = open(fileName, "w")
         except:
-            print "Exception occurred to open file %s to write: " % fileName
+            print("Exception occurred to open file %s to write: " % fileName)
             return None
 
         f.write(str(strandSequence))

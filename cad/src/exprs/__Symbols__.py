@@ -46,7 +46,7 @@ class _FakeModule_for_Symbols:
         self.__set_getattr_func(None)
     def __getattr__(self, attr): # in class _FakeModule_for_Symbols
         if attr.startswith('__'):
-            raise AttributeError, attr
+            raise AttributeError(attr)
         assert self.__getattr_func, "bug: symbol source not yet set in %r" % (self,)
         res = self.__getattr_func(attr)
         setattr(self, attr, res) # cache the value of this attr for reuse

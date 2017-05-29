@@ -174,17 +174,15 @@ class ViewOrientationWindow(QDockWidget, Ui_ViewOrientation):
         """
         win = self.win
 
-        if win.standardViewMethodDict.has_key(
-              self.orientationViewList.currentItem() ):
+        if self.orientationViewList.currentItem() in win.standardViewMethodDict:
             viewMethod = win.standardViewMethodDict[self.orientationViewList.currentItem()]
             viewMethod()
-        elif win.namedViewMethodDict.has_key(
-              self.orientationViewList.currentItem() ):
+        elif self.orientationViewList.currentItem() in win.namedViewMethodDict:
             viewMethod = win.namedViewMethodDict[self.orientationViewList.currentItem()]
             viewMethod()
         else:
-            print "bug while changing the view from Orientation Window."\
-                  "Ignoring change view command"
+            print("bug while changing the view from Orientation Window."\
+                  "Ignoring change view command")
             #@@ ninad 061201 Not sure if it would ever be called.
             #Adding just to be safe.
             return

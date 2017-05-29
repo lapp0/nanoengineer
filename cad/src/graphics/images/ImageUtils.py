@@ -97,14 +97,14 @@ class nEImageOps:
             self.img = self.img.convert(mode) #k does it matter whether we do this before or after resizing it?
             new_data = self.img.size, self.img.mode
             if old_data != new_data and debug_flags.atom_debug and self.debug:
-                print "debug: %r: fyi: image converted from %r to %r" % (self, old_data, new_data)
+                print("debug: %r: fyi: image converted from %r to %r" % (self, old_data, new_data))
                 ###e also need self.update() in this case?? if so, better do it later during __init__.
             pass
         self.orig_width = self.img.size[0] #bruce 061127
         self.orig_height = self.img.size[1] #bruce 061127
         if debug_flags.atom_debug and self.debug:
             #bruce 061127; fyi, see also string in this file containing RGB
-            print "debug fyi: nEImageOps.__init__: %r.img.size, mode is %r, %r" % (self, self.img.size, self.img.mode) ###
+            print("debug fyi: nEImageOps.__init__: %r.img.size, mode is %r, %r" % (self, self.img.size, self.img.mode)) ###
         if 1:
             #bruce 060213 - let debug pref set default values of ideal_width, ideal_height
             from utilities.debug_prefs import debug_pref, Choice
@@ -180,7 +180,7 @@ class nEImageOps:
             ##e try it, see above for where [bruce 061127 comment]
         except:
             #bruce 061127
-            print "fyi: following exception relates to %r with mode %r" % (self.img, self.img.mode)
+            print("fyi: following exception relates to %r with mode %r" % (self.img, self.img.mode))
                 #e also self.img.info? not sure if huge.
             raise
         #print "image size: ", width, height
@@ -206,7 +206,7 @@ class nEImageOps:
                 if not self.rescale:
                     # print debug warning that it can't do as asked
                     if debug_flags.atom_debug and self.debug:
-                        print "debug fyi: %r.resize is rescaling, tho asked not to, since a dim must shrink" % self #e more info
+                        print("debug fyi: %r.resize is rescaling, tho asked not to, since a dim must shrink" % self) #e more info
                 self.img = self.img.resize( (wd, ht), filter)
                     # supported filters, says doc:
                         ##The filter argument can be one of NEAREST (use nearest neighbour), BILINEAR
@@ -283,7 +283,7 @@ class nEImageOps:
         self.img = Image.open(newName)
         newmode = self.img.mode
         if oldmode != newmode and debug_flags.atom_debug and self.debug: #k does this ever happen??
-            print "debug warning: oldmode != newmode (%r != %r) in %r.update" % (oldmode, newmode, self)
+            print("debug warning: oldmode != newmode (%r != %r) in %r.update" % (oldmode, newmode, self))
         #e could set actual-size attrs here
 
     def flip(self):

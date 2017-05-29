@@ -112,7 +112,7 @@ def parse_state( state_desc):
     try:
         return state_desc[0], state_desc[1:]
     except:
-        print "following exception was in parse_state(%r):" % (state_desc,)
+        print("following exception was in parse_state(%r):" % (state_desc,))
         raise
     pass
 
@@ -145,7 +145,7 @@ class ToolStateBehavior(object):
     def transition_to(self, next_state):
         if next_state is not SAME_STATE:
             if DEBUG_TRANSITIONS:
-                print "%r transto %r" % (self, next_state) ##### DEBUG
+                print("%r transto %r" % (self, next_state)) ##### DEBUG
             self.tool.transition_to( next_state,
                                      CMD_RETVAL = self._cmd_retval )
             # maybe: might decide tool can grab it from self if needed (passed as an arg)
@@ -218,7 +218,7 @@ class Tool(object):
             res = state_class( self, *state_args)
             return res
         except:
-            print "following exception is in %r.instantiate_state(%r):" % (self, state)
+            print("following exception is in %r.instantiate_state(%r):" % (self, state))
             raise
         pass
     pass

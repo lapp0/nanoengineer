@@ -45,7 +45,7 @@ def mkdirs_in_filename(filename):
         mkdirs_in_filename(dir)
         os.mkdir(dir)
         if not os.path.exists(dir):
-            print u"Directory not created: ", dir.encode("utf_8")
+            print("Directory not created: ", dir.encode("utf_8"))
     return
 
 # == event code
@@ -78,7 +78,7 @@ def filter_key(key, debug_keys = 0): #bruce revised this 070517 to fix Mac-speci
             #  TreeWidget in Qt3. I added a comment about that in modelTreeGui.
             # [bruce 070517]
             if debug_keys:
-                print "fyi: mac bugfix: remapping key %d (actual delete key) to key %d (Qt.Key_Delete)" % (key, Qt.Key_Delete)
+                print("fyi: mac bugfix: remapping key %d (actual delete key) to key %d (Qt.Key_Delete)" % (key, Qt.Key_Delete))
             key = Qt.Key_Delete
     return key
 
@@ -246,7 +246,7 @@ def fix_buttons_helper(self, but, mod, when):
                 mod = mod & ~Qt.MetaModifier
                 but = (but & ~Qt.LeftButton) | Qt.RightButton
         except:
-            print "following exception concerns but = %r, mod = %r; btw Qt.MetaModifier = %r" % (but, mod, Qt.MetaModifier)
+            print("following exception concerns but = %r, mod = %r; btw Qt.MetaModifier = %r" % (but, mod, Qt.MetaModifier))
             raise
         pass
 
@@ -274,8 +274,8 @@ def fix_buttons_helper(self, but, mod, when):
         # we'll reuse this button/modkey state during the same
         # drag and release
         if _debug and self._fix_buttons_saved_buttons != but:
-            print "fyi, debug: fix_buttons: some event flags unsaved: %d - %d = 0x%x" % (
-                but, self._fix_buttons_saved_buttons, but - self._fix_buttons_saved_buttons)
+            print("fyi, debug: fix_buttons: some event flags unsaved: %d - %d = 0x%x" % (
+                but, self._fix_buttons_saved_buttons, but - self._fix_buttons_saved_buttons))
             # fyi: on Mac I once got 2050 - 2 = 0x800 from this statement;
             # don't know what flag 0x800 means; shouldn't be a problem
     elif when in ['drag','release']:
@@ -286,13 +286,13 @@ def fix_buttons_helper(self, but, mod, when):
             but |= self._fix_buttons_saved_buttons
             # restore the modkeys and mousebuttons from the mousepress
             if _debug and but0 != but:
-                print "fyi, debug: fix_buttons rewrote but0 0x%x to but 0x%x" % (but0, but) #works
+                print("fyi, debug: fix_buttons rewrote but0 0x%x to but 0x%x" % (but0, but)) #works
             mod0 = mod
             mod &= ~allModifiers
             mod |= self._fix_buttons_saved_modifiers
             # restore the modkeys and mousemodifiers from the mousepress
             if _debug and mod0 != mod:
-                print "fyi, debug: fix_buttons rewrote mod0 0x%x to mod 0x%x" % (mod0, mod) #works
+                print("fyi, debug: fix_buttons rewrote mod0 0x%x to mod 0x%x" % (mod0, mod)) #works
         else:
 
             # fyi: This case might happen in the following rare
@@ -312,8 +312,8 @@ def fix_buttons_helper(self, but, mod, when):
             #until all buttons are up (as I hope), this case never
             #happens; instead the above code pretends the same
             #mouse button was down during the entire drag.
-            print "warning: Qt gave us two mouseReleases without a mousePress;"
-            print " ignoring this if we can, but it might cause bugs"
+            print("warning: Qt gave us two mouseReleases without a mousePress;")
+            print(" ignoring this if we can, but it might cause bugs")
             pass # don't modify 'but'
     else:
         pass # pure move (no mouse buttons down):
@@ -352,7 +352,7 @@ def fix_buttons_helper(self, but, mod, when):
                 mod = mod & ~Qt.AltModifier
                 but = (but & ~Qt.LeftButton) | Qt.MidButton
         except:
-            print "following exception concerns mod = %r; btw Qt.AltModifier = %r" % (mod, Qt.AltModifier)
+            print("following exception concerns mod = %r; btw Qt.AltModifier = %r" % (mod, Qt.AltModifier))
             raise
     return but, mod
 
@@ -411,7 +411,7 @@ def _find_or_make_nanorex_dir_0():
             print_compact_traceback("exception in creating temporary directory: \"%s\"" % tmpFilePath)
             #bruce 050104 new feature [needs to be made portable so it works on Windows ###@@@]
             os_tempdir = "/tmp"
-            print "warning: using \"%s\" for temporary directory, since \"%s\" didn't work" % (os_tempdir, tmpFilePath)
+            print("warning: using \"%s\" for temporary directory, since \"%s\" didn't work" % (os_tempdir, tmpFilePath))
             tmpFilePath = os_tempdir
     #e now we should create or update a README file in there [bruce 050104]
     return tmpFilePath
@@ -442,7 +442,7 @@ def find_or_make_Nanorex_subdir(subdir, make = True): #bruce 060614 added make a
     if errorcode:
         if make:
             # this should not normally happen, since ~/Nanorex should be writable, but it's possible in theory
-            print "bug: should not normally happen:", path_or_errortext
+            print("bug: should not normally happen:", path_or_errortext)
         return None
     return path_or_errortext
 
@@ -558,7 +558,7 @@ def make_history_filename():
         if not os.path.exists(histfile):
             if histfile == tried_already:
                 # this is ok, but is so unlikely that it might indicate a bug, so report it
-                print "fyi: using history file \"%s\" after all; someone removed it!" % histfile
+                print("fyi: using history file \"%s\" after all; someone removed it!" % histfile)
             if "kluge":
                 global _histfile, _histfile_timestamp_string
                 _histfile = histfile
@@ -571,7 +571,7 @@ def make_history_filename():
         # enough that it doesn't matter much what we print -- hardly anyone
         # should see it.
         if histfile != tried_already:
-            print "fyi: history file \"%s\" already exists; will try again shortly..." % histfile
+            print("fyi: history file \"%s\" already exists; will try again shortly..." % histfile)
         tried_already = histfile # prevent printing another msg about the same filename
         time.sleep(0.35)
         continue
@@ -597,7 +597,7 @@ def tempfiles_dir(make = True): #bruce 060614
     # happen to both think they own the same history file name (unlikely but possible)
     global _tempfiles_dir
     if _tempfiles_dir_has_moved:
-        print "bug: _tempfiles_dir_has_moved but we're calling tempfiles_dir after that; _tempfiles_dir == %r" % (_tempfiles_dir,)
+        print("bug: _tempfiles_dir_has_moved but we're calling tempfiles_dir after that; _tempfiles_dir == %r" % (_tempfiles_dir,))
     assert _histfile_timestamp_string, "too early to call tempfiles_dir"
     if _tempfiles_dir:
         return _tempfiles_dir
@@ -616,13 +616,13 @@ def move_tempfiles_dir_when_quitting(): #bruce 060614 ###@@@ need to call this w
     """
     global _tempfiles_dir, _tempfiles_dir_has_moved
     if _tempfiles_dir_has_moved:
-        print "bug: _tempfiles_dir_has_moved but we're calling move_tempfiles_dir_when_quitting again" #e print_compact_stack
+        print("bug: _tempfiles_dir_has_moved but we're calling move_tempfiles_dir_when_quitting again") #e print_compact_stack
         return
     _tempfiles_dir_has_moved = True # even if not _tempfiles_dir
     if not _tempfiles_dir:
         return
     if not os.path.isdir(_tempfiles_dir):
-        print "bug: can't find _tempfiles_dir %r which we supposedly made earlier this session" % (_tempfiles_dir,)
+        print("bug: can't find _tempfiles_dir %r which we supposedly made earlier this session" % (_tempfiles_dir,))
         return
     assert _histfile_timestamp_string
     movetodir = find_or_make_Nanorex_subdir("OldTempFiles")
@@ -654,7 +654,7 @@ def fix_plurals(text, between = 1):
     count = 0
     didpos = -1
     didnum = -1
-    for word,i in zip(words,range(len(words))):
+    for word,i in zip(words,list(range(len(words)))):
         if word and word[-1].isdigit():
             # if word ends with a digit, call it a number (e.g. "(1" )
             numpos = i
@@ -693,7 +693,7 @@ def fix_plurals(text, between = 1):
                 didnum = num
             else:
                 # error, but no change to words[i]
-                print "fyi, cosmetic bug: fix_plurals(%r) found no number close enough to affect %r" % (text,word)
+                print("fyi, cosmetic bug: fix_plurals(%r) found no number close enough to affect %r" % (text,word))
             numpos = -1 # don't permit "2 dog(s) cat(s)" -> "2 dogs cats"
         elif word == "was/were" or word == "were/was": #bruce 060615 new feature (#e probably should generalize to e.g. is/are)
             if didpos >= 0 and (i-didpos) <= 1: # not too far back
@@ -704,10 +704,10 @@ def fix_plurals(text, between = 1):
                     words[i] = "were"
                 didpos = -1
             else:
-                print "fyi, cosmetic bug: fix_plurals(%r) was unable to replace %r" % (text,word)
+                print("fyi, cosmetic bug: fix_plurals(%r) was unable to replace %r" % (text,word))
         continue
     if not count:
-        print """fyi, possible cosmetic bug: fix_plurals(%r) got text with no "(s)" (or between option not big enough), has no effect""" % (text,)
+        print("""fyi, possible cosmetic bug: fix_plurals(%r) got text with no "(s)" (or between option not big enough), has no effect""" % (text,))
     return " ".join(words)
 
 def th_st_nd_rd(val): # mark 060927 wrote this. bruce 060927 split it out of its caller & wrote docstring.
@@ -796,7 +796,7 @@ def open_file_in_editor(file, hflag = True): #bruce 050913 revised this
     file = os.path.normpath(file)
     if not os.path.exists(file):
         msg = "File does not exist: " + file
-        print msg
+        print(msg)
         if hflag:
             env.history.message(redmsg(msg))
         return
@@ -809,15 +809,15 @@ def open_file_in_editor(file, hflag = True): #bruce 050913 revised this
     if os.path.exists(editor):
         args = [editor] + initial_args + [file]
         if debug_flags.atom_debug:
-            print  "editor = ",editor
-            print  "Spawnv args are %r" % (args,)
+            print("editor = ",editor)
+            print("Spawnv args are %r" % (args,))
         try:
             # Spawn the editor.
             kid = os.spawnv(os.P_NOWAIT, editor, args)
         except: # We had an exception.
             print_compact_traceback("Exception in editor; continuing: ")
             msg = "Cannot open file " + file + ".  Trouble spawning editor " + editor
-            print msg
+            print(msg)
             if hflag:
                 env.history.message(redmsg(msg))
     else:
@@ -893,6 +893,6 @@ if __name__ == '__main__':
     msg = "Dehydrogenate: removed 4 atom(s) from 1 molecule(s) (1 selected molecule(s) had no hydrogens)"
     msg2 = "Dehydrogenate: removed 4 atoms from 1 molecule (1 selected molecule had no hydrogens)"
     assert fix_plurals(msg) == msg2
-    print "test done"
+    print("test done")
 
 # end

@@ -9,7 +9,7 @@ class Description_Making_Methods(object): #e rename; also let it assertfail if a
     "#doc"
     def __getattr__(self, attr):
         if attr.startswith('_'):
-            raise AttributeError, attr
+            raise AttributeError(attr)
         #e assert attr in some list, perhaps generated from filtering dir(some subclass of HighlightGraphics)
         fakemethod = _fakemethod_class(name = attr).fakemethod
             # note: using a local function didn't seem to work re storing name --

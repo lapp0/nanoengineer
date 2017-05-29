@@ -235,7 +235,7 @@ class DrawInCorner(DelegatingInstanceOrExpr):
                 #    But the bug is easy to hit, so needs a soon fix... maybe memoize it with a key corresponding to your own
                 # assumed choice of modelview coords and want_depth? Or maybe enough to put it into the transient_state? TRY THAT. works.
                 if _DEBUG_SAVED_STUFF:
-                    print "_DEBUG_SAVED_STUFF: retrieved", x1, y1, z1
+                    print("_DEBUG_SAVED_STUFF: retrieved", x1, y1, z1)
             else:
                 x1, y1, z1 = saveplace._saved_stuff = \
                              gluUnProject(glpane.width, glpane.height, want_depth)
@@ -247,7 +247,7 @@ class DrawInCorner(DelegatingInstanceOrExpr):
                 # since it doesn't depend on knowing the setup code, except meaning of glpane height & width attrs,
                 # and knowing that origin is centered between them and 0.
                 if _DEBUG_SAVED_STUFF:
-                    print "_DEBUG_SAVED_STUFF: saved", x1, y1, z1
+                    print("_DEBUG_SAVED_STUFF: saved", x1, y1, z1)
 ##            print x1,y1,z1
             # use glScale to compensate for zoom * scale in _setup_projection,
             # for error in PIXELS, and for want_depth != cov_depth
@@ -261,7 +261,7 @@ class DrawInCorner(DelegatingInstanceOrExpr):
             glTranslatef( 0.0, 0.0, z1)
             del x1, y1 # not presently used
             if _DEBUG_SAVED_STUFF:
-                print "_DEBUG_SAVED_STUFF:     r = %r, translated z by z1 == %r" % (r, z1)
+                print("_DEBUG_SAVED_STUFF:     r = %r, translated z by z1 == %r" % (r, z1))
 
             # I don't think we need to usage-track glpane height & width (or scale or zoomFactor etc)
             # since we'll redraw when those change, and redo this calc every time we draw.
@@ -287,8 +287,8 @@ class DrawInCorner(DelegatingInstanceOrExpr):
                     # note: before 070210 this was (+ delegate.bleft - delegate.bright) / 2.0,
                     # which has an unwanted (since unavoidable) centering effect; use explicit Center if desired.
             else:
-                print "invalid corner",corner###
-                raise ValueError, "invalid corner %r" % (corner,)
+                print("invalid corner",corner)###
+                raise ValueError("invalid corner %r" % (corner,))
 
             if y == -1: # bottom
                 y_offset = - glpane.height / 2.0 * PIXELS + delegate.bbottom
@@ -298,14 +298,14 @@ class DrawInCorner(DelegatingInstanceOrExpr):
                 y_offset = 0
                     # note: # note: before 070210 this was (+ delegate.bbottom - delegate.btop) / 2.0
             else:
-                print "invalid corner",corner###
-                raise ValueError, "invalid corner %r" % (corner,)
+                print("invalid corner",corner)###
+                raise ValueError("invalid corner %r" % (corner,))
 
             offset = (x_offset, y_offset)
             glTranslatef(offset[0], offset[1], 0.0)
 
             if _DEBUG_SAVED_STUFF:
-                print "_DEBUG_SAVED_STUFF:     offset =", offset
+                print("_DEBUG_SAVED_STUFF:     offset =", offset)
 
             self.drawkid( delegate) ## delegate.draw()
 

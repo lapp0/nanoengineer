@@ -30,7 +30,7 @@ def initialize_commands():
 def rescan_atoms_in_current_part(assy, only_selected = False):
     oldlen = len(_changed_structure_Atoms)
     for mol in assy.molecules:
-        for atom in mol.atoms.itervalues():
+        for atom in mol.atoms.values():
             if not only_selected or atom.picked or \
                (atom.is_singlet() and atom.singlet_neighbor().picked):
                 _changed_structure_Atoms[atom.key] = atom
@@ -48,7 +48,7 @@ def rescan_selected_atoms(glpane):
 
 def add_basepair_handles_to_selected_atoms(glpane): #bruce 080515
     assy = glpane.assy
-    goodcount, badcount = add_basepair_handles_to_atoms(assy.selatoms.values())
+    goodcount, badcount = add_basepair_handles_to_atoms(list(assy.selatoms.values()))
     msg = "adding handles to %d duplex Gv5 atom(s)" % (goodcount,)
     if badcount:
         msg += " (but not %d other selected atom(s))" % (badcount,)

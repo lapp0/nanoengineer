@@ -280,7 +280,7 @@ class _eq_id_mixin_: #bruce 060209 ##e refile? use more? (GLPane?)
         ## return not (self == other)
         ##     # presumably this uses self.__eq__ -- would direct use be faster?
         return not self.__eq__(other)
-    def __nonzero__(self):
+    def __bool__(self):
         ### warning: I did not verify in Python docs that __nonzero__ is the
         ### correct name for this! [bruce 060209]
         return True
@@ -331,7 +331,7 @@ def transclose( toscan, collector, layer_collector = noop, pass_counter = False)
         layer_collector(counter, toscan) # new feature [bruce 070412]
         found = {}
         len1 = len(toscan)
-        for obj in toscan.itervalues():
+        for obj in toscan.values():
             if pass_counter:
                 # new feature [bruce 070412] [untested, since layer_collector turned out to be more useful]
                 collector(obj, found, counter)
@@ -340,12 +340,12 @@ def transclose( toscan, collector, layer_collector = noop, pass_counter = False)
         len2 = len(toscan)
         if len1 != len2:
             # btw, if this happens when toscan is not the one passed in, it's still a bug.
-            print "bug: transclose's collector %r modified dict toscan (id %#x, length %d -> %d)" % \
-                  (collector, id(toscan), len1, len2)
+            print("bug: transclose's collector %r modified dict toscan (id %#x, length %d -> %d)" % \
+                  (collector, id(toscan), len1, len2))
         # now "subtract seen from found"
         new = {}
-        for key, obj in found.iteritems():
-            if not seen.has_key(key):
+        for key, obj in found.items():
+            if key not in seen:
                 new[key] = obj
         seen.update(new)
         toscan = new ##e should API permit asking us to store each toscan in an external dict? more useful than passing counter!
@@ -398,7 +398,7 @@ class Classification: #e want _eq_id_mixin_? probably not, since no getattr.
 ##    pass
 
 def copy_list(val):
-    return map(copy_val, val)
+    return list(map(copy_val, val))
 
 def scan_list(val, func):
     for elt in val:
@@ -417,19 +417,19 @@ def scan_list(val, func):
 
 def copy_dict(val):
     res = {}
-    for key, val1 in val.iteritems():
+    for key, val1 in val.items():
         res[key] = copy_val(val1)
     return res
 
 def scan_dict(dict1, func):
     len1 = len(dict1) #060405 new code (#####@@@@@ needs to be done in C version too!)
-    for elt in dict1.itervalues(): # func must not harm dict1
+    for elt in dict1.values(): # func must not harm dict1
         ## func(elt)
         scan_val( elt, func) #bruce 060315 bugfix
     len2 = len(dict1)
     if len1 != len2:
-        print "bug: scan_dict's func %r modified dict %#x (len %d -> %d) during itervalues" % \
-              (func, id(dict1), len1, len2)
+        print("bug: scan_dict's func %r modified dict %#x (len %d -> %d) during itervalues" % \
+              (func, id(dict1), len1, len2))
     return
 
 ##class TupleClassification(Classification):
@@ -499,7 +499,7 @@ class InstanceClassification(Classification): #k used to be called StateHolderIn
                                 self.attrs_declared_as(S_CHILDREN) + \
                                 self.attrs_declared_as(S_CHILDREN_NOT_DATA)  #e sorted somehow? no need yet.
 
-        self._objs_are_data = copiers_for_InstanceType_class_names.has_key(class1.__name__) or \
+        self._objs_are_data = class1.__name__ in copiers_for_InstanceType_class_names or \
                               hasattr(class1, '_s_isPureData')
             # WARNING: this code is duplicated/optimized in _same_InstanceType_helper [as of bruce 060419, for A7]
 
@@ -507,12 +507,12 @@ class InstanceClassification(Classification): #k used to be called StateHolderIn
             # note: this should not be env.debug() since anyone adding new classes needs to see it...
             # but during development, with known bugs like this, we should not print stuff so often...
             # so it's env.debug for now, ####@@@@ FIX THAT LATER  [060227]
-            print "InstanceClassification for %r sees no mixin or _s_attr decls; please add them or register it (nim)" \
-                  % class1.__name__
+            print("InstanceClassification for %r sees no mixin or _s_attr decls; please add them or register it (nim)" \
+                  % class1.__name__)
 
         if (env.debug() or DEBUG_PYREX_ATOMS) and not self.attrcodes_with_no_dflt and self.attrcode_dflt_pairs: #060302; doesn't get printed (good)
-            print "InstanceClassification for %r: all attrs have defaults, worry about bug resetting all-default objects"\
-                  % class1.__name__
+            print("InstanceClassification for %r: all attrs have defaults, worry about bug resetting all-default objects"\
+                  % class1.__name__)
         return
 
     def __repr__(self):
@@ -546,8 +546,8 @@ class InstanceClassification(Classification): #k used to be called StateHolderIn
         find _s_attr_xxx decls on class1, and process/store them
         """
         if self.debug_all_attrs:
-            print "debug: _find_attr_decls in %s:" % (class1.__name__,)
-        all_s_attr_decls = filter(lambda x: x.startswith("_s_"), dir(class1))
+            print("debug: _find_attr_decls in %s:" % (class1.__name__,))
+        all_s_attr_decls = [x for x in dir(class1) if x.startswith("_s_")]
         for name in all_s_attr_decls:
             if name.startswith('_s_attr_'):
                 ## attr_its_about = name[len('_s_attr_'):]
@@ -556,7 +556,7 @@ class InstanceClassification(Classification): #k used to be called StateHolderIn
                 declval = getattr(class1, name) # the value assigned to _s_attr_<attr>
                 self.policies[attr_its_about] = declval #k for class1, not in general
                 if self.debug_all_attrs:
-                    print "  %s = %s" % (name, declval)
+                    print("  %s = %s" % (name, declval))
                 self.warn = False # enough to be legitimate state
                 #e check if per-instance? if callable? if legal?
                 if declval in STATE_ATTR_DECLS:
@@ -595,12 +595,12 @@ class InstanceClassification(Classification): #k used to be called StateHolderIn
                         self.attrcode_defaultvals[attrcode] = dflt
                         if (env.debug() or DEBUG_PYREX_ATOMS) and is_mutable(dflt): #env.debug() (redundant here) is just to make prerelease snapshot safer
                             if (env.debug() or DEBUG_PYREX_ATOMS):
-                                print "debug warning: dflt val for %r in %r is mutable: %r" % (attr_its_about, class1, dflt)
+                                print("debug warning: dflt val for %r in %r is mutable: %r" % (attr_its_about, class1, dflt))
                             pass # when we see what is warned about, we'll decide what this should do then [060302]
                                 # e.g. debug warning: dflt val for 'axis' in <class jigs_motors.LinearMotor at 0x3557d50>
                                 #      is mutable: array([ 0.,  0.,  0.])
                         if self.debug_all_attrs:
-                            print "                                               dflt val for %r is %r" % (attrcode, dflt,)
+                            print("                                               dflt val for %r is %r" % (attrcode, dflt,))
                         pass
                     self.dict_of_all_state_attrcodes[ attrcode ] = None
                     if hasattr(class1, setattr_name):
@@ -632,7 +632,7 @@ class InstanceClassification(Classification): #k used to be called StateHolderIn
                 assert type(declval) == type('attrlayer') # not essential, just to warn of errors in initial planned uses
                 self.attrlayers[attr_its_about] = declval
             else:
-                print "warning: unrecognized _s_ attribute ignored:", name ##e
+                print("warning: unrecognized _s_ attribute ignored:", name) ##e
         return
 
     def attr_has_default(self, class1, attr):
@@ -681,7 +681,7 @@ class InstanceClassification(Classification): #k used to be called StateHolderIn
     def attrs_declared_as(self, S_something):
         #e if this is commonly called, we'll memoize it in __init__ for each S_something
         res = []
-        for attr, decl in self.policies.iteritems():
+        for attr, decl in self.policies.items():
             if decl == S_something:
                 res.append(attr)
         return res
@@ -927,7 +927,7 @@ def _debug_check_copyOfObject(obj, res):
               (obj, res, obj == res, obj != res)
 
         if not env.debug():
-            print msg
+            print(msg)
         else:
             print_compact_stack( msg + ": ")
             try:
@@ -938,7 +938,7 @@ def _debug_check_copyOfObject(obj, res):
             except AttributeError:
                 pass
             else:
-                print "  a reason they are not equal:\n", method(res)
+                print("  a reason they are not equal:\n", method(res))
         #e also print history redmsg, once per class per session?
     return res
 
@@ -960,7 +960,7 @@ if 1:
                None, # NoneType
                True, # bool
                "", # str
-               u"", # unicode
+               "", # unicode
                0.1, # float
                # not InstanceType -- warn about missing _copyOfObject method
                ## _OLD_STYLE_1(), # instance == InstanceType
@@ -1007,10 +1007,10 @@ def _generalCopier(obj):
         # (or otherwise define _copyOfObject), unless we added it to
         # _generalCopier_exceptions above.
         if not _generalCopier_exceptions.get(type(obj)):
-            print "\n***** adding _generalCopier exception for %r " \
+            print("\n***** adding _generalCopier exception for %r " \
                   "(bad if not a built-in type -- classes used in copied model " \
                   "attributes should inherit something like DataMixin or " \
-                  "StateMixin)" % type(obj)
+                  "StateMixin)" % type(obj))
             _generalCopier_exceptions[type(obj)] = type(obj)
         return obj
     else:
@@ -1051,7 +1051,7 @@ if SAMEVALS_SPEEDUP:
         #  and for copy_val here in state_utils.py.)
         from samevals import copy_val as _copy_val, setInstanceCopier, setGeneralCopier, setArrayCopier
     except:
-        print "using SAMEVALS_SPEEDUP but not COPYVAL_SPEEDUP; is samevals.{dll,so} out of date?"
+        print("using SAMEVALS_SPEEDUP but not COPYVAL_SPEEDUP; is samevals.{dll,so} out of date?")
         pass
     else:
         copy_val = _copy_val
@@ -1070,7 +1070,7 @@ if SAMEVALS_SPEEDUP:
             # new-style. [new feature, bruce 090206]
         setArrayCopier(lambda x: x.copy())
         COPYVAL_SPEEDUP = True
-        print "COPYVAL_SPEEDUP is True"
+        print("COPYVAL_SPEEDUP is True")
         pass
     pass
 
@@ -1107,8 +1107,8 @@ _known_type_scanners[ InstanceType ] = _scan_Instance
 def copy_Numeric_array(obj):
     if obj.typecode() == PyObject:
         if (env.debug() or DEBUG_PYREX_ATOMS):
-            print "atom_debug: ran copy_Numeric_array, PyObject case" # remove when works once ###@@@
-        return array( map( copy_val, obj) )
+            print("atom_debug: ran copy_Numeric_array, PyObject case") # remove when works once ###@@@
+        return array( list(map( copy_val, obj)) )
             ###e this is probably incorrect for multiple dimensions; doesn't matter for now.
             # Note: We can't assume the typecode of the copied array should also be PyObject,
             # since _copyOfObject methods could return anything, so let it be inferred.
@@ -1127,7 +1127,7 @@ def scan_Numeric_array(obj, func):
         # note: this doesn't imply each element is an InstanceType instance,
         # just an arbitrary Python value
         if env.debug() or DEBUG_PYREX_ATOMS:
-            print "atom_debug: ran scan_Numeric_array, PyObject case" # remove when works once ###@@@
+            print("atom_debug: ran scan_Numeric_array, PyObject case") # remove when works once ###@@@
         ## map( func, obj)
         for elt in obj:
             scan_val(elt, func) #bruce 060315 bugfix
@@ -1139,10 +1139,10 @@ try:
     from Numeric import array, PyObject
 except:
     if env.debug() or DEBUG_PYREX_ATOMS:
-        print "fyi: can't import array, PyObject from Numeric, so not registering its copy & scan functions"
+        print("fyi: can't import array, PyObject from Numeric, so not registering its copy & scan functions")
 else:
     # note: related code exists in utilities/Comparison.py.
-    numeric_array_type = type(array(range(2)))
+    numeric_array_type = type(array(list(range(2))))
         # note: __name__ is 'array', but Numeric.array itself is a
         # built-in function, not a type
     assert numeric_array_type != InstanceType
@@ -1162,7 +1162,7 @@ def copy_QColor(obj):
     from PyQt4.Qt import QColor
     assert obj.__class__ is QColor # might fail (in existing calls) if some other class has the same name
     if (env.debug() or DEBUG_PYREX_ATOMS):
-        print "atom_debug: ran copy_QColor" # remove when works once; will equality work right? ###@@@
+        print("atom_debug: ran copy_QColor") # remove when works once; will equality work right? ###@@@
     return QColor(obj)
 
 try:
@@ -1173,7 +1173,7 @@ try:
     from PyQt4.Qt import QColor
 except:
     if (env.debug() or DEBUG_PYREX_ATOMS):
-        print "fyi: can't import QColor from qt, so not registering its copy function"
+        print("fyi: can't import QColor from qt, so not registering its copy function")
 else:
     QColor_type = type(QColor())
         # note: this is the type of a QColor instance, not of the class!
@@ -1184,12 +1184,12 @@ else:
         _known_type_copiers[ QColor_type ] = copy_QColor
         _known_mutable_types[ QColor_type ] = True # not sure if needed, but might be, and safe
     else:
-        print "Warning: QColor_type is %r, id %#x,\n and InstanceType is %r, id %#x," % \
-              ( QColor_type, id(QColor_type), InstanceType, id(InstanceType) )
-        print " and they should be != but are not,"
-        print " so Undo is not yet able to copy QColors properly; this is not known to cause bugs"
-        print " but its full implications are not yet understood. So far this is only known to happen"
-        print " in some systems running Mandrake Linux 10.1. [message last updated 060421]"
+        print("Warning: QColor_type is %r, id %#x,\n and InstanceType is %r, id %#x," % \
+              ( QColor_type, id(QColor_type), InstanceType, id(InstanceType) ))
+        print(" and they should be != but are not,")
+        print(" so Undo is not yet able to copy QColors properly; this is not known to cause bugs")
+        print(" but its full implications are not yet understood. So far this is only known to happen")
+        print(" in some systems running Mandrake Linux 10.1. [message last updated 060421]")
     # no scanner for QColor is needed, since it contains no InstanceType/InstanceLike
     # objects. no same_helper is needed, since '!=' will work correctly
     # (only possible since it contains no general Python objects).
@@ -1277,12 +1277,12 @@ class objkey_allocator:
             # or possibly if we use md5 or sha1 strings or the like for keys (though we'd probably first have to test for prior decl).
             # if that starts happening, remove the assert 0.
             assert 0, "this feature should never be used in current code (though it ought to work if it was used correctly)"
-            assert not self.obj4key.has_key(key)
+            assert key not in self.obj4key
         else:
             # note: this code also occurs directly in key4obj_maybe_new, for speed
             self._lastobjkey += 1
             key = self._lastobjkey
-            assert not self.obj4key.has_key(key) # different line number than identical assert above (intended)
+            assert key not in self.obj4key # different line number than identical assert above (intended)
         self.obj4key[key] = None # placeholder; nothing is yet stored into self._key4obj, since we don't know obj!
         assert key, "keys are required to be true, whether or not allocated by caller; this one is false: %r" % (key,)
         return key
@@ -1310,7 +1310,7 @@ class objkey_allocator:
             # note: this is an inlined portion of self.allocate_key()
             self._lastobjkey += 1
             key = self._lastobjkey
-            assert not self.obj4key.has_key(key)
+            assert key not in self.obj4key
             self.obj4key[key] = obj
             self._key4obj[id(obj)] = key
             return key
@@ -1352,7 +1352,7 @@ class StateSnapshot:
         return the total number of attribute values we're storing (over all objects and all attrnames)
         """
         res = 0
-        for d in self.attrdicts.itervalues():
+        for d in self.attrdicts.values():
             # <rant> Stupid Python didn't complain when I forgot to say .values(),
             # but just told me how many letters were in all the attrnames put together! </rant>
             # (Iteration over a dict being permitted is bad enough (is typing .items() so hard?!?),
@@ -1383,14 +1383,14 @@ class StateSnapshot:
     def extract_layers(self, layernames): #060404 first implem
         assert layernames == ('atoms',), "layernames can't be %r" % layernames #e generalize, someday
         res = self.__class__()
-        for attrcode, attrdict_unused in self.attrdicts.items():
+        for attrcode, attrdict_unused in list(self.attrdicts.items()):
             attr_unused, acode = attrcode
             if _KLUGE_acode_is_special_for_extract_layers(acode):
                 res.attrdicts[attrcode] = self.attrdicts.pop(attrcode)
         return res
     def insert_layers(self, layerstuff): #060404 first implem
-        for attrcode in layerstuff.attrdicts.keys():
-            assert not self.attrdicts.has_key(attrcode), "attrcode %r overlaps, between %r and %r" % (attrcode, self, layerstuff)
+        for attrcode in list(layerstuff.attrdicts.keys()):
+            assert attrcode not in self.attrdicts, "attrcode %r overlaps, between %r and %r" % (attrcode, self, layerstuff)
         self.attrdicts.update(layerstuff.attrdicts)
         layerstuff.attrdicts.clear() # optional, maybe not even good...
         return
@@ -1408,7 +1408,8 @@ def _KLUGE_acode_is_special_for_extract_layers(acode): #bruce 071114
     ## was: return acode in ('Atom', 'Bond'): ###@@@ kluge 060404; assume acode is class name... only true for these two classes!!
     return type(acode) == type("")
 
-def val_diff_func_for__posn( (p1, p2), whatret): # purely a stub for testing, though it should work
+def val_diff_func_for__posn(xxx_todo_changeme, whatret): # purely a stub for testing, though it should work
+    (p1, p2) = xxx_todo_changeme
     assert type(p1) is _Numeric_array_type
     assert type(p2) is _Numeric_array_type
     return p2 - p1
@@ -1420,7 +1421,7 @@ def diff_snapshots(snap1, snap2, whatret = 0): #060227
     """
     keydict = dict(snap1.attrdicts) # shallow copy, used only for its keys (presence of big values shouldn't slow this down)
     keydict.update(snap2.attrdicts)
-    attrcodes = keydict.keys()
+    attrcodes = list(keydict.keys())
     del keydict
     attrcodes.sort() # just so we're deterministic
     res = {}
@@ -1469,7 +1470,7 @@ class DiffObj:
         storing (over all objects and all attrnames)
         """
         res = 0
-        for d in self.attrdicts.itervalues():
+        for d in self.attrdicts.values():
             res += len(d)
         return res
     def RAM_usage_guess(self): #060323
@@ -1477,7 +1478,7 @@ class DiffObj:
         return a rough guess of our RAM consumption
         """
         res = 0
-        for attrcode, d in self.attrdicts.iteritems():
+        for attrcode, d in self.attrdicts.items():
             attr, acode_unused = attrcode
             valsize = self.attrname_valsizes.get(attr, 24) # it's a kluge to use attr rather than attrcode here
                 # 24 is a guess, and is conservative: 2 pointers in dict item == 8, 2 small pyobjects (8 each??)
@@ -1487,7 +1488,7 @@ class DiffObj:
         return self.size()
     def nonempty(self):
         return self.size() > 0
-    def __nonzero__(self):
+    def __bool__(self):
         return self.nonempty()
     def accumulate_diffs(self, diffs): #060409
         """
@@ -1504,7 +1505,7 @@ class DiffObj:
             # or using differently-named get methods for them. #e
         dicts2 = diffs.attrdicts
         dicts1 = self.attrdicts
-        for attrcode, d2 in dicts2.iteritems():
+        for attrcode, d2 in dicts2.items():
             d1 = dicts1.setdefault(attrcode, {})
             d1.update(d2) # even if d1 starts out {}, it's important to copy d2 here, not share it
         return
@@ -1529,7 +1530,7 @@ def diffdicts(d1, d2, dflt = None, whatret = 0, val_diff_func = None):
     # [later, 060302:] looks like this dflt is per-attrdict and always _UNSET_, but needn't be the same as a per-object one
     # that can safely be per-class. see comments elsewhere dated today.
     res = {}
-    for key, v1 in d1.iteritems():
+    for key, v1 in d1.items():
         v2 = d2.get(key, dflt)
 ##        if 0:
 ##            if v1 == v2: # optim: == will be faster than != for some of our most common values
@@ -1544,12 +1545,12 @@ def diffdicts(d1, d2, dflt = None, whatret = 0, val_diff_func = None):
 ##        else:
         if not same_vals(v1, v2):
             res[key] = (v1, v2)
-    for key, v2 in d2.iteritems():
+    for key, v2 in d2.items():
         #e (optim note: i don't know how to avoid scanning common keys twice, just to find d2-only keys;
         #   maybe copying d1 and updating with d2 and scanning that would be fastest way?
         #   Or I could copy d2 and pop it in the above loop... i'm guessing that'd be slower if this was C, not sure about Python.)
         # if d1 has a value, we handled this key already, and this is usually true, so test that first.
-        if not d1.has_key(key):
+        if key not in d1:
             v1 = dflt
 ##            if v1 == v2: # same order and test as above... oops, forgot to include the above's bugfix here, until 060303 11pm!
 ##                pass
@@ -1560,12 +1561,12 @@ def diffdicts(d1, d2, dflt = None, whatret = 0, val_diff_func = None):
     if val_diff_func is None:
         if whatret: #e should optimize by using loop variants above, instead ###@@@
             ind = whatret - 1
-            for key, pair in res.iteritems():
+            for key, pair in res.items():
     ##            res[key] = copy_val(pair[ind]) #KLUGE: copy_val at all (contrary to docstring) -- see if it fixes any bugs [it didn't];
                 res[key] = pair[ind] #060303 11pm remove copying, no reason for it
                     # and KLUGE2 - not doing this unless whatret. [060302] results: didn't fix last night's bug.
     else:
-        for key, pair in res.items():
+        for key, pair in list(res.items()):
             res[key] = val_diff_func( pair, whatret )
                 #e We could optim by requiring caller to pass a func that already knows whatret!
                 # or letting whatrets 0,1,2 be special cases of val_diff_func (same idea), which takes (v1, v2) to what we want.
@@ -1655,14 +1656,14 @@ def modify_and_diff_snap_for_changed_objects( archive, lastsnap_diffscan_layers,
     #  related to this, see commented-out method xxx, just below.]
     chgd_atoms, chgd_bonds = archive.get_and_clear_changed_objs()
     if (env.debug() or DEBUG_PYREX_ATOMS):
-        print "\nchanged objects: %d atoms, %d bonds" % (len(chgd_atoms), len(chgd_bonds))
+        print("\nchanged objects: %d atoms, %d bonds" % (len(chgd_atoms), len(chgd_bonds)))
     # discard wrong assy atoms... can we tell by having an objkey? ... imitate collect_s_children and (mainly) collect_state
     keyknower = archive.objkey_allocator
     _key4obj = keyknower._key4obj
     changed_live = {} # both atoms & bonds; we'll classify, so more general (for future subclasses); not sure this is worth it
     changed_dead = {}
     archive._childobj_dict = childobj_dict # temporarily stored, for use by _oursQ and _liveQ methods (several calls deep) [060408]
-    for akey_unused, obj in chgd_atoms.iteritems():
+    for akey_unused, obj in chgd_atoms.items():
         # akey is atom.key, obj is atom
         key = _key4obj.get(id(obj)) # inlined keyknower.key4obj; key is objkey, not atom.key
         if key is None:
@@ -1674,7 +1675,7 @@ def modify_and_diff_snap_for_changed_objects( archive, lastsnap_diffscan_layers,
                 changed_live[id(obj)] = obj
             else:
                 changed_dead[id(obj)] = obj
-    for idobj, obj in chgd_bonds.iteritems():
+    for idobj, obj in chgd_bonds.items():
         key = _key4obj.get(idobj)
         if key is None:
             if archive.new_Bond_oursQ(obj):
@@ -1688,7 +1689,7 @@ def modify_and_diff_snap_for_changed_objects( archive, lastsnap_diffscan_layers,
     ## print "changed_live = %s, changed_dead = %s" % (changed_live,changed_dead)
     key4obj = keyknower.key4obj_maybe_new
     diff_attrdicts = diffobj.attrdicts
-    for attrcode in archive.obj_classifier.dict_of_all_state_attrcodes.iterkeys():
+    for attrcode in archive.obj_classifier.dict_of_all_state_attrcodes.keys():
         acode = attrcode[1]
         ## if acode in ('Atom', 'Bond'):
         if _KLUGE_acode_is_special_for_extract_layers(acode):
@@ -1699,7 +1700,7 @@ def modify_and_diff_snap_for_changed_objects( archive, lastsnap_diffscan_layers,
     ci = objclsfr.classify_instance
     # warning: we now have 3 similar but not identical 'for attrcode' loop bodies,
     # handling live/dflt, live/no-dflt, and dead.
-    for idobj, obj in changed_live.iteritems(): # similar to obj_classifier.collect_state
+    for idobj, obj in changed_live.items(): # similar to obj_classifier.collect_state
         key = key4obj(obj)
         clas = ci(obj) #e could heavily optimize this if we kept all leaf classes separate; probably should
         for attrcode, dflt in clas.attrcode_dflt_pairs:
@@ -1733,18 +1734,18 @@ def modify_and_diff_snap_for_changed_objects( archive, lastsnap_diffscan_layers,
                 try:
                     diff_attrdict = diff_attrdicts[attrcode]
                 except:
-                    print "it failed, keys are", diff_attrdicts.keys() ####@@@@ should not happen anymore
-                    print " and state ones are", state_attrdicts.keys()
+                    print("it failed, keys are", list(diff_attrdicts.keys())) ####@@@@ should not happen anymore
+                    print(" and state ones are", list(state_attrdicts.keys()))
                     ## sys.exit(1)
                     diff_attrdict = diff_attrdicts[attrcode] = {}
                 diff_attrdict[key] = oldval #k if this fails, just use setdefault with {}
         attrcode = None
         del attrcode
-    for idobj, obj in changed_dead.iteritems():
+    for idobj, obj in changed_dead.items():
         #e if we assumed these all have same clas, we could invert loop order and heavily optimize
         key = key4obj(obj)
         clas = ci(obj)
-        for attrcode in clas.dict_of_all_state_attrcodes.iterkeys():
+        for attrcode in clas.dict_of_all_state_attrcodes.keys():
             # (this covers the attrcodes in both clas.attrcode_dflt_pairs and clas.attrcodes_with_no_dflt)
             attr, acode_unused = attrcode
             state_attrdict = state_attrdicts[attrcode]
@@ -1761,8 +1762,8 @@ def modify_and_diff_snap_for_changed_objects( archive, lastsnap_diffscan_layers,
             # this means obj is not None, so it's ok to take time and print things
             key = _key4obj.get(id(obj))
             if key is not None:
-                for attrcode, attrdict in diff_attrdicts.iteritems():
-                    if attrdict.has_key(key):
+                for attrcode, attrdict in diff_attrdicts.items():
+                    if key in attrdict:
                         _undo_debug_message( "diff for %r.%s gets %r" % (obj, attrcode[0], attrdict[key]) )
                 #e also for old and new state, i guess, and needed in apply_and_reverse_diff as well
         pass
@@ -1823,7 +1824,7 @@ class StatePlace:
         # (this bug never materialized, but I don't know why not!!! [bruce 060309])
         # sanity check re that:
         if 0 and env.debug(): #060309 # DEBUG_PYREX_ATOMS?
-            print "debug: fyi: calling get_snap_back_to_self", self
+            print("debug: fyi: calling get_snap_back_to_self", self)
                 # note: typically called twice per undoable command --
                 # is this due to (guess no) begin and end cp, or (guess yes) one recursive call??
         if self.lastsnap is None:
@@ -1875,11 +1876,11 @@ def apply_and_reverse_diff(diff, snap):
        Return None, to remind caller we modify our argument objects.
     (Note: Calling this again on the reverse diff we returned and on the same now-modified snap should undo its effect entirely.)
     """
-    for attrcode, dict1 in diff.attrdicts.items():
+    for attrcode, dict1 in list(diff.attrdicts.items()):
         dictsnap = snap.attrdicts.setdefault(attrcode, {})
         if 1:
             # if no special diff restoring func for this attrcode:
-            for key, val in dict1.iteritems():
+            for key, val in dict1.items():
                 # iteritems is ok, though we modify dict1, since we don't add or remove items (though we do in dictsnap)
                 oldval = dictsnap.get(key, _UNSET_)
                 if val is _UNSET_:
@@ -1950,7 +1951,7 @@ class obj_classifier:
         """
         if DEBUG_PYREX_ATOMS:
             if not (type(obj) is InstanceType or isinstance(obj, InstanceLike)):
-                print "bug: type(%r) is not InstanceType or InstanceLike" % (obj,)
+                print("bug: type(%r) is not InstanceType or InstanceLike" % (obj,))
                     ### too verbose if fails!! btw why is it a bug?
                     # [bruce 080221 re DEBUG_PYREX_ATOMS; comment might be obs
                     #  since it's from before InstanceLike existed]
@@ -1994,9 +1995,9 @@ class obj_classifier:
                 if not env.seen_before("DEBUG_PYREX_ATOMS"):
                     from utilities.GlobalPreferences import usePyrexAtomsAndBonds
                     on = usePyrexAtomsAndBonds()
-                    print "\nDEBUG_PYREX_ATOMS: Pyrex atoms is", on and "ON" or "OFF"
-                    print
-                print "DEBUG_PYREX_ATOMS: classify_class made InstanceClassification for %s" % (clas.class1.__name__,)
+                    print("\nDEBUG_PYREX_ATOMS: Pyrex atoms is", on and "ON" or "OFF")
+                    print()
+                print("DEBUG_PYREX_ATOMS: classify_class made InstanceClassification for %s" % (clas.class1.__name__,))
             return clas
         pass
 
@@ -2054,7 +2055,7 @@ class obj_classifier:
                 ##k Once this is tested, should this check depend on atom_debug?
                 # Maybe in classify_instance? (Maybe already there?) ###@@@
                 if not isinstance(obj1, InstanceLike): #bruce 080325, 090206 revised
-                    print "debug: bug: scan_children hit obj at %#x of type %r" % (id(obj1), type(obj1))
+                    print("debug: bug: scan_children hit obj at %#x of type %r" % (id(obj1), type(obj1)))
             clas = classify_instance(obj1)
             if clas.obj_is_data(obj1):
                 data_objs[id(obj1)] = obj1
@@ -2065,10 +2066,10 @@ class obj_classifier:
                                 exclude_layers = exclude_layers )
         allobjs = transclose( saw, obj_and_dict) #e rename both args
         if DEBUG_PYREX_ATOMS: ## 0 and env.debug():
-            print "atom_debug: collect_s_children had %d roots, from which it reached %d objs, of which %d were data" % \
-                  (len(saw), len(allobjs), len(data_objs))
+            print("atom_debug: collect_s_children had %d roots, from which it reached %d objs, of which %d were data" % \
+                  (len(saw), len(allobjs), len(data_objs)))
         # allobjs includes both state-holding and data-holding objects. Remove the latter.
-        for key in data_objs.iterkeys():
+        for key in data_objs.keys():
             del allobjs[key]
         return allobjs # from collect_s_children
 
@@ -2081,21 +2082,18 @@ class obj_classifier:
         #e In future we'll provide a differential version too.
         """
         key4obj = keyknower.key4obj_maybe_new # or our arg could just be this method
-        attrcodes = self.dict_of_all_state_attrcodes.keys()
+        attrcodes = list(self.dict_of_all_state_attrcodes.keys())
         if exclude_layers:
             assert exclude_layers == ('atoms',) # the only one we support right here
-            attrcodes = filter( lambda (attr, acode):
-                                ## acode not in ('Atom', 'Bond'),
-                                not _KLUGE_acode_is_special_for_extract_layers(acode),
-                                attrcodes )
+            attrcodes = [attr_acode for attr_acode in attrcodes if not _KLUGE_acode_is_special_for_extract_layers(attr_acode[1])]
                 # this is required, otherwise insert_layers (into this) will complain about these layers already being there
         snapshot = StateSnapshot(attrcodes)
             # make a place to keep all the values we're about to grab
         attrdicts = snapshot.attrdicts
         len1 = len(objdict)
         if DEBUG_PYREX_ATOMS:
-            print "\nDEBUG_PYREX_ATOMS: collect_state len(objdict) = %d" % len1
-        for obj in objdict.itervalues():
+            print("\nDEBUG_PYREX_ATOMS: collect_state len(objdict) = %d" % len1)
+        for obj in objdict.values():
             key = key4obj(obj)
             clas = self.classify_instance(obj)
             if DEBUG_PYREX_ATOMS: ## if 0 and 'ENABLE SLOW TEST CODE': # @@@@@@@ 080221
@@ -2105,7 +2103,7 @@ class obj_classifier:
                     ## if not ( clas.class1.__name__ not in ('Atom', 'Bond') ):
                     if getattr(obj, '_s_undo_specialcase', None) in (UNDO_SPECIALCASE_ATOM,
                                                                      UNDO_SPECIALCASE_BOND):
-                        print "bug: exclude_layers didn't stop us from seeing", obj
+                        print("bug: exclude_layers didn't stop us from seeing", obj)
             # hmm, use attrs in clas or use __dict__? Either one might be way too big... start with smaller one? nah. guess.
             # also we might as well use getattr and be more flexible (not depending on __dict__ to exist). Ok, use getattr.
             # Do we optim dflt values of attrs? We ought to... even when we're differential, we're not *always* differential.
@@ -2114,7 +2112,7 @@ class obj_classifier:
                 attr, acode_unused = attrcode
                 if clas.exclude(attr, exclude_layers):
                     if env.debug() or DEBUG_PYREX_ATOMS:###@@@ rm when works
-                        print "debug: collect_state exclude_layers1 excludes", attr, "of", obj
+                        print("debug: collect_state exclude_layers1 excludes", attr, "of", obj)
                     continue
                 val = getattr(obj, attr, dflt)
                 # note: this dflt can depend on key -- no need for it to be the same within one attrdict,
@@ -2137,7 +2135,7 @@ class obj_classifier:
                 attr, acode_unused = attrcode
                 if clas.exclude(attr, exclude_layers):
                     if env.debug() or DEBUG_PYREX_ATOMS:###@@@ rm when works
-                        print "debug: collect_state exclude_layers2 excludes", attr, "of", obj
+                        print("debug: collect_state exclude_layers2 excludes", attr, "of", obj)
                     continue
                 attrdicts[attrcode][key] = copy_val(getattr(obj, attr, _Bugval))
                     # We do it all in one statement, for efficiency in case compiler is not smart enough to see that local vars
@@ -2153,10 +2151,10 @@ class obj_classifier:
         len2 = len(objdict)
         if len1 != len2:
             # this should be impossible
-            print "bug: collect_state in %r sees objdict (id %#x) modified during itervalues (len %d -> %d)" % \
-                  (self, id(objdict), len1, len2)
+            print("bug: collect_state in %r sees objdict (id %#x) modified during itervalues (len %d -> %d)" % \
+                  (self, id(objdict), len1, len2))
         if 0 and env.debug():
-            print "atom_debug: collect_state got this snapshot:", snapshot
+            print("atom_debug: collect_state got this snapshot:", snapshot)
 ##            if 1: #####@@@@@
 ##                snapshot.print_value_stats() # NIM
         return snapshot # from collect_state
@@ -2302,13 +2300,13 @@ class DataMixin(InstanceLike):
         cracks, at least we're only imposing one slowdown on the copy,
         and not two.
         """
-        print "_copyOfObject needs to be overridden in", self
-        print "  (implem must be compatible with __eq__)"
+        print("_copyOfObject needs to be overridden in", self)
+        print("  (implem must be compatible with __eq__)")
         return self
     def __eq__(self, other):
-        print "__eq__ needs to be overridden in", self
-        print "  (implem must be compatible with _copyOfObject; " \
-              "don't forget to avoid '==' when comparing Numeric arrays)"
+        print("__eq__ needs to be overridden in", self)
+        print("  (implem must be compatible with _copyOfObject; " \
+              "don't forget to avoid '==' when comparing Numeric arrays)")
         return self is other
     def __ne__(self, other):
         return not (self == other)
@@ -2320,21 +2318,21 @@ class DataMixin(InstanceLike):
 # test code
 
 def _test():
-    print "testing some simple cases of copy_val"
+    print("testing some simple cases of copy_val")
     from Numeric import array
-    map( _test1, [2,
+    list(map( _test1, [2,
                   3,
                   "string",
                   [4,5],
                   (6.0,),
                   {7:8,9:10},
                   array([2,3]),
-                  None] )
-    print "done"
+                  None] ))
+    print("done")
 
 def _test1(obj): #e perhaps only works for non-pyobj types for now
     if obj != copy_val(obj):
-        print "failed for %r" % (obj,)
+        print("failed for %r" % (obj,))
 
 if __name__ == '__main__':
     _test()

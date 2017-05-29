@@ -363,7 +363,7 @@ class ESPImage(RectGadget):
         atomChunks = self._findObjsInside() # atoms or chunks
         for m in atomChunks:
             if isinstance(m, Chunk):
-                for a in m.atoms.itervalues():
+                for a in m.atoms.values():
                     a.overdraw_with_special_color(color)
             else:
                 m.overdraw_with_special_color(color)
@@ -533,7 +533,7 @@ class ESPImage(RectGadget):
         return
 
     def mmp_record_jigspecific_midpart(self):
-        color = map(int, A(self.fill_color) * 255)
+        color = list(map(int, A(self.fill_color) * 255))
 
         dataline = "%.2f %.2f %d (%f, %f, %f) (%f, %f, %f, %f) " \
                    "%.2f (%d, %d, %d) %d %.2f %.2f" % \
@@ -557,8 +557,8 @@ class ESPImage(RectGadget):
         """
         if len(key) != 1:
             if debug_flags.atom_debug:
-                print "atom_debug: fyi: info espimage with unrecognized " \
-                      "key %r (not an error)" % (key,)
+                print("atom_debug: fyi: info espimage with unrecognized " \
+                      "key %r (not an error)" % (key,))
             return
         if key[0] == 'espimage_file':
             if val:
@@ -579,7 +579,7 @@ class ESPImage(RectGadget):
             try:
                 self.image_mods.set_to_str(val)
             except ValueError:
-                print "mmp syntax error in esp image modifications:", val
+                print("mmp syntax error in esp image modifications:", val)
             else:
                 if self.image_obj:
                     self.image_mods.do_to( self.image_obj)
@@ -648,8 +648,8 @@ class ESPImage(RectGadget):
         if os.path.exists(tmp_espimage_file):
             shutil.move(tmp_espimage_file, espimage_file)
         else:
-            print "Temporary ESP Image file ", tmp_espimage_file, \
-                  " does not exist. Image not loaded."
+            print("Temporary ESP Image file ", tmp_espimage_file, \
+                  " does not exist. Image not loaded.")
             return
 
         self.espimage_file = espimage_file
@@ -799,7 +799,7 @@ def getMultiplicity(objList): # only used in this file
         if isinstance(m, Atom):
             numElectrons += m.element.eltnum
         elif isinstance(m, Chunk):
-            for a in m.atoms.itervalues():
+            for a in m.atoms.values():
                 numElectrons += a.element.eltnum
 
     if numElectrons % 2:
@@ -855,7 +855,7 @@ class image_mod_record(DataMixin):
             mir = (mir == 'True')
             rot = float(rot)
         except:
-            raise ValueError, "syntax error in %r" % (str1,)
+            raise ValueError("syntax error in %r" % (str1,))
                 # (note: no guarantee str1 is even a string, in principle)
         else:
             self.mirrorQ = mir
@@ -890,7 +890,7 @@ class image_mod_record(DataMixin):
             similar.rotate(self.rot)
         return
 
-    def __nonzero__(self):
+    def __bool__(self):
         # Python requires this to return an int; i think a boolean should be ok
         return not not (self.mirrorQ or self.rot)
             # only correct since we always canonicalize rot by % 360
@@ -931,7 +931,7 @@ if __name__ == '__main__':
     alist += [Atom('N', nopos, None), ]
     assert getMultiplicity(alist) == 1
 
-    print "Test succeed, no assertion error."
+    print("Test succeed, no assertion error.")
 
 
 #end

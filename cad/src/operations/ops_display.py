@@ -123,7 +123,7 @@ class displaySlotsMixin:
         self.setDisplayStyle_of_selection(diSURFACE)
 
     def dispHybrid(self): #@@ Ninad 070308
-        print "Hybrid display is  Implemented yet"
+        print("Hybrid display is  Implemented yet")
         pass
 
     # Hide/unhide
@@ -151,7 +151,7 @@ class displaySlotsMixin:
         @type  display_style: int
         """
         if self.assy and self.assy.selatoms:
-            for ob in self.assy.selatoms.itervalues():
+            for ob in self.assy.selatoms.values():
                 ob.setDisplayStyle(display_style)
         elif self.assy and self.assy.selmols:
             for ob in self.assy.selmols:
@@ -281,7 +281,7 @@ class displaySlotsMixin:
                 " to Default (i.e. their parent chunk's display mode)."
 
         if self.assy.selectionContainsAtomsWithOverriddenDisplay():
-            for a in self.assy.selatoms.itervalues(): #bruce 060707 itervalues
+            for a in self.assy.selatoms.values(): #bruce 060707 itervalues
                 if a.display != diDEFAULT:
                     a.setDisplayStyle(diDEFAULT)
 
@@ -309,7 +309,7 @@ class displaySlotsMixin:
             nia = self.assy.showInvisibleAtoms()
 
         if self.assy.selectionContainsInvisibleAtoms():
-            for a in self.assy.selatoms.itervalues(): #bruce 060707 itervalues
+            for a in self.assy.selatoms.values(): #bruce 060707 itervalues
                 if a.display == diINVISIBLE:
                     a.setDisplayStyle(diDEFAULT)
                     nia += 1

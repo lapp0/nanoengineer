@@ -298,7 +298,7 @@ class DnaStrand_PropertyManager( DnaOrCnt_PropertyManager):
         @see: DnaStrand_EditCommand.hasResizableStructure()
         """
         if not self.command.hasValidStructure():
-            print "DnaStrand not a valid structure."
+            print("DnaStrand not a valid structure.")
             self._pmGroupBox1.setEnabled(False)
             self._displayOptionsGroupBox.setEnabled(False)
             self.sequenceEditor.updateSequence(strand = " ")

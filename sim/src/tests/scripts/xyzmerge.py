@@ -37,7 +37,7 @@ try:
 
     mmp.write()
 
-except Exception, e:
+except Exception as e:
     if e:
         sys.stderr.write(sys.argv[0] + ": " + e.args[0] + "\n\n")
     sys.stderr.write(__doc__)

@@ -201,10 +201,10 @@ class ReferenceGeometry(Jig, DragHandler_API):
             if owner is not our_selobj:
                 res = False
                 # Do debug prints [perhaps never seen as of 061121]
-                print "%r no longer owns glname %r, instead %r does" \
-                      % (self, glname, owner)
+                print("%r no longer owns glname %r, instead %r does" \
+                      % (self, glname, owner))
         if not res and env.debug():
-            print "debug: selobj_still_ok is false for %r" % self
+            print("debug: selobj_still_ok is false for %r" % self)
         return res
 
     ###=========== Drag Handler interface =============###

@@ -196,13 +196,13 @@ class DnaGeneratorPropertyManager( PM_Dialog, DebugMenuMixin ):
                       self.strandLengthChanged )
         # New Base choices
         newBaseChoices  =  []
-        for theBase in basesDict.keys():
+        for theBase in list(basesDict.keys()):
             newBaseChoices  =  newBaseChoices \
                             + [ theBase + ' (' \
                             + basesDict[theBase]['Name'] + ')' ]
 
         try:
-            defaultBaseChoice = basesDict.keys().index('N')
+            defaultBaseChoice = list(basesDict.keys()).index('N')
         except:
             defaultBaseChoice = 0
 

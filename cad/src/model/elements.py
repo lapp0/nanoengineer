@@ -129,12 +129,12 @@ class _ElementPeriodicTable(object):
             el = Elem(elm[2], elm[0], elm[1], elm[3],
                       rad_color[0], rad_color[1], elm[4],
                       ** options)
-            assert not self._periodicTable.has_key(el.eltnum), \
+            assert el.eltnum not in self._periodicTable, \
                    "duplicate def of element number %r (prior: %r)" % \
                    (el.eltnum, self._periodicTable[el.eltnum] )
-            assert not self._eltName2Num.has_key(el.name), \
+            assert el.name not in self._eltName2Num, \
                    "duplicate def of element name %r" % (el.name,)
-            assert not self._eltSym2Num.has_key(el.symbol), \
+            assert el.symbol not in self._eltSym2Num, \
                    "duplicate def of element symbol %r" % (el.symbol,)
             self._periodicTable[el.eltnum] = el
             self._eltName2Num[el.name] = el.eltnum
@@ -146,9 +146,9 @@ class _ElementPeriodicTable(object):
             assert el.bonds_can_be_directional == (el.symbol == 'X' or el.role == 'strand')
                 # once this works, we can clean up the code to not hardcode those list args
                 # [bruce 080117]
-        for key in defaultRadiusAndColor.iterkeys():
+        for key in defaultRadiusAndColor.keys():
             assert key in symbols
-        for key in alternateRadiusAndColor.iterkeys():
+        for key in alternateRadiusAndColor.keys():
             assert key in symbols
         self._defaultRadiusAndColor.update(defaultRadiusAndColor)
         self._alternateRadiusAndColor.update(alternateRadiusAndColor)
@@ -186,7 +186,7 @@ class _ElementPeriodicTable(object):
         """
         self.rvdw_change_counter += 1
         self.color_change_counter += 1
-        for elm in self._periodicTable.values():
+        for elm in list(self._periodicTable.values()):
             # TODO: recode this to not use try/except to test the table format
             try:
                 e_symbol = elm.symbol
@@ -224,9 +224,9 @@ class _ElementPeriodicTable(object):
         by an interactive caller which can edit this table.
         """
         copyPTable = {}
-        for elm in self._periodicTable.values():
+        for elm in list(self._periodicTable.values()):
             if type(elm.color) != type([1, 1, 1]):
-                print "Error: ", elm
+                print("Error: ", elm)
             copyPTable[elm.symbol] = (elm.rvdw, elm.color[:])
         return copyPTable
 
@@ -318,7 +318,7 @@ class _ElementPeriodicTable(object):
         """
         prefs = prefs_context()
         elms = {}
-        for elm in self._periodicTable.values():
+        for elm in list(self._periodicTable.values()):
             elms[elm.symbol] = (elm.rvdw, elm.color)
         prefs.update(elms)
         #print "__del__() is called now."
@@ -366,8 +366,8 @@ if __name__ == '__main__':
     assert pt1.getElement('C') == pt1.getElement(6)
     assert pt1.getElement('Oxygen') == pt1.getElement(8)
 
-    print pt1.getElement(6)
-    print pt1.getElement(18)
+    print(pt1.getElement(6))
+    print(pt1.getElement(18))
 
     pt1.deepCopy()
 

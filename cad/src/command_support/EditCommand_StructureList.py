@@ -106,9 +106,7 @@ class EditCommand_StructureList:
 
             return False
 
-        new_list = filter( lambda struct:
-                      func(struct) ,
-                      self._structList )
+        new_list = [struct for struct in self._structList if func(struct)]
 
         if len(new_list) != len(self._structList):
             self._structList = new_list

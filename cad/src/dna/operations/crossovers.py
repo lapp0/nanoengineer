@@ -42,7 +42,7 @@ def crossover_menu_spec(atom, selatoms):
     whenever we construct a context menu for exactly two selected Pl atoms.
     """
     assert len(selatoms) == 2
-    atoms = selatoms.values()
+    atoms = list(selatoms.values())
     assert atom in atoms
     for a1 in atoms:
         assert a1.element.symbol == 'Pl5'
@@ -73,7 +73,7 @@ def crossover_menu_spec(atom, selatoms):
 
     ##e need to protect against exceptions while considering adding each item
 
-    twoPls = map( Pl5_recognizer, atoms)
+    twoPls = list(map( Pl5_recognizer, atoms))
     Pl1, Pl2 = twoPls
 
     # Both Make and Remove Crossover need the strand directions to be well-defined,
@@ -109,7 +109,7 @@ def crossover_menu_spec(atom, selatoms):
 
         # it should never happen that both are ok at once!
         if len(res) > 1:
-            print "bug: both Make Crossover and %s are being offered" % text #kluge to ref text to include atom names
+            print("bug: both Make Crossover and %s are being offered" % text) #kluge to ref text to include atom names
 
         pass
 
@@ -131,7 +131,7 @@ def make_crossover_ok(twoPls): ##### NEED TO MAKE THIS A RECOGNIZER so it can ea
        and not bases_are_stacked((a, d)) and not bases_are_stacked((b, c)) \
        and not bases_are_stacked((a, c)) and not bases_are_stacked((b, d)):
 
-        involved1, involved2 = map( lambda pl: pl.involved_atoms_for_make_crossover, twoPls)
+        involved1, involved2 = [pl.involved_atoms_for_make_crossover for pl in twoPls]
         if not sets_overlap(involved1, involved2):
             return True
     return False # from make_crossover_ok
@@ -159,7 +159,7 @@ def remove_crossover_ok(twoPls):
        and not bases_are_stacked((a, d)) and not bases_are_stacked((b, c)) \
        and not bases_are_stacked((a, b)) and not bases_are_stacked((d, c)):
 
-        involved1, involved2 = map( lambda pl: pl.involved_atoms_for_remove_crossover, twoPls)
+        involved1, involved2 = [pl.involved_atoms_for_remove_crossover for pl in twoPls]
         if not sets_overlap(involved1, involved2):
             return True
 
@@ -210,12 +210,12 @@ class StaticRecognizer:
         # (I think that should be rare, but I don't know yet for sure. It does not affect RecognizerError.)
     def __getattr__(self, attr): # in class StaticRecognizer
         if attr.startswith('__') or attr.startswith('_C_'):
-            raise AttributeError, attr # must be fast
+            raise AttributeError(attr) # must be fast
         methodname = '_C_' + attr
         method = getattr(self, methodname) # compute method
         try:
             answer = method() # WARNING: Answer must be returned, not setattr'd by this method! Error in this is detected below.
-        except RecognizerError, e:
+        except RecognizerError as e:
             # An exception for use by compute methods, locally reporting errors.
             # When our own methods raise this, we [nim, but needed soon] add basic info like "self" and the attr;
             # when its gets passed on from other methods (does that ever happen?? maybe if they are not _r_safe???),
@@ -224,7 +224,7 @@ class StaticRecognizer:
             # FOR NOW, we just treat it as normal, and record the default value;
             # someday we'll record the exception message but for now there is no way of asking for it anyway.
             if DEBUG_RecognizerError:
-                print e
+                print(e)
             answer = None
         except: # any other exception
             ##e not sure if we should suppress, reraise now only, reraise every time;
@@ -232,14 +232,14 @@ class StaticRecognizer:
             # (but what about exceptions coming from other things they try to use? maybe those should be wrapped into a safe form?
             #  no, if they say "the buck stops here" that better include errors from things they use, too.)
             if self._r_safe:
-                print "should record error somewhere"###
+                print("should record error somewhere")###
                 answer = None
             else:
-                print "fyi, error: reraising an exception from %s.%s" % (self.__class__.__name__, methodname)###
+                print("fyi, error: reraising an exception from %s.%s" % (self.__class__.__name__, methodname))###
                 raise
         # we have the answer
         answer # (make sure we actually have it)
-        assert not self.__dict__.has_key(attr), \
+        assert attr not in self.__dict__, \
                "Bug: %s.%s set %r itself -- should only return it" % (self.__class__.__name__, methodname, attr)
         setattr(self, attr, answer)
         return answer
@@ -282,7 +282,7 @@ class Base5_recognizer(StaticRecognizer):
         nn = self.atom.neighbors()
         if not len(nn) == 3:
             raise RecognizerError("%s should have exactly three neighbor atoms" % self.atom)
-        axes = filter( element_matcher('Ax5'), nn)
+        axes = list(filter( element_matcher('Ax5'), nn))
         if not len(axes) == 1:
             raise RecognizerError("%s should have exactly one Ax5 neighbor" % self.atom)
         return axes[0]
@@ -312,7 +312,7 @@ def bases_are_stacked(bases):
     try:
         len(bases)
     except:
-        print "following exception concerns bases == %r" % (bases,)
+        print("following exception concerns bases == %r" % (bases,))
     assert len(bases) == 2, "bases == %r should be a sequence of length 2" % (bases,)
     for b in bases:
         assert isinstance(b, Base5_recognizer)
@@ -350,7 +350,7 @@ class Pl5_recognizer(StaticRecognizer):
         for n1 in nn:
             if not n1.element.symbol in ('Ss5','Sj5'):
                 raise RecognizerError("Pl5 neighbor %s should be Ss5 or Sj5" % n1)
-        bases = map(Base5_recognizer, nn) # should always succeed
+        bases = list(map(Base5_recognizer, nn)) # should always succeed
         return bases
     def _C_ordered_bases(self):
         """
@@ -508,7 +508,7 @@ def make_or_remove_crossover(twoPls, make = True, cmdname = None):
             # rather than making computed values None?
             # Or, should the value not be None, but a "frozen" examinable and reraisable version of the error exception??
             msg = "%s: Error: bond direction is locally undefined or inconsistent around %s" % (cmdname, pl.atom) ###UNTESTED
-            print "should no longer be possible:", msg #bruce 070604
+            print("should no longer be possible:", msg) #bruce 070604
             env.history.message( redmsg( quote_html( msg)))
             return
 
@@ -571,7 +571,7 @@ def make_or_remove_crossover(twoPls, make = True, cmdname = None):
     # (someday, consider using local minimize; for now, just place them directly between their new neighbor atoms,
     #  hopefully we leave them selected so user can easily do their own local minimize.)
     for pl in Pl_atoms:
-        pl.setposn( average_value( map( lambda neighbor: neighbor.posn() , pl.neighbors() )))
+        pl.setposn( average_value( [neighbor.posn() for neighbor in pl.neighbors()]))
 
     env.history.message( greenmsg( cmdname + ": ") + quote_html("(%s - %s)" % tuple(Pl_atoms)))
 

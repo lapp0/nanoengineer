@@ -73,7 +73,7 @@ def auto_register( namespace, registry = None, modulename = None): ###e this fun
     # print "auto_register, modulename = %r" % (modulename,)
     if registry is None:
         registry = find_or_make_global_command_registry()
-    for name in namespace.keys():
+    for name in list(namespace.keys()):
         if not name.startswith('_'):
             wantit = False # set to True if name names a registratable class defined in the namespace (not just imported into it)
             try:
@@ -89,7 +89,7 @@ def auto_register( namespace, registry = None, modulename = None): ###e this fun
                 registry.register(name, val, warn_if_not_registerable = False )
             else:
                 if 'Polyline' in name:
-                    print "not registering %r = %r" % (name,val,) #####
+                    print("not registering %r = %r" % (name,val,)) #####
             pass
         continue
     return

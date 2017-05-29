@@ -48,7 +48,7 @@ def _readgms(assy, filename, isInsert=False):
     for card in lines:
 
         if failpat.search(card): # GAMESS Aborted.  No atom data will be found.
-            print card
+            print(card)
             break
 
         # If this card is found:
@@ -103,7 +103,7 @@ def _readgms(assy, filename, isInsert=False):
             except:
                 env.history.message( redmsg( "Warning: GAMESS DAT file: unknown element %s in: %s" % (sym,card) ))
             else:
-                xyz = map(float, (m.group(2),m.group(3), m.group(4)))
+                xyz = list(map(float, (m.group(2),m.group(3), m.group(4))))
                 a = Atom(sym, A(xyz), mol)
                 ndix[n] = a
                 n += 1
@@ -171,7 +171,7 @@ def insertgms_new(assy,filename):
     n = 0
 
     for a in gmsAtomList:
-        print a
+        print(a)
         pos = a.posn()
         fpos = (float(pos[0]), float(pos[1]), float(pos[2]))
         na = Atom(a.element.symbol, fpos, mol)
@@ -211,12 +211,12 @@ def _get_atomlist_from_gms_outfile(assy, filename):
     for card in lines:
 
         if failpat.search(card): # GAMESS Aborted.  No atom data will be found.
-            print card
+            print(card)
             env.history.message( redmsg( card ))
             break
 
         if noconvpat.search(card): # Geometry search is not converged.
-            print card
+            print(card)
             env.history.message( redmsg( card ))
             break
 
@@ -273,7 +273,7 @@ def _get_atomlist_from_gms_outfile(assy, filename):
             except:
                 env.history.message( redmsg( "Warning: GAMESS OUT file: unknown element %s in: %s" % (sym,card) ))
             else:
-                xyz = map(float, (m.group(2),m.group(3), m.group(4)))
+                xyz = list(map(float, (m.group(2),m.group(3), m.group(4))))
                 a = Atom(sym, A(xyz), mol)
                 newAtomList += [a]
 
@@ -295,7 +295,7 @@ def get_atompos_from_gms_outfile(assy, filename, atomList):
 
     if not gmsAtomList:
         msg = "No atoms read from file " + filename
-        print msg
+        print(msg)
         return msg
 
     newAtomsPos = []
@@ -308,18 +308,18 @@ def get_atompos_from_gms_outfile(assy, filename, atomList):
         if a.element.symbol != atomList[atomIndex].element.symbol:
             msg = "The atom type (%s) of atom # %d from %s is not matching with the Gamess jig (%s)." % \
             (a.element.symbol, atomIndex + 1, filename, atomList[atomIndex].element.symbol)
-            print msg
+            print(msg)
             return msg
 
         pos = a.posn()
-        newAtomsPos += [map(float, pos)]
+        newAtomsPos += [list(map(float, pos))]
 
         atomIndex += 1
 
     if (len(newAtomsPos) != len(atomList)):
         msg = "The number of atoms from %s (%d) is not matching with the Gamess jig (%d)." % \
             (filename, len(newAtomsPos), len(atomList))
-        print msg
+        print(msg)
         return msg
 
     return newAtomsPos

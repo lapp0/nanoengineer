@@ -159,7 +159,7 @@ def _readpdb(assy,
             if not foundit:
                 msg = "Warning: Pdb file: will use Carbon in place of unknown element %s in: %s" \
                     % (name4, card)
-                print msg #bruce 070410 added this print
+                print(msg) #bruce 070410 added this print
                 env.history.message( redmsg( msg ))
 
                 ##e It would probably be better to create a fake atom, so the
@@ -183,7 +183,7 @@ def _readpdb(assy,
                 # any bonds). [bruce 060614/070410 comment]
 
             # Now the element name is in sym.
-            xyz = map(float, [card[30:38], card[38:46], card[46:54]] )
+            xyz = list(map(float, [card[30:38], card[38:46], card[46:54]] ))
             n = int(card[6:11])
             a = Atom(sym, A(xyz), mol)
             ndix[n] = a
@@ -469,7 +469,7 @@ def _readpdb_new(assy,
         @param mol: molecule
         @type mol: Chunk
         """
-        atlist = [atom for (key, atom) in mol.atoms.items()]
+        atlist = [atom for (key, atom) in list(mol.atoms.items())]
         for atom in atlist:
             atom.make_enough_bondpoints()
 
@@ -488,10 +488,10 @@ def _readpdb_new(assy,
         _assigned = False
         ### print (res_name, atom_name)
         # Look for the atom type and set the type
-        if PROTEIN_ATOM_TYPES.has_key(res_name):
+        if res_name in PROTEIN_ATOM_TYPES:
             # Found a protein residue.
             atom_type_dict = PROTEIN_ATOM_TYPES[res_name]
-            if atom_type_dict.has_key(atom_name):
+            if atom_name in atom_type_dict:
                 # Found the atom.
                 atom_type = atom_type_dict[atom_name]
                 if atom_type == "sp2a":
@@ -508,10 +508,10 @@ def _readpdb_new(assy,
                     atom_type = "sp2"
                 atom.set_atomtype_but_dont_revise_singlets(atom_type)
                 _assigned = True
-        elif NUCLEIC_ATOM_TYPES.has_key(res_name):
+        elif res_name in NUCLEIC_ATOM_TYPES:
             # Found a nucleic acid residue
             atom_type_dict = NUCLEIC_ATOM_TYPES[res_name]
-            if atom_type_dict.has_key(atom_name):
+            if atom_name in atom_type_dict:
                 # Found the atom.
                 atom_type = atom_type_dict[atom_name]
                 if atom_type == "sp2a":
@@ -529,7 +529,7 @@ def _readpdb_new(assy,
             # Look for common atom types (N, C, O)
             atom_type_dict = PROTEIN_ATOM_TYPES["ANY"]
             # For remaining residues, look at one of the standard atom types
-            if atom_type_dict.has_key(atom_name):
+            if atom_name in atom_type_dict:
                 atom_type = atom_type_dict[atom_name]
                 atom.set_atomtype_but_dont_revise_singlets(atom_type)
 
@@ -581,7 +581,7 @@ def _readpdb_new(assy,
                 from model.bond_constants import V_DOUBLE, V_AROMATIC, V_GRAPHITE
 
                 # Inferring bond types
-                for atom in mol.atoms.itervalues():
+                for atom in mol.atoms.values():
                     if atom.bonds:
                         for bond in atom.bonds:
                             atom1_type = bond.atom1.getAtomTypeName()
@@ -802,7 +802,7 @@ def _readpdb_new(assy,
             if not foundit:
                 msg = "Warning: Pdb file: will use Carbon in place of unknown element %s in: %s" \
                     % (name4, card)
-                print msg #bruce 070410 added this print
+                print(msg) #bruce 070410 added this print
                 env.history.message( redmsg( msg ))
 
                 ##e It would probably be better to create a fake atom, so the
@@ -826,7 +826,7 @@ def _readpdb_new(assy,
                 # any bonds). [bruce 060614/070410 comment]
 
             # Now the element name is in sym.
-            xyz = map(float, [card[30:38], card[38:46], card[46:54]] )
+            xyz = list(map(float, [card[30:38], card[38:46], card[46:54]] ))
             n = int(card[6:11])
 
             if resId != lastResId and \
@@ -1374,19 +1374,19 @@ def writepdb(part,
                 temp = 0.0
 
                 if a.pdb_info:
-                    if a.pdb_info.has_key('residue_id'):
+                    if 'residue_id' in a.pdb_info:
                         resId = a.pdb_info['residue_id']
-                    if a.pdb_info.has_key('residue_name'):
+                    if 'residue_name' in a.pdb_info:
                         resName = a.pdb_info['residue_name']
-                    if a.pdb_info.has_key('atom_name'):
+                    if 'atom_name' in a.pdb_info:
                         atomName = a.pdb_info['atom_name']
-                    if a.pdb_info.has_key('standard_atom'):
+                    if 'standard_atom' in a.pdb_info:
                         hetatm = False
-                    if a.pdb_info.has_key('chain_id'):
+                    if 'chain_id' in a.pdb_info:
                         chainIdChar = ord(a.pdb_info['chain_id'][0])
-                    if a.pdb_info.has_key('occupancy'):
+                    if 'occupancy' in a.pdb_info:
                         occup = a.pdb_info['occupancy']
-                    if a.pdb_info.has_key('temperature_factor'):
+                    if 'temperature_factor' in a.pdb_info:
                         temp = a.pdb_info['temperature_factor']
 
                 writepdb_atom(a,

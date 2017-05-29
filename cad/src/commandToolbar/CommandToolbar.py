@@ -277,7 +277,7 @@ class CommandToolbar(Ui_CommandToolbar):
                                 #                          (counter2, key2), ..]
                                 ordered_key = [(counter, key)
                                                for (counter, key)
-                                               in flyoutDictionary.keys()
+                                               in list(flyoutDictionary.keys())
                                                if key is k]
                                 #Values corresponding to the ordered_key
                                 commands = flyoutDictionary[ordered_key[0]]
@@ -452,9 +452,7 @@ class CommandToolbar(Ui_CommandToolbar):
         for l in commandActionLists:
             cmdActionCount += len(l)
 
-        widgetActions = filter(lambda act:
-                               isinstance(act, QtGui.QWidgetAction),
-                               allActionsList)
+        widgetActions = [act for act in allActionsList if isinstance(act, QtGui.QWidgetAction)]
 
 
         self.flyoutToolBar.clear()
@@ -480,7 +478,7 @@ class CommandToolbar(Ui_CommandToolbar):
         for action in widgetActions:
             #Set a different color palette for the 'SubControl' buttons in
             #the command toolbar.
-            if [key for (counter, key) in flyoutDictionary.keys()
+            if [key for (counter, key) in list(flyoutDictionary.keys())
                 if key is action]:
 
 
@@ -556,7 +554,7 @@ class CommandToolbar(Ui_CommandToolbar):
         if self.flyoutDictionary:
             return self.flyoutDictionary
         else:
-            print "fyi: flyoutDictionary doesn't exist. Returning None"
+            print("fyi: flyoutDictionary doesn't exist. Returning None")
             return self.flyoutDictionary
 
     def getOrderedKeyList(self, dictionary):
@@ -568,7 +566,7 @@ class CommandToolbar(Ui_CommandToolbar):
         @return: a list object which contains ordered keys of the dictionary
         object.
         """
-        keyList = dictionary.keys()
+        keyList = list(dictionary.keys())
         keyList.sort()
         return [keys for (counter, keys) in keyList]
 

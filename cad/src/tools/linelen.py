@@ -23,7 +23,7 @@ def linelen(fn):
     file.close()
     if not lines:
         return 0, 0
-    rawlengths = map(len, lines)
+    rawlengths = list(map(len, lines))
     maxlen = max(rawlengths) - 1 # -1 is for the terminating newline
         ###BUG if file ends non-\n
         ###BUG if file contains tabs
@@ -39,17 +39,17 @@ if __name__ == '__main__':
 
     if not filenames:
         msg = "usage: %s <files> [no stdin reading supported for now]" % (program,)
-        print >> sys.stderr, msg
+        print(msg, file=sys.stderr)
         sys.exit(1)
 
     for fn in filenames:
         if os.path.isfile(fn):
             maxlen, lineno = linelen(fn)
-            print "linelen(%r) = %d (line %d)" % (fn, maxlen, lineno)
+            print("linelen(%r) = %d (line %d)" % (fn, maxlen, lineno))
         else:
-            print "not found or not a plain file: %r" % fn
+            print("not found or not a plain file: %r" % fn)
         continue
 
-    print "done"
+    print("done")
 
 # end

@@ -77,7 +77,7 @@ class ops_rechunk_Mixin:
             #   have a more general fix.
             # - It's nonmodular for this function to have to know anything about Parts.
             ##e btw, a simpler way to do part of the following is "part = self". should revise this when time to test it. [bruce 060329]
-            someatom = self.selatoms.values()[0] # if atoms in multiple parts could be selected, we'd need this for all their mols
+            someatom = list(self.selatoms.values())[0] # if atoms in multiple parts could be selected, we'd need this for all their mols
             part = someatom.molecule.part
             part.ensure_toplevel_group()
             # this is all a kluge; a better way would be to rewrite the main algorithm to find the mols
@@ -86,7 +86,7 @@ class ops_rechunk_Mixin:
         numolist=[]
         for mol in self.molecules[:]: # new mols are added during the loop!
             numol = Chunk(self.assy, gensym(mol.name + "-frag", self.assy)) # (in modifySeparate)
-            for a in mol.atoms.values():
+            for a in list(mol.atoms.values()):
                 if a.picked:
                     # leave the moved atoms picked, so still visible
                     a.hopmol(numol)
@@ -153,7 +153,7 @@ class ops_rechunk_Mixin:
         # a sinle chunk, it returns from the method with proper histry msg
 
         molList = []
-        for atm in self.selatoms.values():
+        for atm in list(self.selatoms.values()):
             if not len(molList) > 1:
                 mol =  atm.molecule
                 if mol not in molList:
@@ -170,7 +170,7 @@ class ops_rechunk_Mixin:
         self.ensure_toplevel_group() # avoid bug for part containing just one chunk, all atoms selected
         numol = Chunk(self.assy, gensym("Chunk", self.assy))
         natoms = len(self.selatoms)
-        for a in self.selatoms.values():
+        for a in list(self.selatoms.values()):
             # leave the moved atoms picked, so still visible
             a.hopmol(numol)
         self.addmol(numol)

@@ -78,7 +78,7 @@ class nullMode(nullCommand, nullGraphicsMode, anyMode):
     # duplicated properties in nullMode and basicMode, except for debug prints:
 
     def __get_command(self):
-        print "\n * * * nullMode.__get_command, should probably never happen\n"
+        print("\n * * * nullMode.__get_command, should probably never happen\n")
             # happens?? never yet seen, should probably never happen
         return self
 

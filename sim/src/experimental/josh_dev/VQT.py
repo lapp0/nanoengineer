@@ -260,7 +260,7 @@ class Q: # by Josh; some comments and docstring revised by bruce 050518
                      1.0 - 2.0 * (y**2 + x**2)]])
             return mat
         else:
-            raise AttributeError, 'No "%s" in Quaternion' % name
+            raise AttributeError('No "%s" in Quaternion' % name)
 
     def __getitem__(self, num):
         return self.vec[num]
@@ -277,7 +277,7 @@ class Q: # by Josh; some comments and docstring revised by bruce 050518
 
 
     def __reset(self):
-        if self.__dict__.has_key('matrix'):
+        if 'matrix' in self.__dict__:
             del self.__dict__['matrix']
 
 
@@ -484,11 +484,11 @@ def cat(a,b):
     # So I added some debug code to warn us if this happens.
     if not a:
         if (debug_quats or platform.atom_debug):
-            print "debug_quats: cat(a,b) with false a -- is it right?",a
+            print("debug_quats: cat(a,b) with false a -- is it right?",a)
         return b
     if not b:
         if (debug_quats or platform.atom_debug):
-            print "debug_quats: cat(a,b) with false b -- is it right?",b
+            print("debug_quats: cat(a,b) with false b -- is it right?",b)
         return a
     r1 = shape(a)
     r2 = shape(b)
@@ -521,7 +521,7 @@ def check_floats_near(f1,f2,msg = ""): #bruce, circa 040924
     else:
         fmt = "not near:"
     # fmt is not a format but a prefix
-    print fmt,f1,f2
+    print(fmt,f1,f2)
     return False # means bad
 
 def check_posns_near(p1,p2,msg=""): #bruce, circa 040924

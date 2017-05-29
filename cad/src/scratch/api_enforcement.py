@@ -88,13 +88,13 @@ def _privateMethod(friends=()):
     f2 = inspect.getframeinfo(f2)
     lineno, meth = f1[1], f1[2]
     lineno2, meth2 = f2[1], f2[2]
-    print
-    print (called + "." + meth +
+    print()
+    print((called + "." + meth +
            " (line " + repr(lineno) + ")" +
-           " is a private method called by")
-    print (caller + "." + meth2 +
+           " is a private method called by"))
+    print((caller + "." + meth2 +
            " (line " + repr(lineno2) + ")" +
-           " in file " + f2[0])
+           " in file " + f2[0]))
     raise APIViolation
 
 if API_ENFORCEMENT:

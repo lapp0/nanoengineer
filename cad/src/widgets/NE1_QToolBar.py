@@ -57,7 +57,7 @@ class NE1_QToolBar(QToolBar):
         """
         for separator in self._separatorList:
             if _DEBUG:
-                print separator.objectName()
+                print(separator.objectName())
             self.setSeparatorWidgetPixmap(separator, self.orientation())
 
     def moveEvent(self, event):

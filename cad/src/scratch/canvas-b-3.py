@@ -36,9 +36,9 @@ import time #bruce
 try:
     from utilities.debug import print_compact_stack
 except:
-    print "could not import print_compact_stack"
+    print("could not import print_compact_stack")
     def print_compact_stack(msg):
-        print "nim: print_compact_stack(%r)" % msg
+        print("nim: print_compact_stack(%r)" % msg)
     pass
 
 no_dragevent_item = True # 050127
@@ -77,38 +77,38 @@ class ImageItem(QCanvasRectangle):
         p.drawPixmap( self.x(), self.y(), self.pixmap )
 
     def bruce_start_drag(self, dragsource): # drag and (don't bother to) drop this image!
-        print "bruce_start_drag"
+        print("bruce_start_drag")
 
         if 0:
             # use QImageDrag
-            print 'making: dragobj = QImageDrag( self.image, dragsource)'
+            print('making: dragobj = QImageDrag( self.image, dragsource)')
             dragobj = QImageDrag( self.image, dragsource)
             ## the source has to be a QWidget -- not the canvas! TypeError: argument 2 of QImageDrag() has an invalid type
-            print "made dragobj"
+            print("made dragobj")
         else:
             # use QTextDrag
-            print 'making: dragobj = QTextDrag( "copying 5 items", dragsource)'
+            print('making: dragobj = QTextDrag( "copying 5 items", dragsource)')
             dragobj = QTextDrag( "copying 5 items", dragsource)
-            print "made it"
+            print("made it")
 
         if 0:
-            print "not setting a custom pixmap this time"
+            print("not setting a custom pixmap this time")
             pass # don't set a custom pixmap
         elif 1:
             # set a custom pixmap
-            print "now will set its pixmap to display during the drag",dragobj
+            print("now will set its pixmap to display during the drag",dragobj)
             # warning, there is self.pixmap but that's the butterfly... hmm, would it work? let's try it:
             pixmap = self.pixmap
             dragobj.setPixmap(pixmap)
-            print "set the pixmap to (presumably) the butterfly:",pixmap
+            print("set the pixmap to (presumably) the butterfly:",pixmap)
 
         if 1:
             # try to modify the one Qt made for us to use? no, that fails (null pixmap), so:
             # try to modify the one we set, above.
-            print "will try to modify the pixmap we just told Qt to use..."
+            print("will try to modify the pixmap we just told Qt to use...")
             pixmap = dragobj.pixmap()
-            print "this is the pixmap object:",pixmap # it's different id than the one we set, probably setPixmap copies it
-            print "this is another get of that, is it same id?",dragobj.pixmap() # no! i guess it copies on get, at least.
+            print("this is the pixmap object:",pixmap) # it's different id than the one we set, probably setPixmap copies it
+            print("this is another get of that, is it same id?",dragobj.pixmap()) # no! i guess it copies on get, at least.
             # let's hope we own it! try this twice to find out... i mean click on two butterflys in a row...
             # hmm, can we draw on it?
             p = painter = QPainter(pixmap)
@@ -121,10 +121,10 @@ class ImageItem(QCanvasRectangle):
             x += int(time.time()) % 10 # randomize coords
             y += int(time.time()*10.0) % 10
             p.drawEllipse(x,y,h,h) # this worked, various sizes of butterfly got this blue circle (same size) in topleft corner
-            print "after drawing, pixmap is ",pixmap
+            print("after drawing, pixmap is ",pixmap)
             ## this is needed:
             del p, painter
-            print "after del p,painter, pixmap is ",pixmap
+            print("after del p,painter, pixmap is ",pixmap)
             ## since without it we got (various ones of these, I guess randomly): [btw that checksum on free, verify on malloc is a clever idea! ###@@@]
             #
             ##Qt: QPaintDevice: Cannot destroy paint device that is being painted.  Be sure to QPainter::end() painters!
@@ -137,7 +137,7 @@ class ImageItem(QCanvasRectangle):
             ##Exit 139
 
             dragobj.setPixmap(pixmap) # needed?? yes!
-            print "setting pixmap back into dragobj, might not be needed"
+            print("setting pixmap back into dragobj, might not be needed")
             """
 making: dragobj = QTextDrag( "copying 5 items", dragsource)
 made it
@@ -153,7 +153,7 @@ QPainter::setPen: Will be reset by begin()
             # plus another *initial* unexpected dragEnter event, different event object. To debug those, print the stack!
             # then our dropevent has an exception (for known reasons).
         # Then, this prints: wantdel = None, target = source = the figureeditor obj (expected).
-        print "dragged image: wantdel = %r, target = %r, dragsource = %r" % (wantdel, dragobj.target(), dragsource)
+        print("dragged image: wantdel = %r, target = %r, dragsource = %r" % (wantdel, dragobj.target(), dragsource))
         ###e delete it?
 
 class NodeItem(QCanvasEllipse):
@@ -215,7 +215,7 @@ class FigureEditor(QCanvasView):
         self.setDragAutoScroll(True)
         # Qt doc says "Of course this works only if the viewport accepts drops." and refers to "drag move events"...
         # so maybe it's only for "drag and drop".
-        print "self.dragAutoScroll()",self.dragAutoScroll()
+        print("self.dragAutoScroll()",self.dragAutoScroll())
 
     def contentsMousePressEvent(self,e): # QMouseEvent e
         point = self.inverseWorldMatrix().map(e.pos())
@@ -271,8 +271,8 @@ class FigureEditor(QCanvasView):
             event.bruce_saw_me = event.bruce_saw_me + 1
         self.oldevent = event ###@@@
         ok = QTextDrag.canDecode(event) or QImageDrag.canDecode(event) or QUriDrag.canDecode(event)
-        print "drag enter %r, pos.x = %r, ok = %r (determines our acceptance)" % (event, event.pos().x(), ok)
-        print "event.bruce_saw_me",event.bruce_saw_me
+        print("drag enter %r, pos.x = %r, ok = %r (determines our acceptance)" % (event, event.pos().x(), ok))
+        print("event.bruce_saw_me",event.bruce_saw_me)
         ## try doing this later: event.accept(ok)
         canvas = self.canvas()
         i = QCanvasText(canvas)
@@ -299,36 +299,36 @@ class FigureEditor(QCanvasView):
         self.dragevent_item.move(x,y)
 
     def contentsDragLeaveEvent(self, event):
-        print "drag leave, event == %r" % event ## pos = %r" % event.pos() # AttributeError: pos ###@@@
+        print("drag leave, event == %r" % event) ## pos = %r" % event.pos() # AttributeError: pos ###@@@
         ## self.dragevent_item_move_to_event(event)
         self.dragevent_item.setColor(Qt.red) # guesses
 
     def contentsDropEvent(self, event):
-        print "drop event %r" % event ###@@@
+        print("drop event %r" % event) ###@@@
         for i in range(20):
             fmt = event.format(i)
-            print "dropevent.format[%d] = %r" % (i, fmt) # should be list of available formats!
+            print("dropevent.format[%d] = %r" % (i, fmt)) # should be list of available formats!
             if i > 0 and fmt == None:
                 break
         okimage = QImageDrag.canDecode(event)
         okuri = QUriDrag.canDecode(event)
         oktext = QTextDrag.canDecode(event)
-        print "oktext = %r, okimage = %r, okuri = %r" % (oktext, okimage, okuri)
-        print "event.source(), event.action()",event.source(), event.action()
-        print "accepting it iff we can decode it, but not creating anything"
-        print "fyi: QDropEvent.Copy, QDropEvent.Move, QDropEvent.Link are:",QDropEvent.Copy, QDropEvent.Move, QDropEvent.Link
+        print("oktext = %r, okimage = %r, okuri = %r" % (oktext, okimage, okuri))
+        print("event.source(), event.action()",event.source(), event.action())
+        print("accepting it iff we can decode it, but not creating anything")
+        print("fyi: QDropEvent.Copy, QDropEvent.Move, QDropEvent.Link are:",QDropEvent.Copy, QDropEvent.Move, QDropEvent.Link)
         if okimage:
-            print "accepting image"
+            print("accepting image")
             img = QImage()
             res = QImageDrag.decode(event, img) #guess
-            print "got this res & image (discarding it but accepting the event): %r, %r" % (res,img)
+            print("got this res & image (discarding it but accepting the event): %r, %r" % (res,img))
             event.accept(True)
         elif oktext:
-            print "accepting text"
+            print("accepting text")
             str1 = QString() # see dropsite.py in examples3
             res = QTextDrag.decode(event, str1)
             text = str(str1)
-            print "got this res and text: %r, %r" % (res,text) # guess: from finder it will be filename
+            print("got this res and text: %r, %r" % (res,text)) # guess: from finder it will be filename
             event.accept(True)  # was still acceptAction for a long time, by accident
             ## event.acceptAction(True) # DANGER, acceptAction MIGHT DELETE IT -- but it did not, maybe since text only?
             # or acceptAction? no, that's if we actually understand and do the specific requested action.

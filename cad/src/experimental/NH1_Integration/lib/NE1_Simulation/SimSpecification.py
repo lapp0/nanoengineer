@@ -125,7 +125,7 @@ is what a fully defined parameter would look like in XML::
     </parameter>
 """
 
-from Parameter import ParameterSet
+from .Parameter import ParameterSet
 
 class SimInput(ParameterSet):
     """Simulation input files. See L{SimSpecification} for context."""

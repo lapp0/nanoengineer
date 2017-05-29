@@ -190,7 +190,7 @@ class PM_RadioButtonList( PM_GroupBox ):
         """
         Returns the button with its current text set to I{text}.
         """
-        if self.buttonsByText.has_key(text):
+        if text in self.buttonsByText:
             return self.buttonsByText[text]
         else:
             return None
@@ -199,7 +199,7 @@ class PM_RadioButtonList( PM_GroupBox ):
         """
         Returns the button with the button id of I{buttonId}.
         """
-        if self.buttonsById.has_key(buttonId):
+        if buttonId in self.buttonsById:
             return self.buttonsById[buttonId]
         else:
             return None

@@ -287,10 +287,10 @@ class PlayerWindow(pyglet.window.Window):
     def on_play_pause(self):
         if self.player.playing:
             self.player.playing = False
-            print "pause"
+            print("pause")
         else:
             self.player.playing = True
-            print "play"
+            print("play")
         self.gui_update_state()
 
     def on_draw(self):

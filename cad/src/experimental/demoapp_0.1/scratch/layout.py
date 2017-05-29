@@ -92,7 +92,7 @@ class desired_size_data(object):
         cp2 = changepoints(other._data)
         bothpoints = dict(cp1)
         bothpoints.update(cp2) # values meaningless (favor cp2)
-        bothpoints_items = bothpoints.items()
+        bothpoints_items = list(bothpoints.items())
         bothpoints_items.sort()
         tentative = [] # (total, oldprice), but only for decreasing oldprice
         for total, oldprice in bothpoints_items:
@@ -124,7 +124,7 @@ def _allocate(summands, amount):
         for price, number in summand:
             requests.setdefault(price, [])
             requests[price].append( (number, ind) )
-    requests_items = requests.items()
+    requests_items = list(requests.items())
     requests_items.sort()
     requests_items.reverse()
     results = [0] * len(summands) # added to below
@@ -187,28 +187,28 @@ def _test():
 
     lp1 = desired_size_data([(100, 3), (200, 4)])
     lp2 = desired_size_data([(100, 5), (150, 2), (250, 2)])
-    print lp1
-    print lp2
+    print(lp1)
+    print(lp2)
 
-    print "sum, in both directions, 2 should be same:"
+    print("sum, in both directions, 2 should be same:")
     # should be: [(250, 2), (200, 4), (150, 2), (100, 8)];
     # is:        [(250, 2), (200, 4), (150, 2), (100, 8)] -- correct!
-    print lp1 + lp2
-    print lp2 + lp1
+    print(lp1 + lp2)
+    print(lp2 + lp1)
     assert (lp1 + lp2)._data == (lp2 + lp1)._data == [(250, 2), (200, 4), (150, 2), (100, 8)]
 
-    print "max, in both directions, 2 should be same:"
+    print("max, in both directions, 2 should be same:")
     # should be: [(250, 2), (200, 2), (100, 5)], I think;
     # is:        [(250, 2), (200, 2), (100, 5)] -- correct!
-    print lp1.max(lp2)
-    print lp2.max(lp1)
+    print(lp1.max(lp2))
+    print(lp2.max(lp1))
     assert lp1.max(lp2)._data == lp2.max(lp1)._data == [(250, 2), (200, 2), (100, 5)]
     ## print max(lp1, lp2) # this just returns a copy of lp2... not sure how it's computed... maybe by std sort order?
 
-    print _allocate([lp1, lp2], 4) # should be: [2, 2] -- correct!
+    print(_allocate([lp1, lp2], 4)) # should be: [2, 2] -- correct!
     assert _allocate([lp1, lp2], 4) == [2, 2]
 
-    print "tests passed"
+    print("tests passed")
 
 if __name__ == '__main__':
     _test()

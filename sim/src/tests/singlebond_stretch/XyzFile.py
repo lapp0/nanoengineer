@@ -34,7 +34,7 @@ class XyzFile:
         lines = lines[2:]
         for i in range(numAtoms):
             element, x, y, z = lines[i].split()
-            x, y, z = map(string.atof, (x, y, z))
+            x, y, z = list(map(string.atof, (x, y, z)))
             a = Atom.Atom()
             a.fromXyz(element, x, y, z)
             self.atoms.append(a)
@@ -81,9 +81,9 @@ X 0.762053 0.079748 -0.528147
     assert sc.contents == example_xyz_file
     # test 2
     for i in range(len(xyz)):
-        print xyz.getAtom(i)
-    print
+        print(xyz.getAtom(i))
+    print()
     for i in range(8):
         xyz[i] = (1.0, 2.0, 3.0)
     for i in range(len(xyz)):
-        print xyz.getAtom(i)
+        print(xyz.getAtom(i))

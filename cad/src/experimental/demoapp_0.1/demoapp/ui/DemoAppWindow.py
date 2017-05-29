@@ -52,8 +52,8 @@ class AppWindow(pyglet.window.Window): ## REFILE
                     # this can indirectly call e.g. self.draw_tooltip_text
             return
         except:
-            print "following exception is in x.draw_tip_and_highlight(%r, %r):" % \
-                  (stuff, instance)
+            print("following exception is in x.draw_tip_and_highlight(%r, %r):" % \
+                  (stuff, instance))
             raise
         pass
     def draw_tooltip_text( self, text, pos, size):

@@ -105,6 +105,7 @@ from PyQt4 import QtGui
 from foundation.Assembly_API import Assembly_API
 import foundation.undo_manager as undo_manager
 from files.mmp.files_mmp_writing import writemmpfile_assy
+import collections
 
 # ==
 
@@ -431,7 +432,7 @@ class Assembly( StateMixin, Assembly_API):
             # before 050325 this was called self.m and was always the same Movie object (per assy)
 
         if debug_assy_changes:
-            print "debug_assy_changes: creating", self
+            print("debug_assy_changes: creating", self)
 
         # make sure these exist [bruce 050418]:
         assert self.tree
@@ -556,7 +557,7 @@ class Assembly( StateMixin, Assembly_API):
         # - __init__ of the next mainwindow assy, if this is one (I think).
 
         if not self.assy_closed:
-            print "\nbug: deinit with no close_assy of %r" % self
+            print("\nbug: deinit with no close_assy of %r" % self)
             self.close_assy()
             pass
 
@@ -744,7 +745,7 @@ class Assembly( StateMixin, Assembly_API):
         # (This name comes from the argument we pass in.)
         partnodes = self.shelf.members # would not be correct to use self.topnodes_with_own_parts() here
         grpl1 = list(grpl1) # precaution, not needed for current implem as of 050421
-        for i,node in zip(range(len(partnodes)),partnodes):
+        for i,node in zip(list(range(len(partnodes))),partnodes):
             ll = node.part.viewdata_members(i+1)
             grpl1.extend(ll)
         #bruce 050429 part of fix for bug 413: insulate self from misguided self.changed()
@@ -793,7 +794,7 @@ class Assembly( StateMixin, Assembly_API):
                         number = int(rest)
                     except:
                         # can this happen (someday) for weird unicode digits permitted by isdigit? who knows...
-                        print "ignoring clipboard item name containing weird digits: %r" % (name,)
+                        print("ignoring clipboard item name containing weird digits: %r" % (name,))
                         number = None
             if number is not None and self.next_clipboard_item_number <= number:
                 # don't use any number <= one already in use
@@ -925,8 +926,8 @@ class Assembly( StateMixin, Assembly_API):
             if global_model_changedicts.status_of_last_dna_updater_run == LAST_RUN_SUCCEEDED:
                 fix_after_readmmp_after_updaters(self)
             else:
-                print "fyi: skipped fix_after_readmmp_after_updaters since status_of_last_dna_updater_run = %r, needs to be %r" % \
-                      ( global_model_changedicts.status_of_last_dna_updater_run, LAST_RUN_SUCCEEDED )
+                print("fyi: skipped fix_after_readmmp_after_updaters since status_of_last_dna_updater_run = %r, needs to be %r" % \
+                      ( global_model_changedicts.status_of_last_dna_updater_run, LAST_RUN_SUCCEEDED ))
             pass
 
         try:
@@ -1003,9 +1004,9 @@ class Assembly( StateMixin, Assembly_API):
             if node is None:
                 # should never happen, but if it does, don't be confused
                 # (todo: actually check for isinstance Node)
-                print "bug: found None in place of a node, inside", self
+                print("bug: found None in place of a node, inside", self)
                 return # filter this later (bug: won't always happen)
-            if nodes_seen.has_key(id(node)):
+            if id(node) in nodes_seen:
                 # error; save info to help fix it later
                 nodes_seen_twice[id(node)] = node
             nodes_seen[id(node)] = node
@@ -1013,12 +1014,12 @@ class Assembly( StateMixin, Assembly_API):
         self.root.apply2all(func)
         if nodes_seen_twice:
             # bug. report and try to fix.
-            print "\n*** Bug found by %r.fix_nodes_that_occur_twice()" % self
+            print("\n*** Bug found by %r.fix_nodes_that_occur_twice()" % self)
             msg2 = "Bug: some node occurs twice in the model; " \
                    "see console prints for details. Will try to continue."
             env.history.redmsg(msg2)
             # error details will now just be printed as we discover them
-            print "for %d nodes:" % len(nodes_seen_twice), nodes
+            print("for %d nodes:" % len(nodes_seen_twice), nodes)
             # To fix, first decide which parent is legitimate for each duplicate
             # node (which is node.dad if that parent node was seen),
             # then filter all members lists to only include one occurrence
@@ -1026,12 +1027,12 @@ class Assembly( StateMixin, Assembly_API):
             # But if existing parent is not legit, change node.dad to
             # first legal one.
             parents_seen = {}
-            for m in nodes_seen_twice.itervalues():
+            for m in nodes_seen_twice.values():
                 parents_seen[id(m)] = [] # even if not found again below
             def func2(node):
                 if node.is_group():
                     for m in node.members:
-                        if nodes_seen_twice.has_key(id(m)):
+                        if id(m) in nodes_seen_twice:
                             parents_seen[id(m)].append( node)
                                 # might list one parent twice, but only consecutively
                 return
@@ -1050,27 +1051,27 @@ class Assembly( StateMixin, Assembly_API):
                 """
                 if node is None:
                     return False # todo: actually check for isinstance Node
-                if not nodes_seen_twice.has_key(id(node)):
+                if id(node) not in nodes_seen_twice:
                     return True
-                if nodes_returned_true.has_key(id(node)):
+                if id(node) in nodes_returned_true:
                     # don't think about it again, once we said where it goes,
                     # and make sure it's not allowed anywhere else
                     # (in same parent or another one)
                     return False
-                if nodes_seen.has_key(id(node.dad)): # correct even if dad is None
+                if id(node.dad) in nodes_seen: # correct even if dad is None
                     legit_parent = node.dad
                 else:
                     candidates = parents_seen[id(node)]
                     if not candidates:
                         # should never happen or we would not have seen this node
-                        print "should never happen: no parent for", node
+                        print("should never happen: no parent for", node)
                         return False
                     oldp = node.dad # for debug print
                     legit_parent = node.dad = candidates[0]
                     node.changed_dad() ####k safe now?
-                    print "changed parent of node %r from %r to %r" % (node, oldp, node.dad)
-                    if not nodes_seen.has_key(id(node.dad)):
-                        print "should never happen: node.dad still not in nodes_seen for", node
+                    print("changed parent of node %r from %r to %r" % (node, oldp, node.dad))
+                    if id(node.dad) not in nodes_seen:
+                        print("should never happen: node.dad still not in nodes_seen for", node)
                         # assuming that doesn't happen, node.dad is only fixed once per node
                     pass
                 # now see if legit_parent is the current one
@@ -1083,19 +1084,19 @@ class Assembly( StateMixin, Assembly_API):
                     # filter its members through fixer
                     current_parent_slot[0] = node
                     oldmembers = node.members
-                    newmembers = filter( fixer, oldmembers)
+                    newmembers = list(filter( fixer, oldmembers))
                     if len(newmembers) < len(oldmembers):
-                        print "removing %d members from %r, " \
+                        print("removing %d members from %r, " \
                               "changing them from %r to %r" % \
                               ( len(oldmembers) - len(newmembers),
-                                node, oldmembers, newmembers )
+                                node, oldmembers, newmembers ))
                         node.members = newmembers
                         node.changed_members() ###k safe now?
                         pass
                     pass
                 return
             self.root.apply2all( func3)
-            print
+            print()
             pass # end of case for errors detected and fixed
         return # from fix_nodes_that_occur_twice
 
@@ -1133,7 +1134,7 @@ class Assembly( StateMixin, Assembly_API):
                     if not env.seen_before("nodecount bug for Part %#x" % (id(node.part),)):
                         msg = "\nbug for %r: node.part.nodecount %d != len(kids) %d" % \
                               (node.part, node.part.nodecount, len(kids))
-                        print msg
+                        print(msg)
             except:
                 #bruce 080325 revised message, removed re-raise at end;
                 #bruce 080410 revising again -- this seems to happen when pasting CX4 with hotspot
@@ -1141,11 +1142,11 @@ class Assembly( StateMixin, Assembly_API):
                 # until we can debug this
                 if debug_flags.atom_debug:
                     msg = "\n***BUG?: ignoring exception in checkparts(%s) of %r about node %r" % \
-                          (when and `when` or "", self, node)
+                          (when and repr(when) or "", self, node)
                     print_compact_traceback(msg + ": ")
                 else:
-                    print "exception in checkparts about node %r ignored, set debug_flags to see" % \
-                          (node,)
+                    print("exception in checkparts about node %r ignored, set debug_flags to see" % \
+                          (node,))
                 # this would be useful, but doesn't seem to work right in this context:
                 ## if not when:
                 ##     print_compact_stack(" ... which was called from here: ") #bruce 080314
@@ -1419,10 +1420,8 @@ class Assembly( StateMixin, Assembly_API):
         # (ideally for writing as well as reading, until all using-code is upgraded) ###@@@ use __setattr__ ?? etc??
         Assembly.part_attrs = ['molecules','selmols','selatoms','homeView','lastView']
             ##part_methods = ['selectAll','selectNone','selectInvert']###etc... the callable attrs of part class??
-        Assembly.part_methods = filter( lambda attr:
-                                        not attr.startswith('_')
-                                        and callable(getattr(Part_class,attr)), # note: this tries to get self.part before it's ready...
-                                        dir(Part_class) ) #approximation!
+        Assembly.part_methods = [attr for attr in dir(Part_class) if not attr.startswith('_')
+                                        and isinstance(getattr(Part_class,attr), collections.Callable)] #approximation!
         #####@@@@@ for both of the following:
         Assembly.part_attrs_temporary = ['bbox','center','drawLevel'] # temp because caller should say assy.part or be inside self.part
         Assembly.part_attrs_review = ['ppa2','ppa3','ppm']
@@ -1439,7 +1438,7 @@ class Assembly( StateMixin, Assembly_API):
 
     def __getattr__(self, attr): # in class Assembly
         if attr.startswith('_'): # common case, be fast
-            raise AttributeError, attr
+            raise AttributeError(attr)
         elif attr == 'part':
             sg = self.current_selgroup() # this fixes it if possible; should always be a node but maybe with no Part during init
             ## return self.parts[node_id(sg)]
@@ -1466,12 +1465,12 @@ class Assembly( StateMixin, Assembly_API):
             try:
                 part = self.part
             except:
-                print "fyi: following exception getting self.part happened just before we looked for its attr %r" % (attr,)
+                print("fyi: following exception getting self.part happened just before we looked for its attr %r" % (attr,))
                 raise
             try:
                 return getattr(part, attr) ###@@@ detect error of infrecur, since part getattr delegates to here??
             except:
-                print "fyi: following exception in assy.part.attr was for attr = %r" % (attr,)
+                print("fyi: following exception in assy.part.attr was for attr = %r" % (attr,))
                 raise
         elif attr in self.part_methods:
             # attr is a method-name for a method we should delegate to our current part.
@@ -1484,7 +1483,7 @@ class Assembly( StateMixin, Assembly_API):
                 meth = getattr(self.part, attr)
                 return meth(*args,**kws)
             return deleg
-        raise AttributeError, attr
+        raise AttributeError(attr)
 
     # == tracking undoable changes that aren't saved
 
@@ -1546,10 +1545,10 @@ class Assembly( StateMixin, Assembly_API):
 
         if debug_assy_changes:
             oldc = self._model_change_indicator
-            print
+            print()
             self.modflag_asserts()
             if oldc == newc:
-                print "debug_assy_changes: self._model_change_indicator remains", oldc
+                print("debug_assy_changes: self._model_change_indicator remains", oldc)
             else:
                 print_compact_stack("debug_assy_changes: self._model_change_indicator %d -> %d: " % (oldc, newc) )
             pass
@@ -1570,7 +1569,7 @@ class Assembly( StateMixin, Assembly_API):
             # to the end of the filename in the window caption.
             self.w.update_mainwindow_caption_properly() #e should this depend on self.own_window_UI? [bruce 060127 question] ####@@@@
             if debug_assy_changes:
-                print time.asctime(), self, self.name
+                print(time.asctime(), self, self.name)
                 print_compact_stack("atom_debug: part now has unsaved changes")
             pass
 
@@ -1653,7 +1652,7 @@ class Assembly( StateMixin, Assembly_API):
         # actual calls are from MWsem.__init__, File->Open,
         # File->Save (actually saved_main_file; does its own update_mainwindow_caption), File->Close
         if self._suspend_noticing_changes:
-            print "warning, possible bug: self._suspend_noticing_changes is True during reset_changed" #bruce guess 060121
+            print("warning, possible bug: self._suspend_noticing_changes is True during reset_changed") #bruce guess 060121
         if debug_assy_changes:
             print_compact_stack( "debug_assy_changes: %r: reset_changed: " % self )
         self._modified = 0
@@ -1712,7 +1711,7 @@ class Assembly( StateMixin, Assembly_API):
     ## and they fix errors in the wrong direction (.picked is more fundamental)
     def checkpicked(self, always_print = 0):
         if always_print:
-            print "fyi: checkpicked() is disabled until assy/part split is completed"
+            print("fyi: checkpicked() is disabled until assy/part split is completed")
         return
 
     # ==
@@ -2004,7 +2003,7 @@ class ClipboardShelfGroup(Group):
     def _class_for_copies(self, mapping):
         #bruce 080314, preserving original behavior; probably not needed
         del mapping
-        print "why is %r being copied?" % self
+        print("why is %r being copied?" % self)
             # since I think this should never be called
         return Group
     def node_icon(self, display_prefs):
@@ -2033,7 +2032,7 @@ class ClipboardShelfGroup(Group):
         """
         """
         pastables = []
-        pastables = filter(is_pastable, self.members)
+        pastables = list(filter(is_pastable, self.members))
         return pastables
     pass
 

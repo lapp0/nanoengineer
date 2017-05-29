@@ -34,7 +34,7 @@ class SimJob(QObject):
         # end_time: Job end time
 
         self.name = name
-        self.parms = parms.keys()
+        self.parms = list(parms.keys())
         #self.parms.sort() # Sort parms.
         self.edit_cntl = None
 

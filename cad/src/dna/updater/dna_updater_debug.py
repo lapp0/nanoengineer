@@ -91,7 +91,7 @@ def find_atom_by_name(assy, name): # todo: refile to debug or assy
     name = str(name) # in case it's an int
     # bug: this version only works in the current Part
     for mol in assy.molecules:
-        for atom in mol.atoms.itervalues():
+        for atom in mol.atoms.values():
             foundname = str(atom)
             foundnumber = str(atom.key)
             if name in (foundname, foundnumber): # bugfix 080227: foundnumber
@@ -185,7 +185,7 @@ def select_atoms_with_errors_command(glpane):
     count = 0
     assy = glpane.win.assy
     for mol in assy.molecules: # current part only
-        for atom in mol.atoms.itervalues():
+        for atom in mol.atoms.values():
             if atom._dna_updater__error:
                 count += 1 # whether or not already selected
                 atom.pick() # should be safe inside itervalues
@@ -202,7 +202,7 @@ def mark_selected_atoms_command(glpane): # untested
     current part only...
     """
     assy = glpane.win.assy
-    atoms = assy.selatoms.values()
+    atoms = list(assy.selatoms.values())
     mark_atoms(atoms)
     msg = "marked %d selected atom(s)" % len(atoms) #e could use part of this string in jig name too
     msg = fix_plurals(msg)

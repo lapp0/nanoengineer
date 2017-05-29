@@ -223,7 +223,7 @@ class OldFormatMovieFile: #bruce 050426
             try:
                 frame0 += df # note: += modifies frame0 in place (if it's a Numeric array, as we hope); that's desired
             except ValueError: # frames are not aligned -- happens when slider reaches right end
-                print "frames not aligned; shapes:",frame0.shape, df.shape
+                print("frames not aligned; shapes:",frame0.shape, df.shape)
                 raise
         while n0 > n:
             # (this never happens if we just moved forwards, but there's no need to "confirm" or "enforce" that fact)
@@ -328,7 +328,7 @@ class OldFormatMovieFile: #bruce 050426
         # (For future moviefile format with frequent key frames, we'll revise this quite a bit.)
         max_lower = too_low = -1
         min_higher = too_high = 100000000000000000000000 # higher than any actual frame number (I hope!)
-        for n0 in self.temp_mutable_frames.keys() + self.cached_immutable_frames.keys():
+        for n0 in list(self.temp_mutable_frames.keys()) + list(self.cached_immutable_frames.keys()):
             if n0 < n:
                 max_lower = max( max_lower, n0)
             else:

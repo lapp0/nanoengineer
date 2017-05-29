@@ -260,7 +260,7 @@ def getComplementSequence(inSequence):
     assert isinstance(inSequence, str)
     outSequence = ""
     for baseLetter in inSequence:
-        if baseLetter not in basesDict.keys():
+        if baseLetter not in list(basesDict.keys()):
             if baseLetter in validSpaceSymbol:
                 pass
             elif baseLetter in validTabSymbol:
@@ -311,10 +311,10 @@ def replaceUnrecognized(inSequence, replaceBase = "N"):
 
     outSequence = ""
     for baseLetter in inSequence:
-        if baseLetter not in basesDict.keys():
+        if baseLetter not in list(basesDict.keys()):
             baseLetter = replaceBase
         outSequence += baseLetter
     if 0:
-        print " inSequence:", inSequence
-        print "outSequence:", outSequence
+        print(" inSequence:", inSequence)
+        print("outSequence:", outSequence)
     return outSequence

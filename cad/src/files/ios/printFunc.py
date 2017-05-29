@@ -13,7 +13,7 @@ Based on the original files from the pyXML 0.8.4 dom/ext module.
 from xml.dom import XMLNS_NAMESPACE, XML_NAMESPACE, XHTML_NAMESPACE
 import string, re, sys
 from xml.dom import Node
-from Visitor import Visitor, WalkerInterface
+from .Visitor import Visitor, WalkerInterface
 
 ILLEGAL_LOW_CHARS = '[\x01-\x08\x0B-\x0C\x0E-\x1F]'
 ILLEGAL_HIGH_CHARS = '\xEF\xBF[\xBE\xBF]'
@@ -35,7 +35,7 @@ def PrettyPrint(root, stream=sys.stdout, encoding='UTF-8', indent=' ',
     if hasattr(owner_doc, 'getElementsByName'):
         #We don't want to insert any whitespace into HTML inline elements
         #preserveElements = preserveElements + HTML_4_TRANSITIONAL_INLINE
-        print "No provision for HTML Inline elements"
+        print("No provision for HTML Inline elements")
     visitor = PrintVisitor(stream, encoding, indent,
                            preserveElements, nss_hints)
     PrintWalker(visitor, root).run()
@@ -51,7 +51,7 @@ def SeekNss(node, nss=None):
         if child.nodeType == Node.ELEMENT_NODE:
             if child.namespaceURI:
                 nss[child.prefix] = child.namespaceURI
-            for attr in child.attributes.values():
+            for attr in list(child.attributes.values()):
                 if attr.namespaceURI == XMLNS_NAMESPACE:
                     if attr.localName == 'xmlns':
                         nss[None] = attr.value
@@ -187,7 +187,7 @@ class PrintVisitor(Visitor):
         elif doctype.systemId:
             self._write(' SYSTEM %s' % system)
         if doctype.entities or doctype.notations:
-            print "No support for entities"
+            print("No support for entities")
         else:
             self._write('>')
         self._inText = 0
@@ -241,7 +241,7 @@ class PrintVisitor(Visitor):
         if node.nodeType == Node.ELEMENT_NODE:
             if node.namespaceURI:
                 nss[node.prefix] = node.namespaceURI
-            for attr in node.attributes.values():
+            for attr in list(node.attributes.values()):
                 if attr.namespaceURI == XMLNS_NAMESPACE:
                     if attr.localName == 'xmlns':
                         nss[None] = attr.value
@@ -272,8 +272,8 @@ class PrintVisitor(Visitor):
                 nss = self._nsHints
                 self._nsHints = {}
             del nss['xml']
-            for prefix in nss.keys():
-                if not self._namespaces[-1].has_key(prefix) or self._namespaces[-1][prefix] != nss[prefix]:
+            for prefix in list(nss.keys()):
+                if prefix not in self._namespaces[-1] or self._namespaces[-1][prefix] != nss[prefix]:
                     nsuri, delimiter = TranslateCdataAttr(nss[prefix])
                     if prefix:
 
@@ -286,7 +286,7 @@ class PrintVisitor(Visitor):
 
                 self._namespaces[-1][prefix] = nss[prefix]
             self._write(namespaces)
-        for attr in node.attributes.values():
+        for attr in list(node.attributes.values()):
             self.visitAttr(attr)
         if len(node.childNodes):
             self._write('>')

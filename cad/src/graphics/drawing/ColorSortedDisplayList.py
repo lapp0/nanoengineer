@@ -264,8 +264,8 @@ class ColorSortedDisplayList:    #Russ 080225: Added.
                 # Start a single-level list.
                 glNewList(self.dl, GL_COMPILE)
             except:
-                print ("data related to following exception: self.dl = %r" %
-                       (self.dl,)) #bruce 070521
+                print(("data related to following exception: self.dl = %r" %
+                       (self.dl,))) #bruce 070521
                 raise
             pass
         return
@@ -303,7 +303,7 @@ class ColorSortedDisplayList:    #Russ 080225: Added.
 
         # First build the lower level per-color sublists of primitives.
 
-        for color, funcs in sorted_by_color.iteritems():
+        for color, funcs in sorted_by_color.items():
             sublists = [glGenLists(1), 0]
 
             # Remember the display list ID for this color.
@@ -841,7 +841,7 @@ class ColorSortedDisplayList:    #Russ 080225: Added.
             pass
         self.selectDl()
             #bruce 070521 added these two asserts
-        assert type(self.dl) in (type(1), type(1L))
+        assert type(self.dl) in (type(1), type(1))
         assert self.dl != 0    # This failed on Linux, keep checking. (bug 2042)
         return
 

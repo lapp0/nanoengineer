@@ -111,9 +111,9 @@ class glselect_name_dict(object):
     ##        # since obj would not know glname -- hmm... ok, zap it.)
     ##        pass
         else:
-            print ("bug: %s %r: real owner is %r, not" %
+            print(("bug: %s %r: real owner is %r, not" %
                 ("dealloc_my_glselect_name(obj, glname) mismatch for glname",
-                 glname, obj1)), obj
+                 glname, obj1)), obj)
                 # Print obj separately in case of exceptions in its repr.
         return
 

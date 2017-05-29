@@ -61,7 +61,7 @@ copy("simulator", "/tmp/testsimulator")
 
 for dir in testDirs:
     for testFile in glob(join(dir, "*.test")):
-        print "Running " + testFile
+        print("Running " + testFile)
         base = basename(testFile[:-5])
         out = join(dir, base + ".out")
         # Why do we not pass "--generate" to runtest???
@@ -72,12 +72,12 @@ for dir in testDirs:
 
         if generate and not exists(out):
             copy(out + ".new", out)
-            print "Generated new " + out
+            print("Generated new " + out)
 
         if filecmp.cmp(out, out + ".new"):
             os.remove(out + ".new")
         else:
-            print >> sys.__stderr__, "Test failed: " + testFile
+            print("Test failed: " + testFile, file=sys.__stderr__)
             os.system("diff %s %s.new > %s.diff" % (out, out, out))
             exitStatus = 1
 

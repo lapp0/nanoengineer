@@ -38,9 +38,9 @@ def before_most_imports( main_globals ):
         import platform_dependent.gpl_only as _gpl_only
             # if this module is there, this lets it verify it should be there,
             # and if not, complain (to developers) whenever the program starts
-        print "(running a GPL distribution)" #e retain or zap this?
+        print("(running a GPL distribution)") #e retain or zap this?
     except ImportError:
-        print "(running a non-GPL distribution)" #e retain or zap this? [should never happen for Qt4, as of 070425]
+        print("(running a non-GPL distribution)") #e retain or zap this? [should never happen for Qt4, as of 070425]
         pass # this is normal for non-GPL distributions
     try:
         rc = "~/.atom-debug-rc"
@@ -53,7 +53,7 @@ def before_most_imports( main_globals ):
                 # does not raise an exception.
                 # (doing it like this is required by our licenses for Qt/PyQt)
     except:
-        print """exception in execfile(%r); traceback printed to stderr or console; exiting""" % (rc,)
+        print("""exception in execfile(%r); traceback printed to stderr or console; exiting""" % (rc,))
         raise
 
     # Figure out whether we're run by a developer from cvs sources
@@ -100,9 +100,9 @@ def before_most_imports( main_globals ):
         # And I can make it depend on whether ourdir was set, so we have a chance of finding out whether this module defined __file__.
         # [bruce 051006]
         if ourdir is not None:
-            print "end-user build"
+            print("end-user build")
         else:
-            print "end user build" # different text -- no '-'
+            print("end user build") # different text -- no '-'
     else:
         # we set maindir and ourdir; try both guess-methods, etc
         def canon(path):
@@ -123,18 +123,18 @@ def before_most_imports( main_globals ):
             endUser = False
         else:
             if guess1 != guess2:
-                print "Warning: two methods of guessing whether we're being run by an end-user disagreed (%r and %r)." % (guess1, guess2)
-                print "To be safe, assuming we are (disabling some developer-only features)."
-                print "If this ever happens, it's a bug, and the methods need to be updated."
+                print("Warning: two methods of guessing whether we're being run by an end-user disagreed (%r and %r)." % (guess1, guess2))
+                print("To be safe, assuming we are (disabling some developer-only features).")
+                print("If this ever happens, it's a bug, and the methods need to be updated.")
                 if guess1:
-                    print "(debug info: guess1 is true because %r != %r)" % (maindir, ourdir)
+                    print("(debug info: guess1 is true because %r != %r)" % (maindir, ourdir))
                         #bruce 050908 to debug Linux bug in guess1 reported by Ninad (it's True (i.e. wrong) when he runs nE-1 from source)
-                print
+                print()
         pass
 
     EndUser.setDeveloperFeatures(not endUser)
     if EndUser.enableDeveloperFeatures():
-        print "enabling developer features"
+        print("enabling developer features")
         # The actual enabling is done by other code which checks the value of EndUser.enableDeveloperFeatures().
         # Note: most code should NOT behave differently based on that value!
         # (Doing so might cause bugs to exist in the end-user version but not the developer version,

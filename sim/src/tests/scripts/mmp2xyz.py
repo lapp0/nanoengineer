@@ -32,11 +32,11 @@ try:
 
     xyz.write(mmpInputFile)
 
-except Exception, e:
+except Exception as e:
     if e:
         sys.stderr.write(sys.argv[0] + ": " + e.args[0] + "\n")
         import traceback
-        traceback.print_tb(sys.exc_traceback, sys.stderr)
+        traceback.print_tb(sys.exc_info()[2], sys.stderr)
         sys.stderr.write("\n")
     sys.stderr.write(__doc__)
     sys.exit(1)

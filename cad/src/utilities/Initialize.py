@@ -61,7 +61,7 @@ _VERBOSE = False
 
 import exceptions
 
-class _InitializationLoop(exceptions.Exception):
+class _InitializationLoop(Exception):
     def __init__(self, args):
         self.args = args
 
@@ -80,17 +80,17 @@ def startInitialization(name, extra=""):
     """
     key = name + extra
     currentState = False
-    if (_ms_initializationStatus.has_key(key)):
+    if (key in _ms_initializationStatus):
         currentState = _ms_initializationStatus[key]
     if (currentState):
         if (currentState is _RUNNING):
-            raise _InitializationLoop, key
+            raise _InitializationLoop(key)
         if (_VERBOSE):
-            print "initialize recalled: " + key
+            print("initialize recalled: " + key)
         return True
     _ms_initializationStatus[key] = _RUNNING
     if (_VERBOSE):
-        print "initializing " + key
+        print("initializing " + key)
     return False
 
 def endInitialization(name, extra=""):
@@ -106,7 +106,7 @@ def endInitialization(name, extra=""):
     """
     key = name + extra
     if (_VERBOSE):
-        print "done initializing: " + key
+        print("done initializing: " + key)
     _ms_initializationStatus[key] = True
 
 def forgetInitialization(name, extra=""):

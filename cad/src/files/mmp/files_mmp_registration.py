@@ -169,8 +169,8 @@ def register_MMP_RecordParser(recordname, recordParser):
     """
     if recordname not in _RECORDNAMES_THAT_MUST_BE_REGISTERED:
         # probably too early for a history warning, for now
-        print "\n*** Warning: a developer forgot to add %r "\
-              "to _RECORDNAMES_THAT_MUST_BE_REGISTERED" % (recordname,)
+        print("\n*** Warning: a developer forgot to add %r "\
+              "to _RECORDNAMES_THAT_MUST_BE_REGISTERED" % (recordname,))
         assert type(recordname) is type("")
     _The_MMP_Grammar.register_MMP_RecordParser( recordname, recordParser)
     return
