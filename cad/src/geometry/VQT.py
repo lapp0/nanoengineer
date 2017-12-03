@@ -162,7 +162,7 @@ Z_AXIS = V(0, 0, 1)
 
 # ==
 
-class Q(DataMixin):
+class Q:  # REFACTOR- remove Datamixin
     """
     Quaternion class. Many constructor forms:
 

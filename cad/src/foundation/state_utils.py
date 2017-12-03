@@ -158,8 +158,6 @@ TODO [as of 090206]:
 
 """
 
-from types import InstanceType
-
 from foundation.state_constants import S_DATA
 from foundation.state_constants import S_CHILD, S_CHILDREN, S_CHILDREN_NOT_DATA
 from foundation.state_constants import S_REF, S_REFS

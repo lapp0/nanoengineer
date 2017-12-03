@@ -623,6 +623,7 @@ def replace_static_method_in_class(clas, methodname, insertedfunc):
 # ==
 
 def normalize_signal(signal):
+    return signal  # TODO
     """
     normalize whitespace in signal string, which should be SIGNAL(xx) or (untested) PYSIGNAL(xx)
     """

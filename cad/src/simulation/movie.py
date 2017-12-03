@@ -39,7 +39,7 @@ playDirection = { FWD : "Forward", REV : "Reverse" }
 
 # ==
 
-class Movie(IdentityCopyMixin): #bruce 080321 bugfix: added IdentityCopyMixin
+class Movie: #bruce 080321 bugfix: added IdentityCopyMixin
     """
     Movie object.
 

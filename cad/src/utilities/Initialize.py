@@ -59,8 +59,6 @@ Note that a missing key means the same as False.
 
 _VERBOSE = False
 
-import exceptions
-
 class _InitializationLoop(Exception):
     def __init__(self, args):
         self.args = args
