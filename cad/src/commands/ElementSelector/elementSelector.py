@@ -5,9 +5,8 @@ elementSelector.py
 $Id$
 """
 
-from PyQt4.Qt import QDialog
-from PyQt4.Qt import SIGNAL
-from PyQt4.Qt import QVBoxLayout
+from PyQt5.QtWidgets import QDialog
+from PyQt5.QtWidgets import QVBoxLayout
 
 from commands.ElementSelector.ElementSelectorDialog import Ui_ElementSelectorDialog
 from graphics.widgets.ThumbView import ElementView
@@ -18,9 +17,9 @@ class elementSelector(QDialog, Ui_ElementSelectorDialog):
     def __init__(self, win):
         QDialog.__init__(self, win)
         self.setupUi(self)
-        self.connect(self.closePTableButton,SIGNAL("clicked()"),self.close)
-        self.connect(self.TransmuteButton,SIGNAL("clicked()"),self.transmutePressed)
-        self.connect(self.elementButtonGroup,SIGNAL("clicked(int)"),self.setElementInfo)
+        self.closePTableButton.clicked.connect(self.close)
+        self.TransmuteButton.clicked.connect(self.transmutePressed)
+        self.elementButtonGroup.clicked[int].connect(self.setElementInfo)
         self.w = win
         self.elemTable = PeriodicTable
         self.displayMode = diTUBES

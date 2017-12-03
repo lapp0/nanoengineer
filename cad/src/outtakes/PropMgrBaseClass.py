@@ -45,33 +45,32 @@ __author__ = "Mark"
 
 import os
 
-from PyQt4 import QtCore
+from PyQt5 import QtCore
 
-from PyQt4.Qt import Qt
-from PyQt4.Qt import QGroupBox
-from PyQt4.Qt import QTextEdit
-from PyQt4.Qt import QDoubleSpinBox
-from PyQt4.Qt import QSpinBox
-from PyQt4.Qt import QComboBox
-from PyQt4.Qt import QPushButton
-from PyQt4.Qt import QLineEdit
-from PyQt4.Qt import QCheckBox
-from PyQt4.Qt import QListWidget
-from PyQt4.Qt import QToolButton
-from PyQt4.Qt import QPalette
-from PyQt4.Qt import QFrame
-from PyQt4.Qt import QHBoxLayout
-from PyQt4.Qt import QSpacerItem
-from PyQt4.Qt import QLabel
-from PyQt4.Qt import QWidget
-from PyQt4.Qt import QVBoxLayout
-from PyQt4.Qt import QGridLayout
-from PyQt4.Qt import SIGNAL
-from PyQt4.Qt import QTextOption
-from PyQt4.Qt import QSizePolicy
-from PyQt4.Qt import QSize
-from PyQt4.Qt import QRadioButton
-from PyQt4.Qt import QTextCursor
+from PyQt5.QtCore import Qt
+from PyQt5.QtWidgets import QGroupBox
+from PyQt5.QtWidgets import QTextEdit
+from PyQt5.QtWidgets import QDoubleSpinBox
+from PyQt5.QtWidgets import QSpinBox
+from PyQt5.QtWidgets import QComboBox
+from PyQt5.QtWidgets import QPushButton
+from PyQt5.QtWidgets import QLineEdit
+from PyQt5.QtWidgets import QCheckBox
+from PyQt5.QtWidgets import QListWidget
+from PyQt5.QtWidgets import QToolButton
+from PyQt5.QtGui import QPalette
+from PyQt5.QtWidgets import QFrame
+from PyQt5.QtWidgets import QHBoxLayout
+from PyQt5.QtWidgets import QSpacerItem
+from PyQt5.QtWidgets import QLabel
+from PyQt5.QtWidgets import QWidget
+from PyQt5.QtWidgets import QVBoxLayout
+from PyQt5.QtWidgets import QGridLayout
+from PyQt5.QtGui import QTextOption
+from PyQt5.QtWidgets import QSizePolicy
+from PyQt5.QtCore import QSize
+from PyQt5.QtWidgets import QRadioButton
+from PyQt5.QtGui import QTextCursor
 
 from utilities import debug_flags
 
@@ -322,7 +321,7 @@ class PropMgrBaseClass(PropertyManager_common): #bruce 070615 inherit PropertyMa
 
         # Main vertical layout for PropMgr.
         self.VBoxLayout = QVBoxLayout(self)
-        self.VBoxLayout.setMargin(pmMainVboxLayoutMargin)
+        self.VBoxLayout.setContentsMargins(pmMainVboxLayoutMargin, pmMainVboxLayoutMargin, pmMainVboxLayoutMargin, pmMainVboxLayoutMargin)
         self.VBoxLayout.setSpacing(pmMainVboxLayoutSpacing)
 
         # PropMgr's Header.
@@ -449,7 +448,7 @@ class PropMgrBaseClass(PropertyManager_common): #bruce 070615 inherit PropertyMa
         # HBox layout for heading frame, containing the pixmap
         # and label (title).
         HeaderFrameHLayout = QHBoxLayout(self.header_frame)
-        HeaderFrameHLayout.setMargin(pmHeaderFrameMargin) # 2 pixels around edges.
+        HeaderFrameHLayout.setContentsMargins(pmHeaderFrameMargin) # 2 pixels around edges., pmHeaderFrameMargin) # 2 pixels around edges., pmHeaderFrameMargin) # 2 pixels around edges., pmHeaderFrameMargin) # 2 pixels around edges.)
         HeaderFrameHLayout.setSpacing(pmHeaderFrameSpacing) # 5 pixel between pixmap and label.
 
         # PropMgr icon. Set image by calling setPropMgrIcon() at any time.
@@ -498,14 +497,13 @@ class PropMgrBaseClass(PropertyManager_common): #bruce 070615 inherit PropertyMa
         self.sponsor_frame.setFrameShadow(QFrame.Plain)
 
         SponsorFrameGrid = QGridLayout(self.sponsor_frame)
-        SponsorFrameGrid.setMargin(pmSponsorFrameMargin)
+        SponsorFrameGrid.setContentsMargins(pmSponsorFrameMargin, pmSponsorFrameMargin, pmSponsorFrameMargin, pmSponsorFrameMargin)
         SponsorFrameGrid.setSpacing(pmSponsorFrameSpacing) # Has no effect.
 
         self.sponsor_btn = QPushButton(self.sponsor_frame)
         self.sponsor_btn.setAutoDefault(False)
         self.sponsor_btn.setFlat(True)
-        self.connect(self.sponsor_btn,SIGNAL("clicked()"),
-                     self.open_sponsor_homepage)
+        self.sponsor_btn.clicked.connect(self.open_sponsor_homepage)
 
         SponsorFrameGrid.addWidget(self.sponsor_btn,0,0,1,1)
 
@@ -563,7 +561,7 @@ class PropMgrBaseClass(PropertyManager_common): #bruce 070615 inherit PropertyMa
 
         # Create Hbox layout for main frame.
         TopRowBtnsHLayout = QHBoxLayout(self.TopRowBtnsFrame)
-        TopRowBtnsHLayout.setMargin(pmTopRowBtnsMargin)
+        TopRowBtnsHLayout.setContentsMargins(pmTopRowBtnsMargin, pmTopRowBtnsMargin, pmTopRowBtnsMargin, pmTopRowBtnsMargin)
         TopRowBtnsHLayout.setSpacing(pmTopRowBtnsSpacing)
 
         TopRowBtnsHLayout.addItem(HSpacer)
@@ -581,8 +579,7 @@ class PropMgrBaseClass(PropertyManager_common): #bruce 070615 inherit PropertyMa
         self.done_btn.setIcon(
             geticon("ui/actions/Properties Manager/Done.png"))
         self.done_btn.setIconSize(QSize(22,22))
-        self.connect(self.done_btn,SIGNAL("clicked()"),
-                     self.ok_btn_clicked)
+        self.done_btn.clicked.connect(self.ok_btn_clicked)
         self.done_btn.setToolTip("Done")
 
         TopRowBtnsHLayout.addWidget(self.done_btn)
@@ -592,8 +589,7 @@ class PropMgrBaseClass(PropertyManager_common): #bruce 070615 inherit PropertyMa
         self.abort_btn.setIcon(
             geticon("ui/actions/Properties Manager/Abort.png"))
         self.abort_btn.setIconSize(QSize(22,22))
-        self.connect(self.abort_btn,SIGNAL("clicked()"),
-                     self.abort_btn_clicked)
+        self.abort_btn.clicked.connect(self.abort_btn_clicked)
         self.abort_btn.setToolTip("Cancel")
 
         TopRowBtnsHLayout.addWidget(self.abort_btn)
@@ -603,8 +599,7 @@ class PropMgrBaseClass(PropertyManager_common): #bruce 070615 inherit PropertyMa
         self.restore_defaults_btn.setIcon(
             geticon("ui/actions/Properties Manager/Restore.png"))
         self.restore_defaults_btn.setIconSize(QSize(22,22))
-        self.connect(self.restore_defaults_btn,SIGNAL("clicked()"),
-                     self.restore_defaults_btn_clicked)
+        self.restore_defaults_btn.clicked.connect(self.restore_defaults_btn_clicked)
         self.restore_defaults_btn.setToolTip("Restore Defaults")
         TopRowBtnsHLayout.addWidget(self.restore_defaults_btn)
 
@@ -613,8 +608,7 @@ class PropMgrBaseClass(PropertyManager_common): #bruce 070615 inherit PropertyMa
         self.preview_btn.setIcon(
             geticon("ui/actions/Properties Manager/Preview.png"))
         self.preview_btn.setIconSize(QSize(22,22))
-        self.connect(self.preview_btn,SIGNAL("clicked()"),
-                     self.preview_btn_clicked)
+        self.preview_btn.clicked.connect(self.preview_btn_clicked)
         self.preview_btn.setToolTip("Preview")
 
         TopRowBtnsHLayout.addWidget(self.preview_btn)
@@ -624,8 +618,7 @@ class PropMgrBaseClass(PropertyManager_common): #bruce 070615 inherit PropertyMa
         self.whatsthis_btn.setIcon(
             geticon("ui/actions/Properties Manager/WhatsThis.png"))
         self.whatsthis_btn.setIconSize(QSize(22,22))
-        self.connect(self.whatsthis_btn,SIGNAL("clicked()"),
-                     self.enter_WhatsThisMode)
+        self.whatsthis_btn.clicked.connect(self.enter_WhatsThisMode)
         self.whatsthis_btn.setToolTip("What\'s This Help")
 
         TopRowBtnsHLayout.addWidget(self.whatsthis_btn)
@@ -907,12 +900,12 @@ class PropMgrGroupBox(QGroupBox, PropMgrWidgetMixin):
 
         # Create vertical box layout
         self.VBoxLayout = QVBoxLayout(self)
-        self.VBoxLayout.setMargin(pmGrpBoxVboxLayoutMargin)
+        self.VBoxLayout.setContentsMargins(pmGrpBoxVboxLayoutMargin, pmGrpBoxVboxLayoutMargin, pmGrpBoxVboxLayoutMargin, pmGrpBoxVboxLayoutMargin)
         self.VBoxLayout.setSpacing(pmGrpBoxVboxLayoutSpacing)
 
         # Create grid layout
         self.GridLayout = QGridLayout()
-        self.GridLayout.setMargin(pmGridLayoutMargin)
+        self.GridLayout.setContentsMargins(pmGridLayoutMargin, pmGridLayoutMargin, pmGridLayoutMargin, pmGridLayoutMargin)
         self.GridLayout.setSpacing(pmGridLayoutSpacing)
 
         # Insert grid layout in its own VBoxLayout
@@ -921,8 +914,7 @@ class PropMgrGroupBox(QGroupBox, PropMgrWidgetMixin):
         if titleButton: # Add title button to GroupBox
             self.titleButton = self.getTitleButton(title, self)
             self.VBoxLayout.insertWidget(0, self.titleButton)
-            self.connect(self.titleButton,SIGNAL("clicked()"),
-                     self.toggleExpandCollapse)
+            self.titleButton.clicked.connect(self.toggleExpandCollapse)
         else:
             self.setTitle(title)
 
@@ -1063,7 +1055,7 @@ class PropMgrGroupBox(QGroupBox, PropMgrWidgetMixin):
         """
         if self.widgets:
             if self.expanded: # Collapse groupbox by hiding all widgets in groupbox.
-                self.GridLayout.setMargin(0)
+                self.GridLayout.setContentsMargins(0, 0, 0, 0)
                 self.GridLayout.setSpacing(0)
                 # The styleSheet contains the expand/collapse.
                 styleSheet = self.getTitleButtonStyleSheet(showExpanded = False)
@@ -1084,10 +1076,10 @@ class PropMgrGroupBox(QGroupBox, PropMgrWidgetMixin):
                     # title button and the MessageTextEdit widget.
                     # Extra code unnecessary, but more readable.
                     # Mark 2007-05-21
-                    self.GridLayout.setMargin(0)
+                    self.GridLayout.setContentsMargins(0, 0, 0, 0)
                     self.GridLayout.setSpacing(0)
                 else:
-                    self.GridLayout.setMargin(pmGrpBoxGridLayoutMargin)
+                    self.GridLayout.setContentsMargins(pmGrpBoxGridLayoutMargin, pmGrpBoxGridLayoutMargin, pmGrpBoxGridLayoutMargin, pmGrpBoxGridLayoutMargin)
                     self.GridLayout.setSpacing(pmGrpBoxGridLayoutSpacing)
                 # The styleSheet contains the expand/collapse.
                 styleSheet = self.getTitleButtonStyleSheet(showExpanded = True)
@@ -1160,10 +1152,10 @@ class PropMgrMessageGroupBox(PropMgrGroupBox):
 
         self.widgets = [] # All widgets in the groupbox (except the title button).
 
-        self.VBoxLayout.setMargin(pmMsgGrpBoxMargin)
+        self.VBoxLayout.setContentsMargins(pmMsgGrpBoxMargin, pmMsgGrpBoxMargin, pmMsgGrpBoxMargin, pmMsgGrpBoxMargin)
         self.VBoxLayout.setSpacing(pmMsgGrpBoxSpacing)
 
-        self.GridLayout.setMargin(0)
+        self.GridLayout.setContentsMargins(0, 0, 0, 0)
         self.GridLayout.setSpacing(0)
 
         self.MessageTextEdit = PropMgrTextEdit(self, label='', spanWidth=True)

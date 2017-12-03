@@ -54,7 +54,7 @@ from OpenGL.GL import glPopMatrix
 from OpenGL.GLU import gluUnProject
 
 
-from PyQt4.Qt import Qt
+from PyQt5.QtCore import Qt
 
 import foundation.env as env
 from utilities import debug_flags

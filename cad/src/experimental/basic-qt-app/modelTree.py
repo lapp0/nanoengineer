@@ -1,8 +1,8 @@
 #!/usr/bin/python
 
 # Copyright 2006-2007 Nanorex, Inc.  See LICENSE file for details.
-from PyQt4.Qt import *
-from PyQt4 import QtCore, QtGui
+from PyQt5.QtGui import *
+from PyQt5 import QtCore, QtGui, QtWidgets
 
 # Hunt for the icons directory
 icons = 'icons'
@@ -23,8 +23,8 @@ class PartWindow(partWindowBaseClass):
         self.parent = parent
         self.setWindowTitle("My Part Window")
         self.setSizePolicy(QSizePolicy.MinimumExpanding, QSizePolicy.MinimumExpanding)
-        layout = QtGui.QHBoxLayout(self)
-        layout.setMargin(0)
+        layout = QtWidgets.QHBoxLayout(self)
+        layout.setContentsMargins(0, 0, 0, 0)
         layout.setSpacing(0)
 
         #########################
@@ -32,35 +32,35 @@ class PartWindow(partWindowBaseClass):
         holder = QWidget()
         holder.setMaximumWidth(200)
         sublayout = QVBoxLayout(holder)
-        sublayout.setMargin(0)
+        sublayout.setContentsMargins(0, 0, 0, 0)
         sublayout.setSpacing(0)
         layout.addWidget(holder)
 
         dismissButton = QPushButton()
         dismissButton.setIcon(QIcon(icons + '/GrapheneGeneratorDialog_image3.png'))
         sublayout.addWidget(dismissButton)
-        self.connect(dismissButton,SIGNAL("clicked()"),self.dismiss)
+        dismissButton.clicked.connect(self.dismiss)
 
         ###
 
-        self.propertyManager = QtGui.QTabWidget()
+        self.propertyManager = QtWidgets.QTabWidget()
         self.propertyManager.setCurrentIndex(0)
         self.propertyManager.setMaximumWidth(200)
 
-        self.modelTreeTab = QtGui.QWidget()
+        self.modelTreeTab = QtWidgets.QWidget()
         self.propertyManager.addTab(self.modelTreeTab, "Model Tree")
-        modelTreeTabLayout = QtGui.QVBoxLayout(self.modelTreeTab)
-        modelTreeTabLayout.setMargin(0)
+        modelTreeTabLayout = QtWidgets.QVBoxLayout(self.modelTreeTab)
+        modelTreeTabLayout.setContentsMargins(0, 0, 0, 0)
         modelTreeTabLayout.setSpacing(0)
 
-        self.tab2 = QtGui.QWidget()
+        self.tab2 = QtWidgets.QWidget()
         self.propertyManager.addTab(self.tab2, "Second tab")
 
         sublayout.addWidget(self.propertyManager)
 
         ###
 
-        self.modelTree = QtGui.QTreeWidget()
+        self.modelTree = QtWidgets.QTreeWidget()
         self.modelTree.setColumnCount(2)
         self.modelTree.setHeaderLabels(['', 'Thingy'])
         self.populateModelTree()
@@ -170,48 +170,48 @@ class MainWindow(QMainWindow):
         self.setMinimumWidth(MAIN_WINDOW_SIZE[0])
         self.setMinimumHeight(MAIN_WINDOW_SIZE[1])
 
-        self.statusbar = QtGui.QStatusBar(self)
+        self.statusbar = QtWidgets.QStatusBar(self)
         self.statusbar.showMessage("Status message")
         self.setStatusBar(self.statusbar)
 
         self.menubar = self.menuBar()
         # Any menu action makes the status bar message disappear
 
-        fileMenu = QtGui.QMenu(self.menubar)
+        fileMenu = QtWidgets.QMenu(self.menubar)
         fileMenu.setTitle("File")
         self.menubar.addAction(fileMenu.menuAction())
 
-        newAction = QtGui.QAction("New", self)
+        newAction = QtWidgets.QAction("New", self)
         newAction.setIcon(QtGui.QIcon(icons + '/GroupPropDialog_image0.png'))
         fileMenu.addAction(newAction)
-        openAction = QtGui.QAction("Open", self)
+        openAction = QtWidgets.QAction("Open", self)
         openAction.setIcon(QtGui.QIcon(icons + "/MainWindowUI_image1"))
         fileMenu.addAction(openAction)
-        saveAction = QtGui.QAction("Save", self)
+        saveAction = QtWidgets.QAction("Save", self)
         saveAction.setIcon(QtGui.QIcon(icons + "/MainWindowUI_image2"))
         fileMenu.addAction(saveAction)
 
         for otherMenuName in ('Edit', 'View', 'Display', 'Select', 'Modify', 'NanoHive-1', 'Help'):
-            otherMenu = QtGui.QMenu(self.menubar)
+            otherMenu = QtWidgets.QMenu(self.menubar)
             otherMenu.setTitle(otherMenuName)
             self.menubar.addAction(otherMenu.menuAction())
 
         self.setMenuBar(self.menubar)
 
-        self.connect(newAction,SIGNAL("activated()"),self.newFile)
-        self.connect(openAction,SIGNAL("activated()"),self.openFile)
-        self.connect(saveAction,SIGNAL("activated()"),self.saveFile)
+        newAction.activated.connect(self.newFile)
+        openAction.activated.connect(self.openFile)
+        saveAction.activated.connect(self.saveFile)
 
         centralwidget = QWidget()
         self.setCentralWidget(centralwidget)
         layout = QVBoxLayout(centralwidget)
-        layout.setMargin(0)
+        layout.setContentsMargins(0, 0, 0, 0)
         layout.setSpacing(0)
         middlewidget = QWidget()
 
         self.bigButtons = QWidget()
         bblo = QHBoxLayout(self.bigButtons)
-        bblo.setMargin(0)
+        bblo.setContentsMargins(0, 0, 0, 0)
         bblo.setSpacing(0)
         self.bigButtons.setMinimumHeight(50)
         self.bigButtons.setSizePolicy(QSizePolicy.Fixed, QSizePolicy.Fixed)
@@ -228,11 +228,11 @@ class MainWindow(QMainWindow):
         self.littleIcons.setMinimumHeight(30)
         self.littleIcons.setMaximumHeight(30)
         lilo = QHBoxLayout(self.littleIcons)
-        lilo.setMargin(0)
+        lilo.setContentsMargins(0, 0, 0, 0)
         lilo.setSpacing(0)
         pb = QPushButton(self.littleIcons)
         pb.setIcon(QIcon(icons + '/GroupPropDialog_image0.png'))
-        self.connect(pb,SIGNAL("clicked()"),self.newFile)
+        pb.clicked.connect(self.newFile)
         lilo.addWidget(pb)
         for x in "1 2 4 5 6 7 8 18 42 10 43 150 93 94 97 137".split():
             pb = QPushButton(self.littleIcons)
@@ -243,7 +243,7 @@ class MainWindow(QMainWindow):
         layout.addWidget(middlewidget)
 
         self.layout = QGridLayout(middlewidget)
-        self.layout.setMargin(0)
+        self.layout.setContentsMargins(0, 0, 0, 0)
         self.layout.setSpacing(0)
         self.gridPosition = GridPosition()
         self.numParts = 0
@@ -271,7 +271,7 @@ class MainWindow(QMainWindow):
 
 if __name__ == "__main__":
     import sys
-    app = QtGui.QApplication(sys.argv)
+    app = QtWidgets.QApplication(sys.argv)
     mainWin = MainWindow()
     mainWin.show()
     sys.exit(app.exec_())

@@ -2,6 +2,7 @@
 
 # Copyright 2006-2007 Nanorex, Inc.  See LICENSE file for details.
 from jelloGui import *
+from PyQt5.QtWidgets import *
 import sys
 import random
 import time
@@ -162,7 +163,7 @@ class Jello(JelloGui):
         self.simTime = 0.0
 
         self.timer = QTimer(self)
-        self.connect(self.timer, SIGNAL('timeout()'), self.timeout)
+        self.timer.timeout.connect(self.timeout)
         self.lastTime = time.time()
         self.timer.start(ANIMATION_DELAY)
 

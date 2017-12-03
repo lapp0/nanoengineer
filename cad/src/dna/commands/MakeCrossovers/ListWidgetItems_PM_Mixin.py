@@ -15,8 +15,9 @@ See ListWidgetItems_Command_Mixin for details.
       ListWidgetItems_GraphicsMode_Mixin
 """
 from PM.PM_SelectionListWidget import PM_SelectionListWidget
+from PyQt5.QtWidgets import *
 from utilities.constants import lightred_1, lightgreen_2
-from PyQt4.Qt import Qt
+from PyQt5.QtCore import Qt
 from PM.PM_ToolButton    import PM_ToolButton
 from PM.PM_WidgetRow     import PM_WidgetRow
 

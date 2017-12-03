@@ -3,7 +3,7 @@
 $Id$
 """
 
-from PyQt4 import QtGui
+from PyQt5 import QtGui, QtWidgets
 
 # Hybrid display is an experimental work. Its action and others need to be
 # removed. For now, I am just removing it using the following flag as I have
@@ -86,18 +86,18 @@ def retranslateUi(win):
     @type  win: Ui_MainWindow
     """
     win.viewMenu.setTitle(
-        QtGui.QApplication.translate(
+        QtCore.QCoreApplication.translate(
             "MainWindow", "&View",
-            None, QtGui.QApplication.UnicodeUTF8))
+            None))
     win.displayMenu.setTitle(
-        QtGui.QApplication.translate(
+        QtCore.QCoreApplication.translate(
             "MainWindow", "&Display",
-            None, QtGui.QApplication.UnicodeUTF8))
+            None))
     win.modifyMenu.setTitle(
-        QtGui.QApplication.translate(
+        QtCore.QCoreApplication.translate(
             "MainWindow", "M&odify",
-            None, QtGui.QApplication.UnicodeUTF8))
+            None))
     win.toolbarMenu.setTitle(
-        QtGui.QApplication.translate(
+        QtCore.QCoreApplication.translate(
             "MainWindow", "Toolbars",
-            None, QtGui.QApplication.UnicodeUTF8))
+            None))

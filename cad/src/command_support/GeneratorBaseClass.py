@@ -55,10 +55,10 @@ Also needs generalization in several ways (mentioned but not fully explained):
 
 """
 
-from PyQt4.Qt import Qt
-from PyQt4.Qt import QApplication
-from PyQt4.Qt import QCursor
-from PyQt4.Qt import QWhatsThis
+from PyQt5.QtCore import Qt
+from PyQt5.QtWidgets import QApplication
+from PyQt5.QtGui import QCursor
+from PyQt5.QtWidgets import QWhatsThis
 
 import foundation.env as env
 from utilities import debug_flags

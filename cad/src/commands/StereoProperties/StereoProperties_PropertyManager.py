@@ -13,7 +13,6 @@ StereoProperties_PropertyManager.py
 import foundation.env as env
 
 
-from PyQt4.Qt import SIGNAL
 
 from PM.PM_Slider   import PM_Slider
 from PM.PM_GroupBox import PM_GroupBox

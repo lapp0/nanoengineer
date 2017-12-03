@@ -20,7 +20,8 @@ ninad 2007-08-29: Created: Rewrote all UI to make it use the 'PM' module
 
 """
 
-from PyQt4.Qt import Qt
+from PyQt5.QtCore import Qt
+from PyQt5.QtWidgets import *
 
 from PM.PM_GroupBox        import PM_GroupBox
 from PM.PM_CheckBox        import PM_CheckBox

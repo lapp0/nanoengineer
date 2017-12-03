@@ -13,9 +13,8 @@ TODO:
 """
 
 import foundation.env as env
-from PyQt4 import QtCore, QtGui
-from PyQt4.Qt import Qt
-from PyQt4.Qt import SIGNAL
+from PyQt5 import QtCore, QtGui, QtWidgets
+from PyQt5.QtCore import Qt
 from utilities.icon_utilities import geticon
 from utilities.Log import greenmsg
 from ne1_ui.NE1_QWidgetAction import NE1_QWidgetAction
@@ -54,7 +53,7 @@ class DnaFlyout(Ui_AbstractFlyout):
         #Action List for  subcontrol Area buttons.
         subControlAreaActionList = []
         subControlAreaActionList.append(self.exitModeAction)
-        separator = QtGui.QAction(self.parentWidget)
+        separator = QtWidgets.QAction(self.parentWidget)
         separator.setSeparator(True)
         subControlAreaActionList.append(separator)
         subControlAreaActionList.append(self.dnaDuplexAction)
@@ -86,7 +85,7 @@ class DnaFlyout(Ui_AbstractFlyout):
         _superclass._createActions(self, parentWidget)
 
         # The subControlActionGroup is the parent of all flyout QActions.
-        self.subControlActionGroup = QtGui.QActionGroup(self.parentWidget)
+        self.subControlActionGroup = QtWidgets.QActionGroup(self.parentWidget)
             # Shouldn't the parent be self.win?
             # IIRC, parentWidget = BuildDnaPropertyManager.
             # Ask Bruce about this. --Mark 2008-12-07.

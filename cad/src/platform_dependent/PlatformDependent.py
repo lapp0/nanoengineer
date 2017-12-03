@@ -20,7 +20,8 @@ Some are io.
 """
 
 import sys, os, time
-from PyQt4.Qt import Qt, QDesktopWidget, QRect
+from PyQt5.QtWidgets import *
+from PyQt5.QtGui import Qt, QDesktopWidget, QRect
 import foundation.env as env
 from utilities import debug_flags
 from utilities.debug import print_compact_traceback

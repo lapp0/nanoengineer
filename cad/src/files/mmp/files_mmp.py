@@ -1606,7 +1606,7 @@ def _readmmp(assy, filename, isInsert = False, showProgressDialog = False):
                 print("cancelled reading file")
                 global _readmmp_aborted
                 _readmmp_aborted = True
-                win.disconnect(win.progressDialog, SIGNAL("canceled()"), abort_readmmp)
+                win.progressDialog.canceled.disconnect(abort_readmmp)
                     # review: why no NameError for this abort_readmmp?
                     # guess: it's a legal read-only reference into the
                     # outer function's scope. But it's also possible that we have
@@ -1618,8 +1618,7 @@ def _readmmp(assy, filename, isInsert = False, showProgressDialog = False):
                 print_compact_traceback("exception in abort_readmmp ignored: ")
             return
 
-        from PyQt4.Qt import SIGNAL
-        win.connect(win.progressDialog, SIGNAL("canceled()"), abort_readmmp)
+        win.progressDialog.canceled.connect(abort_readmmp)
 
         _reference_to_readmmp_abort_function = abort_readmmp
             # make sure abort_readmmp doesn't get deallocated before use

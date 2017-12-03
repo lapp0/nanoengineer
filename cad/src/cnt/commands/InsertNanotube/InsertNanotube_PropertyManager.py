@@ -12,9 +12,8 @@ Mark 2008-03-09:
 
 __author__ = "Mark"
 
-from PyQt4.Qt import SIGNAL
-from PyQt4.Qt import Qt
-from PyQt4.Qt import QAction
+from PyQt5.QtCore import Qt
+from PyQt5.QtWidgets import QAction
 
 from PM.PM_ComboBox      import PM_ComboBox
 from PM.PM_DoubleSpinBox import PM_DoubleSpinBox
@@ -41,6 +40,12 @@ from widgets.prefs_widgets import connect_checkbox_with_boolean_pref
 from cnt.model.NanotubeParameters import NanotubeParameters
 
 from command_support.DnaOrCnt_PropertyManager import DnaOrCnt_PropertyManager
+try:
+    QString = unicode
+except NameError:
+    # Python 3
+    QString = str
+
 _superclass = DnaOrCnt_PropertyManager
 
 class InsertNanotube_PropertyManager( DnaOrCnt_PropertyManager):

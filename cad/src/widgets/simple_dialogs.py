@@ -9,7 +9,8 @@ TODO: merge some of them into one function.
 @copyright: 2004-2009 Nanorex, Inc.  See LICENSE file for details.
 """
 
-from PyQt4.Qt import QInputDialog, QLineEdit, QDialog
+from PyQt5.QtGui import QInputDialog, QLineEdit, QDialog
+from PyQt5.QtWidgets import *
 from utilities.icon_utilities import geticon
 
 def grab_text_using_dialog( default = "",

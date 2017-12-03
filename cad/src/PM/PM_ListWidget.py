@@ -12,11 +12,11 @@ mark 2007-07-22: Split PropMgrListWidget out of PropMgrBaseClass.py into this
 file and renamed it PM_ListWidget.
 """
 
-from PyQt4.Qt import QLabel
-from PyQt4.Qt import QListWidget
-from PyQt4.Qt import QWidget
-from PyQt4.Qt import Qt
-from PyQt4.Qt import QAbstractItemView
+from PyQt5.QtWidgets import QLabel
+from PyQt5.QtWidgets import QListWidget
+from PyQt5.QtWidgets import QWidget
+from PyQt5.QtCore import Qt
+from PyQt5.QtWidgets import QAbstractItemView
 
 from utilities.debug import print_compact_traceback
 

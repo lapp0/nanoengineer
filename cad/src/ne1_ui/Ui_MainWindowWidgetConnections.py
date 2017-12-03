@@ -14,8 +14,7 @@ History:
 2007-12-23: Moved all connect() calls from MWsemantics to here.
 """
 
-from PyQt4 import QtCore
-from PyQt4.Qt import SIGNAL
+from PyQt5 import QtCore
 
 def setupUi(win):
     """
@@ -25,279 +24,205 @@ def setupUi(win):
     @type  win: U{B{QMainWindow}<http://doc.trolltech.com/4/qmainwindow.html>}
     """
 
-    win.connect(win.dispBallAction,SIGNAL("triggered()"),win.dispBall)
-    win.connect(win.dispDefaultAction,SIGNAL("triggered()"),win.dispDefault)
-    win.connect(win.dispElementColorSettingsAction,SIGNAL("triggered()"),win.dispElementColorSettings)
-    win.connect(win.dispInvisAction,SIGNAL("triggered()"),win.dispInvis)
-    win.connect(win.dispLightingAction,SIGNAL("triggered()"),win.dispLighting)
-    win.connect(win.dispLinesAction,SIGNAL("triggered()"),win.dispLines)
-    win.connect(win.dispObjectColorAction,SIGNAL("triggered()"),win.dispObjectColor)
+    win.dispBallAction.triggered.connect(win.dispBall)
+    win.dispDefaultAction.triggered.connect(win.dispDefault)
+    win.dispElementColorSettingsAction.triggered.connect(win.dispElementColorSettings)
+    win.dispInvisAction.triggered.connect(win.dispInvis)
+    win.dispLightingAction.triggered.connect(win.dispLighting)
+    win.dispLinesAction.triggered.connect(win.dispLines)
+    win.dispObjectColorAction.triggered.connect(win.dispObjectColor)
 
-    win.connect(win.resetChunkColorAction,SIGNAL("triggered()"),win.dispResetChunkColor)
-    win.connect(win.dispResetAtomsDisplayAction,SIGNAL("triggered()"),win.dispResetAtomsDisplay)
-    win.connect(win.dispShowInvisAtomsAction,SIGNAL("triggered()"),win.dispShowInvisAtoms)
-    win.connect(win.dispTubesAction,SIGNAL("triggered()"),win.dispTubes)
-    win.connect(win.dispCPKAction,SIGNAL("triggered()"),win.dispCPK)
-    win.connect(win.dispHideAction,SIGNAL("triggered()"),win.dispHide)
-    win.connect(win.dispUnhideAction,SIGNAL("triggered()"),win.dispUnhide)
-    win.connect(win.dispHybridAction,SIGNAL("triggered()"),win.dispHybrid)
+    win.resetChunkColorAction.triggered.connect(win.dispResetChunkColor)
+    win.dispResetAtomsDisplayAction.triggered.connect(win.dispResetAtomsDisplay)
+    win.dispShowInvisAtomsAction.triggered.connect(win.dispShowInvisAtoms)
+    win.dispTubesAction.triggered.connect(win.dispTubes)
+    win.dispCPKAction.triggered.connect(win.dispCPK)
+    win.dispHideAction.triggered.connect(win.dispHide)
+    win.dispUnhideAction.triggered.connect(win.dispUnhide)
+    win.dispHybridAction.triggered.connect(win.dispHybrid)
 
-    win.connect(win.editAutoCheckpointingAction,SIGNAL("toggled(bool)"),win.editAutoCheckpointing)
-    win.connect(win.editClearUndoStackAction,SIGNAL("triggered()"),win.editClearUndoStack)
-    win.connect(win.editCopyAction,SIGNAL("triggered()"),win.editCopy)
-    win.connect(win.editCutAction,SIGNAL("triggered()"),win.editCut)
-    win.connect(win.editDeleteAction,SIGNAL("triggered()"),win.killDo)
-    win.connect(win.editMakeCheckpointAction,SIGNAL("triggered()"),win.editMakeCheckpoint)
-    win.connect(win.editPasteAction,SIGNAL("triggered()"),win.editPaste)
+    win.editAutoCheckpointingAction.toggled[bool].connect(win.editAutoCheckpointing)
+    win.editClearUndoStackAction.triggered.connect(win.editClearUndoStack)
+    win.editCopyAction.triggered.connect(win.editCopy)
+    win.editCutAction.triggered.connect(win.editCut)
+    win.editDeleteAction.triggered.connect(win.killDo)
+    win.editMakeCheckpointAction.triggered.connect(win.editMakeCheckpoint)
+    win.editPasteAction.triggered.connect(win.editPaste)
 
-    win.connect(win.editDnaDisplayStyleAction,
-                SIGNAL("triggered()"),
-                win.enterDnaDisplayStyleCommand)
-    win.connect(win.editProteinDisplayStyleAction,
-                SIGNAL("triggered()"),
-                win.enterProteinDisplayStyleCommand)
+    win.editDnaDisplayStyleAction.triggered.connect(win.enterDnaDisplayStyleCommand)
+    win.editProteinDisplayStyleAction.triggered.connect(win.enterProteinDisplayStyleCommand)
 
     # editRenameAction deprecated. Use editRenameSelection. Mark 2008-11-13.
     #win.connect(win.editRenameAction,SIGNAL("triggered()"),win.editRename)
-    win.connect(win.editRenameSelectionAction,SIGNAL("triggered()"),win.editRenameSelection)
-    win.connect(win.editAddSuffixAction,SIGNAL("triggered()"),win.editAddSuffix)
-    win.connect(win.pasteFromClipboardAction,
-                SIGNAL("triggered()"),
-                win.editPasteFromClipboard )
-    win.connect(win.partLibAction,
-                SIGNAL("triggered()"),
-                win.insertPartFromPartLib)
+    win.editRenameSelectionAction.triggered.connect(win.editRenameSelection)
+    win.editAddSuffixAction.triggered.connect(win.editAddSuffix)
+    win.pasteFromClipboardAction.triggered.connect(win.editPasteFromClipboard)
+    win.partLibAction.triggered.connect(win.insertPartFromPartLib)
 
-    win.connect(win.viewFullScreenAction,
-                SIGNAL("toggled(bool)"),
-                win.setViewFullScreen)
-    win.connect(win.viewSemiFullScreenAction,
-                SIGNAL("toggled(bool)"),
-                win.setViewSemiFullScreen)
-    win.connect(win.viewReportsAction,
-                SIGNAL("toggled(bool)"),
-                win.reportsDockWidget.toggle)
-    win.connect(win.viewRulersAction,
-                SIGNAL("toggled(bool)"),
-                win.toggleRulers)
+    win.viewFullScreenAction.toggled[bool].connect(win.setViewFullScreen)
+    win.viewSemiFullScreenAction.toggled[bool].connect(win.setViewSemiFullScreen)
+    win.viewReportsAction.toggled[bool].connect(win.reportsDockWidget.toggle)
+    win.viewRulersAction.toggled[bool].connect(win.toggleRulers)
 
     #Urmi background color chooser option 080522
-    win.connect(win.colorSchemeAction,
-                SIGNAL("triggered()"),
-                win.colorSchemeCommand)
-    win.connect(win.lightingSchemeAction,
-                SIGNAL("triggered()"),
-                win.lightingSchemeCommand)
+    win.colorSchemeAction.triggered.connect(win.colorSchemeCommand)
+    win.lightingSchemeAction.triggered.connect(win.lightingSchemeCommand)
 
-    win.connect(win.editPrefsAction,SIGNAL("triggered()"),win.editPrefs)
-    win.connect(win.editRedoAction,SIGNAL("triggered()"),win.editRedo)
-    win.connect(win.editUndoAction,SIGNAL("triggered()"),win.editUndo)
+    win.editPrefsAction.triggered.connect(win.editPrefs)
+    win.editRedoAction.triggered.connect(win.editRedo)
+    win.editUndoAction.triggered.connect(win.editUndo)
 
     #= Connections for the "File" menu and toolbar widgets.
 
-    win.connect(win.fileCloseAction,
-                SIGNAL("triggered()"),
-                win.fileClose)
-    win.connect(win.fileExitAction,
-                SIGNAL("triggered()"),
-                win.close)
+    win.fileCloseAction.triggered.connect(win.fileClose)
+    win.fileExitAction.triggered.connect(win.close)
 
-    win.connect(win.fileOpenAction,
-                SIGNAL("triggered()"),
-                win.fileOpen)
-    win.connect(win.fileSaveAction,
-                SIGNAL("triggered()"),
-                win.fileSave)
-    win.connect(win.fileSaveAsAction,
-                SIGNAL("triggered()"),
-                win.fileSaveAs)
-    win.connect(win.fileSaveSelectionAction,
-                SIGNAL("triggered()"),
-                win.fileSaveSelection)
-    win.connect(win.fileSetWorkingDirectoryAction,
-                SIGNAL("triggered()"),
-                win.fileSetWorkingDirectory)
-    win.connect(win.fileInsertMmpAction,
-                SIGNAL("triggered()"),
-                win.fileInsertMmp)
-    win.connect(win.fileInsertPdbAction,
-                SIGNAL("triggered()"),
-                win.fileInsertPdb)
-    win.connect(win.fileInsertInAction,
-                SIGNAL("triggered()"),
-                win.fileInsertIn)
-    win.connect(win.fileExportQuteMolXPdbAction,
-                SIGNAL("triggered()"),
-                win.fileExportQuteMolXPdb)
-    win.connect(win.fileExportPdbAction,
-                SIGNAL("triggered()"),
-                win.fileExportPdb)
+    win.fileOpenAction.triggered.connect(win.fileOpen)
+    win.fileSaveAction.triggered.connect(win.fileSave)
+    win.fileSaveAsAction.triggered.connect(win.fileSaveAs)
+    win.fileSaveSelectionAction.triggered.connect(win.fileSaveSelection)
+    win.fileSetWorkingDirectoryAction.triggered.connect(win.fileSetWorkingDirectory)
+    win.fileInsertMmpAction.triggered.connect(win.fileInsertMmp)
+    win.fileInsertPdbAction.triggered.connect(win.fileInsertPdb)
+    win.fileInsertInAction.triggered.connect(win.fileInsertIn)
+    win.fileExportQuteMolXPdbAction.triggered.connect(win.fileExportQuteMolXPdb)
+    win.fileExportPdbAction.triggered.connect(win.fileExportPdb)
 
-    win.connect(win.fileFetchPdbAction,
-                SIGNAL("triggered()"),
-                win.fileFetchPdb)
+    win.fileFetchPdbAction.triggered.connect(win.fileFetchPdb)
 
-    win.connect(win.fileExportJpgAction,
-                SIGNAL("triggered()"),
-                win.fileExportJpg)
-    win.connect(win.fileExportPngAction,
-                SIGNAL("triggered()"),
-                win.fileExportPng)
-    win.connect(win.fileExportPovAction,
-                SIGNAL("triggered()"),
-                win.fileExportPov)
-    win.connect(win.fileExportAmdlAction,
-                SIGNAL("triggered()"),
-                win.fileExportAmdl)
+    win.fileExportJpgAction.triggered.connect(win.fileExportJpg)
+    win.fileExportPngAction.triggered.connect(win.fileExportPng)
+    win.fileExportPovAction.triggered.connect(win.fileExportPov)
+    win.fileExportAmdlAction.triggered.connect(win.fileExportAmdl)
 
-    win.connect(win.helpTutorialsAction,SIGNAL("triggered()"),win.helpTutorials)
-    win.connect(win.helpAboutAction,SIGNAL("triggered()"),win.helpAbout)
-    win.connect(win.helpGraphicsCardAction,SIGNAL("triggered()"),win.helpGraphicsCard)
-    win.connect(win.helpKeyboardShortcutsAction,SIGNAL("triggered()"),win.helpKeyboardShortcuts)
-    win.connect(win.helpSelectionShortcutsAction,SIGNAL("triggered()"),win.helpSelectionShortcuts)
-    win.connect(win.helpMouseControlsAction,SIGNAL("triggered()"),win.helpMouseControls)
-    win.connect(win.helpWhatsThisAction,SIGNAL("triggered()"),win.helpWhatsThis)
+    win.helpTutorialsAction.triggered.connect(win.helpTutorials)
+    win.helpAboutAction.triggered.connect(win.helpAbout)
+    win.helpGraphicsCardAction.triggered.connect(win.helpGraphicsCard)
+    win.helpKeyboardShortcutsAction.triggered.connect(win.helpKeyboardShortcuts)
+    win.helpSelectionShortcutsAction.triggered.connect(win.helpSelectionShortcuts)
+    win.helpMouseControlsAction.triggered.connect(win.helpMouseControls)
+    win.helpWhatsThisAction.triggered.connect(win.helpWhatsThis)
 
-    win.connect(win.buildDnaAction,SIGNAL("triggered()"),win.activateDnaTool)
-    win.connect(win.buildNanotubeAction,SIGNAL("triggered()"),win.activateNanotubeTool)
-    win.connect(win.insertCommentAction,SIGNAL("triggered()"),win.insertComment)
-    win.connect(win.insertGrapheneAction,SIGNAL("triggered()"),win.insertGraphene)
+    win.buildDnaAction.triggered.connect(win.activateDnaTool)
+    win.buildNanotubeAction.triggered.connect(win.activateNanotubeTool)
+    win.insertCommentAction.triggered.connect(win.insertComment)
+    win.insertGrapheneAction.triggered.connect(win.insertGraphene)
 
-    win.connect(win.jigsAnchorAction,SIGNAL("triggered()"),win.makeAnchor)
-    win.connect(win.jigsAngleAction,SIGNAL("triggered()"),win.makeMeasureAngle)
-    win.connect(win.jigsAtomSetAction,SIGNAL("triggered()"),win.makeAtomSet)
-    win.connect(win.jigsDihedralAction,SIGNAL("triggered()"),win.makeMeasureDihedral)
-    win.connect(win.jigsDistanceAction,SIGNAL("triggered()"),win.makeMeasureDistance)
-    win.connect(win.jigsESPImageAction,SIGNAL("triggered()"),win.makeESPImage)
-    win.connect(win.jigsGamessAction,SIGNAL("triggered()"),win.makeGamess)
-    win.connect(win.jigsGridPlaneAction,SIGNAL("triggered()"),win.makeGridPlane)
+    win.jigsAnchorAction.triggered.connect(win.makeAnchor)
+    win.jigsAngleAction.triggered.connect(win.makeMeasureAngle)
+    win.jigsAtomSetAction.triggered.connect(win.makeAtomSet)
+    win.jigsDihedralAction.triggered.connect(win.makeMeasureDihedral)
+    win.jigsDistanceAction.triggered.connect(win.makeMeasureDistance)
+    win.jigsESPImageAction.triggered.connect(win.makeESPImage)
+    win.jigsGamessAction.triggered.connect(win.makeGamess)
+    win.jigsGridPlaneAction.triggered.connect(win.makeGridPlane)
 
-    win.connect(win.referencePlaneAction,SIGNAL("triggered()"),
-                win.createPlane)
-    win.connect(win.referenceLineAction,SIGNAL("triggered()"),
-                win.createPolyLine)
+    win.referencePlaneAction.triggered.connect(win.createPlane)
+    win.referenceLineAction.triggered.connect(win.createPolyLine)
 
-    win.connect(win.jigsLinearMotorAction,
-                SIGNAL("triggered()"),
-                win.makeLinearMotor)
+    win.jigsLinearMotorAction.triggered.connect(win.makeLinearMotor)
 
-    win.connect(win.jigsMotorAction,
-                SIGNAL("triggered()"),
-                win.makeRotaryMotor)
+    win.jigsMotorAction.triggered.connect(win.makeRotaryMotor)
 
-    win.connect(win.jigsStatAction,SIGNAL("triggered()"),win.makeStat)
-    win.connect(win.jigsThermoAction,SIGNAL("triggered()"),win.makeThermo)
-    win.connect(win.modifyAlignCommonAxisAction,SIGNAL("triggered()"),win.modifyAlignCommonAxis)
-    win.connect(win.modifyCenterCommonAxisAction,SIGNAL("triggered()"),win.modifyCenterCommonAxis)
-    win.connect(win.modifyDehydrogenateAction,SIGNAL("triggered()"),win.modifyDehydrogenate)
-    win.connect(win.modifyDeleteBondsAction,SIGNAL("triggered()"),win.modifyDeleteBonds)
-    win.connect(win.modifyHydrogenateAction,SIGNAL("triggered()"),win.modifyHydrogenate)
-    win.connect(win.modifyInvertAction,SIGNAL("triggered()"),win.modifyInvert)
-    win.connect(win.modifyMergeAction,SIGNAL("triggered()"),win.modifyMerge)
-    win.connect(win.makeChunkFromSelectedAtomsAction,
-                SIGNAL("triggered()"),win.makeChunkFromAtom)
-    win.connect(win.modifyAdjustAllAction,SIGNAL("triggered()"),win.modifyAdjustAll)
-    win.connect(win.modifyAdjustSelAction,SIGNAL("triggered()"),win.modifyAdjustSel)
-    win.connect(win.modifyPassivateAction,SIGNAL("triggered()"),win.modifyPassivate)
-    win.connect(win.modifySeparateAction,SIGNAL("triggered()"),win.modifySeparate)
-    win.connect(win.modifyStretchAction,SIGNAL("triggered()"),win.modifyStretch)
-    win.connect(win.panToolAction,SIGNAL("toggled(bool)"),win.panTool)
-    win.connect(win.rotateToolAction,SIGNAL("toggled(bool)"),win.rotateTool)
-    win.connect(win.saveNamedViewAction,SIGNAL("triggered()"),win.saveNamedView)
-    win.connect(win.selectAllAction,SIGNAL("triggered()"),win.selectAll)
-    win.connect(win.selectConnectedAction,SIGNAL("triggered()"),win.selectConnected)
-    win.connect(win.selectContractAction,SIGNAL("triggered()"),win.selectContract)
-    win.connect(win.selectDoublyAction,SIGNAL("triggered()"),win.selectDoubly)
-    win.connect(win.selectExpandAction,SIGNAL("triggered()"),win.selectExpand)
-    win.connect(win.selectInvertAction,SIGNAL("triggered()"),win.selectInvert)
-    win.connect(win.selectNoneAction,SIGNAL("triggered()"),win.selectNone)
-    win.connect(win.selectLockAction,SIGNAL("toggled(bool)"),win.selectLock)
-    win.connect(win.selectByNameAction,SIGNAL("toggled(bool)"),win.toggle_selectByNameDockWidget)
+    win.jigsStatAction.triggered.connect(win.makeStat)
+    win.jigsThermoAction.triggered.connect(win.makeThermo)
+    win.modifyAlignCommonAxisAction.triggered.connect(win.modifyAlignCommonAxis)
+    win.modifyCenterCommonAxisAction.triggered.connect(win.modifyCenterCommonAxis)
+    win.modifyDehydrogenateAction.triggered.connect(win.modifyDehydrogenate)
+    win.modifyDeleteBondsAction.triggered.connect(win.modifyDeleteBonds)
+    win.modifyHydrogenateAction.triggered.connect(win.modifyHydrogenate)
+    win.modifyInvertAction.triggered.connect(win.modifyInvert)
+    win.modifyMergeAction.triggered.connect(win.modifyMerge)
+    win.makeChunkFromSelectedAtomsAction.triggered.connect(win.makeChunkFromAtom)
+    win.modifyAdjustAllAction.triggered.connect(win.modifyAdjustAll)
+    win.modifyAdjustSelAction.triggered.connect(win.modifyAdjustSel)
+    win.modifyPassivateAction.triggered.connect(win.modifyPassivate)
+    win.modifySeparateAction.triggered.connect(win.modifySeparate)
+    win.modifyStretchAction.triggered.connect(win.modifyStretch)
+    win.panToolAction.toggled[bool].connect(win.panTool)
+    win.rotateToolAction.toggled[bool].connect(win.rotateTool)
+    win.saveNamedViewAction.triggered.connect(win.saveNamedView)
+    win.selectAllAction.triggered.connect(win.selectAll)
+    win.selectConnectedAction.triggered.connect(win.selectConnected)
+    win.selectContractAction.triggered.connect(win.selectContract)
+    win.selectDoublyAction.triggered.connect(win.selectDoubly)
+    win.selectExpandAction.triggered.connect(win.selectExpand)
+    win.selectInvertAction.triggered.connect(win.selectInvert)
+    win.selectNoneAction.triggered.connect(win.selectNone)
+    win.selectLockAction.toggled[bool].connect(win.selectLock)
+    win.selectByNameAction.toggled[bool].connect(win.toggle_selectByNameDockWidget)
 
     ##win.connect(win.helpTipAction,SIGNAL("triggered()"), win.toggleQuickHelpTip)
 
-    win.connect(win.viewOrientationAction,SIGNAL("toggled(bool)"),win.showOrientationWindow) #ninad061114
+    win.viewOrientationAction.toggled[bool].connect(win.showOrientationWindow)
 
     ##When Standard Views button is clicked, show its QMenu.-- By default, nothing happens if you click on the
     ##toolbutton with submenus. The menus are displayed only when you click on the small downward arrow
     ## of the tool button. Therefore the following slot is added. Also QWidgetAction is used
     ## for it to add this feature (see Ui_ViewToolBar for details) ninad 070109
-    win.connect(win.standardViews_btn,SIGNAL("pressed()"),win.showStandardViewsMenu)
+    win.standardViews_btn.pressed.connect(win.showStandardViewsMenu)
 
-    win.connect(win.viewBackAction,SIGNAL("triggered()"),win.viewBack)
-    win.connect(win.viewBottomAction,SIGNAL("triggered()"),win.viewBottom)
-    win.connect(win.setViewFitToWindowAction,SIGNAL("triggered()"),win.setViewFitToWindow)
-    win.connect(win.viewFrontAction,SIGNAL("triggered()"),win.viewFront)
-    win.connect(win.setViewHomeAction,SIGNAL("triggered()"),win.setViewHome)
-    win.connect(win.setViewHomeToCurrentAction,SIGNAL("triggered()"),win.setViewHomeToCurrent)
-    win.connect(win.viewLeftAction,SIGNAL("triggered()"),win.viewLeft)
-    win.connect(win.viewRotateMinus90Action,SIGNAL("triggered()"),win.viewRotateMinus90)
-    win.connect(win.viewNormalToAction,SIGNAL("triggered()"),win.viewNormalTo)
-    win.connect(win.viewFlipViewVertAction,SIGNAL("triggered()"),win.viewFlipViewVert)
-    win.connect(win.viewFlipViewHorzAction,SIGNAL("triggered()"),win.viewFlipViewHorz)
-    win.connect(win.setViewOrthoAction,SIGNAL("triggered()"),win.setViewOrtho)
-    win.connect(win.viewParallelToAction,SIGNAL("triggered()"),win.viewParallelTo)
-    win.connect(win.setViewPerspecAction,SIGNAL("triggered()"),win.setViewPerspec)
-    win.connect(win.viewRotatePlus90Action,SIGNAL("triggered()"),win.viewRotatePlus90)
-    win.connect(win.setViewRecenterAction,SIGNAL("triggered()"),win.setViewRecenter)
-    win.connect(win.viewRightAction,SIGNAL("triggered()"),win.viewRight)
-    win.connect(win.viewTopAction,SIGNAL("triggered()"),win.viewTop)
-    win.connect(win.simMoviePlayerAction,SIGNAL("triggered()"),win.simMoviePlayer)
-    win.connect(win.simNanoHiveAction,SIGNAL("triggered()"),win.simNanoHive)
-    win.connect(win.simPlotToolAction,SIGNAL("triggered()"),win.simPlot)
-    win.connect(win.simSetupAction,SIGNAL("triggered()"),win.simSetup)
-    win.connect(win.rosettaSetupAction,SIGNAL("triggered()"),win.rosettaSetup)
+    win.viewBackAction.triggered.connect(win.viewBack)
+    win.viewBottomAction.triggered.connect(win.viewBottom)
+    win.setViewFitToWindowAction.triggered.connect(win.setViewFitToWindow)
+    win.viewFrontAction.triggered.connect(win.viewFront)
+    win.setViewHomeAction.triggered.connect(win.setViewHome)
+    win.setViewHomeToCurrentAction.triggered.connect(win.setViewHomeToCurrent)
+    win.viewLeftAction.triggered.connect(win.viewLeft)
+    win.viewRotateMinus90Action.triggered.connect(win.viewRotateMinus90)
+    win.viewNormalToAction.triggered.connect(win.viewNormalTo)
+    win.viewFlipViewVertAction.triggered.connect(win.viewFlipViewVert)
+    win.viewFlipViewHorzAction.triggered.connect(win.viewFlipViewHorz)
+    win.setViewOrthoAction.triggered.connect(win.setViewOrtho)
+    win.viewParallelToAction.triggered.connect(win.viewParallelTo)
+    win.setViewPerspecAction.triggered.connect(win.setViewPerspec)
+    win.viewRotatePlus90Action.triggered.connect(win.viewRotatePlus90)
+    win.setViewRecenterAction.triggered.connect(win.setViewRecenter)
+    win.viewRightAction.triggered.connect(win.viewRight)
+    win.viewTopAction.triggered.connect(win.viewTop)
+    win.simMoviePlayerAction.triggered.connect(win.simMoviePlayer)
+    win.simNanoHiveAction.triggered.connect(win.simNanoHive)
+    win.simPlotToolAction.triggered.connect(win.simPlot)
+    win.simSetupAction.triggered.connect(win.simSetup)
+    win.rosettaSetupAction.triggered.connect(win.rosettaSetup)
 
-    win.connect(win.buildCrystalAction,SIGNAL("triggered()"),
-                win.enterBuildCrystalCommand)
+    win.buildCrystalAction.triggered.connect(win.enterBuildCrystalCommand)
 
-    win.connect(win.setStereoViewAction,SIGNAL("triggered()"),win.stereoSettings)
+    win.setStereoViewAction.triggered.connect(win.stereoSettings)
 
-    win.connect(win.toolsDepositAtomAction,
-                SIGNAL("triggered()"),
-                win.toolsBuildAtoms)
+    win.toolsDepositAtomAction.triggered.connect(win.toolsBuildAtoms)
 
 
-    win.connect(win.toolsExtrudeAction,SIGNAL("triggered()"),win.toolsExtrude)
-    win.connect(win.toolsFuseChunksAction,SIGNAL("triggered()"),win.toolsFuseChunks)
+    win.toolsExtrudeAction.triggered.connect(win.toolsExtrude)
+    win.toolsFuseChunksAction.triggered.connect(win.toolsFuseChunks)
 
     #Move and Rotate Components mode
-    win.connect(win.toolsMoveMoleculeAction,SIGNAL("triggered()"),win.toolsMoveMolecule)
-    win.connect(win.rotateComponentsAction,SIGNAL("triggered()"),win.toolsRotateComponents)
+    win.toolsMoveMoleculeAction.triggered.connect(win.toolsMoveMolecule)
+    win.rotateComponentsAction.triggered.connect(win.toolsRotateComponents)
 
-    win.connect(win.toolsSelectMoleculesAction,SIGNAL("triggered()"),win.toolsSelectMolecules)
-    win.connect(win.zoomToAreaAction,SIGNAL("toggled(bool)"),win.zoomToArea)
-    win.connect(win.zoomInOutAction,SIGNAL("toggled(bool)"),win.zoomInOut)
-    win.connect(win.viewQuteMolAction,SIGNAL("triggered()"),win.viewQuteMol)
-    win.connect(win.viewRaytraceSceneAction,SIGNAL("triggered()"),win.viewRaytraceScene)
-    win.connect(win.insertPovraySceneAction,SIGNAL("triggered()"),win.insertPovrayScene)
-    win.connect(win.dispSurfaceAction,SIGNAL("triggered()"),win.dispSurface)
-    win.connect(win.dispCylinderAction,SIGNAL("triggered()"),win.dispCylinder)
-    win.connect(win.dispDnaCylinderAction,SIGNAL("triggered()"),win.dispDnaCylinder)
-    win.connect(win.simMinimizeEnergyAction,SIGNAL("triggered()"),win.simMinimizeEnergy)
-    win.connect(win.checkAtomTypesAction,SIGNAL("triggered()"),win.modifyCheckAtomTypes)
-    win.connect(win.fileImportOpenBabelAction,
-                SIGNAL("triggered()"),
-                win.fileOpenBabelImport)
-    win.connect(win.fileImportIOSAction,
-                SIGNAL("triggered()"),
-                win.fileIOSImport)
-    win.connect(win.fileExportOpenBabelAction,
-                SIGNAL("triggered()"),
-                win.fileOpenBabelExport)
-    win.connect(win.fileExportIOSAction,
-                SIGNAL("triggered()"),
-                win.fileIOSExport)
-    win.connect(win.viewIsometricAction,SIGNAL("triggered()"),win.viewIsometric)
-    win.connect(win.modifyMirrorAction,SIGNAL("triggered()"),win.modifyMirror)
-    win.connect(win.setViewZoomtoSelectionAction,SIGNAL("triggered()"),win.setViewZoomToSelection)
+    win.toolsSelectMoleculesAction.triggered.connect(win.toolsSelectMolecules)
+    win.zoomToAreaAction.toggled[bool].connect(win.zoomToArea)
+    win.zoomInOutAction.toggled[bool].connect(win.zoomInOut)
+    win.viewQuteMolAction.triggered.connect(win.viewQuteMol)
+    win.viewRaytraceSceneAction.triggered.connect(win.viewRaytraceScene)
+    win.insertPovraySceneAction.triggered.connect(win.insertPovrayScene)
+    win.dispSurfaceAction.triggered.connect(win.dispSurface)
+    win.dispCylinderAction.triggered.connect(win.dispCylinder)
+    win.dispDnaCylinderAction.triggered.connect(win.dispDnaCylinder)
+    win.simMinimizeEnergyAction.triggered.connect(win.simMinimizeEnergy)
+    win.checkAtomTypesAction.triggered.connect(win.modifyCheckAtomTypes)
+    win.fileImportOpenBabelAction.triggered.connect(win.fileOpenBabelImport)
+    win.fileImportIOSAction.triggered.connect(win.fileIOSImport)
+    win.fileExportOpenBabelAction.triggered.connect(win.fileOpenBabelExport)
+    win.fileExportIOSAction.triggered.connect(win.fileIOSExport)
+    win.viewIsometricAction.triggered.connect(win.viewIsometric)
+    win.modifyMirrorAction.triggered.connect(win.modifyMirror)
+    win.setViewZoomtoSelectionAction.triggered.connect(win.setViewZoomToSelection)
 
     # Atom Generator example for developers. Mark and Jeff. 2007-06-13
     #@ Jeff - add a link to the public wiki page when ready. Mark 2007-06-13.
-    win.connect(win.insertAtomAction,SIGNAL("triggered()"),win.insertAtom)
+    win.insertAtomAction.triggered.connect(win.insertAtom)
 
-    win.connect(win.buildProteinAction,SIGNAL("triggered()"),win.activateProteinTool)
+    win.buildProteinAction.triggered.connect(win.activateProteinTool)
 
-    QtCore.QObject.connect(win.fileExitAction,
-                           QtCore.SIGNAL("activated()"),
-                           win.close)
+    win.fileExitAction.activated.connect(win.close)

@@ -38,7 +38,7 @@ from OpenGL.GL import GL_PROJECTION
 
 from OpenGL.GLU import gluUnProject # piotr 080326
 
-from PyQt4.Qt import QFont, QFontMetrics, QString, QColor
+from PyQt5.QtGui import QFont, QFontMetrics, QColor
 from widgets.widget_helpers import RGBf_to_QColor
 
 from geometry.VQT import V
@@ -56,6 +56,12 @@ from utilities.prefs_constants import rulerOpacity_prefs_key
 
 # These must match the order items appear in the ruler "Position" combobox
 # in the preferences dialog.
+try:
+    QString = unicode
+except NameError:
+    # Python 3
+    QString = str
+
 _lower_left = 0
 _upper_left = 1
 _lower_right = 2

@@ -17,16 +17,16 @@ from PM.PM_Constants import PM_MINIMUM_WIDTH
 ##from PM.PM_Colors    import getPalette
 ##from PM.PM_Colors    import pmMessageBoxColor
 
-from PyQt4.Qt import Qt
-from PyQt4.Qt import QLabel
-from PyQt4.Qt import QSize
-from PyQt4.Qt import QSizePolicy
-from PyQt4.Qt import QTextCursor
-from PyQt4.Qt import QTextEdit
+from PyQt5.QtCore import Qt
+from PyQt5.QtWidgets import QLabel
+from PyQt5.QtCore import QSize
+from PyQt5.QtWidgets import QSizePolicy
+from PyQt5.QtGui import QTextCursor
+from PyQt5.QtWidgets import QTextEdit
 ##from PyQt4.Qt import QPalette
-from PyQt4.Qt import QWidget
-from PyQt4.Qt import QTextCharFormat
-from PyQt4.Qt import SIGNAL
+from PyQt5.QtWidgets import QWidget
+from PyQt5.QtGui import QTextCharFormat
+from PyQt5.QtGui import pyqtSignal
 
 class PM_TextEdit( QTextEdit ):
     """
@@ -44,6 +44,7 @@ class PM_TextEdit( QTextEdit ):
     @cvar labelWidget: The Qt label widget of this textedit.
     @type labelWidget: U{B{QLabel}<http://doc.trolltech.com/4/qlabel.html>}
     """
+    editingFinished = pyqtSignal()
 
     defaultText  = ""
     setAsDefault = True
@@ -150,7 +151,7 @@ class PM_TextEdit( QTextEdit ):
         #If user hits 'Enter' key (return key), don't do anything.
         if event.key() == Qt.Key_Return:
             #Urmi 20080724: emit a signal to indicate end of processing
-            self.emit(SIGNAL("editingFinished()"))
+            self.editingFinished.emit()
             #there is no obvious way to allow only a single line in a
             #QTextEdit (we can use some methods that restrict the columnt width
             #, line wrapping etc but this is untested when the line contains

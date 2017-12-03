@@ -12,7 +12,8 @@ History:
 mark 060602 - Created for NFR: "Insert > POV-Ray Scene".
 """
 
-from PyQt4.Qt import SIGNAL, QDialog, QWhatsThis, QDialog
+from PyQt5.QtGui import QDialog, QWhatsThis, QDialog
+from PyQt5.QtWidgets import *
 from commands.PovraySceneProperties.PovrayScenePropDialog import Ui_PovrayScenePropDialog
 import foundation.env as env, os
 from utilities.Log import redmsg, greenmsg
@@ -29,18 +30,18 @@ class PovraySceneProp(QDialog, SponsorableMixin, GroupButtonMixin, Ui_PovrayScen
     def __init__(self, win):
         QDialog.__init__(self, win)  # win is parent.
         self.setupUi(self)
-        self.connect(self.cancel_btn,SIGNAL("clicked()"),self.cancel_btn_clicked)
-        self.connect(self.done_btn,SIGNAL("clicked()"),self.ok_btn_clicked)
-        self.connect(self.height_spinbox,SIGNAL("valueChanged(int)"),self.change_height)
-        self.connect(self.ok_btn,SIGNAL("clicked()"),self.ok_btn_clicked)
-        self.connect(self.preview_btn,SIGNAL("clicked()"),self.preview_btn_clicked)
-        self.connect(self.restore_btn,SIGNAL("clicked()"),self.restore_defaults_btn_clicked)
-        self.connect(self.sponsor_btn,SIGNAL("clicked()"),self.open_sponsor_homepage)
-        self.connect(self.whatsthis_btn,SIGNAL("clicked()"),self.whatsthis_btn_clicked)
-        self.connect(self.width_spinbox,SIGNAL("valueChanged(int)"),self.change_width)
-        self.connect(self.abort_btn,SIGNAL("clicked()"),self.cancel_btn_clicked)
-        self.connect(self.grpbtn_1,SIGNAL("clicked()"),self.toggle_grpbtn_1)
-        self.connect(self.grpbtn_2,SIGNAL("clicked()"),self.toggle_grpbtn_2)
+        self.cancel_btn.clicked.connect(self.cancel_btn_clicked)
+        self.done_btn.clicked.connect(self.ok_btn_clicked)
+        self.height_spinbox.valueChanged[int].connect(self.change_height)
+        self.ok_btn.clicked.connect(self.ok_btn_clicked)
+        self.preview_btn.clicked.connect(self.preview_btn_clicked)
+        self.restore_btn.clicked.connect(self.restore_defaults_btn_clicked)
+        self.sponsor_btn.clicked.connect(self.open_sponsor_homepage)
+        self.whatsthis_btn.clicked.connect(self.whatsthis_btn_clicked)
+        self.width_spinbox.valueChanged[int].connect(self.change_width)
+        self.abort_btn.clicked.connect(self.cancel_btn_clicked)
+        self.grpbtn_1.clicked.connect(self.toggle_grpbtn_1)
+        self.grpbtn_2.clicked.connect(self.toggle_grpbtn_2)
         self.win = win
         self.glpane = self.win.glpane
         self.node = None
@@ -257,9 +258,9 @@ class PovraySceneProp(QDialog, SponsorableMixin, GroupButtonMixin, Ui_PovrayScen
         Updates height when width changes
         """
         self.height = int (self.width / self.aspect_ratio)
-        self.disconnect(self.height_spinbox,SIGNAL("valueChanged(int)"),self.change_height)
+        self.height_spinbox.valueChanged[int].disconnect(self.change_height)
         self.height_spinbox.setValue(self.height)
-        self.connect(self.height_spinbox,SIGNAL("valueChanged(int)"),self.change_height)
+        self.height_spinbox.valueChanged[int].connect(self.change_height)
 
     def change_height(self, height):
         """
@@ -273,9 +274,9 @@ class PovraySceneProp(QDialog, SponsorableMixin, GroupButtonMixin, Ui_PovrayScen
         Updates width when height changes
         """
         self.width = int (self.height * self.aspect_ratio)
-        self.disconnect(self.width_spinbox,SIGNAL("valueChanged(int)"),self.change_width)
+        self.width_spinbox.valueChanged[int].disconnect(self.change_width)
         self.width_spinbox.setValue(self.width)
-        self.connect(self.width_spinbox,SIGNAL("valueChanged(int)"),self.change_width)
+        self.width_spinbox.valueChanged[int].connect(self.change_width)
 
 # Property Manager groupbox button slots
 

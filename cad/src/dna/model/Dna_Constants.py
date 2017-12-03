@@ -27,7 +27,12 @@ from utilities.constants import darkorange, violet, copper, olive, gray
 from utilities.prefs_constants import adnaBasesPerTurn_prefs_key, adnaRise_prefs_key
 from utilities.prefs_constants import bdnaBasesPerTurn_prefs_key, bdnaRise_prefs_key
 from utilities.prefs_constants import zdnaBasesPerTurn_prefs_key, zdnaRise_prefs_key
-from PyQt4.Qt import QString
+
+try:
+    QString = unicode
+except NameError:
+    # Python 3
+    QString = str
 
 basesDict = \
           { 'A':{'Name':'Adenine',  'Complement':'T', 'Color':'darkorange' },

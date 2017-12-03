@@ -6,8 +6,9 @@ $Id$
 """
 
 import sys
+from PyQt5.QtWidgets import *
 
-from PyQt4.Qt import QDialog, QListWidgetItem, SIGNAL
+from PyQt5.QtGui import QDialog, QListWidgetItem
 from commands.GroupProperties.GroupPropDialog import Ui_GroupPropDialog
 from geometry.VQT import V
 
@@ -93,8 +94,8 @@ class GroupProp(QDialog, Ui_GroupPropDialog):
 
         QDialog.__init__(self)
         self.setupUi(self)
-        self.connect(self.okPushButton,SIGNAL("clicked()"),self.accept)
-        self.connect(self.cancelPushButton,SIGNAL("clicked()"),self.reject)
+        self.okPushButton.clicked.connect(self.accept)
+        self.cancelPushButton.clicked.connect(self.reject)
         self.group = group
 
         self.nameLineEdit.setText(group.name)

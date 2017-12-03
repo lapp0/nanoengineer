@@ -21,7 +21,7 @@ pages as well.
 - Replace current text string name with "_text" (like "Open File" example)
 """
 
-from PyQt4.Qt import QWhatsThis
+from PyQt5.QtWidgets import QWhatsThis
 
 def createWhatsThisTextForMainWindowWidgets(win):
     """

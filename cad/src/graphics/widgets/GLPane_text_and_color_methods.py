@@ -37,11 +37,11 @@ from OpenGL.GL import glPopMatrix
 from OpenGL.GLU import gluUnProject, gluProject
 
 
-from PyQt4.Qt import QFontMetrics
-from PyQt4.Qt import QFont, QString
-from PyQt4.Qt import QPalette
-from PyQt4.Qt import QColor
-from PyQt4.Qt import Qt
+from PyQt5.QtGui import QFontMetrics
+from PyQt5.QtGui import QFont
+from PyQt5.QtGui import QPalette
+from PyQt5.QtGui import QColor
+from PyQt5.QtCore import Qt
 
 
 from utilities.debug import print_compact_stack
@@ -68,6 +68,12 @@ from graphics.drawing.drawers import drawFullWindow
 from widgets.widget_helpers import RGBf_to_QColor
 
 # ==
+
+try:
+    QString = unicode
+except NameError:
+    # Python 3
+    QString = str
 
 assert bgSOLID == 0 # some code in GLPane depends on this
 

@@ -17,9 +17,7 @@ from utilities.debug import print_compact_stack
 from utilities.Comparison import same_vals
 from utilities.Log import redmsg
 
-from PyQt4.Qt import SIGNAL
-from PyQt4.Qt import QString
-from PyQt4.Qt import Qt
+from PyQt5.QtCore import Qt
 
 from command_support.DnaOrCnt_PropertyManager import DnaOrCnt_PropertyManager
 

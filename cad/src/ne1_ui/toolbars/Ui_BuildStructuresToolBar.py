@@ -3,7 +3,7 @@
 $Id$
 """
 
-from PyQt4 import QtGui
+from PyQt5 import QtGui, QtWidgets
 from foundation.wiki_help import QToolBar_WikiHelp
 from utilities.debug_prefs import debug_pref, Choice_boolean_True
 
@@ -43,10 +43,10 @@ def retranslateUi(win):
     popup menu under "View > Toolbars".
     """
     win.buildStructuresToolBar.setWindowTitle(
-        QtGui.QApplication.translate(
+        QtCore.QCoreApplication.translate(
             "MainWindow", "Build Structures",
-            None, QtGui.QApplication.UnicodeUTF8))
+            None))
     win.buildStructuresToolBar.setToolTip(
-        QtGui.QApplication.translate(
+        QtCore.QCoreApplication.translate(
             "MainWindow", "Build Structures Toolbar",
-            None, QtGui.QApplication.UnicodeUTF8))
+            None))

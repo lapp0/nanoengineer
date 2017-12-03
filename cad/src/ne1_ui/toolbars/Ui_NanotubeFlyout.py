@@ -16,8 +16,7 @@ History:
 """
 
 
-from PyQt4 import QtGui
-from PyQt4.Qt import SIGNAL
+from PyQt5 import QtGui, QtWidgets
 from utilities.icon_utilities import geticon
 
 from ne1_ui.NE1_QWidgetAction import NE1_QWidgetAction
@@ -61,7 +60,7 @@ class NanotubeFlyout(Ui_AbstractFlyout):
         #Action List for  subcontrol Area buttons.
         subControlAreaActionList = []
         subControlAreaActionList.append(self.exitModeAction)
-        separator = QtGui.QAction(self.parentWidget)
+        separator = QtWidgets.QAction(self.parentWidget)
         separator.setSeparator(True)
         subControlAreaActionList.append(separator)
         subControlAreaActionList.append(self.insertNanotubeAction)
@@ -83,7 +82,7 @@ class NanotubeFlyout(Ui_AbstractFlyout):
 
         _superclass._createActions(self, parentWidget)
 
-        self.subControlActionGroup = QtGui.QActionGroup(self.parentWidget)
+        self.subControlActionGroup = QtWidgets.QActionGroup(self.parentWidget)
         self.subControlActionGroup.setExclusive(False)
 
         self.insertNanotubeAction = \

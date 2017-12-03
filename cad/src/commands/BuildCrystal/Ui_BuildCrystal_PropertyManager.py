@@ -19,8 +19,9 @@ ninad 2007-09-10: Rewrote this class to make it use PM module classes.
 Ninad 2008-08-23: Renamed Ui_CookiePropertyManager to
                   Ui_BuildCrystal_PropertyManager
 """
-from PyQt4.Qt import Qt
-from PyQt4.Qt import QSize
+from PyQt5.QtCore import Qt
+from PyQt5.QtWidgets import *
+from PyQt5.QtCore import QSize
 
 
 from PM.PM_GroupBox      import PM_GroupBox

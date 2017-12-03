@@ -12,12 +12,12 @@ ninad 2007-08-14: Created.
 """
 
 
-from PyQt4.Qt import QSizePolicy
-from PyQt4.Qt import QSpacerItem
-from PyQt4.Qt import QSize
-from PyQt4.Qt import QLabel
-from PyQt4.Qt import QToolButton
-from PyQt4.Qt import QPushButton
+from PyQt5.QtWidgets import QSizePolicy
+from PyQt5.QtWidgets import QSpacerItem
+from PyQt5.QtCore import QSize
+from PyQt5.QtWidgets import QLabel
+from PyQt5.QtWidgets import QToolButton
+from PyQt5.QtWidgets import QPushButton
 
 from utilities.debug import print_compact_traceback
 from utilities.icon_utilities import geticon

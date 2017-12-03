@@ -20,6 +20,8 @@ test_C3H6.mmp for testing.
 
 __author__ = "Will"
 
+QStringList = list
+
 try:
     import Numeric
 except ImportError:
@@ -666,8 +668,8 @@ class SandboxTest(TimedTest):
             if DEBUG > 1:
                 print("STDERR", r)
             stderr.write(str(simProcess.readStderr()))
-        qt.QObject.connect(simProcess, qt.SIGNAL("readyReadStdout()"), blabout)
-        qt.QObject.connect(simProcess, qt.SIGNAL("readyReadStderr()"), blaberr)
+        simProcess.readyReadStdout.connect(blabout)
+        simProcess.readyReadStderr.connect(blaberr)
         args = qt.QStringList()
         for arg in cmdline:
             args.append(arg)

@@ -18,7 +18,7 @@ import os, string, sys
 from xml.dom.minidom import parse
 from xml.parsers.expat import ExpatError
 from dna.model.DnaStrand import DnaStrand
-from PyQt4.Qt import QMessageBox
+from PyQt5.QtWidgets import QMessageBox
 
 
 

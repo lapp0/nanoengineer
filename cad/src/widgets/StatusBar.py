@@ -30,8 +30,10 @@ Majorly rewritten/refactored by Eric M circa 12/2007 [bruce comment 071228]
 """
 
 import os, time
-from PyQt4.Qt import QProgressBar, QFrame, QToolButton, QIcon, QLabel, SIGNAL
-from PyQt4.Qt import QMessageBox, QStatusBar, QWidget, QFrame, QHBoxLayout, QToolBar
+from PyQt5.QtWidgets import *
+from PyQt5.QtGui import QProgressBar, QFrame, QToolButton, QIcon, QLabel
+from PyQt5.QtGui import (QMessageBox, QStatusBar, QWidget, QFrame, QHBoxLayout,
+                         QToolBar)
 from utilities import debug_flags
 from platform_dependent.PlatformDependent import hhmmss_str #bruce 060106 moved that function there
 import foundation.env as env
@@ -61,7 +63,7 @@ class StatusBar(QStatusBar):
             geticon("ui/actions/Simulation/Stopsign.png"))
         self.simAbortButton.setMaximumWidth(32)
         self.addPermanentWidget(self.simAbortButton)
-        self.connect(self.simAbortButton,SIGNAL("clicked()"),self.simAbort)
+        self.simAbortButton.clicked.connect(self.simAbort)
         self.simAbortButton.hide()
 
         self.dispbarLabel = QLabel(win)

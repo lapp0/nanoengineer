@@ -22,7 +22,6 @@ ninad 2007-08-29: Created to use PM module classes, thus deprecating old
 
 import foundation.env as env
 
-from PyQt4.Qt import SIGNAL
 from commands.BuildAtoms.Ui_BuildAtomsPropertyManager import Ui_BuildAtomsPropertyManager
 from geometry.VQT import V
 from utilities.Comparison import same_vals

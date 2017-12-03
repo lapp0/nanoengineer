@@ -16,7 +16,8 @@ accessible from the Model Tree as a node.
 080717 bruce, revise for coding standards
 """
 
-from PyQt4.Qt import QDialog, QTextEdit, SIGNAL
+from PyQt5.QtGui import QDialog, QTextEdit
+from PyQt5.QtWidgets import *
 from model.Comment import Comment
 from commands.CommentProperties.CommentPropDialog import Ui_CommentPropDialog
 import time

@@ -16,8 +16,8 @@ mark 2007-07-22: Created initially for PM_Dialog as part of the code cleanup
 import os
 import sys
 
-from PyQt4.Qt import QColor
-from PyQt4.Qt import QPalette
+from PyQt5.QtGui import QColor
+from PyQt5.QtGui import QPalette
 
 from utilities.debug_prefs import debug_pref, Choice
 

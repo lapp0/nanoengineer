@@ -9,8 +9,8 @@ Command Toolbar).
 @copyright: 2004-2008 Nanorex, Inc.  See LICENSE file for details.
 """
 
-from PyQt4 import QtGui
-from PyQt4.Qt import Qt, QToolBar, SIGNAL
+from PyQt5 import QtGui, QtWidgets
+from PyQt5.QtGui import Qt, QToolBar
 from utilities.icon_utilities import getpixmap
 from utilities.debug import print_compact_stack
 
@@ -90,7 +90,7 @@ class NE1_QToolBar(QToolBar):
         """
         Reimplements the addSeparator() method of QToolBar.
         """
-        _toolbarSeparator = QtGui.QLabel(self)
+        _toolbarSeparator = QtWidgets.QLabel(self)
         if _DEBUG:
             _name = "%s-Separator%d" % (self.objectName(), self._separatorNumber)
             _toolbarSeparator.setObjectName(_name)

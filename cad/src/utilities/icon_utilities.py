@@ -25,7 +25,7 @@ as io for now. (Another possibility would be platform.) [bruce 071214]
 
 import os, sys
 from utilities import debug_flags
-from PyQt4 import QtGui
+from PyQt5 import QtGui
 import utilities.Initialize as Initialize
 import utilities.EndUser as EndUser
 from utilities.debug import print_compact_stack

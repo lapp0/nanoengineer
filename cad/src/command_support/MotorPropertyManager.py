@@ -7,7 +7,7 @@ MotorPropertyManager.py
 @copyright: 2004-2008 Nanorex, Inc.  See LICENSE file for details.
 
 """
-from PyQt4.Qt import QColorDialog
+from PyQt5.QtWidgets import QColorDialog
 
 from PM.PM_GroupBox      import PM_GroupBox
 

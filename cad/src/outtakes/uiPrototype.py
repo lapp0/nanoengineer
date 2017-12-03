@@ -52,22 +52,21 @@ program has, starting with \"File\" and \"Edit\"...
 in many situations, though in practice some will be grayed out, depending
 on which workspace is active.</p>"""
 
-from PyQt4 import QtCore, QtGui
-from PyQt4.Qt import QWidget
-from PyQt4.Qt import QGLWidget
-from PyQt4.Qt import QDialog
-from PyQt4.Qt import QMainWindow
-from PyQt4.Qt import QSizePolicy
-from PyQt4.Qt import QIcon
-from PyQt4.Qt import QGLFormat
-from PyQt4.Qt import QVBoxLayout
-from PyQt4.Qt import QTextEdit
-from PyQt4.Qt import QTextOption
-from PyQt4.Qt import QPushButton
-from PyQt4.Qt import SIGNAL
-from PyQt4.Qt import QTimer
-from PyQt4.Qt import QHBoxLayout
-from PyQt4.Qt import QGridLayout
+from PyQt5 import QtCore, QtGui, QtWidgets
+from PyQt5.QtWidgets import QWidget
+from PyQt5.QtOpenGL import QGLWidget
+from PyQt5.QtWidgets import QDialog
+from PyQt5.QtWidgets import QMainWindow
+from PyQt5.QtWidgets import QSizePolicy
+from PyQt5.QtGui import QIcon
+from PyQt5.QtOpenGL import QGLFormat
+from PyQt5.QtWidgets import QVBoxLayout
+from PyQt5.QtWidgets import QTextEdit
+from PyQt5.QtGui import QTextOption
+from PyQt5.QtWidgets import QPushButton
+from PyQt5.QtCore import QTimer
+from PyQt5.QtWidgets import QHBoxLayout
+from PyQt5.QtWidgets import QGridLayout
 
 import modelTree.modelTreeGui as modelTreeGui
 
@@ -85,8 +84,8 @@ class PartWindow(QWidget):
         self.parent = parent
         self.setWindowTitle("My Part Window")
         self.setSizePolicy(QSizePolicy.MinimumExpanding, QSizePolicy.MinimumExpanding)
-        layout = QtGui.QHBoxLayout(self)
-        layout.setMargin(0)
+        layout = QtWidgets.QHBoxLayout(self)
+        layout.setContentsMargins(0, 0, 0, 0)
         layout.setSpacing(0)
 
         #########################
@@ -94,23 +93,23 @@ class PartWindow(QWidget):
         holder = QWidget()
         holder.setMaximumWidth(200)
         sublayout = QVBoxLayout(holder)
-        sublayout.setMargin(0)
+        sublayout.setContentsMargins(0, 0, 0, 0)
         sublayout.setSpacing(0)
         layout.addWidget(holder)
 
         ###
 
-        self.featureManager = QtGui.QTabWidget()
+        self.featureManager = QtWidgets.QTabWidget()
         self.featureManager.setCurrentIndex(0)
         self.featureManager.setMaximumWidth(200)
 
-        self.modelTreeTab = QtGui.QWidget()
+        self.modelTreeTab = QtWidgets.QWidget()
         self.featureManager.addTab(self.modelTreeTab, "Model Tree")
-        modelTreeTabLayout = QtGui.QVBoxLayout(self.modelTreeTab)
-        modelTreeTabLayout.setMargin(0)
+        modelTreeTabLayout = QtWidgets.QVBoxLayout(self.modelTreeTab)
+        modelTreeTabLayout.setContentsMargins(0, 0, 0, 0)
         modelTreeTabLayout.setSpacing(0)
 
-        self.propertyManagerTab = QtGui.QWidget()
+        self.propertyManagerTab = QtWidgets.QWidget()
         self.featureManager.addTab(self.propertyManagerTab, "Property Manager")
 
         sublayout.addWidget(self.featureManager)
@@ -183,7 +182,7 @@ class AboutWindow(QDialog):
         self.setObjectName("About NanoEngineer-1")
         TextEditLayout = QVBoxLayout(self)
         TextEditLayout.setSpacing(0)
-        TextEditLayout.setMargin(0)
+        TextEditLayout.setContentsMargins(0, 0, 0, 0)
         self.text_edit = QTextEdit(self)
         self.text_edit.setHtml(html)
         self.text_edit.setReadOnly(True)
@@ -191,12 +190,12 @@ class AboutWindow(QDialog):
         TextEditLayout.addWidget(self.text_edit)
         self.quit_button = QPushButton("OK")
         TextEditLayout.addWidget(self.quit_button)
-        self.connect(self.quit_button, SIGNAL("clicked()"), self.close)
+        self.quit_button.clicked.connect(self.close)
         if timeout is not None:
             self.qt = QTimer()
             self.qt.setInterval(1000*timeout)
             self.qt.start()
-            self.connect(self.qt, SIGNAL("timeout()"), self.close)
+            self.qt.timeout.connect(self.close)
         self.show()
         self.exec_()
 
@@ -209,7 +208,7 @@ class MainWindow(QMainWindow):
         self.setMinimumWidth(MAIN_WINDOW_SIZE[0])
         self.setMinimumHeight(MAIN_WINDOW_SIZE[1])
 
-        self.statusbar = QtGui.QStatusBar(self)
+        self.statusbar = QtWidgets.QStatusBar(self)
         self.statusbar.showMessage("Status message")
         self.setStatusBar(self.statusbar)
 
@@ -218,38 +217,38 @@ class MainWindow(QMainWindow):
         self.menubar = self.menuBar()
         # Any menu action makes the status bar message disappear
 
-        fileMenu = QtGui.QMenu(self.menubar)
+        fileMenu = QtWidgets.QMenu(self.menubar)
         fileMenu.setTitle("File")
         self.menubar.addAction(fileMenu.menuAction())
 
-        newAction = QtGui.QAction("New", self)
+        newAction = QtWidgets.QAction("New", self)
         newAction.setIcon(QtGui.QtIcon(icons + '/GroupPropDialog_image0.png'))
         fileMenu.addAction(newAction)
-        openAction = QtGui.QAction("Open", self)
+        openAction = QtWidgets.QAction("Open", self)
         openAction.setIcon(QtGui.QtIcon(icons + "/MainWindowUI_image1"))
         fileMenu.addAction(openAction)
-        saveAction = QtGui.QAction("Save", self)
+        saveAction = QtWidgets.QAction("Save", self)
         saveAction.setIcon(QtGui.QtIcon(icons + "/MainWindowUI_image2"))
         fileMenu.addAction(saveAction)
 
-        self.connect(newAction,SIGNAL("activated()"),self.fileNew)
-        self.connect(openAction,SIGNAL("activated()"),self.fileOpen)
-        self.connect(saveAction,SIGNAL("activated()"),self.fileSave)
+        newAction.activated.connect(self.fileNew)
+        openAction.activated.connect(self.fileOpen)
+        saveAction.activated.connect(self.fileSave)
 
         for otherMenuName in ('Edit', 'View', 'Display', 'Select', 'Modify', 'NanoHive-1'):
-            otherMenu = QtGui.QMenu(self.menubar)
+            otherMenu = QtWidgets.QMenu(self.menubar)
             otherMenu.setTitle(otherMenuName)
             self.menubar.addAction(otherMenu.menuAction())
 
-        helpMenu = QtGui.QMenu(self.menubar)
+        helpMenu = QtWidgets.QMenu(self.menubar)
         helpMenu.setTitle("Help")
         self.menubar.addAction(helpMenu.menuAction())
 
-        aboutAction = QtGui.QAction("About", self)
+        aboutAction = QtWidgets.QAction("About", self)
         aboutAction.setIcon(QtGui.QtIcon(icons + '/MainWindowUI_image0.png'))
         helpMenu.addAction(aboutAction)
 
-        self.connect(aboutAction,SIGNAL("activated()"),self.helpAbout)
+        aboutAction.activated.connect(self.helpAbout)
 
         ##############################################
 
@@ -258,13 +257,13 @@ class MainWindow(QMainWindow):
         centralwidget = QWidget()
         self.setCentralWidget(centralwidget)
         layout = QVBoxLayout(centralwidget)
-        layout.setMargin(0)
+        layout.setContentsMargins(0, 0, 0, 0)
         layout.setSpacing(0)
         middlewidget = QWidget()
 
         self.bigButtons = QWidget()
         bblo = QHBoxLayout(self.bigButtons)
-        bblo.setMargin(0)
+        bblo.setContentsMargins(0, 0, 0, 0)
         bblo.setSpacing(0)
         self.bigButtons.setMinimumHeight(50)
         self.bigButtons.setSizePolicy(QSizePolicy.Fixed, QSizePolicy.Fixed)
@@ -281,11 +280,11 @@ class MainWindow(QMainWindow):
         self.littleIcons.setMinimumHeight(30)
         self.littleIcons.setMaximumHeight(30)
         lilo = QHBoxLayout(self.littleIcons)
-        lilo.setMargin(0)
+        lilo.setContentsMargins(0, 0, 0, 0)
         lilo.setSpacing(0)
         pb = QPushButton(self.littleIcons)
         pb.setIcon(QIcon(icons + '/GroupPropDialog_image0.png'))
-        self.connect(pb,SIGNAL("clicked()"),self.fileNew)
+        pb.clicked.connect(self.fileNew)
         lilo.addWidget(pb)
         for x in "1 2 4 5 6 7 8 18 42 10 43 150 93 94 97 137".split():
             pb = QPushButton(self.littleIcons)
@@ -296,7 +295,7 @@ class MainWindow(QMainWindow):
         layout.addWidget(middlewidget)
 
         self.layout = QGridLayout(middlewidget)
-        self.layout.setMargin(0)
+        self.layout.setContentsMargins(0, 0, 0, 0)
         self.layout.setSpacing(2)
         self.gridPosition = GridPosition()
         self.numParts = 0
@@ -332,7 +331,7 @@ class MainWindow(QMainWindow):
 
 if __name__ == "__main__":
     import sys
-    app = QtGui.QApplication(sys.argv)
+    app = QtWidgets.QApplication(sys.argv)
     mainWin = MainWindow()
     mainWin.show()
 

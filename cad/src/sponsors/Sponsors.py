@@ -42,15 +42,14 @@ import urllib.request, urllib.parse, urllib.error
 
 from xml.dom.minidom import parseString
 
-from PyQt4.Qt import QDialog
-from PyQt4.Qt import QImage
-from PyQt4.Qt import QPixmap
-from PyQt4.Qt import QSize
-from PyQt4.Qt import QIcon
-from PyQt4.Qt import QGridLayout
-from PyQt4.Qt import QTextBrowser
-from PyQt4.Qt import QPushButton
-from PyQt4.Qt import SIGNAL
+from PyQt5.QtWidgets import QDialog
+from PyQt5.QtGui import QImage
+from PyQt5.QtGui import QPixmap
+from PyQt5.QtCore import QSize
+from PyQt5.QtGui import QIcon
+from PyQt5.QtWidgets import QGridLayout
+from PyQt5.QtWidgets import QTextBrowser
+from PyQt5.QtWidgets import QPushButton
 
 import foundation.env as env
 from utilities import debug_flags
@@ -263,7 +262,7 @@ class PermissionDialog(QDialog, threading.Thread):
         self.setModal(True) #This fixes bug 2296. Mitigates bug 2297
         layout = QGridLayout()
         self.setLayout(layout)
-        layout.setMargin(0)
+        layout.setContentsMargins(0, 0, 0, 0)
         layout.setSpacing(0)
         layout.setObjectName("PermissionLayout")
         self.text_browser = QTextBrowser(self)
@@ -289,10 +288,10 @@ class PermissionDialog(QDialog, threading.Thread):
         layout.addWidget(self.accept_once_button,1,1)
         layout.addWidget(self.decline_once_button,1,2)
         layout.addWidget(self.decline_always_button,1,3)
-        self.connect(self.accept_button,SIGNAL("clicked()"),self.acceptAlways)
-        self.connect(self.accept_once_button,SIGNAL("clicked()"),self.acceptJustOnce)
-        self.connect(self.decline_once_button,SIGNAL("clicked()"),self.declineJustOnce)
-        self.connect(self.decline_always_button,SIGNAL("clicked()"),self.declineAlways)
+        self.accept_button.clicked.connect(self.acceptAlways)
+        self.accept_once_button.clicked.connect(self.acceptJustOnce)
+        self.decline_once_button.clicked.connect(self.declineJustOnce)
+        self.decline_always_button.clicked.connect(self.declineAlways)
 
     def acceptAlways(self):
         env.prefs[sponsor_download_permission_prefs_key] = True

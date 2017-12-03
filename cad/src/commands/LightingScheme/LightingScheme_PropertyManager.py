@@ -11,13 +11,13 @@ LightingScheme_PropertyManager.py
 
 """
 import os, time, fnmatch
+from PyQt5.QtWidgets import *
 import foundation.env as env
 
 from utilities.prefs_constants import getDefaultWorkingDirectory
 from utilities.Log import greenmsg
 
-from PyQt4.Qt import SIGNAL
-from PyQt4.Qt import QFileDialog, QString, QMessageBox
+from PyQt5.QtGui import QFileDialog, QMessageBox
 from PM.PM_GroupBox import PM_GroupBox
 from PM.PM_ComboBox import PM_ComboBox
 from PM.PM_CheckBox import PM_CheckBox
@@ -40,6 +40,12 @@ from utilities.prefs_constants import light3Color_prefs_key
 from utilities.prefs_constants import glpane_lights_prefs_key
 import foundation.preferences as preferences
 
+
+try:
+    QString = unicode
+except NameError:
+    # Python 3
+    QString = str
 
 lightingSchemePrefsList = \
                      [light1Color_prefs_key,
@@ -450,9 +456,9 @@ class LightingScheme_PropertyManager(Command_PropertyManager):
 
         # These sliders generate signals whenever their 'setValue()' slot is called (below).
         # This creates problems (bugs) for us, so we disconnect them temporarily.
-        self.disconnect(self.ambientDoubleSpinBox, SIGNAL("valueChanged(double)"), self.change_lighting)
-        self.disconnect(self.diffuseDoubleSpinBox, SIGNAL("valueChanged(double)"), self.change_lighting)
-        self.disconnect(self.specularDoubleSpinBox, SIGNAL("valueChanged(double)"), self.change_lighting)
+        self.ambientDoubleSpinBox.valueChanged[double].disconnect(self.change_lighting)
+        self.diffuseDoubleSpinBox.valueChanged[double].disconnect(self.change_lighting)
+        self.specularDoubleSpinBox.valueChanged[double].disconnect(self.change_lighting)
 
         # self.lights[light_num][0] contains 'color' attribute.
         # We already have it (self.light_color) from the prefs key (above).
@@ -474,9 +480,9 @@ class LightingScheme_PropertyManager(Command_PropertyManager):
         self.enableLightCheckBox.setChecked(self.lights[light_num][7])
 
         # Reconnect the slots to the light sliders.
-        self.connect(self.ambientDoubleSpinBox, SIGNAL("valueChanged(double)"), self.change_lighting)
-        self.connect(self.diffuseDoubleSpinBox, SIGNAL("valueChanged(double)"), self.change_lighting)
-        self.connect(self.specularDoubleSpinBox, SIGNAL("valueChanged(double)"), self.change_lighting)
+        self.ambientDoubleSpinBox.valueChanged[double].connect(self.change_lighting)
+        self.diffuseDoubleSpinBox.valueChanged[double].connect(self.change_lighting)
+        self.specularDoubleSpinBox.valueChanged[double].connect(self.change_lighting)
 
         self.update_light_combobox_items()
         self.save_lighting()
@@ -1004,7 +1010,7 @@ class LightingScheme_PropertyManager(Command_PropertyManager):
             favfilepath, #where to save
             formats, # file format options
             QString("Favorite (*.txt)") # selectedFilter
-            )
+            )[0]
         if not fn:
             env.history.message(cmd + "Cancelled")
 
@@ -1030,7 +1036,7 @@ class LightingScheme_PropertyManager(Command_PropertyManager):
         fname = QFileDialog.getOpenFileName(self,
                                          "Choose a file to load",
                                          directory,
-                                         formats)
+                                         formats)[0]
 
         if not fname:
             env.history.message("User cancelled loading file.")

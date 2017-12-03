@@ -12,11 +12,17 @@ new Qt4.3.2 BUG 2916 in the QToolbar extension popup indicator.
 TODO:
 """
 
-from PyQt4.Qt import QWidgetAction
+from PyQt5.QtWidgets import QWidgetAction
 
-from PyQt4.Qt import QToolButton
-from PyQt4.Qt import Qt
+from PyQt5.QtWidgets import QToolButton
+from PyQt5.QtCore import Qt
 
+
+try:
+    QString = unicode
+except NameError:
+    # Python 3
+    QString = str
 
 def truncateText(text, length = 12, truncateSymbol = '...'):
     """

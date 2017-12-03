@@ -1,3 +1,5 @@
+# TODO: most of this file is BS and should be deleted
+
 # Copyright 2005-2009 Nanorex, Inc.  See LICENSE file for details.
 """
 env.py - for global variables and functions treated as "part of the
@@ -120,6 +122,7 @@ def debug(): #bruce 060222
     or synchronize changes to two flags.
     """
     from utilities import debug_flags # don't do this at toplevel in this
+    # from PyQt5.QtWidgets import * 
         # module, in case we don't want it imported so early
         # (review: can we move it to toplevel now?)
     return debug_flags.atom_debug
@@ -241,10 +244,10 @@ def call_qApp_processEvents(*args): #bruce 050908
     No other code should directly call qApp.processEvents --
     always call it via this function.
     """
-    from PyQt4.Qt import qApp #k ??
+    from PyQt5.QtGui import qApp #k ??
     mc = begin_recursive_event_processing()
     try:
-        res = qApp.processEvents(*args)
+        res = QApplication.processEvents(*args)
         # Qt doc says: Processes pending events, for 3 seconds or until there
         # are no more events to process, whichever is shorter.
         # (Or it can take one arg, int maxtime (in milliseconds),

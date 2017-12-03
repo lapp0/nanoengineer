@@ -17,6 +17,7 @@ by bruce 070704.
 """
 
 import sys
+from PyQt5.QtWidgets import *
 import time
 import os
 
@@ -124,7 +125,7 @@ def startup_script( main_globals):
     startup_before_most_imports.before_most_imports( main_globals )
 
 
-    from PyQt4.Qt import QApplication, QSplashScreen
+    from PyQt5.QtWidgets import QApplication, QSplashScreen
 
 
     # "Do things that should be done before creating the application object."
@@ -172,8 +173,7 @@ def startup_script( main_globals):
 
     # connect the lastWindowClosed signal
 
-    from PyQt4.Qt import SIGNAL
-    app.connect(app, SIGNAL("lastWindowClosed ()"), app.quit)
+    app.lastWindowClosed .connect(app.quit)
 
 
     # NOTE: At this point, it is ok to do arbitrary imports as needed,
@@ -393,13 +393,13 @@ def startup_script( main_globals):
         # but with or without it, NE1 is about 4x slower in Wing than running
         # alone, at least when running test_selection_redraw.py.
         print("running under Wing IDE debugger; setting up timer")
-        from PyQt4 import QtCore
+        from PyQt5 import QtCore
         timer = QtCore.QTimer()
         def donothing(*args):
             x = 0
             for i in range(0, 100):
                 x += i
-        timer.connect(timer, QtCore.SIGNAL("timeout()"), donothing)
+        timer.timeout.connect(donothing)
         timer.start(200)
 
     # Finally, run the main Qt event loop --
@@ -427,4 +427,4 @@ def startup_script( main_globals):
 
     return # from startup_script
 
-# end
+# end2

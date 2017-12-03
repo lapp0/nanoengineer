@@ -16,8 +16,7 @@ ninad 2007-08-29: Created. (Initially to support the clipboard in L{PasteFromCli
 
 """
 
-from PyQt4.Qt import QListWidget
-from PyQt4.Qt import SIGNAL
+from PyQt5.QtWidgets import QListWidget
 from graphics.widgets.ThumbView import MMKitView
 from PM.PM_GroupBox import PM_GroupBox
 from utilities.constants import diTUBES

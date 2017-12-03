@@ -11,10 +11,10 @@ History:
 ninad 2007-08-21: Created.
 
 """
-from PyQt4.Qt import Qt
-from PyQt4.Qt import QSlider
-from PyQt4.Qt import QLabel
-from PyQt4.Qt import QWidget
+from PyQt5.QtCore import Qt
+from PyQt5.QtWidgets import QSlider
+from PyQt5.QtWidgets import QLabel
+from PyQt5.QtWidgets import QWidget
 
 
 class PM_Slider(QSlider):

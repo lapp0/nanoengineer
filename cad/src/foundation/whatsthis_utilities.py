@@ -7,10 +7,10 @@ whatsthis_utilities.py
 @copyright: 2005-2008 Nanorex, Inc.  See LICENSE file for details.
 """
 
-from PyQt4.Qt import QAction
-from PyQt4.Qt import QWidget
-from PyQt4.Qt import QMenu
-from PyQt4.Qt import QMenuBar
+from PyQt5.QtWidgets import QAction
+from PyQt5.QtWidgets import QWidget
+from PyQt5.QtWidgets import QMenu
+from PyQt5.QtWidgets import QMenuBar
 
 import os
 

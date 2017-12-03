@@ -24,12 +24,11 @@ import os
 import shutil
 import time
 
-from PyQt4.Qt import Qt
-from PyQt4.Qt import QFileDialog, QMessageBox, QString, QSettings
-from PyQt4.Qt import QApplication
-from PyQt4.Qt import QCursor
-from PyQt4.Qt import QProcess
-from PyQt4.Qt import QStringList
+from PyQt5.QtCore import Qt
+from PyQt5.QtGui import QFileDialog, QMessageBox, QSettings
+from PyQt5.QtWidgets import QApplication
+from PyQt5.QtGui import QCursor
+from PyQt5.QtCore import QProcess
 
 import foundation.env as env
 from utilities import debug_flags
@@ -69,8 +68,14 @@ from utilities.constants import SUCCESS, ABORTED, READ_ERROR
 from utilities.constants import str_or_unicode
 
 from ne1_ui.FetchPDBDialog import FetchPDBDialog
-from PyQt4.Qt import SIGNAL
 from urllib.request import urlopen
+
+try:
+    QString = unicode
+except NameError:
+    # Python 3
+    QString = str
+QStringList = list
 
 debug_babel = False   # DO NOT COMMIT with True
 
@@ -305,7 +310,7 @@ class fileSlotsMixin: #bruce 050907 moved these methods out of class MWsemantics
                                  "Open Babel Import",
                                  self.currentOpenBabelImportDirectory,
                                  formats
-                                 )
+                                 )[0]
 
         if not import_filename:
             env.history.message(cmd + "Cancelled")
@@ -403,7 +408,7 @@ class fileSlotsMixin: #bruce 050907 moved these methods out of class MWsemantics
         if numberOfMembers == 0:
             msg = "IOS import aborted since there aren't any DNA strands in "\
                 "the current model."
-            from PyQt4.Qt import QMessageBox
+            from PyQt5.QtWidgets import QMessageBox
             QMessageBox.warning(self.assy.win, "Warning!", msg)
             return
 
@@ -416,7 +421,7 @@ class fileSlotsMixin: #bruce 050907 moved these methods out of class MWsemantics
                                  "IOS Import",
                                  self.currentImportDirectory,
                                  formats
-                                 )
+                                 )[0]
         if not import_filename:
             env.history.message(cmd + "Cancelled")
             return
@@ -464,7 +469,7 @@ class fileSlotsMixin: #bruce 050907 moved these methods out of class MWsemantics
                                         currentFilename,
                                         formats,
                                         sfilter
-                                       )
+                                       )[0]
         if not export_filename:
             env.history.message(cmd + "Cancelled")
             return
@@ -584,7 +589,7 @@ class fileSlotsMixin: #bruce 050907 moved these methods out of class MWsemantics
                                         currentFilename,
                                         formats,
                                         sfilter
-                                       )
+                                       )[0]
         if not export_filename:
             env.history.message(cmd + "Cancelled")
             if debug_flags.atom_debug:
@@ -767,7 +772,7 @@ class fileSlotsMixin: #bruce 050907 moved these methods out of class MWsemantics
         Slot method for 'File > Fetch > Fetch PDB...'.
         """
         form = FetchPDBDialog(self)
-        self.connect(form, SIGNAL('editingFinished()'), self.getPDBFileFromInternet)
+        form.editingFinished.connect(self.getPDBFileFromInternet)
         return
 
     def checkIfCodeIsValid(self, code):
@@ -891,7 +896,7 @@ class fileSlotsMixin: #bruce 050907 moved these methods out of class MWsemantics
                                          "Save PDB File",
                                          currentFilename,
                                          formats,
-                                         sfilter)
+                                         sfilter)[0]
         fileObject1 = open(filePath, 'r')
         if fn:
             fileObject2 = open(fn, 'w+')
@@ -977,7 +982,7 @@ class fileSlotsMixin: #bruce 050907 moved these methods out of class MWsemantics
         fn = QFileDialog.getOpenFileName(self,
                                          "Insert File",
                                          self.currentFileInsertDirectory,
-                                         formats)
+                                         formats)[0]
 
         if not fn:
             env.history.message("Cancelled")
@@ -1106,7 +1111,7 @@ class fileSlotsMixin: #bruce 050907 moved these methods out of class MWsemantics
             fn = QFileDialog.getOpenFileName(self,
                                              "Open File",
                                              self.currentFileOpenDirectory,
-                                             formats)
+                                             formats)[0]
 
             if not fn:
                 env.history.message("Cancelled.")
@@ -1379,7 +1384,7 @@ class fileSlotsMixin: #bruce 050907 moved these methods out of class MWsemantics
             format, # file format options
             sfilter, # selectedFilter
             QFileDialog.DontConfirmOverwrite # options
-            )
+            )[0]
 
         if not fn:
             return None
@@ -1461,7 +1466,7 @@ class fileSlotsMixin: #bruce 050907 moved these methods out of class MWsemantics
             format, # filter
             sfilter, # selectedFilter
             QFileDialog.DontConfirmOverwrite # options
-            )
+            )[0]
 
         if not fn:
             return None # User cancelled.

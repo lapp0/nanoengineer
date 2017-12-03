@@ -14,8 +14,9 @@ Module classification: foundation.
 """
 
 import foundation.env as env
+from PyQt5.QtWidgets import *
 from utilities.debug import register_debug_menu_command
-from PyQt4.Qt import QObject ## , QWidget, SIGNAL
+from PyQt5.QtCore import QObject
 from utilities import debug_flags # for atom_debug
 import utilities.EndUser as EndUser
 import imp

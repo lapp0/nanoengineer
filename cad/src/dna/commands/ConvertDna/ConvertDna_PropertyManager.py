@@ -5,8 +5,7 @@
 @copyright: 2008 Nanorex, Inc.  See LICENSE file for details.
 """
 from widgets.prefs_widgets import connect_checkbox_with_boolean_pref
-from PyQt4.Qt import Qt
-from PyQt4.Qt import SIGNAL
+from PyQt5.QtCore import Qt
 from PM.PM_GroupBox import PM_GroupBox
 from PM.PM_ComboBox import PM_ComboBox
 from PM.PM_PushButton import PM_PushButton

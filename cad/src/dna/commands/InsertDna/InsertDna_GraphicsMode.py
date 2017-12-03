@@ -16,7 +16,7 @@ TODO:
 - 2008-06-24: See  DnaOrCntPropertyManager class for a detailed to do comment regarding
 the tool that allows user to specify a drawing plane.
 """
-from PyQt4.Qt import Qt
+from PyQt5.QtCore import Qt
 
 from dna.temporary_commands.DnaLineMode import DnaLine_GM
 from graphics.drawing.drawDnaLabels import draw_dnaBaseNumberLabels

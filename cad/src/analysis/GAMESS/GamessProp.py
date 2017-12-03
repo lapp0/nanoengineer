@@ -9,12 +9,11 @@ GamessProp.py
 
 import os
 
-from PyQt4.Qt import QDialog
-from PyQt4.Qt import QButtonGroup
-from PyQt4.Qt import QAbstractButton
-from PyQt4.Qt import SIGNAL
-from PyQt4.Qt import QMessageBox
-from PyQt4.Qt import QColorDialog
+from PyQt5.QtWidgets import QDialog
+from PyQt5.QtWidgets import QButtonGroup
+from PyQt5.QtWidgets import QAbstractButton
+from PyQt5.QtWidgets import QMessageBox
+from PyQt5.QtWidgets import QColorDialog
 
 import foundation.env as env
 
@@ -260,14 +259,14 @@ class GamessProp(QDialog, Ui_GamessPropDialog):
                 self.scftyp_btngrp.setId(obj, objId)
                 objId +=1
 
-        self.connect(self.cancel_btn,SIGNAL("clicked()"),self.reject)
-        self.connect(self.ecm_btngrp,SIGNAL("buttonPressed(int)"),self.set_ecmethod)
-        self.connect(self.multi_combox,SIGNAL("activated(int)"),self.set_multiplicity)
-        self.connect(self.run_job_btn,SIGNAL("clicked()"),self.run_job)
-        self.connect(self.save_btn,SIGNAL("clicked()"),self.accept)
-        self.connect(self.runtyp_combox,SIGNAL("activated(int)"),self.calculate_changed)
-        self.connect(self.choose_color_btn,SIGNAL("clicked()"),self.change_jig_color)
-        self.connect(self.whats_this_btn,SIGNAL("clicked()"),self.whats_this)
+        self.cancel_btn.clicked.connect(self.reject)
+        self.ecm_btngrp.buttonPressed[int].connect(self.set_ecmethod)
+        self.multi_combox.activated[int].connect(self.set_multiplicity)
+        self.run_job_btn.clicked.connect(self.run_job)
+        self.save_btn.clicked.connect(self.accept)
+        self.runtyp_combox.activated[int].connect(self.calculate_changed)
+        self.choose_color_btn.clicked.connect(self.change_jig_color)
+        self.whats_this_btn.clicked.connect(self.whats_this)
         ##self.connect(self.new_btn,SIGNAL("clicked()"),self.addServer)
         ##self.connect(self.exit_btn,SIGNAL("clicked()"),self.close)
         ##self.connect(self.server_listview,SIGNAL("currentChanged(QListViewItem*)"),self.changeServer)
@@ -695,5 +694,5 @@ class GamessProp(QDialog, Ui_GamessPropDialog):
         self.glpane.gl_update()
 
     def whats_this(self):
-        from PyQt4.Qt import QWhatsThis, QDialog
+        from PyQt5.QtGui import QWhatsThis, QDialog
         QWhatsThis.enterWhatsThisMode()

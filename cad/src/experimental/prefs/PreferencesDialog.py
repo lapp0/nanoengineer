@@ -10,8 +10,8 @@ python PreferencesDialog.py
 """
 
 import sys, os
-from PyQt4.Qt import *
-from PyQt4 import QtCore, QtGui
+from PyQt5.QtGui import *
+from PyQt5 import QtCore, QtGui, QtWidgets
 from Ui_PreferencesDialog import Ui_PreferencesDialog
 
 # imports for testing
@@ -96,12 +96,12 @@ class ContainerWidget(QFrame):
 
         # Create vertical box layout
         self.vBoxLayout = QVBoxLayout(self)
-        self.vBoxLayout.setMargin(0)
+        self.vBoxLayout.setContentsMargins(0, 0, 0, 0)
         self.vBoxLayout.setSpacing(0)
 
         # Create grid layout
-        self.gridLayout = QtGui.QGridLayout()
-        self.gridLayout.setMargin(2)
+        self.gridLayout = QtWidgets.QGridLayout()
+        self.gridLayout.setContentsMargins(2, 2, 2, 2)
         self.gridLayout.setSpacing(2)
 
         # Insert grid layout in its own vBoxLayout
@@ -350,12 +350,12 @@ class PageWidget(QWidget):
         self.containerList = []
 
         # Horizontal spacer
-        hSpacer = QtGui.QSpacerItem(1, 1,
+        hSpacer = QtWidgets.QSpacerItem(1, 1,
                                     QSizePolicy.Expanding,
                                     QSizePolicy.Preferred)
 
-        self.hBoxLayout = QtGui.QHBoxLayout(self)
-        self.hBoxLayout.setMargin(0)
+        self.hBoxLayout = QtWidgets.QHBoxLayout(self)
+        self.hBoxLayout.setContentsMargins(0, 0, 0, 0)
         self.hBoxLayout.setSpacing(0)
         self.hBoxLayout.addItem(hSpacer)
         # add the base container widget
@@ -482,25 +482,25 @@ class PreferencesDialog(QDialog, Ui_PreferencesDialog):
         self.setObjectName("PreferencesDialog")
         self.resize(QtCore.QSize(QtCore.QRect(0,0,594,574).size()).expandedTo(self.minimumSizeHint()))
 
-        self.vboxlayout = QtGui.QVBoxLayout(self)
+        self.vboxlayout = QtWidgets.QVBoxLayout(self)
         self.vboxlayout.setSpacing(4)
-        self.vboxlayout.setMargin(2)
+        self.vboxlayout.setContentsMargins(2, 2, 2, 2)
         self.vboxlayout.setObjectName("vboxlayout")
 
-        self.tabWidget = QtGui.QTabWidget(self)
+        self.tabWidget = QtWidgets.QTabWidget(self)
         self.tabWidget.setObjectName("tabWidget")
 
-        self.tab = QtGui.QWidget()
+        self.tab = QtWidgets.QWidget()
         self.tab.setObjectName("tab")
 
 #        self.hboxlayout = QtGui.QHBoxLayout(self.tab)
-        self.pref_splitter = QtGui.QSplitter(self.tab)
+        self.pref_splitter = QtWidgets.QSplitter(self.tab)
 #        self.hboxlayout.setSpacing(4)
 #        self.hboxlayout.setMargin(2)
 #        self.hboxlayout.setObjectName("hboxlayout")
         self.pref_splitter.setObjectName("pref_splitter")
 
-        self.categoriesTreeWidget = QtGui.QTreeWidget(self.pref_splitter)
+        self.categoriesTreeWidget = QtWidgets.QTreeWidget(self.pref_splitter)
         self.categoriesTreeWidget.setMinimumWidth(150)
         self.categoriesTreeWidget.setObjectName("categoriesTreeWidget")
 #        sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Expanding,QtGui.QSizePolicy.Expanding)
@@ -510,7 +510,7 @@ class PreferencesDialog(QDialog, Ui_PreferencesDialog):
 #        self.hboxlayout.addWidget(self.categoriesTreeWidget)
         self.pref_splitter.addWidget(self.categoriesTreeWidget)
 
-        self.prefsStackedWidget = QtGui.QStackedWidget(self.pref_splitter)
+        self.prefsStackedWidget = QtWidgets.QStackedWidget(self.pref_splitter)
 #        sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Expanding,QtGui.QSizePolicy.Expanding)
 #        self.prefsStackedWidget.setSizePolicy(sizePolicy)
         self.prefsStackedWidget.setObjectName("prefsStackedWidget")
@@ -524,17 +524,17 @@ class PreferencesDialog(QDialog, Ui_PreferencesDialog):
         self.tabWidget.addTab(self.tab,"")
         self.vboxlayout.addWidget(self.tabWidget)
 
-        self.hboxlayout1 = QtGui.QHBoxLayout()
+        self.hboxlayout1 = QtWidgets.QHBoxLayout()
         self.hboxlayout1.setObjectName("hboxlayout1")
 
-        self.whatsThisToolButton = QtGui.QToolButton(self)
+        self.whatsThisToolButton = QtWidgets.QToolButton(self)
         self.whatsThisToolButton.setObjectName("whatsThisToolButton")
         self.hboxlayout1.addWidget(self.whatsThisToolButton)
 
-        spacerItem = QtGui.QSpacerItem(40,20,QtGui.QSizePolicy.Expanding,QtGui.QSizePolicy.Minimum)
+        spacerItem = QtWidgets.QSpacerItem(40,20,QtWidgets.QSizePolicy.Expanding,QtWidgets.QSizePolicy.Minimum)
         self.hboxlayout1.addItem(spacerItem)
 
-        self.okButton = QtGui.QPushButton(self)
+        self.okButton = QtWidgets.QPushButton(self)
         self.okButton.setObjectName("okButton")
         self.hboxlayout1.addWidget(self.okButton)
         self.vboxlayout.addLayout(self.hboxlayout1)
@@ -545,10 +545,10 @@ class PreferencesDialog(QDialog, Ui_PreferencesDialog):
         QtCore.QMetaObject.connectSlotsByName(self)
 
     def retranslateUi(self):
-        self.setWindowTitle(QtGui.QApplication.translate("PreferencesDialog", "Preferences", None, QtGui.QApplication.UnicodeUTF8))
-        self.categoriesTreeWidget.headerItem().setText(0,QtGui.QApplication.translate("PreferencesDialog", "Categories", None, QtGui.QApplication.UnicodeUTF8))
-        self.tabWidget.setTabText(self.tabWidget.indexOf(self.tab), QtGui.QApplication.translate("PreferencesDialog", "System Options", None, QtGui.QApplication.UnicodeUTF8))
-        self.okButton.setText(QtGui.QApplication.translate("PreferencesDialog", "OK", None, QtGui.QApplication.UnicodeUTF8))
+        self.setWindowTitle(QtCore.QCoreApplication.translate("PreferencesDialog", "Preferences", None))
+        self.categoriesTreeWidget.headerItem().setText(0,QtCore.QCoreApplication.translate("PreferencesDialog", "Categories", None))
+        self.tabWidget.setTabText(self.tabWidget.indexOf(self.tab), QtCore.QCoreApplication.translate("PreferencesDialog", "System Options", None))
+        self.okButton.setText(QtCore.QCoreApplication.translate("PreferencesDialog", "OK", None))
 
     def _setupDialog_TopLevelWidgets(self):
         """
@@ -561,13 +561,11 @@ class PreferencesDialog(QDialog, Ui_PreferencesDialog):
         # side of the Preferences dialog (inside the "Systems Option" tab)
         # to the slot for turning to the correct page in the QStackedWidget
         # on the right side.
-        self.connect(self.categoriesTreeWidget,
-                     SIGNAL("itemSelectionChanged()"), self.showPage)
+        self.categoriesTreeWidget.itemSelectionChanged.connect(self.showPage)
 
         # Connections for OK and What's This buttons at the bottom of the dialog.
-        self.connect(self.okButton, SIGNAL("clicked()"), self.accept)
-        self.connect(self.whatsThisToolButton, SIGNAL("clicked()"),
-                     QWhatsThis.enterWhatsThisMode)
+        self.okButton.clicked.connect(self.accept)
+        self.whatsThisToolButton.clicked.connect(QWhatsThis.enterWhatsThisMode)
 
         self.whatsThisToolButton.setIcon(
             geticon("ui/actions/Properties Manager/WhatsThis.png"))
@@ -630,14 +628,13 @@ class PreferencesDialog(QDialog, Ui_PreferencesDialog):
         # Add a QTreeWidgetItem to the categories QTreeWidget.
         # The label (text) of the item is the page name.
         if not myparent:
-            _item = QtGui.QTreeWidgetItem(self.categoriesTreeWidget)
+            _item = QtWidgets.QTreeWidgetItem(self.categoriesTreeWidget)
         else:
-            _item = QtGui.QTreeWidgetItem(myparent)
+            _item = QtWidgets.QTreeWidgetItem(myparent)
         _item.setText(0,
-                      QtGui.QApplication.translate("PreferencesDialog",
+                      QtCore.QCoreApplication.translate("PreferencesDialog",
                                                    page.name,
-                                                   None,
-                                                   QtGui.QApplication.UnicodeUTF8))
+                                                   None))
 
         return _item
 
@@ -645,14 +642,14 @@ class PreferencesDialog(QDialog, Ui_PreferencesDialog):
         """
         This creates a set of test widgets for page_widget.
         """
-        _label = QtGui.QLabel(page_widget)
+        _label = QtWidgets.QLabel(page_widget)
         _label.setText(page_widget.name)
         page_widget.addQtWidget(_label)
-        _checkbox = QtGui.QCheckBox(page_widget.name, page_widget)
+        _checkbox = QtWidgets.QCheckBox(page_widget.name, page_widget)
         page_widget.addQtWidget(_checkbox)
-        _pushbutton = QtGui.QPushButton(page_widget.name, page_widget)
+        _pushbutton = QtWidgets.QPushButton(page_widget.name, page_widget)
         page_widget.addQtWidget(_pushbutton)
-        _label = QtGui.QLabel(page_widget)
+        _label = QtWidgets.QLabel(page_widget)
         _choices = ['choice a', 'choice b' ]
         _pref_ComboBox = PM_ComboBox( page_widget, label =  "choices:",
                                       choices = _choices, setAsDefault = True)
@@ -1414,7 +1411,7 @@ class PreferencesDialog(QDialog, Ui_PreferencesDialog):
                                                      maximum = 99999,
                                                      spanWidth = False,
                                                      singleStep = 1)
-        vSpacer = QtGui.QSpacerItem(1, 1,
+        vSpacer = QtWidgets.QSpacerItem(1, 1,
                                     QSizePolicy.Preferred,
                                     QSizePolicy.Expanding)
         _pageContainer.vBoxLayout.addItem(vSpacer)

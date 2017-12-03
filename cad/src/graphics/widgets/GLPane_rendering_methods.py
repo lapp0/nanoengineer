@@ -35,7 +35,7 @@ from OpenGL.GL import glPopMatrix
 ##from OpenGL.GL import GL_COLOR_LOGIC_OP
 ##from OpenGL.GL import GL_XOR
 
-from PyQt4.QtOpenGL import QGLWidget
+from PyQt5.QtOpenGL import QGLWidget
 
 
 from utilities import debug_flags

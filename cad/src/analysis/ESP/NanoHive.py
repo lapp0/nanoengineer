@@ -10,10 +10,8 @@ calculations using NanoHive
 Module classification: has ui/control/ops code; put in ui for now.
 """
 
-from PyQt4.Qt import QWidget
-from PyQt4.Qt import SIGNAL
-from PyQt4.Qt import QDialog
-from PyQt4.Qt import QString
+from PyQt5.QtWidgets import QWidget
+from PyQt5.QtWidgets import QDialog
 
 import foundation.env as env
 
@@ -25,6 +23,12 @@ from analysis.ESP.ESPImage import ESPImage
 from analysis.ESP.NanoHiveUtils import run_nh_simulation
 
 from analysis.ESP.NanoHive_SimParameters import NanoHive_SimParameters
+
+try:
+    QString = unicode
+except NameError:
+    # Python 3
+    QString = str
 
 cmd = greenmsg("Nano-Hive: ")
 
@@ -60,12 +64,12 @@ class NanoHive(QWidget, Ui_NanoHiveDialog):
     def __init__(self, assy):
         QWidget.__init__(self)
         self.setupUi(self)
-        self.connect(self.run_sim_btn, SIGNAL("clicked()"), self.accept)
-        self.connect(self.cancel_btn, SIGNAL("clicked()"), self.reject)
-        self.connect(self.MPQC_ESP_checkbox, SIGNAL("toggled(bool)"), self.update_ESP_window_combox)
-        self.connect(self.MPQC_GD_checkbox, SIGNAL("toggled(bool)"), self.update_MPQC_GD_options_btn)
-        self.connect(self.ESP_image_combox, SIGNAL("activated(int)"), self.set_ESP_window)
-        self.connect(self.MPQC_GD_options_btn, SIGNAL("clicked()"), self.show_MPQC_GD_options_dialog)
+        self.run_sim_btn.clicked.connect(self.accept)
+        self.cancel_btn.clicked.connect(self.reject)
+        self.MPQC_ESP_checkbox.toggled[bool].connect(self.update_ESP_window_combox)
+        self.MPQC_GD_checkbox.toggled[bool].connect(self.update_MPQC_GD_options_btn)
+        self.ESP_image_combox.activated[int].connect(self.set_ESP_window)
+        self.MPQC_GD_options_btn.clicked.connect(self.show_MPQC_GD_options_dialog)
         self.assy = assy
         self.part = assy.part
         self.esp_image_list = [] # List of ESP Image jigs.

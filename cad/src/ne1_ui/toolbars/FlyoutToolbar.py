@@ -13,10 +13,10 @@ class.
 TODO:
 """
 from foundation.wiki_help import QToolBar_WikiHelp
-from PyQt4.Qt import QMenu
-from PyQt4.Qt import Qt
-from PyQt4.Qt import QPalette
-from PyQt4.Qt import QToolButton
+from PyQt5.QtWidgets import QMenu
+from PyQt5.QtCore import Qt
+from PyQt5.QtGui import QPalette
+from PyQt5.QtWidgets import QToolButton
 from PM.PM_Colors import getPalette
 from commandToolbar.CommandToolbar_Constants import cmdTbarCmdAreaBtnColor
 from utilities.icon_utilities import geticon

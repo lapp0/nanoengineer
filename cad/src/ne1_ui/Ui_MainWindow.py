@@ -5,8 +5,8 @@ $Id$
 
 # -*- coding: utf-8 -*-
 
-from PyQt4 import QtCore, QtGui
-from PyQt4.Qt import Qt, QWidget, QVBoxLayout
+from PyQt5 import QtCore, QtGui, QtWidgets
+from PyQt5.QtGui import Qt, QWidget, QVBoxLayout
 
 from utilities.icon_utilities import geticon
 
@@ -87,7 +87,7 @@ class Ui_MainWindow(object):
         _centralWidget = QWidget()
         self.setCentralWidget(_centralWidget)
         self.centralAreaVBoxLayout = QVBoxLayout(_centralWidget)
-        self.centralAreaVBoxLayout.setMargin(0)
+        self.centralAreaVBoxLayout.setContentsMargins(0, 0, 0, 0)
         self.centralAreaVBoxLayout.setSpacing(0)
 
         # Add the Command Toolbar to the top of the central widget.
@@ -196,9 +196,9 @@ class Ui_MainWindow(object):
 
         @see: U{B{The Qt Linquist Manual}<http://doc.trolltech.com/4/linguist-manual.html>}
         """
-        self.setWindowTitle(QtGui.QApplication.translate(
+        self.setWindowTitle(QtCore.QCoreApplication.translate(
             "MainWindow", "NanoEngineer-1",
-            None, QtGui.QApplication.UnicodeUTF8))
+            None))
 
         # QActions
         Ui_MainWindowWidgets.retranslateUi(self)

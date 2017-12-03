@@ -26,7 +26,6 @@ from command_support.Command_PropertyManager import Command_PropertyManager
 from utilities.prefs_constants import workingDirectory_prefs_key
 from utilities.constants import yellow
 
-from PyQt4.Qt import SIGNAL
 from PM.PM_PushButton   import PM_PushButton
 from PM.PM_GroupBox import PM_GroupBox
 from PM.PM_LineEdit import PM_LineEdit

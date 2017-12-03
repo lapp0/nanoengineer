@@ -11,8 +11,9 @@ TODO
 - remove all self.command calls.
 """
 from PM.PM_SelectionListWidget import PM_SelectionListWidget
+from PyQt5.QtWidgets import *
 from utilities.constants import lightred_1, lightgreen_2
-from PyQt4.Qt import Qt, SIGNAL
+from PyQt5.QtCore import Qt
 from PM.PM_ToolButton    import PM_ToolButton
 from PM.PM_WidgetRow     import PM_WidgetRow
 

@@ -13,7 +13,7 @@ see the superclass
 """
 from ne1_ui.toolbars.Ui_AbstractFlyout import Ui_AbstractFlyout
 from utilities.debug import print_compact_traceback
-from PyQt4.Qt import QAction
+from PyQt5.QtWidgets import QAction
 _superclass = Ui_AbstractFlyout
 
 class MoveFlyout(Ui_AbstractFlyout):

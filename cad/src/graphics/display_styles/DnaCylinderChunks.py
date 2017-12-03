@@ -97,6 +97,12 @@ from utilities.prefs_constants import dnaBaseIndicatorsPlaneNormal_prefs_key
 from utilities.prefs_constants import dnaStyleBasesDisplayLetters_prefs_key
 
 try:
+    QString = unicode
+except NameError:
+    # Python 3
+    QString = str
+
+try:
     from OpenGL.GLE import glePolyCone
     from OpenGL.GLE import gleGetNumSides
     from OpenGL.GLE import gleSetNumSides
@@ -1278,7 +1284,7 @@ class DnaCylinderChunks(ChunkDisplayMode):
         # after it defines several local functions.
 
         from utilities.constants import lightgreen
-        from PyQt4.Qt import QFont, QString, QColor, QFontMetrics
+        from PyQt5.QtGui import QFont, QColor, QFontMetrics
         from widgets.widget_helpers import RGBf_to_QColor
         from dna.model.DnaLadderRailChunk import DnaStrandChunk
 

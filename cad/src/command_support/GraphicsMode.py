@@ -25,8 +25,8 @@ in class GraphicsMode to look private.
 import math # just for pi
 from Numeric import exp
 
-from PyQt4.Qt import Qt
-from PyQt4.Qt import QMenu
+from PyQt5.QtCore import Qt
+from PyQt5.QtWidgets import QMenu
 
 from geometry.VQT import V, Q, vlen, norm, planeXline, ptonline
 from graphics.drawing.CS_draw_primitives import drawline

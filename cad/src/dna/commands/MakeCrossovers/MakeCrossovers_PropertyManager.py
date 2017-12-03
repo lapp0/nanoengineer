@@ -22,7 +22,7 @@ from PM.PM_Constants     import PM_WHATS_THIS_BUTTON
 from PM.PM_CheckBox      import PM_CheckBox
 
 
-from PyQt4.Qt import SIGNAL, Qt
+from PyQt5.QtCore import Qt
 
 from utilities.prefs_constants import assignColorToBrokenDnaStrands_prefs_key
 from utilities.prefs_constants import makeCrossoversCommand_crossoverSearch_bet_given_segments_only_prefs_key

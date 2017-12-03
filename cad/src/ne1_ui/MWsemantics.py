@@ -21,18 +21,18 @@ split up the class MWsemantics (as for BuildCrystal_Command), not just the file.
 
 from utilities.qt4transition import qt4warning
 
-from PyQt4 import QtGui, QtCore
+from PyQt5 import QtCore, QtGui, QtWidgets
 
-from PyQt4.Qt import Qt
-from PyQt4.Qt import QFont
-from PyQt4.Qt import QMenu
-from PyQt4.Qt import QSettings
-from PyQt4.Qt import QVariant
+from PyQt5.QtCore import Qt
+from PyQt5.QtGui import QFont
+from PyQt5.QtWidgets import QMenu
+from PyQt5.QtCore import QSettings
+from PyQt5.QtCore import QVariant
 
-from PyQt4.Qt import QMainWindow, SIGNAL
-from PyQt4.Qt import QMessageBox
-from PyQt4.Qt import QToolBar
-from PyQt4.Qt import QStatusBar
+from PyQt5.QtWidgets import QMainWindow
+from PyQt5.QtWidgets import QMessageBox
+from PyQt5.QtWidgets import QToolBar
+from PyQt5.QtWidgets import QStatusBar
 
 from model.elements import PeriodicTable
 from model.assembly import Assembly
@@ -257,7 +257,7 @@ class MWsemantics(QMainWindow,
 
             print("QWorkspace for MDI support is enabled (experimental)")
 
-            from PyQt4.Qt import QWorkspace
+            from PyQt5.QtGui import QWorkspace
             self.workspace = QWorkspace()
             # Note: The QWorkspace class is deprecated in Qt 4.3 and instructs
             # developers to use the new QMdiArea class instead.
@@ -1311,7 +1311,7 @@ class MWsemantics(QMainWindow,
         return
 
     def helpWhatsThis(self):
-        from PyQt4.Qt import QWhatsThis ##bruce 050408
+        from PyQt5.QtGui import QWhatsThis ##bruce 050408
         QWhatsThis.enterWhatsThisMode()
         return
 
@@ -1395,7 +1395,7 @@ class MWsemantics(QMainWindow,
         """
         from simulation.ROSETTA.RosettaSimulationPopUpDialog import RosettaSimulationPopUpDialog
         form = RosettaSimulationPopUpDialog(self)
-        self.connect(form, SIGNAL('editingFinished()'), self.runRosetta)
+        form.editingFinished.connect(self.runRosetta)
 
         return
 
@@ -2136,7 +2136,7 @@ class MWsemantics(QMainWindow,
         # self.name() + " - " + "[" + "]", should also be
         # user-changeable, IMHO.
         #print "****self.accessibleName *****=", self.accessibleName()
-        self.setWindowTitle(self.trUtf8("NanoEngineer-1" + " - " + prefix +
+        self.setWindowTitle(self.tr("NanoEngineer-1" + " - " + prefix +
                                         "[" + partname.encode("utf_8") + "]" +
                                         suffix ))
         # review: also call self.setWindowModified(changed)?
@@ -2151,7 +2151,7 @@ class MWsemantics(QMainWindow,
         @see: U{B{QProgressDialog}<http://doc.trolltech.com/4/qprogressdialog.html>}
 
         """
-        from PyQt4.Qt import QProgressDialog
+        from PyQt5.QtWidgets import QProgressDialog
         self.progressDialog = QProgressDialog(self)
         self.progressDialog.setWindowModality(Qt.WindowModal)
         self.progressDialog.setWindowTitle("NanoEngineer-1")
@@ -2253,18 +2253,16 @@ class MWsemantics(QMainWindow,
         for ii in range(len(fileList)):
             _recent_filename = os.path.normpath(str_or_unicode(fileList[ii]).encode("utf_8")) # Fixes bug 2193. Mark 060808.
             self.openRecentFilesMenu.addAction(
-                QtGui.QApplication.translate(
+                QtCore.QCoreApplication.translate(
                     "Main Window",
-                    "&" + str(ii + 1) + "  " + _recent_filename, None, QtGui.QApplication.UnicodeUTF8))
+                    "&" + str(ii + 1) + "  " + _recent_filename, None))
 
         # Insert the "Open Recent Files" menu above "File > Close".
         self.openRecentFilesMenuAction = \
             self.fileMenu.insertMenu(self.fileCloseAction,
                                      self.openRecentFilesMenu)
 
-        self.connect(self.openRecentFilesMenu,
-                     SIGNAL('triggered(QAction*)'),
-                     self.openRecentFile)
+        self.openRecentFilesMenu.triggered[QAction].connect(self.openRecentFile)
         return
 
     def colorSchemeCommand(self):

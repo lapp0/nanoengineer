@@ -18,33 +18,30 @@ or which can be parsed from easily readable/editable text files.
 #      by: The PyQt User Interface Compiler (pyuic) 3.14.1
 
 
-from PyQt4 import QtGui
-from PyQt4.Qt import Qt
-from PyQt4.Qt import QDialog
-from PyQt4.Qt import QFrame
-from PyQt4.Qt import QTextEdit
-from PyQt4.Qt import QPixmap
-from PyQt4.Qt import QVBoxLayout
-from PyQt4.Qt import QColor
-from PyQt4.Qt import QHBoxLayout
-from PyQt4.Qt import QLabel
-from PyQt4.Qt import QSizePolicy
-from PyQt4.Qt import QFont
-from PyQt4.Qt import QPushButton
-from PyQt4.Qt import QSpacerItem
-from PyQt4.Qt import QToolButton
-from PyQt4.Qt import QIcon
-from PyQt4.Qt import QGroupBox
-from PyQt4.Qt import QSize
-from PyQt4.Qt import QGridLayout
-from PyQt4.Qt import QComboBox
-from PyQt4.Qt import QLineEdit
-from PyQt4.Qt import QSpinBox
-from PyQt4.Qt import QString
-from PyQt4.Qt import QToolTip
-from PyQt4.Qt import QApplication
-from PyQt4.Qt import SIGNAL
-from PyQt4.Qt import SLOT
+from PyQt5 import QtGui, QtWidgets
+from PyQt5.QtCore import Qt
+from PyQt5.QtWidgets import QDialog
+from PyQt5.QtWidgets import QFrame
+from PyQt5.QtWidgets import QTextEdit
+from PyQt5.QtGui import QPixmap
+from PyQt5.QtWidgets import QVBoxLayout
+from PyQt5.QtGui import QColor
+from PyQt5.QtWidgets import QHBoxLayout
+from PyQt5.QtWidgets import QLabel
+from PyQt5.QtWidgets import QSizePolicy
+from PyQt5.QtGui import QFont
+from PyQt5.QtWidgets import QPushButton
+from PyQt5.QtWidgets import QSpacerItem
+from PyQt5.QtWidgets import QToolButton
+from PyQt5.QtGui import QIcon
+from PyQt5.QtWidgets import QGroupBox
+from PyQt5.QtCore import QSize
+from PyQt5.QtWidgets import QGridLayout
+from PyQt5.QtWidgets import QComboBox
+from PyQt5.QtWidgets import QLineEdit
+from PyQt5.QtWidgets import QSpinBox
+from PyQt5.QtWidgets import QToolTip
+from PyQt5.QtWidgets import QApplication
 
 from command_support.generator_button_images import image0_data, image1_data, image2_data, image3_data, image4_data, image5_data, image6_data, image7_data
 
@@ -72,6 +69,12 @@ from utilities.parse_utils import parse_top, Whole #bruce 080101 moved to toplev
 ##self.nt_parameters_grpbtn.setIcon(QIcon(self.image7))
 
 ## class parameter_dialog(QDialog): # was nanotube_dialog
+try:
+    QString = unicode
+except NameError:
+    # Python 3
+    QString = str
+
 class parameter_dialog_or_frame:
     """
     use as a pre-mixin before QDialog or QFrame
@@ -262,7 +265,7 @@ class parameter_dialog_or_frame:
                     paramname = param.options.get('name') or (param.args and param.args[0]) or "?"
                     paramlabel = param.options.get('label') or paramname ##e wrong, label "" or none ought to be possible
                     # QtGui.QApplication.translate(self.__class__.__name__, "xyz")
-                    label.setText(QtGui.QApplication.translate(self.__class__.__name__, paramlabel))
+                    label.setText(QtCore.QCoreApplication.translate(self.__class__.__name__, paramlabel))
 
                 if param.isa('parameter', widget = 'combobox', type = ('str',None)):
                     self.members_combox = QComboBox(0,self.parameters_grpbox,"members_combox") ###k  what's 0?
@@ -274,7 +277,7 @@ class parameter_dialog_or_frame:
                     for item in thewidgetkid.kids('item'):
                         itemval = item.args[0]
                         itemtext = itemval
-                        self.members_combox.insertItem(QtGui.QApplication.translate(self.__class__.__name__, itemtext)) #k __tr ok??
+                        self.members_combox.insertItem(QtCore.QCoreApplication.translate(self.__class__.__name__, itemtext)) #k __tr ok??
                         if itemval == default: #k or itemtext?
                             pass ##k i find no setItem in our py code, so not sure yet what to do for this.
                     nt_parameters_body_layout.addWidget(self.members_combox,thisrow,1)
@@ -291,7 +294,7 @@ class parameter_dialog_or_frame:
                     nt_parameters_body_layout.addWidget(self.length_linedit,thisrow,1)
                     hidethese.append(self.length_linedit)
                     default = str(param.options.get('default', ""))
-                    self.length_linedit.setText(QtGui.QApplication.translate(self.__class__.__name__, default)) # __tr ok?
+                    self.length_linedit.setText(QtCore.QCoreApplication.translate(self.__class__.__name__, default)) # __tr ok?
                     getter = (lambda lineedit = self.length_linedit: str(lineedit.text()))
 
                 elif param.isa('parameter', widget = ('lineedit', None), type = 'float'):
@@ -316,7 +319,7 @@ class parameter_dialog_or_frame:
                         ##e note: i suspect this default 0 should come from something that knows this desc grammar.
                     suffix = param.options.get('suffix', '')
                     if suffix:
-                        self.chirality_N_spinbox.setSuffix(QtGui.QApplication.translate(self.__class__.__name__, suffix))
+                        self.chirality_N_spinbox.setSuffix(QtCore.QCoreApplication.translate(self.__class__.__name__, suffix))
                     else:
                         self.chirality_N_spinbox.setSuffix(QString.null) # probably not needed
                     nt_parameters_body_layout.addWidget(self.chirality_N_spinbox,thisrow,1)
@@ -333,9 +336,9 @@ class parameter_dialog_or_frame:
                     ###e do it for more kinds of params; share the code somehow; do it in controller, or setup-aid?
                     ###k QToolTip appropriateness; tooltip option might be entirely untested
                     if tooltip and label:
-                        QToolTip.add(label, QtGui.QApplication.translate(self.__class__.__name__, tooltip))
+                        QToolTip.add(label, QtCore.QCoreApplication.translate(self.__class__.__name__, tooltip))
                     if tooltip and editfield:
-                        QToolTip.add(editfield, QtGui.QApplication.translate(self.__class__.__name__, tooltip)) ##k ok?? review once not all params have same-row labels.
+                        QToolTip.add(editfield, QtCore.QCoreApplication.translate(self.__class__.__name__, tooltip)) ##k ok?? review once not all params have same-row labels.
 
                 if getter and paramname and paramname != '?':
                     self.param_getters[paramname] = getter
@@ -353,7 +356,7 @@ class parameter_dialog_or_frame:
             if 1: # i don't know if these are needed:
                 self.parameters_grpbox.setTitle(QString.null)
                 self.nt_parameters_grpbtn.setText(QString.null)
-            self.parameters_grpbox_label.setText(QtGui.QApplication.translate(self.__class__.__name__, group_desc.args[0])) # was "Nanotube Parameters"
+            self.parameters_grpbox_label.setText(QtCore.QCoreApplication.translate(self.__class__.__name__, group_desc.args[0])) # was "Nanotube Parameters"
                 ##e note that it's questionable in the syntax design for this property of a group (overall group label)
                 # to be in that position (desc arg 0).
 
@@ -399,28 +402,28 @@ class parameter_dialog_or_frame:
                                    (self.cancel_btn, 'do_cancel_btn'),
                                    (self.ok_btn, 'do_ok_btn')):
             if hasattr(self, methodname):
-                self.connect(button, SIGNAL("clicked()"), getattr(self, methodname))
+                button.clicked.connect(getattr(self, methodname))
         return
 
 
     def languageChange(self):
         opts = self.desc.option_attrs
 
-        self.setCaption(QtGui.QApplication.translate(self.__class__.__name__, opts.caption)) # was "Nanotube"
-        self.heading_label.setText(QtGui.QApplication.translate(self.__class__.__name__, opts.title)) # was "Nanotube"
+        self.setCaption(QtCore.QCoreApplication.translate(self.__class__.__name__, opts.caption)) # was "Nanotube"
+        self.heading_label.setText(QtCore.QCoreApplication.translate(self.__class__.__name__, opts.title)) # was "Nanotube"
         self.sponsor_btn.setText(QString.null)
 
         self.done_btn.setText(QString.null)
-        QToolTip.add(self.done_btn,QtGui.QApplication.translate(self.__class__.__name__, "Done"))
+        QToolTip.add(self.done_btn,QtCore.QCoreApplication.translate(self.__class__.__name__, "Done"))
 
         self.abort_btn.setText(QString.null)
-        QToolTip.add(self.abort_btn,QtGui.QApplication.translate(self.__class__.__name__, "Cancel"))
+        QToolTip.add(self.abort_btn,QtCore.QCoreApplication.translate(self.__class__.__name__, "Cancel"))
 
         self.preview_btn.setText(QString.null)
-        QToolTip.add(self.preview_btn,QtGui.QApplication.translate(self.__class__.__name__, "Preview"))
+        QToolTip.add(self.preview_btn,QtCore.QCoreApplication.translate(self.__class__.__name__, "Preview"))
 
         self.whatsthis_btn.setText(QString.null)
-        QToolTip.add(self.whatsthis_btn,QtGui.QApplication.translate(self.__class__.__name__, "What's This Help"))
+        QToolTip.add(self.whatsthis_btn,QtCore.QCoreApplication.translate(self.__class__.__name__, "What's This Help"))
 
         ### move these up:
 ##        if 0:
@@ -438,8 +441,8 @@ class parameter_dialog_or_frame:
 ##            self.length_linedit.setText(QtGui.QApplication.translate(self.__class__.__name__, "20.0 A"))
 ##            self.chirality_N_spinbox.setSuffix(QString.null)
 
-        self.cancel_btn.setText(QtGui.QApplication.translate(self.__class__.__name__, "Cancel"))
-        self.ok_btn.setText(QtGui.QApplication.translate(self.__class__.__name__, "OK"))
+        self.cancel_btn.setText(QtCore.QCoreApplication.translate(self.__class__.__name__, "Cancel"))
+        self.ok_btn.setText(QtCore.QCoreApplication.translate(self.__class__.__name__, "OK"))
         return
 
     pass # end of class parameter_dialog_or_frame -- maybe it should be renamed
@@ -629,7 +632,7 @@ if __name__ == '__main__': # this has the parsing calls
 
     w = NTdialog(parent, desc) ### also, env to supply prefs, state to control
     w.show()
-    a.connect(a, SIGNAL('lastWindowClosed()'), a, SLOT('quit()'))
+    a.lastWindowClosed.connect(a.quit)
     print("about to exec_")
     a.exec_()
 

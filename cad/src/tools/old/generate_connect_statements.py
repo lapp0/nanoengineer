@@ -57,7 +57,7 @@ def main():
             signal = first_text_node(signal).wholeText
             slot = find_elements_by_localName(conn, 'slot')[0]
             slot = first_text_node(slot).wholeText
-            print(('        self.connect(self.%s,SIGNAL("%s"),self.%s)' %
+            self.%s.%s.connect(self.%s)' %
                    (sender, signal, re.sub('\(.*', '', slot))))
 
 if (__name__ == '__main__'):

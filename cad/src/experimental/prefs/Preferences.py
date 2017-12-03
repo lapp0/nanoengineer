@@ -12,22 +12,20 @@ History:
 
 import os, sys
 
-from PyQt4 import QtCore, QtGui
-from PyQt4.Qt import QDialog
-from PyQt4.Qt import QFileDialog
-from PyQt4.Qt import QMessageBox
-from PyQt4.Qt import QButtonGroup
-from PyQt4.Qt import QAbstractButton
-from PyQt4.Qt import QDoubleValidator
-from PyQt4.Qt import SIGNAL
-from PyQt4.Qt import QPalette
-from PyQt4.Qt import QColorDialog
-from PyQt4.Qt import QString
-from PyQt4.Qt import QFont
-from PyQt4.Qt import Qt
-from PyQt4.Qt import QWhatsThis
-from PyQt4.Qt import QTreeWidget
-from PyQt4.Qt import QSize
+from PyQt5 import QtCore, QtGui, QtWidgets
+from PyQt5.QtWidgets import QDialog
+from PyQt5.QtWidgets import QFileDialog
+from PyQt5.QtWidgets import QMessageBox
+from PyQt5.QtWidgets import QButtonGroup
+from PyQt5.QtWidgets import QAbstractButton
+from PyQt5.QtGui import QDoubleValidator
+from PyQt5.QtGui import QPalette
+from PyQt5.QtWidgets import QColorDialog
+from PyQt5.QtGui import QFont
+from PyQt5.QtCore import Qt
+from PyQt5.QtWidgets import QWhatsThis
+from PyQt5.QtWidgets import QTreeWidget
+from PyQt5.QtCore import QSize
 import string
 
 from PreferencesDialog import PreferencesDialog
@@ -476,7 +474,7 @@ class Preferences(PreferencesDialog):
         _checkedButton = self.logo_download_RadioButtonList.getButtonById(_myID)
         _checkedButton.setChecked(True)
 
-        self.connect(self.logo_download_RadioButtonList.buttonGroup, SIGNAL("buttonClicked(int)"), self.setPrefsLogoDownloadPermissions)
+        self.logo_download_RadioButtonList.buttonGroup.buttonClicked[int].connect(self.setPrefsLogoDownloadPermissions)
 
         # GROUPBOX: Build Chunks Settings
         connect_checkbox_with_boolean_pref( self.autobondCheckBox, buildModeAutobondEnabled_prefs_key )
@@ -555,7 +553,7 @@ class Preferences(PreferencesDialog):
 
         display_style = env.prefs[ startupGlobalDisplayStyle_prefs_key ]
         self.globalDisplayStyleStartupComboBox.setCurrentIndex(GDS_INDEXES.index(display_style))
-        self.connect(self.globalDisplayStyleStartupComboBox, SIGNAL("currentIndexChanged(int)"), self.setGlobalDisplayStyleAtStartUp)
+        self.globalDisplayStyleStartupComboBox.currentIndexChanged[int].connect(self.setGlobalDisplayStyleAtStartUp)
 
         # GROUPBOX: Compass display settings
         # Check if the compass is set to display
@@ -565,7 +563,7 @@ class Preferences(PreferencesDialog):
             self.display_compass_CheckBox.setCheckState(UNCHECKED)
         # Call the display_compass function no matter what it know's what to do.
         self.display_compass(env.prefs[displayCompass_prefs_key])
-        self.connect(self.display_compass_CheckBox, SIGNAL("toggled(bool)"), self.display_compass)
+        self.display_compass_CheckBox.toggled[bool].connect(self.display_compass)
         connect_comboBox_with_pref(self.compass_location_ComboBox, compassPosition_prefs_key)
         connect_checkbox_with_boolean_pref(self.display_compass_labels_checkbox, displayCompassLabels_prefs_key)
 
@@ -575,11 +573,10 @@ class Preferences(PreferencesDialog):
 
         # GROUPBOX: Cursor text settings
         self.set_cursor_text_font_size()
-        self.connect(self.cursor_text_font_size_SpinBox,
-                     SIGNAL("valueChanged(double)"), self.set_cursor_text_font_size)
-        self.connect(self.cursor_text_reset_Button, SIGNAL("clicked()"), self.reset_cursor_text_font_size)
+        self.cursor_text_font_size_SpinBox.valueChanged[double].connect(self.set_cursor_text_font_size)
+        self.cursor_text_reset_Button.clicked.connect(self.reset_cursor_text_font_size)
         self.cursor_text_color_ComboBox.setColor(env.prefs[cursorTextColor_prefs_key], default = True)
-        self.connect(self.cursor_text_color_ComboBox, SIGNAL("editingFinished()"), self.set_cursor_text_color)
+        self.cursor_text_color_ComboBox.editingFinished.connect(self.set_cursor_text_color)
 
         # GROUPBOX: Other graphics options groupbox
         connect_checkbox_with_boolean_pref(self.display_confirmation_corner_CheckBox, displayConfirmationCorner_prefs_key)
@@ -653,10 +650,10 @@ class Preferences(PreferencesDialog):
             self.view_animation_speed_reset_ToolButton.setEnabled(False)
         if env.prefs.has_default_value(mouseSpeedDuringRotation_prefs_key):
             self.mouse_rotation_speed_reset_ToolButton.setEnabled(False)
-        self.connect(self.view_animation_speed_Slider, SIGNAL("sliderReleased()"), self.set_view_animation_speed)
-        self.connect(self.view_animation_speed_reset_ToolButton, SIGNAL("clicked()"), self.reset_view_animation_speed)
-        self.connect(self.mouse_rotation_speed_Slider, SIGNAL("sliderReleased()"), self.set_mouse_rotation_speed)
-        self.connect(self.mouse_rotation_speed_reset_ToolButton, SIGNAL("clicked()"), self.reset_mouse_rotation_speed)
+        self.view_animation_speed_Slider.sliderReleased.connect(self.set_view_animation_speed)
+        self.view_animation_speed_reset_ToolButton.clicked.connect(self.reset_view_animation_speed)
+        self.mouse_rotation_speed_Slider.sliderReleased.connect(self.set_mouse_rotation_speed)
+        self.mouse_rotation_speed_reset_ToolButton.clicked.connect(self.reset_mouse_rotation_speed)
 
         # GROUPBOX: Mouse wheel zoom settings
         connect_comboBox_with_pref(self.zoom_directon_ComboBox, mouseWheelDirection_prefs_key)
@@ -715,12 +712,12 @@ class Preferences(PreferencesDialog):
         elif not env.prefs[displayVertRuler_prefs_key]:
             self.display_rulers_ComboBox.setCurrentIndex(2)
 
-        self.connect(self.display_rulers_ComboBox, SIGNAL("currentIndexChanged(int)"), self.set_ruler_display)
+        self.display_rulers_ComboBox.currentIndexChanged[int].connect(self.set_ruler_display)
         connect_comboBox_with_pref(self.origin_rulers_ComboBox, rulerPosition_prefs_key)
         self.ruler_color_ColorComboBox.setColor(env.prefs[rulerColor_prefs_key], default = True)
-        self.connect(self.ruler_color_ColorComboBox, SIGNAL("editingFinished()"), self.set_ruler_color)
+        self.ruler_color_ColorComboBox.editingFinished.connect(self.set_ruler_color)
         self.ruler_opacity_SpinBox.setValue(int(env.prefs[rulerOpacity_prefs_key] * 100))
-        self.connect(self.ruler_opacity_SpinBox, SIGNAL("valueChanged(int)"), self.set_ruler_opacity)
+        self.ruler_opacity_SpinBox.valueChanged[int].connect(self.set_ruler_opacity)
         connect_checkbox_with_boolean_pref(self.show_rulers_in_perspective_view_CheckBox,\
                                            showRulersInPerspectiveView_prefs_key)
         return
@@ -767,35 +764,31 @@ class Preferences(PreferencesDialog):
 
         # GROUPBOX: Colors
         # "Change Element Colors" button.
-        self.connect(self.change_element_colors_PushButton, SIGNAL("clicked()"), self.change_element_colors)
+        self.change_element_colors_PushButton.clicked.connect(self.change_element_colors)
 
         # GROUPBOX: Colors sub
         self.atom_highlighting_ColorComboBox.setColor(env.prefs[atomHighlightColor_prefs_key], default = True)
-        self.connect(self.atom_highlighting_ColorComboBox, SIGNAL("editingFinished()"), self.set_atom_highlighting_color)
+        self.atom_highlighting_ColorComboBox.editingFinished.connect(self.set_atom_highlighting_color)
         self.bondpoint_highlighting_ColorComboBox.setColor(env.prefs[bondpointHighlightColor_prefs_key], default = True)
-        self.connect(self.bondpoint_highlighting_ColorComboBox, SIGNAL("editingFinished()"), self.set_bondpoint_highlighting_color)
+        self.bondpoint_highlighting_ColorComboBox.editingFinished.connect(self.set_bondpoint_highlighting_color)
         self.bondpoint_hotspots_ColorComboBox.setColor(env.prefs[bondpointHotspotColor_prefs_key], default = True)
-        self.connect(self.bondpoint_hotspots_ColorComboBox, SIGNAL("editingFinished()"), self.set_bondpoint_hotspots_color)
-        self.connect(self.restore_element_colors_PushButton, SIGNAL("clicked()"), self.reset_atom_and_bondpoint_colors)
+        self.bondpoint_hotspots_ColorComboBox.editingFinished.connect(self.set_bondpoint_hotspots_color)
+        self.restore_element_colors_PushButton.clicked.connect(self.reset_atom_and_bondpoint_colors)
 
         #GROUPBOX: Miscellaneous atom options
         lod = env.prefs[levelOfDetail_prefs_key]
         if lod == -1:
             lod = VARIABLE_DETAIL_LEVEL_INDX
         self.atoms_detail_level_ComboBox.setCurrentIndex(lod)
-        self.connect(self.atoms_detail_level_ComboBox, SIGNAL("currentIndexChanged(int)"), self.set_level_of_detail)
+        self.atoms_detail_level_ComboBox.currentIndexChanged[int].connect(self.set_level_of_detail)
         self.set_ball_and_stick_atom_scale(env.prefs[diBALL_AtomRadius_prefs_key])
         self.set_CPK_atom_scale(env.prefs[cpkScaleFactor_prefs_key])
         self.ball_and_stick_atom_scale_SpinBox.setValue(round(env.prefs[diBALL_AtomRadius_prefs_key] * 100.0))
         self.CPK_atom_scale_doubleSpinBox.setValue(env.prefs[cpkScaleFactor_prefs_key])
-        self.connect(self.ball_and_stick_atom_scale_SpinBox,
-                     SIGNAL("valueChanged(int)"),self.set_ball_and_stick_atom_scale)
-        self.connect(self.CPK_atom_scale_doubleSpinBox,
-                     SIGNAL("valueChanged(double)"),self.set_CPK_atom_scale)
-        self.connect(self.ball_and_stick_atom_scale_reset_ToolButton,
-                     SIGNAL("clicked()"),self.reset_ball_and_stick_atom_scale)
-        self.connect(self.CPK_atom_scale_reset_ToolButton,
-                     SIGNAL("clicked()"),self.reset_CPK_atom_scale)
+        self.ball_and_stick_atom_scale_SpinBox.valueChanged[int].connect(self.set_ball_and_stick_atom_scale)
+        self.CPK_atom_scale_doubleSpinBox.valueChanged[double].connect(self.set_CPK_atom_scale)
+        self.ball_and_stick_atom_scale_reset_ToolButton.clicked.connect(self.reset_ball_and_stick_atom_scale)
+        self.CPK_atom_scale_reset_ToolButton.clicked.connect(self.reset_CPK_atom_scale)
         connect_checkbox_with_boolean_pref(self.overlapping_atom_indicators_CheckBox,
                                            indicateOverlappingAtoms_prefs_key)
         connect_checkbox_with_boolean_pref(self.force_to_keep_bonds_during_transmute_CheckBox,
@@ -928,23 +921,21 @@ class Preferences(PreferencesDialog):
         """
         # GROUPBOX Colors
         self.bond_highlighting_ColorComboBox.setColor(env.prefs[bondHighlightColor_prefs_key])
-        self.connect(self.bond_highlighting_ColorComboBox, SIGNAL("editingFinished()"), self.set_bond_highlighting_color)
+        self.bond_highlighting_ColorComboBox.editingFinished.connect(self.set_bond_highlighting_color)
         self.ball_and_stick_cylinder_ColorComboBox.setColor(env.prefs[diBALL_bondcolor_prefs_key])
-        self.connect(self.ball_and_stick_cylinder_ColorComboBox, SIGNAL("editingFinished()"), self.set_ball_and_stick_cylinder_color)
+        self.ball_and_stick_cylinder_ColorComboBox.editingFinished.connect(self.set_ball_and_stick_cylinder_color)
         self.bond_stretch_ColorComboBox.setColor(env.prefs[bondStretchColor_prefs_key])
-        self.connect(self.bond_stretch_ColorComboBox, SIGNAL("editingFinished()"), self.set_bond_stretch_color)
+        self.bond_stretch_ColorComboBox.editingFinished.connect(self.set_bond_stretch_color)
         self.vane_ribbon_ColorComboBox.setColor(env.prefs[bondVaneColor_prefs_key])
-        self.connect(self.vane_ribbon_ColorComboBox, SIGNAL("editingFinished()"), self.set_vane_ribbon_color)
-        self.connect(self.restore_bond_colors_PushButton, SIGNAL("clicked()"), self.reset_default_colors)
+        self.vane_ribbon_ColorComboBox.editingFinished.connect(self.set_vane_ribbon_color)
+        self.restore_bond_colors_PushButton.clicked.connect(self.reset_default_colors)
         # GROUPBOX Miscellaneous bond settings
         self.set_ball_and_stick_bond_scale(env.prefs[diBALL_BondCylinderRadius_prefs_key] * 100)
         self.set_bond_line_thickness(env.prefs[linesDisplayModeThickness_prefs_key])
         self.ball_and_stick_bond_scale_SpinBox.setValue(round(env.prefs[diBALL_BondCylinderRadius_prefs_key] * 100))
         self.bond_line_thickness_SpinBox.setValue(env.prefs[linesDisplayModeThickness_prefs_key])
-        self.connect(self.ball_and_stick_bond_scale_SpinBox,
-                     SIGNAL("valueChanged(int)"),self.set_ball_and_stick_bond_scale)
-        self.connect(self.bond_line_thickness_SpinBox,
-                     SIGNAL("valueChanged(int)"),self.set_bond_line_thickness)
+        self.ball_and_stick_bond_scale_SpinBox.valueChanged[int].connect(self.set_ball_and_stick_bond_scale)
+        self.bond_line_thickness_SpinBox.valueChanged[int].connect(self.set_bond_line_thickness)
         # GROUPBOX: High order bonds (sub box)
         if env.prefs[pibondStyle_prefs_key] == "multicyl":
             _myID = 0
@@ -954,7 +945,7 @@ class Preferences(PreferencesDialog):
             _myID = 2
         _checkedButton = self.high_order_bonds_RadioButtonList.getButtonById(_myID)
         _checkedButton.setChecked(True)
-        self.connect(self.high_order_bonds_RadioButtonList.buttonGroup, SIGNAL("buttonClicked(int)"), self.set_high_order_bonds)
+        self.high_order_bonds_RadioButtonList.buttonGroup.buttonClicked[int].connect(self.set_high_order_bonds)
         connect_checkbox_with_boolean_pref(self.show_bond_type_letters_CheckBox, pibondLetters_prefs_key)
         connect_checkbox_with_boolean_pref(self.show_valence_errors_CheckBox, showValenceErrors_prefs_key)
         connect_checkbox_with_boolean_pref(self.show_bond_stretch_indicators_CheckBox, showBondStretchIndicators_prefs_key)
@@ -1052,12 +1043,12 @@ class Preferences(PreferencesDialog):
                                         bdnaBasesPerTurn_prefs_key)
         connect_doubleSpinBox_with_pref(self.rise_DoubleSpinBox, bdnaRise_prefs_key)
         self.strand1_ColorComboBox.setColor(env.prefs[dnaDefaultStrand1Color_prefs_key])
-        self.connect(self.strand1_ColorComboBox, SIGNAL("editingFinished()"), self.set_strand1_color)
+        self.strand1_ColorComboBox.editingFinished.connect(self.set_strand1_color)
         self.strand2_ColorComboBox.setColor(env.prefs[dnaDefaultStrand2Color_prefs_key])
-        self.connect(self.strand1_ColorComboBox, SIGNAL("editingFinished()"), self.set_strand2_color)
+        self.strand1_ColorComboBox.editingFinished.connect(self.set_strand2_color)
         self.segment_ColorComboBox.setColor(env.prefs[dnaDefaultSegmentColor_prefs_key])
-        self.connect(self.segment_ColorComboBox, SIGNAL("editingFinished()"), self.set_segment_color)
-        self.connect(self.restore_DNA_colors_PushButton, SIGNAL("clicked()"), self.reset_DNA_colors)
+        self.segment_ColorComboBox.editingFinished.connect(self.set_segment_color)
+        self.restore_DNA_colors_PushButton.clicked.connect(self.reset_DNA_colors)
         # GROUPBOX: Strand arrowhead display options
         connect_checkbox_with_boolean_pref(self.show_arrows_on_backbones_CheckBox,
                                            arrowsOnBackBones_prefs_key)
@@ -1066,9 +1057,9 @@ class Preferences(PreferencesDialog):
         connect_checkbox_with_boolean_pref(self.show_arrows_on_5prime_ends_CheckBox,
                                            arrowsOnFivePrimeEnds_prefs_key)
         self.three_prime_end_custom_ColorComboBox.setColor(env.prefs[dnaStrandThreePrimeArrowheadsCustomColor_prefs_key])
-        self.connect(self.three_prime_end_custom_ColorComboBox, SIGNAL("editingFinished()"), self.set_three_prime_end_color)
+        self.three_prime_end_custom_ColorComboBox.editingFinished.connect(self.set_three_prime_end_color)
         self.five_prime_end_custom_ColorComboBox.setColor(env.prefs[dnaStrandFivePrimeArrowheadsCustomColor_prefs_key])
-        self.connect(self.five_prime_end_custom_ColorComboBox, SIGNAL("editingFinished()"), self.set_five_prime_end_color)
+        self.five_prime_end_custom_ColorComboBox.editingFinished.connect(self.set_five_prime_end_color)
         return
 
     def set_strand1_color(self):
@@ -1129,21 +1120,15 @@ class Preferences(PreferencesDialog):
         Setup the "DNA Minor_Groove Error Indicator" page.
         """
         self.set_DNA_minor_groove_error_indicator_status()
-        self.connect(self.minor_groove_error_indicatiors_CheckBox,
-                     SIGNAL("toggled(bool)"),
-                     self.set_DNA_minor_groove_error_indicator_status)
+        self.minor_groove_error_indicatiors_CheckBox.toggled[bool].connect(self.set_DNA_minor_groove_error_indicator_status)
         # GROUPBOX: connect_doubleSpinBox_with_pref
         connect_spinBox_with_pref(self.minor_groove_error_minimum_angle_SpinBox,
                                   dnaMinMinorGrooveAngle_prefs_key)
         connect_spinBox_with_pref(self.minor_groove_error_maximum_angle_SpinBox,
                                   dnaMaxMinorGrooveAngle_prefs_key)
         self.minor_groove_error_color_ColorComboBox.setColor(env.prefs[dnaMinorGrooveErrorIndicatorColor_prefs_key])
-        self.connect(self.minor_groove_error_color_ColorComboBox,
-                     SIGNAL("editingFinished()"),
-                     self.set_minor_groove_error_color)
-        self.connect(self.minor_groove_error_reset_PushButton,
-                     SIGNAL("clicked()"),
-                     self.reset_minor_groove_error_prefs)
+        self.minor_groove_error_color_ColorComboBox.editingFinished.connect(self.set_minor_groove_error_color)
+        self.minor_groove_error_reset_PushButton.clicked.connect(self.reset_minor_groove_error_prefs)
         return
 
     def set_DNA_minor_groove_error_indicator_status(self, status = None):
@@ -1186,20 +1171,14 @@ class Preferences(PreferencesDialog):
     # PAGE: DNA BASE ORIENTATION INDICATORS
     def _setupPage_DNA_Base_Orientation_Indicators(self):
         self.set_DNA_base_orientation_indicator_status()
-        self.connect(self.base_orientation_indicatiors_CheckBox,
-                     SIGNAL("toggled(bool)"),
-                     self.set_DNA_base_orientation_indicator_status)
+        self.base_orientation_indicatiors_CheckBox.toggled[bool].connect(self.set_DNA_base_orientation_indicator_status)
         #GROUPBOX: Base orientation indicator parameters
         connect_comboBox_with_pref(self.plane_normal_ComboBox,
                                    dnaBaseIndicatorsPlaneNormal_prefs_key)
         self.indicators_color_ColorComboBox.setColor(env.prefs[dnaBaseIndicatorsColor_prefs_key])
-        self.connect(self.indicators_color_ColorComboBox,
-                     SIGNAL("editingFinished()"),
-                     self.set_indicators_color)
+        self.indicators_color_ColorComboBox.editingFinished.connect(self.set_indicators_color)
         self.inverse_indicators_color_ColorComboBox.setColor(env.prefs[dnaBaseInvIndicatorsColor_prefs_key])
-        self.connect(self.inverse_indicators_color_ColorComboBox,
-                     SIGNAL("editingFinished()"),
-                     self.set_inverse_indicators_color)
+        self.inverse_indicators_color_ColorComboBox.editingFinished.connect(self.set_inverse_indicators_color)
         connect_checkbox_with_boolean_pref(self.enable_inverse_indicatiors_CheckBox,
                                            dnaBaseInvIndicatorsEnabled_prefs_key)
         connect_doubleSpinBox_with_pref(self.angle_threshold_DoubleSpinBox,
@@ -1255,8 +1234,7 @@ class Preferences(PreferencesDialog):
             env.prefs[Adjust_watchRealtimeMinimization_prefs_key])
         self.set_and_enable_realtime(
             env.prefs[Adjust_watchRealtimeMinimization_prefs_key])
-        self.connect(self.watch_motion_in_realtime_CheckBox,
-                     SIGNAL("toggled(bool)"), self.set_and_enable_realtime)
+        self.watch_motion_in_realtime_CheckBox.toggled[bool].connect(self.set_and_enable_realtime)
         self.constant_animation_update_RadioButton.setChecked(True)
         # GROUPBOX: Convergence criteria
         connect_doubleSpinBox_with_pref(self.endRMS_DoubleSpinBox,
@@ -1306,8 +1284,7 @@ class Preferences(PreferencesDialog):
                 if isinstance(fcall, collections.Callable):
                     if DEBUG:
                         print("method defined: %s" % _fname)
-                    self.connect(self.checkboxes[name], \
-                                                 SIGNAL("toggled(bool)"), \
+                    self.checkboxes[name].toggled[bool].connect(\
                                                  fcall)
                 else:
                     print("Attribute %s exists, but is not a callable method.")
@@ -1329,14 +1306,14 @@ class Preferences(PreferencesDialog):
                 #if DEBUG:
                     #print "method missing: %s" % _fname
 
-        self.connect( self.choosers["QuteMolX"].lineEdit, SIGNAL("editingFinished()"), self.set_qutemolx_path)
-        self.connect( self.choosers["POV-Ray"].lineEdit, SIGNAL("editingFinished()"), self.set_povray_path)
-        self.connect( self.choosers["MegaPOV"].lineEdit, SIGNAL("editingFinished()"), self.set_megapov_path)
-        self.connect( self.choosers["POV include dir"].lineEdit, SIGNAL("editingFinished()"), self.set_pov_include_dir)
-        self.connect( self.choosers["GROMACS"].lineEdit, SIGNAL("editingFinished()"), self.set_gromacs_path)
-        self.connect( self.choosers["cpp"].lineEdit, SIGNAL("editingFinished()"), self.set_cpp_path)
-        self.connect( self.choosers["Rosetta"].lineEdit, SIGNAL("editingFinished()"), self.set_rosetta_path)
-        self.connect( self.choosers["Rosetta DB"].lineEdit, SIGNAL("editingFinished()"), self.set_rosetta_db_path)
+        self.choosers["QuteMolX"].lineEdit.editingFinished.connect(self.set_qutemolx_path)
+        self.choosers["POV-Ray"].lineEdit.editingFinished.connect(self.set_povray_path)
+        self.choosers["MegaPOV"].lineEdit.editingFinished.connect(self.set_megapov_path)
+        self.choosers["POV include dir"].lineEdit.editingFinished.connect(self.set_pov_include_dir)
+        self.choosers["GROMACS"].lineEdit.editingFinished.connect(self.set_gromacs_path)
+        self.choosers["cpp"].lineEdit.editingFinished.connect(self.set_cpp_path)
+        self.choosers["Rosetta"].lineEdit.editingFinished.connect(self.set_rosetta_path)
+        self.choosers["Rosetta DB"].lineEdit.editingFinished.connect(self.set_rosetta_db_path)
         return
 
 
@@ -1796,12 +1773,10 @@ class Preferences(PreferencesDialog):
         Setup the "Window" page.
         """
         # GROUPBOX: Window Postion and Size
-        self.connect(self.current_size_save_Button, SIGNAL("clicked()"),
-                     self.save_window_size)
-        self.connect(self.restore_saved_size_Button, SIGNAL("clicked()"),
-                     self.restore_saved_size)
-        self.connect(self.current_height_SpinBox, SIGNAL("valueChanged(int)"), self.change_window_size)
-        self.connect(self.current_width_SpinBox, SIGNAL("valueChanged(int)"), self.change_window_size)
+        self.current_size_save_Button.clicked.connect(self.save_window_size)
+        self.restore_saved_size_Button.clicked.connect(self.restore_saved_size)
+        self.current_height_SpinBox.valueChanged[int].connect(self.change_window_size)
+        self.current_width_SpinBox.valueChanged[int].connect(self.change_window_size)
         ((x0, y0), (w, h)) = screen_pos_size()
         self.current_width_SpinBox.setRange(1, w)
         self.current_height_SpinBox.setRange(1, h)
@@ -1823,25 +1798,21 @@ class Preferences(PreferencesDialog):
         # GROUPBOX: Window caption format
         self.caption_prefix_LineEdit.setText(env.prefs[captionPrefix_prefs_key])
         self.caption_suffix_LineEdit.setText(env.prefs[captionSuffix_prefs_key])
-        self.connect(self.caption_prefix_save_ToolButton, SIGNAL("clicked()"),
-                     self.set_caption_prefix)
-        self.connect(self.caption_suffix_save_ToolButton, SIGNAL("clicked()"),
-                     self.set_caption_suffix)
+        self.caption_prefix_save_ToolButton.clicked.connect(self.set_caption_prefix)
+        self.caption_suffix_save_ToolButton.clicked.connect(self.set_caption_suffix)
         connect_checkbox_with_boolean_pref(self.display_full_path_CheckBox,
                                            captionFullPath_prefs_key)
         # GROUPBOX: Custom Font
         self.set_use_custom_font_status()
-        self.connect(self.use_custom_font_CheckBox,
-                     SIGNAL("toggled(bool)"),
-                     self.set_use_custom_font_status)
+        self.use_custom_font_CheckBox.toggled[bool].connect(self.set_use_custom_font_status)
         font_family = env.prefs[displayFont_prefs_key]
         font_size = env.prefs[displayFontPointSize_prefs_key]
         font = QFont(font_family, font_size)
         self.custom_fontComboBox.setCurrentFont(font)
         self.custom_font_size_SpinBox.setValue(font_size)
-        self.connect(self.custom_fontComboBox, SIGNAL("currentFontChanged (const QFont &)"), self.change_font)
-        self.connect(self.custom_font_size_SpinBox, SIGNAL("valueChanged(int)"), self.set_fontsize)
-        self.connect(self.make_default_font_PushButton, SIGNAL("clicked()"), self.change_selected_font_to_default_font)
+        self.custom_fontComboBox.currentFontChanged [QFont].connect(self.change_font)
+        self.custom_font_size_SpinBox.valueChanged[int].connect(self.set_fontsize)
+        self.make_default_font_PushButton.clicked.connect(self.change_selected_font_to_default_font)
         return
 
     def change_window_size(self, val = 0):
@@ -2159,6 +2130,6 @@ class Preferences(PreferencesDialog):
 
 if __name__ == "__main__":
     _iconprefix = "/Users/derrickhendricks/trunks/trunk/cad/src"
-    app = QtGui.QApplication(sys.argv)
+    app = QtWidgets.QApplication(sys.argv)
     p = Preferences()
     sys.exit(app.exec_())

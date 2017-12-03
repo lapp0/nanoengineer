@@ -25,10 +25,18 @@ And it might as well be extended enough to replace some existing uses of QProces
 with uses of this class, if that would simplify them (but I'm not sure whether it would).
 """
 
-from PyQt4.Qt import QProcess, QStringList, qApp, SIGNAL, QDir, QString
+from PyQt5.QtGui import QProcess, QApplication, QDir
+from PyQt5.QtWidgets import *
 import time
 
 import foundation.env as env
+
+try:
+    QString = unicode
+except NameError:
+    # Python 3
+    QString = str
+QStringList = list
 
 def ensure_QStringList(args):
     if type(args) == type([]):
@@ -65,10 +73,10 @@ class Process(QProcess):
         # In order to not have to worry about this, we read it all, whether or not caller wants it.
         # We discard it here (in these slot methods) if caller didn't call set_stdout or set_stderr.
         # See also QProcess.communication property (whose meaning or effect is not documented in Qt Assistant).
-        self.connect( self, SIGNAL('readyReadStandardOutput()'), self.read_stdout) ###k
-        self.connect( self, SIGNAL('readyReadStandardError()'), self.read_stderr) ###k
-        self.connect( self, SIGNAL('error(int)'), self.got_error) ###k
-        self.connect( self, SIGNAL('finished(int)'), self.process_exited) ###k
+        self.readyReadStandardOutput.connect(self.read_stdout)
+        self.readyReadStandardError.connect(self.read_stderr)
+        self.error[int].connect(self.got_error)
+        self.finished[int].connect(self.process_exited)
 
         self.currentError = None
         self.stdoutRedirected = False
@@ -219,7 +227,7 @@ class Process(QProcess):
                         self.terminate()
                     else:
                         self.kill()
-            env.call_qApp_processEvents() #bruce 050908 replaced qApp.processEvents()
+            env.call_qApp_processEvents() #bruce 050908 replaced QApplication.processEvents()
                 #k is this required for us to get the slot calls for stdout / stderr ?
                 # I don't know, but we want it even if not.
             if (pollFunction):
@@ -353,12 +361,12 @@ class ProcessTest(object):
         app.quit()
 
 if __name__ == '__main__':
-    from PyQt4.Qt import QApplication, QTimer
+    from PyQt5.QtGui import QApplication, QTimer
     import sys
     test = ProcessTest()
     app = QApplication(sys.argv, False)
     timer = QTimer()
-    timer.connect(timer, SIGNAL("timeout()"), test._all_tests)
+    timer.timeout.connect(test._all_tests)
     timer.setSingleShot(True)
     timer.start(10)
     app.exec_()

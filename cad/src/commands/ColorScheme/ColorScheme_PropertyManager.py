@@ -13,6 +13,7 @@ To do:
 - Save/load hh and selection color style settings into/from favorites file.
 """
 import os, time, fnmatch
+from PyQt5.QtWidgets import *
 import foundation.env as env
 
 from command_support.Command_PropertyManager import Command_PropertyManager
@@ -22,9 +23,8 @@ from utilities.prefs_constants import getDefaultWorkingDirectory
 from utilities.prefs_constants import workingDirectory_prefs_key
 from utilities.Log import greenmsg, redmsg
 
-from PyQt4.Qt import SIGNAL
-from PyQt4.Qt import QFileDialog, QString, QMessageBox
-from PyQt4.Qt import QColorDialog, QPixmap, QIcon
+from PyQt5.QtGui import QFileDialog, QMessageBox
+from PyQt5.QtGui import QColorDialog, QPixmap, QIcon
 
 from PM.PM_GroupBox import PM_GroupBox
 from PM.PM_ComboBox import PM_ComboBox
@@ -41,6 +41,12 @@ from widgets.widget_helpers import RGBf_to_QColor, QColor_to_RGBf
 
 from utilities.icon_utilities import geticon
 from utilities.debug import print_compact_traceback
+
+try:
+    QString = unicode
+except NameError:
+    # Python 3
+    QString = str
 
 bg_BLUE_SKY = 0
 bg_EVENING_SKY = 1
@@ -873,7 +879,7 @@ class ColorScheme_PropertyManager(Command_PropertyManager):
             saveLocation, #where to save
             formats, # file format options
             QString("Favorite (*.txt)") # selectedFilter
-            )
+            )[0]
         if not fn:
             env.history.message(cmd + "Cancelled")
 
@@ -933,7 +939,7 @@ class ColorScheme_PropertyManager(Command_PropertyManager):
         fname = QFileDialog.getOpenFileName(self,
                                          "Choose a file to load",
                                          directory,
-                                         formats)
+                                         formats)[0]
 
         if not fname:
             env.history.message("User cancelled loading file.")

@@ -11,7 +11,8 @@ TODO: as of 2008-01-18
 - See MultipleDnaSegmentResize_EditCommand for details.
 - need to implement model_changed method
 """
-from PyQt4.Qt import Qt, SIGNAL
+from PyQt5.QtCore import Qt
+from PyQt5.QtWidgets import *
 from PM.PM_GroupBox      import PM_GroupBox
 from PM.PM_Constants     import PM_DONE_BUTTON
 from PM.PM_Constants     import PM_WHATS_THIS_BUTTON

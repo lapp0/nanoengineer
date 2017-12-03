@@ -13,10 +13,10 @@ and renamed it PM_CheckBox.
 
 """
 
-from PyQt4.Qt import Qt
-from PyQt4.Qt import QCheckBox
-from PyQt4.Qt import QLabel
-from PyQt4.Qt import QWidget
+from PyQt5.QtCore import Qt
+from PyQt5.QtWidgets import QCheckBox
+from PyQt5.QtWidgets import QLabel
+from PyQt5.QtWidgets import QWidget
 
 from PM.PM_Constants import PM_LEFT_COLUMN, PM_RIGHT_COLUMN
 

@@ -9,7 +9,7 @@ TemporaryCommand.py -- provides several kinds of TemporaryCommand superclasses
 @license:   GPL
 """
 
-from PyQt4.Qt import Qt
+from PyQt5.QtCore import Qt
 
 from command_support.Command import Command, commonCommand
 

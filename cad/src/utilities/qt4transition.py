@@ -135,8 +135,8 @@ def qt4warnDestruction(obj, name = ''):
     def destruction(ignore, message = message):
         print('OBJECT DESTROYED (exiting)', message) #bruce 070521 revised message
         sys.exit(1)
-    from PyQt4.Qt import QObject, SIGNAL
-    QObject.connect(obj, SIGNAL("destroyed(QObject *)"), destruction)
+    from PyQt5.QtCore import QObject
+    obj.destroyed[QObject].connect(destruction)
 
 def findDefiningClass(cls_or_method, method_name = None):
     """
@@ -180,13 +180,13 @@ def lineage(widget, die = True, depth = 0):
     default behavior (switchable with die = False).
     """
     if widget is not None:
-        from PyQt4.Qt import QObject, SIGNAL
+        from PyQt5.QtCore import QObject
         print((depth * '    ') + repr(widget))
         def destruction(ignore, die = die, message = repr(widget) + " was just destroyed"):
             qt4here(message, show_traceback = True)
             if die:
                 sys.exit(1)
-        QObject.connect(widget, SIGNAL("destroyed(QObject *)"), destruction)
+        widget.destroyed[QObject].connect(destruction)
         lineage(widget.parent(), die, depth + 1)
 
 # ==

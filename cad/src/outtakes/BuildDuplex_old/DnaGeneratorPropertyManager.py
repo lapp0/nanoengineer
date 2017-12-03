@@ -53,11 +53,9 @@ from dna.model.Dna_Constants import replaceUnrecognized
 
 from utilities.Log import redmsg, greenmsg, orangemsg
 
-from PyQt4.Qt import SIGNAL
-from PyQt4.Qt import QRegExp
-from PyQt4.Qt import QString
-from PyQt4.Qt import QTextCursor
-from PyQt4.Qt import QTextOption
+from PyQt5.QtCore import QRegExp
+from PyQt5.QtGui import QTextCursor
+from PyQt5.QtGui import QTextOption
 
 from PM.PM_ComboBox      import PM_ComboBox
 from PM.PM_DoubleSpinBox import PM_DoubleSpinBox
@@ -72,6 +70,12 @@ from widgets.DebugMenuMixin import DebugMenuMixin
 #  (indices for model... and conformation... comboboxes).
 #@REDUCED_MODEL    =  0
 #@ATOMISTIC_MODEL  =  1
+try:
+    QString = unicode
+except NameError:
+    # Python 3
+    QString = str
+
 BDNA             =  0
 ZDNA             =  1
 
@@ -177,9 +181,7 @@ class DnaGeneratorPropertyManager( PM_Dialog, DebugMenuMixin ):
                               decimals      =  3,
                               suffix        =  ' Angstroms')
 
-        self.connect( self.duplexLengthSpinBox,
-                      SIGNAL("valueChanged(double)"),
-                      self.duplexLengthChanged )
+        self.duplexLengthSpinBox.valueChanged[double].connect(self.duplexLengthChanged)
 
         # Strand Length
         self.strandLengthSpinBox = \
@@ -191,9 +193,7 @@ class DnaGeneratorPropertyManager( PM_Dialog, DebugMenuMixin ):
                         maximum       =  10000,
                         suffix        =  ' bases' )
 
-        self.connect( self.strandLengthSpinBox,
-                      SIGNAL("valueChanged(int)"),
-                      self.strandLengthChanged )
+        self.strandLengthSpinBox.valueChanged[int].connect(self.strandLengthChanged)
         # New Base choices
         newBaseChoices  =  []
         for theBase in list(basesDict.keys()):
@@ -215,13 +215,9 @@ class DnaGeneratorPropertyManager( PM_Dialog, DebugMenuMixin ):
         self.sequenceTextEdit.setCursorWidth(2)
         self.sequenceTextEdit.setWordWrapMode( QTextOption.WrapAnywhere )
 
-        self.connect( self.sequenceTextEdit,
-                      SIGNAL("textChanged()"),
-                      self.sequenceChanged )
+        self.sequenceTextEdit.textChanged.connect(self.sequenceChanged)
 
-        self.connect( self.sequenceTextEdit,
-                      SIGNAL("cursorPositionChanged()"),
-                      self.cursorPosChanged )
+        self.sequenceTextEdit.cursorPositionChanged.connect(self.cursorPosChanged)
 
         # Actions
         self.actionsComboBox  = \
@@ -236,9 +232,7 @@ class DnaGeneratorPropertyManager( PM_Dialog, DebugMenuMixin ):
         # This is a bug that needs Bruce. Using currentIndexChanged(int) as
         # a workaround, but there is still a bug when the "Reverse" action
         # is selected. Mark 2007-08-15
-        self.connect( self.actionsComboBox,
-                      SIGNAL("currentIndexChanged(int)"),
-                      self.actionsComboBoxChanged )
+        self.actionsComboBox.currentIndexChanged[int].connect(self.actionsComboBoxChanged)
 
     def _loadGroupBox2( self, pmGroupBox ):
         """
@@ -257,9 +251,7 @@ class DnaGeneratorPropertyManager( PM_Dialog, DebugMenuMixin ):
                          choices       =  ["B-DNA"],
                          setAsDefault  =  True)
 
-        self.connect( self.conformationComboBox,
-                      SIGNAL("currentIndexChanged(int)"),
-                      self.conformationComboBoxChanged )
+        self.conformationComboBox.currentIndexChanged[int].connect(self.conformationComboBoxChanged)
 
         self.basesPerTurnComboBox= \
             PM_ComboBox( pmGroupBox,
@@ -445,9 +437,7 @@ class DnaGeneratorPropertyManager( PM_Dialog, DebugMenuMixin ):
         """
         conformation  =  self._modelChoices[ inIndex ]
 
-        self.disconnect( self.conformationComboBox,
-                         SIGNAL("currentIndexChanged(int)"),
-                         self.conformationComboBoxChanged )
+        self.conformationComboBox.currentIndexChanged[int].disconnect(self.conformationComboBoxChanged)
 
         self.conformationComboBox.clear() # Generates signal!
 
@@ -469,9 +459,7 @@ class DnaGeneratorPropertyManager( PM_Dialog, DebugMenuMixin ):
             msg = "Error - unknown model representation. Index = " + inIndex
             env.history.message(redmsg(msg))
 
-        self.connect( self.conformationComboBox,
-                      SIGNAL("currentIndexChanged(int)"),
-                      self.conformationComboBoxChanged)
+        self.conformationComboBox.currentIndexChanged[int].connect(self.conformationComboBoxChanged)
 
     # GroupBox3 slots (and other methods) supporting the Strand Sequence groupbox.
 
@@ -521,15 +509,11 @@ class DnaGeneratorPropertyManager( PM_Dialog, DebugMenuMixin ):
         newDuplexLength  =  self.getDuplexRise( conformation ) \
                           * self.getSequenceLength()
 
-        self.disconnect( self.duplexLengthSpinBox,
-                         SIGNAL("valueChanged(double)"),
-                         self.duplexLengthChanged)
+        self.duplexLengthSpinBox.valueChanged[double].disconnect(self.duplexLengthChanged)
 
         self.duplexLengthSpinBox.setValue( newDuplexLength )
 
-        self.connect( self.duplexLengthSpinBox,
-                      SIGNAL("valueChanged(double)"),
-                      self.duplexLengthChanged)
+        self.duplexLengthSpinBox.valueChanged[double].connect(self.duplexLengthChanged)
 
     # Renamed from length_changed :jbirac 20070613:
     def strandLengthChanged( self, inStrandLength ):
@@ -585,15 +569,11 @@ class DnaGeneratorPropertyManager( PM_Dialog, DebugMenuMixin ):
         sequence.
         """
 
-        self.disconnect( self.strandLengthSpinBox,
-                         SIGNAL("valueChanged(int)"),
-                         self.strandLengthChanged )
+        self.strandLengthSpinBox.valueChanged[int].disconnect(self.strandLengthChanged)
 
         self.strandLengthSpinBox.setValue( self.getSequenceLength() )
 
-        self.connect( self.strandLengthSpinBox,
-                      SIGNAL("valueChanged(int)"),
-                      self.strandLengthChanged )
+        self.strandLengthSpinBox.valueChanged[int].connect(self.strandLengthChanged)
         return
 
     def sequenceChanged( self ):
@@ -606,9 +586,7 @@ class DnaGeneratorPropertyManager( PM_Dialog, DebugMenuMixin ):
         theSequence     =  self.getPlainSequence()
 
         # Disconnect while we edit the sequence.
-        self.disconnect( self.sequenceTextEdit,
-                         SIGNAL("textChanged()"),
-                         self.sequenceChanged )
+        self.sequenceTextEdit.textChanged.disconnect(self.sequenceChanged)
 
         # How has the text changed?
         if theSequence.length() == 0:  # There is no sequence.
@@ -619,9 +597,7 @@ class DnaGeneratorPropertyManager( PM_Dialog, DebugMenuMixin ):
             self.setSequence( theSequence )
 
         # Reconnect to respond when the sequence is changed.
-        self.connect( self.sequenceTextEdit,
-                      SIGNAL("textChanged()"),
-                      self.sequenceChanged )
+        self.sequenceTextEdit.textChanged.connect(self.sequenceChanged)
 
         self.synchronizeLengths()
         return

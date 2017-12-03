@@ -5,15 +5,15 @@ PartProp.py
 $Id$
 """
 
-from PyQt4.Qt import QDialog, SIGNAL
+from PyQt5.QtWidgets import QDialog
 from commands.PartProperties.PartPropDialog import Ui_PartPropDialog
 
 class PartProp(QDialog, Ui_PartPropDialog):
     def __init__(self, assy):
         QDialog.__init__(self)
         self.setupUi(self)
-        self.connect(self.okPushButton,SIGNAL("clicked()"),self.accept)
-        self.connect(self.cancelPushButton,SIGNAL("clicked()"),self.reject)
+        self.okPushButton.clicked.connect(self.accept)
+        self.cancelPushButton.clicked.connect(self.reject)
 
         self.nameLineEdit.setText(assy.name)
 

@@ -6,13 +6,12 @@ elementColors.py - dialog for changing element color table; related functions
 @copyright: 2004-2009 Nanorex, Inc.  See LICENSE file for details.
 """
 
-from PyQt4.Qt import QDialog
-from PyQt4.Qt import SIGNAL
-from PyQt4.Qt import QVBoxLayout
-from PyQt4.Qt import QFileDialog
-from PyQt4.Qt import QMessageBox
-from PyQt4.Qt import QApplication
-from PyQt4.QtOpenGL import QGLFormat
+from PyQt5.QtWidgets import QDialog
+from PyQt5.QtWidgets import QVBoxLayout
+from PyQt5.QtWidgets import QFileDialog
+from PyQt5.QtWidgets import QMessageBox
+from PyQt5.QtWidgets import QApplication
+from PyQt5.QtOpenGL import QGLFormat
 
 from commands.ElementColors.ElementColorsDialog import Ui_ElementColorsDialog
 from model.elements import PeriodicTable
@@ -34,15 +33,15 @@ class elementColors(QDialog, Ui_ElementColorsDialog):
         ##   Qt.WStyle_Title | Qt.WStyle_SysMenu)
         QDialog.__init__(self, win)
         self.setupUi(self)
-        self.connect(self.okButton, SIGNAL("clicked()"), self.ok)
-        self.connect(self.loadColorsPB, SIGNAL("clicked()"), self.read_element_rgb_table)
-        self.connect(self.saveColorsPB, SIGNAL("clicked()"), self.write_element_rgb_table)
-        self.connect(self.cancelButton, SIGNAL("clicked()"), self.reject)
-        self.connect(self.defaultButton, SIGNAL("clicked()"), self.loadDefaultProp)
-        self.connect(self.alterButton, SIGNAL("clicked()"), self.loadAlterProp)
-        self.connect(self.elementButtonGroup, SIGNAL("clicked(int)"), self.setElementInfo)
-        self.connect(self.previewPB, SIGNAL("clicked()"), self.preview_color_change)
-        self.connect(self.restorePB, SIGNAL("clicked()"), self.restore_current_color)
+        self.okButton.clicked.connect(self.ok)
+        self.loadColorsPB.clicked.connect(self.read_element_rgb_table)
+        self.saveColorsPB.clicked.connect(self.write_element_rgb_table)
+        self.cancelButton.clicked.connect(self.reject)
+        self.defaultButton.clicked.connect(self.loadDefaultProp)
+        self.alterButton.clicked.connect(self.loadAlterProp)
+        self.elementButtonGroup.clicked[int].connect(self.setElementInfo)
+        self.previewPB.clicked.connect(self.preview_color_change)
+        self.restorePB.clicked.connect(self.restore_current_color)
         self.w = win
         self.fileName = None
         self.isElementModified = False
@@ -56,7 +55,7 @@ class elementColors(QDialog, Ui_ElementColorsDialog):
         self.elemGLPane = ElementView(self, "element glPane", self.w.glpane)
         # Put the GL widget inside the frame
         flayout = QVBoxLayout(self.elementFrame)
-        flayout.setMargin(1)
+        flayout.setContentsMargins(1, 1, 1, 1)
         flayout.setSpacing(1)
         flayout.addWidget(self.elemGLPane, 1)
 
@@ -84,26 +83,26 @@ class elementColors(QDialog, Ui_ElementColorsDialog):
         self.elementButtonGroup.setId(self.toolButton1, elementId("H"))
         self.elementButtonGroup.setId(self.toolButton0, elementId("X"))
 
-        self.connect(self.toolButton6, SIGNAL("clicked()"), self.updateElemColorDisplay)
-        self.connect(self.toolButton8, SIGNAL("clicked()"), self.updateElemColorDisplay)
-        self.connect(self.toolButton10, SIGNAL("clicked()"), self.updateElemColorDisplay)
-        self.connect(self.toolButton9, SIGNAL("clicked()"), self.updateElemColorDisplay)
-        self.connect(self.toolButton13, SIGNAL("clicked()"), self.updateElemColorDisplay)
-        self.connect(self.toolButton17, SIGNAL("clicked()"), self.updateElemColorDisplay)
-        self.connect(self.toolButton5, SIGNAL("clicked()"), self.updateElemColorDisplay)
-        self.connect(self.toolButton10_2, SIGNAL("clicked()"), self.updateElemColorDisplay)
-        self.connect(self.toolButton15, SIGNAL("clicked()"), self.updateElemColorDisplay)
-        self.connect(self.toolButton16, SIGNAL("clicked()"), self.updateElemColorDisplay)
-        self.connect(self.toolButton14, SIGNAL("clicked()"), self.updateElemColorDisplay)
-        self.connect(self.toolButton33, SIGNAL("clicked()"), self.updateElemColorDisplay)
-        self.connect(self.toolButton34, SIGNAL("clicked()"), self.updateElemColorDisplay)
-        self.connect(self.toolButton35, SIGNAL("clicked()"), self.updateElemColorDisplay)
-        self.connect(self.toolButton36, SIGNAL("clicked()"), self.updateElemColorDisplay)
-        self.connect(self.toolButton32, SIGNAL("clicked()"), self.updateElemColorDisplay)
-        self.connect(self.toolButton7, SIGNAL("clicked()"), self.updateElemColorDisplay)
-        self.connect(self.toolButton2, SIGNAL("clicked()"), self.updateElemColorDisplay)
-        self.connect(self.toolButton1, SIGNAL("clicked()"), self.updateElemColorDisplay)
-        self.connect(self.toolButton0, SIGNAL("clicked()"), self.updateElemColorDisplay)
+        self.toolButton6.clicked.connect(self.updateElemColorDisplay)
+        self.toolButton8.clicked.connect(self.updateElemColorDisplay)
+        self.toolButton10.clicked.connect(self.updateElemColorDisplay)
+        self.toolButton9.clicked.connect(self.updateElemColorDisplay)
+        self.toolButton13.clicked.connect(self.updateElemColorDisplay)
+        self.toolButton17.clicked.connect(self.updateElemColorDisplay)
+        self.toolButton5.clicked.connect(self.updateElemColorDisplay)
+        self.toolButton10_2.clicked.connect(self.updateElemColorDisplay)
+        self.toolButton15.clicked.connect(self.updateElemColorDisplay)
+        self.toolButton16.clicked.connect(self.updateElemColorDisplay)
+        self.toolButton14.clicked.connect(self.updateElemColorDisplay)
+        self.toolButton33.clicked.connect(self.updateElemColorDisplay)
+        self.toolButton34.clicked.connect(self.updateElemColorDisplay)
+        self.toolButton35.clicked.connect(self.updateElemColorDisplay)
+        self.toolButton36.clicked.connect(self.updateElemColorDisplay)
+        self.toolButton32.clicked.connect(self.updateElemColorDisplay)
+        self.toolButton7.clicked.connect(self.updateElemColorDisplay)
+        self.toolButton2.clicked.connect(self.updateElemColorDisplay)
+        self.toolButton1.clicked.connect(self.updateElemColorDisplay)
+        self.toolButton0.clicked.connect(self.updateElemColorDisplay)
 
         self.connectChangingControls()
         self.saveColorsPB.setWhatsThis(
@@ -123,12 +122,12 @@ class elementColors(QDialog, Ui_ElementColorsDialog):
         self.ok()
 
     def connectChangingControls(self):
-        self.connect(self.redSlider, SIGNAL("valueChanged(int)"), self.changeSpinRed)
-        self.connect(self.redSpinBox, SIGNAL("valueChanged(int)"), self.changeSliderRed)
-        self.connect(self.blueSlider, SIGNAL("valueChanged(int)"), self.changeSpinBlue)
-        self.connect(self.blueSpinBox, SIGNAL("valueChanged(int)"), self.changeSliderBlue)
-        self.connect(self.greenSlider, SIGNAL("valueChanged(int)"), self.changeSpinGreen)
-        self.connect(self.greenSpinBox, SIGNAL("valueChanged(int)"), self.changeSliderGreen)
+        self.redSlider.valueChanged[int].connect(self.changeSpinRed)
+        self.redSpinBox.valueChanged[int].connect(self.changeSliderRed)
+        self.blueSlider.valueChanged[int].connect(self.changeSpinBlue)
+        self.blueSpinBox.valueChanged[int].connect(self.changeSliderBlue)
+        self.greenSlider.valueChanged[int].connect(self.changeSpinGreen)
+        self.greenSpinBox.valueChanged[int].connect(self.changeSliderGreen)
 
     def loadDefaultProp(self):
         """
@@ -226,7 +225,7 @@ class elementColors(QDialog, Ui_ElementColorsDialog):
                                 "Load Element Color",
                                 odir,
                                 "Elements color file (*.txt);;All Files (*.*);;"
-                                 ))
+                                 ))[0]
         if self.fileName:
             colorTable = readElementColors(self.fileName)
 
@@ -265,7 +264,7 @@ class elementColors(QDialog, Ui_ElementColorsDialog):
                      "Save Element Colors As ...",
                      sdir,
                     "Element Color File (*.txt)"
-                     )
+                     )[0]
 
         if fn:
             fn = str(fn)

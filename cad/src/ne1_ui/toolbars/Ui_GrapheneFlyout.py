@@ -12,7 +12,7 @@ History:
 TODO:
 """
 from ne1_ui.toolbars.Ui_AbstractFlyout import Ui_AbstractFlyout
-from PyQt4.Qt import QAction
+from PyQt5.QtWidgets import QAction
 
 class GrapheneFlyout(Ui_AbstractFlyout):
     def _action_in_controlArea_to_show_this_flyout(self):

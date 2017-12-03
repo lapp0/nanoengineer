@@ -10,9 +10,8 @@ History: Original code from GroundProps.py and cleaned up by Mark.
 
 __author__ = "Mark"
 
-from PyQt4.Qt import QDialog
-from PyQt4.Qt import SIGNAL
-from PyQt4.Qt import QColorDialog
+from PyQt5.QtWidgets import QDialog
+from PyQt5.QtWidgets import QColorDialog
 from utilities.icon_utilities import geticon
 
 from command_support.JigPropDialog import Ui_JigPropDialog
@@ -41,11 +40,9 @@ class JigProp(QDialog, Ui_JigPropDialog):
 
         QDialog.__init__(self)
         self.setupUi(self)
-        self.connect(self.cancel_btn, SIGNAL("clicked()"), self.reject)
-        self.connect(self.ok_btn, SIGNAL("clicked()"), self.accept)
-        self.connect(self.choose_color_btn,
-                     SIGNAL("clicked()"),
-                     self.change_jig_color)
+        self.cancel_btn.clicked.connect(self.reject)
+        self.ok_btn.clicked.connect(self.accept)
+        self.choose_color_btn.clicked.connect(self.change_jig_color)
 
         # Set the dialog's border icon and caption based on the jig type.
         jigtype_name = jig.__class__.__name__

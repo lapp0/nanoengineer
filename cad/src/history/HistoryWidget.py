@@ -25,10 +25,11 @@ term from "Python Megawidgets" (which are implemented in Tk rather than Qt).
 """
 
 import sys, os, time
+from PyQt5.QtWidgets import *
 
-from PyQt4 import QtCore
-from PyQt4.Qt import Qt
-from PyQt4.Qt import QTextEdit, QTextOption
+from PyQt5 import QtCore
+from PyQt5.QtCore import Qt
+from PyQt5.QtGui import QTextEdit, QTextOption
 
 from utilities import debug_flags
 from platform_dependent.PlatformDependent import mkdirs_in_filename

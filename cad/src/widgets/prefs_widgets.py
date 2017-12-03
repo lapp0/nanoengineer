@@ -28,9 +28,8 @@ from utilities.debug import print_compact_traceback, print_compact_stack
 
 from foundation.changes import Formula
 from widgets.widget_helpers import RGBf_to_QColor
-from PyQt4.Qt import QColorDialog
-from PyQt4.Qt import SIGNAL
-from PyQt4.Qt import QPalette
+from PyQt5.QtWidgets import QColorDialog
+from PyQt5.QtGui import QPalette
 
 from foundation.undo_manager import wrap_callable_for_undo
 

@@ -20,7 +20,7 @@ Probably "simulation". [bruce 071214]
 import foundation.env as env, os, sys, time
 from platform_dependent.PlatformDependent import find_or_make_Nanorex_subdir
 from utilities.prefs_constants import nanohive_path_prefs_key, nanohive_enabled_prefs_key
-from PyQt4.Qt import Qt, QApplication, QCursor
+from PyQt5.QtGui import Qt, QApplication, QCursor
 from widgets.StatusBar import NanoHiveProgressReporter
 
 def get_nh_simspec_filename(basename):
@@ -240,7 +240,7 @@ def activate_nh_plugin(win):
     needs to be enabled and asking if they wish to do so.
     win is the main window object.
     """
-    from PyQt4.Qt import QMessageBox
+    from PyQt5.QtWidgets import QMessageBox
     ret = QMessageBox.warning( win, "Activate Nano-Hive Plug-in",
         "Nano-Hive plug-in not enabled. Please select <b>OK</b> to \n" \
         "activate the Nano-Hive plug-in from the Preferences dialog.",

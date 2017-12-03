@@ -5,10 +5,9 @@ RotaryMotorProp.py
 $Id$
 """
 
-from PyQt4.Qt import QDialog
-from PyQt4.Qt import QWidget
-from PyQt4.Qt import SIGNAL
-from PyQt4.Qt import QColorDialog
+from PyQt5.QtWidgets import QDialog
+from PyQt5.QtWidgets import QWidget
+from PyQt5.QtWidgets import QColorDialog
 
 from RotaryMotorPropDialog import Ui_RotaryMotorPropDialog
 from widgets.widget_helpers import RGBf_to_QColor, QColor_to_RGBf, get_widget_with_color_palette
@@ -18,12 +17,12 @@ class RotaryMotorProp(QDialog, Ui_RotaryMotorPropDialog):
 
         QWidget.__init__(self)
         self.setupUi(self)
-        self.connect(self.cancel_btn,SIGNAL("clicked()"),self.reject)
-        self.connect(self.ok_btn,SIGNAL("clicked()"),self.accept)
-        self.connect(self.choose_color_btn,SIGNAL("clicked()"),self.change_jig_color)
-        self.connect(self.lengthLineEdit,SIGNAL("returnPressed()"),self.change_motor_size)
-        self.connect(self.radiusLineEdit,SIGNAL("returnPressed()"),self.change_motor_size)
-        self.connect(self.sradiusLineEdit,SIGNAL("returnPressed()"),self.change_motor_size)
+        self.cancel_btn.clicked.connect(self.reject)
+        self.ok_btn.clicked.connect(self.accept)
+        self.choose_color_btn.clicked.connect(self.change_jig_color)
+        self.lengthLineEdit.returnPressed.connect(self.change_motor_size)
+        self.radiusLineEdit.returnPressed.connect(self.change_motor_size)
+        self.sradiusLineEdit.returnPressed.connect(self.change_motor_size)
         self.jig = motor
         self.glpane = glpane
         self.nameLineEdit.setWhatsThis("""<b>Name</b><p>Name of Rotary Motor that appears in the Model

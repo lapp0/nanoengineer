@@ -16,6 +16,7 @@ mark 2008-02-02 split this out of MWsemantics.py.
 """
 
 import foundation.env as env
+from PyQt5.QtWidgets import *
 
 # Keep these in the same order that they are defined in constants.py.
 # It really helps since some lists are dependent on the display mode order.
@@ -30,7 +31,7 @@ from utilities.constants import diDNACYLINDER
 from utilities.constants import diCYLINDER
 from utilities.constants import diSURFACE
 
-from PyQt4.Qt import Qt, QColorDialog, QColor
+from PyQt5.QtGui import Qt, QColorDialog, QColor
 
 from utilities.Log import greenmsg, redmsg, orangemsg
 

@@ -12,9 +12,9 @@ piotr 2008-07-29: Created this file.
 
 """
 
-from PyQt4.Qt import QDial
-from PyQt4.Qt import QLabel
-from PyQt4.Qt import QWidget
+from PyQt5.QtWidgets import QDial
+from PyQt5.QtWidgets import QLabel
+from PyQt5.QtWidgets import QWidget
 
 from widgets.prefs_widgets import widget_connectWithState
 from widgets.prefs_widgets import set_metainfo_from_stateref

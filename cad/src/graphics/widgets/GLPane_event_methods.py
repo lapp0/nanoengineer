@@ -10,14 +10,14 @@ bruce 080910 split this out of class GLPane
 
 import time
 
-from PyQt4.Qt import QEvent
-from PyQt4.Qt import QMouseEvent
-from PyQt4.Qt import QHelpEvent
-from PyQt4.Qt import QPoint
-from PyQt4.Qt import Qt
-from PyQt4.Qt import SIGNAL, QTimer
+from PyQt5.QtCore import QEvent
+from PyQt5.QtGui import QMouseEvent
+from PyQt5.QtGui import QHelpEvent
+from PyQt5.QtCore import QPoint
+from PyQt5.QtCore import Qt
+from PyQt5.QtCore import QTimer
 
-from PyQt4.QtOpenGL import QGLWidget
+from PyQt5.QtOpenGL import QGLWidget
 
 from OpenGL.GL import GL_DEPTH_COMPONENT
 from OpenGL.GL import glReadPixelsf
@@ -130,7 +130,7 @@ class GLPane_event_methods(object, DebugMenuMixin):
         self.tripleClick       =  False
         self.tripleClickTimer  =  QTimer(self)
         self.tripleClickTimer.setSingleShot(True)
-        self.connect(self.tripleClickTimer, SIGNAL('timeout()'), self._tripleClickTimeout)
+        self.tripleClickTimer.timeout.connect(self._tripleClickTimeout)
 
         self.dynamicToolTip = DynamicTip(self)
 
@@ -326,7 +326,7 @@ class GLPane_event_methods(object, DebugMenuMixin):
         else:
             #bruce 070328 adding some debug code/comments to this (for some Qt4 or Qt4/Mac specific bugs), and bugfixing it.
             olddrag = self.in_drag
-            self.in_drag = but & (Qt.LeftButton|Qt.MidButton|Qt.RightButton) # Qt4 note: this is a PyQt4.QtCore.MouseButtons object
+            self.in_drag = but & (Qt.LeftButton|Qt.MidButton|Qt.RightButton) # Qt4 note: this is a PyQt5.QtCore.MouseButtons object
                 # you can also use this to see which mouse buttons are involved.
                 # WARNING: that would only work in Qt4 if you use the symbolic constants listed in button_names.keys().
             if not olddrag: # this test seems to still work in Qt4 (apparently MouseButtons.__nonzero__ is sensibly defined)

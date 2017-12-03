@@ -34,6 +34,7 @@ In genral it needs a major cleanup. Some items are listed below:
 _EXTRUDE_LOOP_DEBUG = False # do not commit with True
 
 import math
+from PyQt5.QtWidgets import *
 from utilities import debug_flags
 import foundation.env as env
 import foundation.changes as changes
@@ -55,10 +56,8 @@ from OpenGL.GL import glEnable
 from OpenGL.GL import GL_TRUE
 from OpenGL.GL import glDisable
 
-from PyQt4 import QtGui
-from PyQt4.Qt import Qt
-from PyQt4.Qt import SIGNAL
-from PyQt4.Qt import QCursor
+from PyQt5.QtCore import Qt
+from PyQt5.QtGui import QCursor
 
 from utilities.debug_prefs import debug_pref, Choice, Choice_boolean_False
 
@@ -992,7 +991,7 @@ class extrudeMode(basicMode):
         sings1 = sings2 = self.basemol_singlets
         transient_id = (self, self.__class__.recompute_for_new_unit, "scanning all pairs")
         for i1 in range(len(sings1)):
-            env.call_qApp_processEvents() #bruce 050908 replaced qApp.processEvents()
+            env.call_qApp_processEvents() #bruce 050908 replaced QApplication.processEvents()
                 # [bruce 050114, copied from movie.py]
                 # Process queued events [enough to get statusbar msgs to show up]
                 ###@@@ #e for safety we might want to pass the argument: QEventLoop::ExcludeUserInput;

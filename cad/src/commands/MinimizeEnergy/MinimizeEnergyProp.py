@@ -15,12 +15,11 @@ To do:
 - implement/enforce constrains between all convergence values.
 """
 
-from PyQt4.Qt import QDialog
-from PyQt4.Qt import QButtonGroup
-from PyQt4.Qt import QAbstractButton
-from PyQt4.Qt import SIGNAL
-from PyQt4.Qt import QWhatsThis
-from PyQt4.Qt import QSize
+from PyQt5.QtWidgets import QDialog
+from PyQt5.QtWidgets import QButtonGroup
+from PyQt5.QtWidgets import QAbstractButton
+from PyQt5.QtWidgets import QWhatsThis
+from PyQt5.QtCore import QSize
 
 from utilities.Log import greenmsg, redmsg, orangemsg, _graymsg, quote_html
 from commands.MinimizeEnergy.MinimizeEnergyPropDialog import Ui_MinimizeEnergyPropDialog
@@ -66,24 +65,16 @@ class MinimizeEnergyProp(QDialog, Ui_MinimizeEnergyPropDialog):
         self.setWindowIcon(
             geticon('ui/border/MinimizeEnergy.png'))
 
-        self.connect(self.cancel_btn,
-                     SIGNAL("clicked()"),
-                     self.cancel_btn_clicked)
-        self.connect(self.ok_btn,
-                     SIGNAL("clicked()"),
-                     self.ok_btn_clicked)
-        self.connect(self.restore_btn,
-                     SIGNAL("clicked()"),
-                     self.restore_defaults_btn_clicked)
+        self.cancel_btn.clicked.connect(self.cancel_btn_clicked)
+        self.ok_btn.clicked.connect(self.ok_btn_clicked)
+        self.restore_btn.clicked.connect(self.restore_defaults_btn_clicked)
 
         self.whatsthis_btn.setIcon(
             geticon('ui/actions/Properties Manager/WhatsThis.png'))
         self.whatsthis_btn.setIconSize(QSize(22, 22))
         self.whatsthis_btn.setToolTip('Enter "What\'s This?" help mode')
 
-        self.connect(self.whatsthis_btn,
-                     SIGNAL("clicked()"),
-                     QWhatsThis.enterWhatsThisMode)
+        self.whatsthis_btn.clicked.connect(QWhatsThis.enterWhatsThisMode)
 
         connect_checkbox_with_boolean_pref(
             self.electrostaticsForDnaDuringMinimize_checkBox,
@@ -93,15 +84,15 @@ class MinimizeEnergyProp(QDialog, Ui_MinimizeEnergyPropDialog):
             self.enableNeighborSearching_check_box,
             neighborSearchingInGromacs_prefs_key)
 
-        self.connect(self.minimize_engine_combobox, SIGNAL("activated(int)"), self.update_minimize_engine)
+        self.minimize_engine_combobox.activated[int].connect(self.update_minimize_engine)
 
         self.minimize_engine_combobox.setCurrentIndex(
             env.prefs[Minimize_minimizationEngine_prefs_key])
 
-        self.connect(self.endRmsDoubleSpinBox, SIGNAL("valueChanged(double)"), self.changeEndRms)
-        self.connect(self.endMaxDoubleSpinBox, SIGNAL("valueChanged(double)"), self.changeEndMax)
-        self.connect(self.cutoverRmsDoubleSpinBox, SIGNAL("valueChanged(double)"), self.changeCutoverRms)
-        self.connect(self.cutoverMaxDoubleSpinBox, SIGNAL("valueChanged(double)"), self.changeCutoverMax)
+        self.endRmsDoubleSpinBox.valueChanged[double].connect(self.changeEndRms)
+        self.endMaxDoubleSpinBox.valueChanged[double].connect(self.changeEndMax)
+        self.cutoverRmsDoubleSpinBox.valueChanged[double].connect(self.changeCutoverRms)
+        self.cutoverMaxDoubleSpinBox.valueChanged[double].connect(self.changeCutoverMax)
 
         self.endRmsDoubleSpinBox.setSpecialValueText("Automatic")
         self.endMaxDoubleSpinBox.setSpecialValueText("Automatic")

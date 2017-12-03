@@ -12,9 +12,9 @@ mark 2007-07-22: Split PropMgrLineEdit out of PropMgrBaseClass.py into this
 file and renamed it PM_LineEdit.
 """
 
-from PyQt4.Qt import QLabel
-from PyQt4.Qt import QLineEdit
-from PyQt4.Qt import QWidget
+from PyQt5.QtWidgets import QLabel
+from PyQt5.QtWidgets import QLineEdit
+from PyQt5.QtWidgets import QWidget
 
 class PM_LineEdit( QLineEdit ):
     """

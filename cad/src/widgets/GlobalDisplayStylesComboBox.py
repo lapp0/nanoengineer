@@ -15,7 +15,7 @@ REVIEW: does this module belong in the ne1_ui package? [bruce 080711 comment]
 """
 
 import os
-from PyQt4.Qt import SIGNAL, QComboBox
+from PyQt5.QtWidgets import QComboBox
 import foundation.env as env
 from utilities.constants import diDEFAULT ,diTrueCPK, diLINES
 from utilities.constants import diBALL, diTUBES, diDNACYLINDER, diPROTEIN
@@ -68,9 +68,7 @@ class GlobalDisplayStylesComboBox(QComboBox):
             display_style = env.prefs[ startupGlobalDisplayStyle_prefs_key ]
 
         if disconnect:
-            self.disconnect( self,
-                             SIGNAL("currentIndexChanged(int)"),
-                             self._setDisplayStyle )
+            self.currentIndexChanged[int].disconnect(self._setDisplayStyle)
         self.clear()
 
         ADD_DEFAULT_TEXT = False
@@ -90,9 +88,7 @@ class GlobalDisplayStylesComboBox(QComboBox):
 
         self.setCurrentIndex(displayIndexes.index(display_style))
 
-        self.connect( self,
-                      SIGNAL("currentIndexChanged(int)"),
-                      self._setDisplayStyle )
+        self.currentIndexChanged[int].connect(self._setDisplayStyle)
 
     def getDisplayStyleIndex(self):
         """

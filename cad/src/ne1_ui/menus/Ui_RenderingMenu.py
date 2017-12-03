@@ -8,7 +8,7 @@ and others to come (i.e. Sunflow)
 @copyright: 2005-2007 Nanorex, Inc.  See LICENSE file for details.
 """
 
-from PyQt4 import QtGui
+from PyQt5 import QtGui, QtWidgets
 
 def setupUi(win):
     """
@@ -32,6 +32,6 @@ def retranslateUi(win):
     @type  win: U{B{QMainWindow}<http://doc.trolltech.com/4/qmainwindow.html>}
     """
     win.renderingMenu.setTitle(
-        QtGui.QApplication.translate(
+        QtCore.QCoreApplication.translate(
             "MainWindow", "Rendering",
-            None, QtGui.QApplication.UnicodeUTF8))
+            None))

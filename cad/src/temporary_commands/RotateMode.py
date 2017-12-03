@@ -11,7 +11,7 @@ piotr 080808: added "auto-rotation" feature.
 """
 
 from temporary_commands.TemporaryCommand import TemporaryCommand_Overdrawing
-from PyQt4.Qt import Qt, QTimer, SIGNAL
+from PyQt5.QtGui import Qt, QTimer
 
 ## from utilities.debug import set_enabled_for_profile_single_call
 ## clicked = False
@@ -72,9 +72,7 @@ class RotateMode_GM( TemporaryCommand_Overdrawing.GraphicsMode_class ):
             # Create and enable animation timer.
             if self.animationTimer is None:
                 self.animationTimer  =  QTimer(self.glpane)
-                self.win.connect(self.animationTimer,
-                                 SIGNAL('timeout()'),
-                                 self._animationTimerTimeout)
+                self.animationTimer.timeout.connect(self._animationTimerTimeout)
             self.animationTimer.start(20) # use 50 fps for smooth animation
         else:
             # Stop animation if mouse was not dragged.

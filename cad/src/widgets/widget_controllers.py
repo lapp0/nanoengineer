@@ -15,7 +15,8 @@ widget_controllers.py - miscellaneous widget-controller classes
 # wants access to 2 iconsets made from given imagenames in the "usual way for this env"
 # (can that just be the program env as a whole?)
 
-from PyQt4.Qt import QIcon, SIGNAL
+from PyQt5.QtGui import QIcon
+from PyQt5.QtWidgets import *
 from utilities.qt4transition import qt4todo
 
 import foundation.env as env
@@ -60,7 +61,7 @@ class CollapsibleGroupController_Qt:
             expanded = False
         self.set_open(expanded)
         # signal for button
-        self.parent.connect(groupbutton,SIGNAL("clicked()"),self.toggle_open) # was toggle_nt_parameters_grpbtn
+        groupbutton.clicked.connect(self.toggle_open)
 
         return
 

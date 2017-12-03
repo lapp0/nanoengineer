@@ -25,9 +25,9 @@ __author__ = 'bruce'
 try:
     from __main__ import original_QToolButton as QToolButton
 except:
-    from PyQt4.Qt import QToolButton
+    from PyQt5.QtWidgets import QToolButton
 
-from PyQt4.Qt import QPainter, Qt, QPen, QColor
+from PyQt5.QtGui import QPainter, Qt, QPen, QColor
 
 toolbutton_highlight_color = QColor(80,80,255) # light blue; should perhaps be a pref
 
@@ -60,7 +60,7 @@ def replacement_QToolButton_constructor(*args): #e could probably just install t
 
 def replace_QToolButton_constructor( func):
     "only call this once, and call it before any QToolButton is made"
-    import PyQt4.Qt as qt #bruce 070425 bugfix in Qt4 port: added "as qt"
+    import PyQt5.Qt as qt #bruce 070425 bugfix in Qt4 port: added "as qt"
     import __main__
     __main__.original_QToolButton = qt.QToolButton
     qt.QToolButton = func
@@ -139,7 +139,7 @@ hack_every_QToolButton_warning = "(This might not be visible in dialogs until th
 def find_layout(widget):
     "search all layouts under widget's toplevel widget to find the (first) (#e enabled?) layout controlling widget"
     win = widget.topLevelWidget()
-    from PyQt4.Qt import QLayout
+    from PyQt5.QtWidgets import QLayout
     res = []
     keep = [] # for making debug print addrs not be reused
     widgeo = widget.geometry() # QRect object

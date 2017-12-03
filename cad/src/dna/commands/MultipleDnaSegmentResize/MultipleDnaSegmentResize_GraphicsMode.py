@@ -14,7 +14,7 @@ TODO:
 see MultipleDnaSegmentResize_EditCommand
 """
 from dna.commands.DnaSegment.DnaSegment_GraphicsMode import DnaSegment_GraphicsMode
-from PyQt4.Qt import Qt
+from PyQt5.QtCore import Qt
 from graphics.drawing.drawDnaRibbons import drawDnaRibbons
 import foundation.env as env
 from utilities.prefs_constants import selectionColor_prefs_key

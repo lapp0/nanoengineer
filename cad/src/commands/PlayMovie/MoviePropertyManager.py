@@ -11,14 +11,21 @@ ninad20070507 : Converted movie dashboard into movie Property manager
 
 """
 
-from PyQt4 import QtCore, QtGui
+from PyQt5 import QtCore
+from PyQt5.QtWidgets import *
 from commands.PlayMovie.Ui_MoviePropertyManager import Ui_MoviePropertyManager
-from PyQt4.Qt import Qt, SIGNAL, QFileDialog, QString, QMessageBox
+from PyQt5.QtGui import Qt, QFileDialog, QMessageBox
 import os, foundation.env as env
 from utilities.Log import redmsg, greenmsg
 from utilities.constants import filesplit
 from utilities.prefs_constants import workingDirectory_prefs_key
 
+
+try:
+    QString = unicode
+except NameError:
+    # Python 3
+    QString = str
 
 _superclass = Ui_MoviePropertyManager
 class MoviePropertyManager(Ui_MoviePropertyManager):
@@ -271,7 +278,7 @@ class MoviePropertyManager(Ui_MoviePropertyManager):
         fn = QFileDialog.getOpenFileName(
             self,
             "Differential Position Bytes Format (*.dpb)",
-            odir)
+            odir)[0]
 
         if not fn:
             env.history.message("Cancelled.")
@@ -371,7 +378,7 @@ class MoviePropertyManager(Ui_MoviePropertyManager):
             "Save As",
             sdir,
             "Differential Position Bytes Format (*.dpb);;POV-Ray Series (*.pov)",
-            sfilter)
+            sfilter)[0]
 
         if not fn:
             env.history.message("Cancelled.")

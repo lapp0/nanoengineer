@@ -16,21 +16,18 @@ though it has a progress dialog, and does recursive event processing
 
 import os, sys, time, re
 
-from PyQt4.Qt import QDialog
-from PyQt4.Qt import QProcess
-from PyQt4.Qt import QStringList
-from PyQt4.Qt import QProgressDialog
-from PyQt4.Qt import QProgressBar
-from PyQt4.Qt import QMessageBox
-from PyQt4.Qt import QVBoxLayout
-from PyQt4.Qt import QLabel
-from PyQt4.Qt import QPushButton
-from PyQt4.Qt import QSize
-from PyQt4.Qt import SIGNAL
-from PyQt4.Qt import QTimer
-from PyQt4.Qt import SLOT
-from PyQt4.Qt import QThread
-from PyQt4.Qt import QMutex
+from PyQt5.QtWidgets import QDialog
+from PyQt5.QtCore import QProcess
+from PyQt5.QtWidgets import QProgressDialog
+from PyQt5.QtWidgets import QProgressBar
+from PyQt5.QtWidgets import QMessageBox
+from PyQt5.QtWidgets import QVBoxLayout
+from PyQt5.QtWidgets import QLabel
+from PyQt5.QtWidgets import QPushButton
+from PyQt5.QtCore import QSize
+from PyQt5.QtCore import QTimer
+from PyQt5.QtCore import QThread
+from PyQt5.QtCore import QMutex
 
 from simulation.SimJob import SimJob
 from analysis.GAMESS.GamessProp import GamessProp
@@ -48,6 +45,8 @@ from platform_dependent.PlatformDependent import hhmmss_str
 
 from utilities.prefs_constants import gmspath_prefs_key
 from utilities.prefs_constants import gamess_enabled_prefs_key
+
+QStringList = list
 
 failpat = re.compile("-ABNORMALLY-")
 irecpat = re.compile(" (\w+) +\d+\.\d* +([\d\.E+-]+) +([\d\.E+-]+) +([\d\.E+-]+)")
@@ -272,7 +271,7 @@ class GamessJob(SimJob):
         self.jobTimer = QTimer(self)
 
         self.progressDialog = JobProgressDialog(self.process, self.Calculation)
-        self.connect(self.process, SIGNAL('processExited ()'), self.processDone)
+        self.process.processExited .connect(self.processDone)
 
         #self.connect(self.process, SIGNAL('readyReadStdout()'), self.readOutData)
         ####self.fwThread.start()
@@ -281,7 +280,7 @@ class GamessJob(SimJob):
             print("The process can't be started.")
             return 2
 
-        self.connect(self.jobTimer, SIGNAL('timeout()'), self.processTimeout)
+        self.jobTimer.timeout.connect(self.processTimeout)
         self.stime = time.time()
         self.jobTimer.start(1)
 
@@ -360,7 +359,7 @@ class GamessJob(SimJob):
         i = 55
         pInc = True
         while process.state() == QProcess.Running:
-            env.call_qApp_processEvents() #bruce 050908 replaced qApp.processEvents()
+            env.call_qApp_processEvents() #bruce 050908 replaced QApplication.processEvents()
             if progressDialog.wasCanceled():
                 process.kill()
                 os.chdir(oldir)
@@ -470,7 +469,7 @@ class JobProgressDialog(QDialog): # review: should any of this be refiled into S
         pbVBLayout.addWidget(cancelButton)
 
         self.resize(QSize(248,146).expandedTo(self.minimumSizeHint()))
-        self.connect(cancelButton, SIGNAL("clicked()"), self.reject)
+        cancelButton.clicked.connect(self.reject)
         return
 
     def reject(self):

@@ -32,9 +32,10 @@ determining part in the same way as GraphicsMode.
 """
 
 import math
+from PyQt5.QtWidgets import *
 import time
 
-from PyQt4.Qt import QToolTip, QRect, QPoint
+from PyQt5.QtGui import QToolTip, QRect, QPoint
 
 import foundation.env as env
 from model.chem import Atom

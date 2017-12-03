@@ -13,7 +13,8 @@ coordinate spinboxes.
 
 """
 
-from PyQt4.Qt            import QLabel
+from PyQt5.Qt            import QLabel
+from PyQt5.QtWidgets import *
 from PM.PM_GroupBox      import PM_GroupBox
 from PM.PM_DoubleSpinBox import PM_DoubleSpinBox
 

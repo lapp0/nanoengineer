@@ -21,7 +21,7 @@ ninad 20070622 Created this file that defines various constants (e.g. color)
                     used in the command toolbar.
 """
 
-from PyQt4.Qt import QColor
+from PyQt5.QtGui import QColor
 
 # Colors for Command Manager Control Areas
 cmdTbarCntrlAreaBtnColor = QColor(204, 204, 255)

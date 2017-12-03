@@ -9,7 +9,6 @@ EditNanotube_PropertyManager.py
 TODO: as of 2008-01-18
 See EditNanotube_EditCommand for details.
 """
-from PyQt4.Qt import SIGNAL
 from PM.PM_GroupBox      import PM_GroupBox
 
 from command_support.DnaOrCnt_PropertyManager   import DnaOrCnt_PropertyManager

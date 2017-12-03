@@ -10,8 +10,7 @@ Ninad 2008-06-05: Revised and refactored code in JoinStrands_PropertyManager,
 and moved it to this class.
 """
 
-from PyQt4.Qt import Qt
-from PyQt4.Qt import SIGNAL
+from PyQt5.QtCore import Qt
 import foundation.env as env
 from command_support.Command_PropertyManager import Command_PropertyManager
 from PM.PM_GroupBox import PM_GroupBox

@@ -21,7 +21,7 @@ from OpenGL.GL import GL_LIGHTING
 from OpenGL.GL import glDisable
 from OpenGL.GL import glEnable
 
-from PyQt4.Qt import QFont, QString, QColor
+from PyQt5.QtGui import QFont, QColor
 
 from geometry.VQT import V
 from geometry.VQT import norm, vlen
@@ -107,6 +107,12 @@ from utilities.GlobalPreferences import disable_do_not_draw_open_bonds
 # longstanding NFR from the SAB).
 #
 # [bruce 060622]
+
+try:
+    QString = unicode
+except NameError:
+    # Python 3
+    QString = str
 
 class writepov_to_file:
     def __init__(self, file, col = None):

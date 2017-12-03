@@ -34,6 +34,7 @@ own files.
 """
 
 from utilities.debug import print_compact_traceback
+from PyQt5.QtWidgets import *
 import widgets.DebugMenuMixin as DebugMenuMixin
     # DebugMenuMixin needs refactoring
     # to move this variable (sim_params_set) (and related code?) out of it;
@@ -47,8 +48,8 @@ import os, sys, time
 from math import sqrt
 from time import sleep
 from datetime import datetime
-from PyQt4.Qt import QApplication, QCursor, Qt, QStringList
-from PyQt4.Qt import QProcess, QObject, QFileInfo, SIGNAL
+from PyQt5.QtGui import QApplication, QCursor, Qt
+from PyQt5.QtGui import QProcess, QObject, QFileInfo
 from utilities.Log import redmsg, greenmsg, orangemsg, quote_html, _graymsg
 import foundation.env as env
 from foundation.env import seen_before
@@ -83,6 +84,8 @@ from utilities.GlobalPreferences import pref_create_pattern_indicators
 # some non-toplevel imports too (of which a few must remain non-toplevel)
 
 # ==
+
+QStringList = list
 
 debug_sim_exceptions = 0 # DO NOT COMMIT WITH 1 -- set this to reproduce a bug mostly fixed by Will today #bruce 060111
 
@@ -1329,8 +1332,8 @@ class SimRunner:
                     print("stdout:", simProcess.readStdout())
                 def blaberr():
                     print("stderr:", simProcess.readStderr())
-                QObject.connect(simProcess, SIGNAL("readyReadStdout()"), blabout)
-                QObject.connect(simProcess, SIGNAL("readyReadStderr()"), blaberr)
+                simProcess.readyReadStdout.connect(blabout)
+                simProcess.readyReadStderr.connect(blaberr)
             simProcess.setArguments(arguments)
                 ###BUG: the above line may have never been ported to Qt4; for me it's saying AttributeError: setArguments.
                 # (One way to make it happen is to remove sim.so but leave the simulator executable accessible.)

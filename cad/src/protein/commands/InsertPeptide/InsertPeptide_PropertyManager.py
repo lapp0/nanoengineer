@@ -29,10 +29,10 @@ To do:
 """
 
 import math
+from PyQt5.QtWidgets import *
 
-from PyQt4 import QtCore, QtGui
-from PyQt4.Qt import SIGNAL
-from PyQt4.Qt import Qt
+from PyQt5 import QtCore
+from PyQt5.QtCore import Qt
 
 from command_support.EditCommand_PM import EditCommand_PM
 
@@ -172,9 +172,7 @@ class InsertPeptide_PropertyManager(EditCommand_PM):
                          setAsDefault = True,
                          spanWidth    = False )
 
-        self.connect( self.aaTypeComboBox,
-                      SIGNAL("currentIndexChanged(int)"),
-                      self._aaTypeChanged)
+        self.aaTypeComboBox.currentIndexChanged[int].connect(self._aaTypeChanged)
 
         self.phiAngleField = \
             PM_DoubleSpinBox( inPmGroupBox,
@@ -187,9 +185,7 @@ class InsertPeptide_PropertyManager(EditCommand_PM):
                               decimals     = 1,
                               suffix       = " degrees")
 
-        self.connect( self.phiAngleField,
-                      SIGNAL("valueChanged(double)"),
-                      self._aaPhiAngleChanged)
+        self.phiAngleField.valueChanged[double].connect(self._aaPhiAngleChanged)
 
         self.phiAngleField.setEnabled(False)
 
@@ -204,9 +200,7 @@ class InsertPeptide_PropertyManager(EditCommand_PM):
                               decimals     = 1,
                               suffix       = " degrees" )
 
-        self.connect( self.psiAngleField,
-                      SIGNAL("valueChanged(double)"),
-                      self._aaPsiAngleChanged)
+        self.psiAngleField.valueChanged[double].connect(self._aaPsiAngleChanged)
 
         self.psiAngleField.setEnabled(False)
 
@@ -217,9 +211,7 @@ class InsertPeptide_PropertyManager(EditCommand_PM):
                                checkedId    = self.current_amino_acid, # Glycine
                                setAsDefault = True )
 
-        self.connect( self.aaTypesButtonGroup.buttonGroup,
-                      SIGNAL("buttonClicked(int)"),
-                      self._setAminoAcidType)
+        self.aaTypesButtonGroup.buttonGroup.buttonClicked[int].connect(self._setAminoAcidType)
         return
 
     def _addWhatsThisText(self):

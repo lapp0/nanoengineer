@@ -3,7 +3,7 @@
 $Id$
 """
 
-from PyQt4 import QtGui
+from PyQt5 import QtGui, QtWidgets
 
 def setupUi(win):
     """
@@ -64,22 +64,22 @@ def retranslateUi(win):
     @type  win: U{B{QMainWindow}<http://doc.trolltech.com/4/qmainwindow.html>}
     """
     win.fileMenu.setTitle(
-        QtGui.QApplication.translate(
+        QtCore.QCoreApplication.translate(
             "MainWindow", "&File",
-            None, QtGui.QApplication.UnicodeUTF8))
+            None))
     win.importMenu.setTitle(
-        QtGui.QApplication.translate(
+        QtCore.QCoreApplication.translate(
             "MainWindow", "Import",
-            None, QtGui.QApplication.UnicodeUTF8))
+            None))
     win.exportMenu.setTitle(
-        QtGui.QApplication.translate(
+        QtCore.QCoreApplication.translate(
             "MainWindow", "Export",
-            None, QtGui.QApplication.UnicodeUTF8))
+            None))
     win.fetchMenu.setTitle(
-        QtGui.QApplication.translate(
+        QtCore.QCoreApplication.translate(
             "MainWindow", "Fetch",
-            None, QtGui.QApplication.UnicodeUTF8))
+            None))
     win.openRecentFilesMenu.setTitle(
-        QtGui.QApplication.translate(
+        QtCore.QCoreApplication.translate(
             "MainWindow", "Open Recent Files",
-            None, QtGui.QApplication.UnicodeUTF8))
+            None))

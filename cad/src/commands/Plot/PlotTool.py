@@ -13,9 +13,7 @@ to trace file format.
 
 import sys, os, string
 
-from PyQt4.Qt import QWidget
-from PyQt4.Qt import SIGNAL
-from PyQt4.Qt import QStringList
+from PyQt5.QtWidgets import QWidget
 
 from commands.Plot.PlotToolDialog import Ui_PlotToolDialog
 from utilities.Log import redmsg, greenmsg, orangemsg
@@ -23,6 +21,8 @@ from simulation.movie import find_saved_movie
 from platform_dependent.PlatformDependent import open_file_in_editor
 import foundation.env as env
 from utilities.debug import print_compact_traceback
+
+QStringList = list
 
 debug_gnuplot = False
 
@@ -35,10 +35,10 @@ class PlotTool(QWidget, Ui_PlotToolDialog):
     def __init__(self, assy, basefilename):
         QWidget.__init__(self)
         self.setupUi(self)
-        self.connect(self.done_btn,SIGNAL("clicked()"),self.close)
-        self.connect(self.plot_btn,SIGNAL("clicked()"),self.genPlot)
-        self.connect(self.open_gnuplot_btn,SIGNAL("clicked()"),self.openGNUplotFile)
-        self.connect(self.open_trace_file_btn,SIGNAL("clicked()"),self.openTraceFile)
+        self.done_btn.clicked.connect(self.close)
+        self.plot_btn.clicked.connect(self.genPlot)
+        self.open_gnuplot_btn.clicked.connect(self.openGNUplotFile)
+        self.open_trace_file_btn.clicked.connect(self.openTraceFile)
 
         try:
             tracefilename = assy.current_movie.get_trace_filename()

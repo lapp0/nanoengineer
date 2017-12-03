@@ -13,8 +13,9 @@ History:
 Mark 2008-01-05: Created.
 """
 from history.HistoryWidget import HistoryWidget
-from PyQt4.Qt import Qt, QDockWidget, QWidget, QVBoxLayout, QTabWidget
-from PyQt4.Qt import QPalette, QSizePolicy
+from PyQt5.QtWidgets import *
+from PyQt5.QtGui import Qt, QDockWidget, QWidget, QVBoxLayout, QTabWidget
+from PyQt5.QtGui import QPalette, QSizePolicy
 from PM.PM_Colors import pmGrpBoxColor
 from PM.PM_Colors import getPalette
 from platform_dependent.PlatformDependent import make_history_filename

@@ -20,9 +20,8 @@ from dna.model.Dna_Constants import getDuplexBasesPerTurn, getDuplexRise, getDup
 
 from utilities.Log import redmsg ##, greenmsg, orangemsg
 
-from PyQt4.Qt import SIGNAL
-from PyQt4.Qt import Qt
-from PyQt4.Qt import QAction
+from PyQt5.QtCore import Qt
+from PyQt5.QtWidgets import QAction
 
 from PM.PM_ComboBox      import PM_ComboBox
 from PM.PM_DoubleSpinBox import PM_DoubleSpinBox

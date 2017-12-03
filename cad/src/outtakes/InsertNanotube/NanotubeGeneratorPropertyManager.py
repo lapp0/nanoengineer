@@ -10,8 +10,7 @@ Mark 2007-08-06: Renamed NanotubeGeneratorDialog to NanotubeGeneratorPropertyMan
 
 import math
 
-from PyQt4 import QtCore, QtGui
-from PyQt4.Qt import SIGNAL
+from PyQt5 import QtCore
 
 from PM.PM_Dialog        import PM_Dialog
 from PM.PM_GroupBox      import PM_GroupBox
@@ -101,9 +100,7 @@ class NanotubeGeneratorPropertyManager(PM_Dialog):
                          setAsDefault = True,
                          spanWidth    = False )
 
-        self.connect( self.typeComboBox,
-                      SIGNAL("currentIndexChanged(int)"),
-                      self.nt_type_changed)
+        self.typeComboBox.currentIndexChanged[int].connect(self.nt_type_changed)
 
         self.lengthField = \
             PM_DoubleSpinBox( inPmGroupBox,
@@ -124,9 +121,7 @@ class NanotubeGeneratorPropertyManager(PM_Dialog):
                         value        = self.n,
                         setAsDefault = True )
 
-        self.connect(self.chiralityNSpinBox,
-                     SIGNAL("valueChanged(int)"),
-                     self.chirality_fixup)
+        self.chiralityNSpinBox.valueChanged[int].connect(self.chirality_fixup)
 
         self.m = 5
 
@@ -136,9 +131,7 @@ class NanotubeGeneratorPropertyManager(PM_Dialog):
                         value        = self.m,
                         setAsDefault = True )
 
-        self.connect(self.chiralityMSpinBox,
-                     SIGNAL("valueChanged(int)"),
-                     self.chirality_fixup)
+        self.chiralityMSpinBox.valueChanged[int].connect(self.chirality_fixup)
 
         self.bondLengthField = \
             PM_DoubleSpinBox( inPmGroupBox,

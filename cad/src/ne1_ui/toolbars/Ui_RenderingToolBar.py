@@ -8,7 +8,7 @@ POV-Ray.
 @copyright: 2005-2007 Nanorex, Inc.  See LICENSE file for details.
 """
 
-from PyQt4 import QtGui
+from PyQt5 import QtGui, QtWidgets
 from foundation.wiki_help import QToolBar_WikiHelp
 
 def setupUi(win, toolbarArea):
@@ -43,10 +43,10 @@ def retranslateUi(win):
     under "View > Toolbars".
     """
     win.renderingToolBar.setWindowTitle(
-        QtGui.QApplication.translate(
+        QtCore.QCoreApplication.translate(
             "MainWindow", "Rendering",
-            None, QtGui.QApplication.UnicodeUTF8))
+            None))
     win.renderingToolBar.setToolTip(
-        QtGui.QApplication.translate(
+        QtCore.QCoreApplication.translate(
             "MainWindow", "Rendering Toolbar",
-            None, QtGui.QApplication.UnicodeUTF8))
+            None))

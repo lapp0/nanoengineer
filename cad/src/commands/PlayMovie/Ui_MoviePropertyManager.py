@@ -17,8 +17,9 @@ ninad 2007-09-11: Code clean up to use PM module classes
 #dashboard and Movie dashboard defined them this way -- ninad 2007-05-07
 """
 
-from PyQt4               import QtGui
-from PyQt4.Qt            import Qt
+from PyQt5               import QtGui
+from PyQt5.QtWidgets import *
+from PyQt5.Qt            import Qt
 from PM.PM_GroupBox      import PM_GroupBox
 from PM.PM_CheckBox      import PM_CheckBox
 from PM.PM_Slider        import PM_Slider
@@ -203,66 +204,64 @@ class Ui_MoviePropertyManager(Command_PropertyManager):
         """
         Creates all the QAction widgets that will end up as buttons in the PM.
         """
-        self.movieResetAction = QtGui.QAction(self)
+        self.movieResetAction = QtWidgets.QAction(self)
         self.movieResetAction.setObjectName("movieResetAction")
         self.movieResetAction.setIcon(
             geticon("ui/actions/Properties Manager/Movie_Reset.png"))
 
-        self.moviePlayRevActiveAction = QtGui.QAction(self)
+        self.moviePlayRevActiveAction = QtWidgets.QAction(self)
         self.moviePlayRevActiveAction.setObjectName("moviePlayRevActiveAction")
         self.moviePlayRevActiveAction.setIcon(
             geticon("ui/actions/Properties Manager/Movie_Play_Reverse_Active.png"))
 
-        self.moviePlayRevAction = QtGui.QAction(self)
+        self.moviePlayRevAction = QtWidgets.QAction(self)
         self.moviePlayRevAction.setObjectName("moviePlayRevAction")
         self.moviePlayRevAction.setIcon(
             geticon("ui/actions/Properties Manager/Movie_Play_Reverse.png"))
 
-        self.moviePauseAction = QtGui.QAction(self)
+        self.moviePauseAction = QtWidgets.QAction(self)
         self.moviePauseAction.setObjectName("moviePauseAction")
         self.moviePauseAction.setIcon(
             geticon("ui/actions/Properties Manager/Movie_Pause.png"))
 
-        self.moviePlayAction = QtGui.QAction(self)
+        self.moviePlayAction = QtWidgets.QAction(self)
         self.moviePlayAction.setObjectName("moviePlayAction")
         self.moviePlayAction.setVisible(True)
         self.moviePlayAction.setIcon(
             geticon("ui/actions/Properties Manager/Movie_Play_Forward.png"))
 
-        self.moviePlayActiveAction = QtGui.QAction(self)
+        self.moviePlayActiveAction = QtWidgets.QAction(self)
         self.moviePlayActiveAction.setObjectName("moviePlayActiveAction")
         self.moviePlayActiveAction.setIcon(
             geticon("ui/actions/Properties Manager/Movie_Play_Forward_Active.png"))
 
-        self.movieMoveToEndAction = QtGui.QAction(self)
+        self.movieMoveToEndAction = QtWidgets.QAction(self)
         self.movieMoveToEndAction.setObjectName("movieMoveToEndAction")
         self.movieMoveToEndAction.setIcon(
             geticon("ui/actions/Properties Manager/Movie_Move_To_End.png"))
 
-        self.fileOpenMovieAction = QtGui.QAction(self)
+        self.fileOpenMovieAction = QtWidgets.QAction(self)
         self.fileOpenMovieAction.setObjectName("fileOpenMovieAction")
         self.fileOpenMovieAction.setIcon(
             geticon("ui/actions/Properties Manager/Open.png"))
 
-        self.fileSaveMovieAction = QtGui.QAction(self)
+        self.fileSaveMovieAction = QtWidgets.QAction(self)
         self.fileSaveMovieAction.setObjectName("fileSaveMovieAction")
         self.fileSaveMovieAction.setIcon(
             geticon("ui/actions/Properties Manager/Save.png"))
 
         self.fileSaveMovieAction.setText(
-            QtGui.QApplication.translate("MainWindow",
+            QtCore.QCoreApplication.translate("MainWindow",
                                          "Save Movie File...",
-                                         None,
-                                         QtGui.QApplication.UnicodeUTF8))
+                                         None))
 
         self.fileOpenMovieAction.setText(
-            QtGui.QApplication.translate("MainWindow",
+            QtCore.QCoreApplication.translate("MainWindow",
                                          "Open Movie File...",
-                                         None,
-                                         QtGui.QApplication.UnicodeUTF8))
+                                         None))
 
         # This isn't currently in the PM. It's connected and ready to go.
-        self.movieInfoAction = QtGui.QAction(self)
+        self.movieInfoAction = QtWidgets.QAction(self)
         self.movieInfoAction.setObjectName("movieInfoAction")
         self.movieInfoAction.setIcon(
             geticon("ui/actions/Properties Manager/Movie_Info.png"))

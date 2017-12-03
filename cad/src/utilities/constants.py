@@ -14,7 +14,7 @@ gensym out of it for that reason.)
 @copyright: 2004-2009 Nanorex, Inc.  See LICENSE file for details.
 """
 
-from PyQt4.Qt import Qt
+from PyQt5.QtCore import Qt
 
 import os
 

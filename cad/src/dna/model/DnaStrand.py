@@ -23,7 +23,7 @@ from operations.bond_chains import grow_directional_bond_chain
 from dna.model.Dna_Constants import MISSING_COMPLEMENTARY_STRAND_ATOM_SYMBOL
 from utilities.constants import MODEL_PAM3
 from utilities.constants import MODEL_PAM5
-from PyQt4.Qt import QFont, QString
+from PyQt5.QtGui import QFont
 from model.bond_constants import bond_left_atom
 from utilities.Log import quote_html
 

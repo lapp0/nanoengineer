@@ -30,7 +30,8 @@ debug_mt_updates = 0 ###@@@ DO NOT COMMIT with 1
 debug_prints = 0 # whether atom_debug enables dprint; ok to commit with 0 or 1
 
 ###@@@ some of these imports are only needed by subclasses
-from PyQt4.Qt import *
+from PyQt5.QtGui import *
+from PyQt5.QtWidgets import *
 from constants import *
 from chem import *
 from jigs import *

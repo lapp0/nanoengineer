@@ -10,7 +10,6 @@ History:
 ninad 2007-10-11: Created, deprecating the LinearMototorPropDialog.py
 """
 
-from PyQt4.Qt import SIGNAL
 
 from PM.PM_GroupBox      import PM_GroupBox
 from PM.PM_DoubleSpinBox import PM_DoubleSpinBox

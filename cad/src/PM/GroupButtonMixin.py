@@ -23,7 +23,7 @@ of the PM package. [bruce 071214]
 
 __author__ = "Will"
 
-from PyQt4.Qt import QPixmap, QIcon
+from PyQt5.QtGui import QPixmap, QIcon
 
 _up_arrow_data = \
     "\x89\x50\x4e\x47\x0d\x0a\x1a\x0a\x00\x00\x00\x0d\x49\x48\x44\x52" \

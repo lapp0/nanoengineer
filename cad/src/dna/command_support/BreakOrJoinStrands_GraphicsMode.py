@@ -11,7 +11,7 @@ History:
 TODO:
 """
 
-from PyQt4.Qt import QFont, QString
+from PyQt5.QtGui import QFont
 
 import foundation.env as env
 

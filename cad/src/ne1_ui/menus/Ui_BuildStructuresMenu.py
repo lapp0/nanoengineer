@@ -3,7 +3,7 @@
 $Id$
 """
 
-from PyQt4 import QtGui
+from PyQt5 import QtGui, QtWidgets
 from utilities.debug_prefs import debug_pref, Choice_boolean_True
 
 def setupUi(win):
@@ -40,7 +40,7 @@ def retranslateUi(win):
     @param win: NE1's mainwindow object.
     @type  win: U{B{QMainWindow}<http://doc.trolltech.com/4/qmainwindow.html>}
     """
-    win.buildStructuresMenu.setTitle(QtGui.QApplication.translate(
+    win.buildStructuresMenu.setTitle(QtCore.QCoreApplication.translate(
          "MainWindow", "Build Structures",
-         None, QtGui.QApplication.UnicodeUTF8))
+         None))
     return

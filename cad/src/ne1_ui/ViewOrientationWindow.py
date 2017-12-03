@@ -16,8 +16,8 @@ So to be safe I'm putting it into ne1_ui, though refactoring
 almost all of it into "widgets" would be good to do sometime.
 """
 
-from PyQt4 import QtCore, QtGui
-from PyQt4.Qt import Qt, SIGNAL, QMainWindow, QDockWidget
+from PyQt5 import QtCore, QtGui, QtWidgets
+from PyQt5.QtGui import Qt, QMainWindow, QDockWidget
 
 from ne1_ui.Ui_ViewOrientation import Ui_ViewOrientation
 from utilities.icon_utilities import geticon
@@ -36,9 +36,9 @@ class ViewOrientationWindow(QDockWidget, Ui_ViewOrientation):
         self.lastViewList = None
 
         #Signals
-        QtCore.QObject.connect(self.saveNamedViewToolButton,QtCore.SIGNAL("clicked()"), win.saveNamedView)
-        QtCore.QObject.connect(self.orientationViewList, SIGNAL("itemDoubleClicked(QListWidgetItem*)"), self.changeViewOrientation)
-        QtCore.QObject.connect(self.pinOrientationWindowToolButton, SIGNAL("clicked()"), self.changePinIcon)
+        self.saveNamedViewToolButton.clicked.connect(win.saveNamedView)
+        self.orientationViewList.itemDoubleClicked[QListWidgetItem].connect(self.changeViewOrientation)
+        self.pinOrientationWindowToolButton.clicked.connect(self.changePinIcon)
 
     def createOrientationViewList(self):
         """
@@ -56,7 +56,7 @@ class ViewOrientationWindow(QDockWidget, Ui_ViewOrientation):
         self.namedViewList = win.getNamedViewList() #Save the last named view list
 
         for item in self.namedViewList:
-            itemNamedView = QtGui.QListWidgetItem(item.name, self.orientationViewList)
+            itemNamedView = QtWidgets.QListWidgetItem(item.name, self.orientationViewList)
             itemNamedView.setIcon(
                 geticon("ui/modeltree/csys.png"))
             win.namedViewMethodDict[itemNamedView] = item.change_view
@@ -70,55 +70,55 @@ class ViewOrientationWindow(QDockWidget, Ui_ViewOrientation):
         win = self.win
 
         #The default items
-        itemViewNormalTo = QtGui.QListWidgetItem(win.viewNormalToAction.objectName(), self.orientationViewList)
+        itemViewNormalTo = QtWidgets.QListWidgetItem(win.viewNormalToAction.objectName(), self.orientationViewList)
         itemViewNormalTo.setIcon(win.viewNormalToAction.icon())
         win.standardViewMethodDict[itemViewNormalTo] = win.viewNormalTo
 
-        itemViewParallelTo= QtGui.QListWidgetItem(win.viewParallelToAction.objectName(), self.orientationViewList)
+        itemViewParallelTo= QtWidgets.QListWidgetItem(win.viewParallelToAction.objectName(), self.orientationViewList)
         itemViewParallelTo.setIcon(win.viewParallelToAction.icon())
         win.standardViewMethodDict[itemViewParallelTo] = win.viewParallelTo
 
-        itemViewFront = QtGui.QListWidgetItem(win.viewFrontAction.objectName(), self.orientationViewList)
+        itemViewFront = QtWidgets.QListWidgetItem(win.viewFrontAction.objectName(), self.orientationViewList)
         itemViewFront.setIcon(win.viewFrontAction.icon())
         win.standardViewMethodDict[itemViewFront] = win.viewFront
 
-        itemViewBack = QtGui.QListWidgetItem(win.viewBackAction.objectName(), self.orientationViewList)
+        itemViewBack = QtWidgets.QListWidgetItem(win.viewBackAction.objectName(), self.orientationViewList)
         itemViewBack.setIcon(win.viewBackAction.icon())
         win.standardViewMethodDict[itemViewBack] = win.viewBack
 
-        itemViewLeft = QtGui.QListWidgetItem(win.viewLeftAction.objectName(), self.orientationViewList)
+        itemViewLeft = QtWidgets.QListWidgetItem(win.viewLeftAction.objectName(), self.orientationViewList)
         itemViewLeft.setIcon(win.viewLeftAction.icon())
         win.standardViewMethodDict[itemViewLeft] = win.viewLeft
 
-        itemViewRight = QtGui.QListWidgetItem(win.viewRightAction.objectName(), self.orientationViewList)
+        itemViewRight = QtWidgets.QListWidgetItem(win.viewRightAction.objectName(), self.orientationViewList)
         itemViewRight.setIcon(win.viewRightAction.icon())
         win.standardViewMethodDict[itemViewRight] = win.viewRight
 
-        itemViewTop = QtGui.QListWidgetItem(win.viewTopAction.objectName(), self.orientationViewList)
+        itemViewTop = QtWidgets.QListWidgetItem(win.viewTopAction.objectName(), self.orientationViewList)
         itemViewTop.setIcon(win.viewTopAction.icon())
         win.standardViewMethodDict[itemViewTop] = win.viewTop
 
-        itemViewBottom = QtGui.QListWidgetItem(win.viewBottomAction.objectName(), self.orientationViewList)
+        itemViewBottom = QtWidgets.QListWidgetItem(win.viewBottomAction.objectName(), self.orientationViewList)
         itemViewBottom.setIcon(win.viewBottomAction.icon())
         win.standardViewMethodDict[itemViewBottom] = win.viewBottom
 
-        itemViewIsometric = QtGui.QListWidgetItem(win.viewIsometricAction.objectName(), self.orientationViewList)
+        itemViewIsometric = QtWidgets.QListWidgetItem(win.viewIsometricAction.objectName(), self.orientationViewList)
         itemViewIsometric.setIcon(win.viewIsometricAction.icon())
         win.standardViewMethodDict[itemViewIsometric] = win.viewIsometric
 
-        itemViewFlipViewVert = QtGui.QListWidgetItem(win.viewFlipViewVertAction.objectName(), self.orientationViewList)
+        itemViewFlipViewVert = QtWidgets.QListWidgetItem(win.viewFlipViewVertAction.objectName(), self.orientationViewList)
         itemViewFlipViewVert.setIcon(win.viewFlipViewVertAction.icon())
         win.standardViewMethodDict[itemViewFlipViewVert] = win.viewFlipViewVert
 
-        itemViewFlipViewHorz = QtGui.QListWidgetItem(win.viewFlipViewHorzAction.objectName(), self.orientationViewList)
+        itemViewFlipViewHorz = QtWidgets.QListWidgetItem(win.viewFlipViewHorzAction.objectName(), self.orientationViewList)
         itemViewFlipViewHorz.setIcon(win.viewFlipViewHorzAction.icon())
         win.standardViewMethodDict[itemViewFlipViewHorz] = win.viewFlipViewHorz
 
-        itemViewRotatePlus90 = QtGui.QListWidgetItem(win.viewRotatePlus90Action.objectName(), self.orientationViewList)
+        itemViewRotatePlus90 = QtWidgets.QListWidgetItem(win.viewRotatePlus90Action.objectName(), self.orientationViewList)
         itemViewRotatePlus90.setIcon(win.viewRotatePlus90Action.icon())
         win.standardViewMethodDict[itemViewRotatePlus90] = win.viewRotatePlus90
 
-        itemViewRotateMinus90 = QtGui.QListWidgetItem(win.viewRotateMinus90Action.objectName(), self.orientationViewList)
+        itemViewRotateMinus90 = QtWidgets.QListWidgetItem(win.viewRotateMinus90Action.objectName(), self.orientationViewList)
         itemViewRotateMinus90.setIcon(win.viewRotateMinus90Action.icon())
         win.standardViewMethodDict[itemViewRotateMinus90] = win.viewRotateMinus90
         return
@@ -156,7 +156,7 @@ class ViewOrientationWindow(QDockWidget, Ui_ViewOrientation):
         self.addStandardViewItems() # Add standard views as the list widget items to the orientation window
 
         for item in self.namedViewList:
-            itemNamedView = QtGui.QListWidgetItem(item.name, self.orientationViewList)
+            itemNamedView = QtWidgets.QListWidgetItem(item.name, self.orientationViewList)
             itemNamedView.setIcon(
                 geticon("ui/modeltree/csys.png"))
             win.namedViewMethodDict[itemNamedView] = item.change_view

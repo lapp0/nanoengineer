@@ -28,7 +28,7 @@ Ninad & Bruce 2007-12-13: Created new Command and GraphicsMode classes from
                           selectChunksMode.py
 """
 
-from PyQt4.Qt import QMouseEvent
+from PyQt5.QtGui import QMouseEvent
 
 import foundation.env as env
 

@@ -22,7 +22,6 @@ BUGS:
 from utilities import debug_flags
 from utilities.debug import print_compact_stack
 
-from PyQt4.Qt import SIGNAL
 
 
 from PM.PM_GroupBox      import PM_GroupBox

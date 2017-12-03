@@ -27,13 +27,19 @@ from dna.model.dna_model_constants import LADDER_STRAND1_BOND_DIRECTION
 
 from utilities import debug_flags
 
+try:
+    QString = unicode
+except NameError:
+    # Python 3
+    QString = str
+
 def _DEBUG_REUSE_CHUNKS():
     return debug_flags.DEBUG_DNA_UPDATER_VERBOSE
 
 import foundation.env as env
 from utilities.Log import orangemsg, graymsg
 
-from PyQt4.Qt import QFont, QString # for debug code
+from PyQt5.QtGui import QFont, QString # for debug code
 
 from utilities.debug_prefs import debug_pref, Choice_boolean_False
 

@@ -23,7 +23,7 @@ For now, call this "graphics_io" but file it into graphics/rendering/QuteMolX.
 import foundation.env as env
 import os
 import sys
-from PyQt4.Qt import QString, QStringList, QProcess
+from PyQt5.QtCore import QProcess
 
 from utilities.prefs_constants import qutemol_enabled_prefs_key, qutemol_path_prefs_key
 from utilities.debug import print_compact_traceback
@@ -43,6 +43,13 @@ from processes.Plugins import checkPluginPreferences
 from processes.Process import Process
 from commands.GroupProperties.GroupProp import Statistics
 from platform_dependent.PlatformDependent import find_or_make_Nanorex_subdir
+
+try:
+    QString = unicode
+except NameError:
+    # Python 3
+    QString = str
+QStringList = list
 
 def launch_qutemol(pdb_file):
     """

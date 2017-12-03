@@ -13,7 +13,7 @@ ninad 2007-08-20: Code cleanup to use new PM module classes.
 
 
 from commands.Move.Ui_MovePropertyManager import Ui_MovePropertyManager
-from PyQt4.Qt import SIGNAL
+from PyQt5.QtWidgets import *
 
 
 class MovePropertyManager(Ui_MovePropertyManager):

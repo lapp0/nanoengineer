@@ -14,9 +14,9 @@ TODO:
 NOTE: methods addPmWidget and getPmWidgetPlacementParameters are duplicated from
 PM_GroupBox
 """
-from PyQt4.Qt import QDockWidget
-from PyQt4.Qt import QLabel, QPalette
-from PyQt4.Qt import Qt, QWidget, QVBoxLayout, QGridLayout
+from PyQt5.QtWidgets import QDockWidget
+from PyQt5.QtGui import QLabel, QPalette
+from PyQt5.QtGui import Qt, QWidget, QVBoxLayout, QGridLayout
 
 from PM.PM_Colors    import getPalette
 from PM.PM_Colors import pmGrpBoxColor
@@ -81,12 +81,12 @@ class PM_DockWidget(QDockWidget):
 
         # Create vertical box layout
         self.vBoxLayout = QVBoxLayout(self._containerWidget)
-        self.vBoxLayout.setMargin(1)
+        self.vBoxLayout.setContentsMargins(1, 1, 1, 1)
         self.vBoxLayout.setSpacing(0)
 
         # Create grid layout
         self.gridLayout = QGridLayout()
-        self.gridLayout.setMargin(1)
+        self.gridLayout.setContentsMargins(1, 1, 1, 1)
         self.gridLayout.setSpacing(1)
 
         # Insert grid layout in its own vBoxLayout

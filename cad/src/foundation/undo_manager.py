@@ -85,7 +85,7 @@ class AssyUndoManager(UndoManager):
 ##        self.remake_UI_menuitems() # so it runs for initial checkpoint and disables menu items, etc
         if is_macintosh():
             win = assy.w
-            from PyQt4.Qt import Qt
+            from PyQt5.QtCore import Qt
             win.editRedoAction.setShortcut(Qt.CTRL+Qt.SHIFT+Qt.Key_Z) # set up incorrectly (for Mac) as "Ctrl+Y"
                 # note: long before 060414 this is probably no longer needed
                 # (since now done in gui.WhatsThisText_for_MainWindow.py),

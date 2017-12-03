@@ -24,31 +24,30 @@ Third it needs to migrate into the NE-1 code cleanly, ideally with just a change
 
 import sys
 
-from PyQt4.Qt import QTreeView
-from PyQt4.Qt import QItemDelegate
-from PyQt4.Qt import QAbstractItemModel
-from PyQt4.Qt import QGroupBox
-from PyQt4.Qt import QMainWindow
-from PyQt4.Qt import QIcon
-from PyQt4.Qt import QTextEdit
-from PyQt4.Qt import QVariant
-from PyQt4.Qt import Qt
-from PyQt4.Qt import QModelIndex
-from PyQt4.Qt import QItemSelectionModel
-from PyQt4.Qt import QFontMetrics
-from PyQt4.Qt import QLineEdit
-from PyQt4.Qt import QDrag
-from PyQt4.Qt import QMimeData
-from PyQt4.Qt import QPoint
-from PyQt4.Qt import QMouseEvent
-from PyQt4.Qt import QMenu
-from PyQt4.Qt import QAction
-from PyQt4.Qt import SIGNAL
-from PyQt4.Qt import QPixmap
-from PyQt4.Qt import QVBoxLayout
-from PyQt4.Qt import QHBoxLayout
-from PyQt4.Qt import QPushButton
-from PyQt4.Qt import QApplication
+from PyQt5.QtWidgets import QTreeView
+from PyQt5.QtWidgets import QItemDelegate
+from PyQt5.QtCore import QAbstractItemModel
+from PyQt5.QtWidgets import QGroupBox
+from PyQt5.QtWidgets import QMainWindow
+from PyQt5.QtGui import QIcon
+from PyQt5.QtWidgets import QTextEdit
+from PyQt5.QtCore import QVariant
+from PyQt5.QtCore import Qt
+from PyQt5.QtCore import QModelIndex
+from PyQt5.QtCore import QItemSelectionModel
+from PyQt5.QtGui import QFontMetrics
+from PyQt5.QtWidgets import QLineEdit
+from PyQt5.QtGui import QDrag
+from PyQt5.QtCore import QMimeData
+from PyQt5.QtCore import QPoint
+from PyQt5.QtGui import QMouseEvent
+from PyQt5.QtWidgets import QMenu
+from PyQt5.QtWidgets import QAction
+from PyQt5.QtGui import QPixmap
+from PyQt5.QtWidgets import QVBoxLayout
+from PyQt5.QtWidgets import QHBoxLayout
+from PyQt5.QtWidgets import QPushButton
+from PyQt5.QtWidgets import QApplication
 
 _ICONSIZE = (22, 22) #bruce 070507 copied this over, not used enough
 
@@ -646,7 +645,7 @@ class ModelTree(ModelTreeGUI_api):
                     str, thunk = x[:2]
                     act = QAction(str, self)
                     act.setEnabled("disabled" not in x[2:])
-                    self.connect(act, SIGNAL("triggered()"), thunk)
+                    act.triggered.connect(thunk)
                     menu.addAction(act)
                 else:
                     menu.addSeparator()
@@ -823,7 +822,7 @@ class TestWrapper(QGroupBox):
         self.gbox = QGroupBox()
         vl = QVBoxLayout(self)
         vl.setSpacing(0)
-        vl.setMargin(0)
+        vl.setContentsMargins(0, 0, 0, 0)
         vl.addWidget(self.view)
         self.buttonLayout = hl = QHBoxLayout()
         hl.setSpacing(0)
@@ -838,7 +837,7 @@ class TestWrapper(QGroupBox):
         setattr(self, "button%d" % self.buttonNum, button)
         self.buttonNum += 1
         self.buttonLayout.addWidget(button)
-        self.connect(button, SIGNAL('clicked()'), func)
+        button.clicked.connect(func)
 
     def addIconButton(self, icon, func):
         button = QPushButton()
@@ -846,7 +845,7 @@ class TestWrapper(QGroupBox):
         setattr(self, "button%d" % self.buttonNum, button)
         self.buttonNum += 1
         self.buttonLayout.addWidget(button)
-        self.connect(button, SIGNAL('clicked()'), func)
+        button.clicked.connect(func)
 
     def addsomething(self, what):
         if what == "Chunk":

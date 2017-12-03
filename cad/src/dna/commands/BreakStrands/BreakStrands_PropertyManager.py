@@ -16,7 +16,6 @@ Revised and refactored arrowhead display code and moved part common to both
 Break and JoinStrands PMs into new module BreakOrJoinStrands_PropertyManager
 """
 
-from PyQt4.Qt import SIGNAL
 from widgets.prefs_widgets import connect_checkbox_with_boolean_pref
 
 from PM.PM_GroupBox import PM_GroupBox

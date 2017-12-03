@@ -9,9 +9,8 @@ piotr 080713: Added editRotamers action.
 """
 
 import foundation.env as env
-from PyQt4 import QtCore, QtGui
-from PyQt4.Qt import Qt
-from PyQt4.Qt import SIGNAL
+from PyQt5 import QtCore, QtGui, QtWidgets
+from PyQt5.QtCore import Qt
 from utilities.icon_utilities import geticon
 from utilities.Log import greenmsg
 from ne1_ui.NE1_QWidgetAction import NE1_QWidgetAction
@@ -70,7 +69,7 @@ class ProteinFlyout:
         #Action List for  subcontrol Area buttons.
         subControlAreaActionList = []
         subControlAreaActionList.append(self.exitProteinAction)
-        separator = QtGui.QAction(self.parentWidget)
+        separator = QtWidgets.QAction(self.parentWidget)
         separator.setSeparator(True)
         subControlAreaActionList.append(separator)
         subControlAreaActionList.append(self.buildPeptideAction)
@@ -132,7 +131,7 @@ class ProteinFlyout:
         self.displayProteinStyleAction.setIcon(
             geticon("ui/actions/Command Toolbar/BuildProtein/EditProteinDisplayStyle.png"))
 
-        self.subControlActionGroup = QtGui.QActionGroup(self.parentWidget)
+        self.subControlActionGroup = QtWidgets.QActionGroup(self.parentWidget)
         self.subControlActionGroup.setExclusive(False)
         self.subControlActionGroup.addAction(self.buildPeptideAction)
         self.subControlActionGroup.addAction(self.displayProteinStyleAction)

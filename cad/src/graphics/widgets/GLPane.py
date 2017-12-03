@@ -49,6 +49,7 @@ bruce 080925 removed support for GLPANE_IS_COMMAND_SEQUENCER
 _DEBUG_SET_SELOBJ = False # do not commit with true
 
 import sys
+from PyQt5.QtWidgets import *
 
 from OpenGL.GL import GL_STENCIL_BITS
 from OpenGL.GL import glGetInteger
@@ -93,7 +94,7 @@ from graphics.widgets.GLPane_minimal import GLPane_minimal
 from foundation.changes import SubUsageTrackingMixin
 from graphics.widgets.GLPane_mixin_for_DisplayListChunk import GLPane_mixin_for_DisplayListChunk
 
-from PyQt4.Qt  import QApplication, QCursor, Qt
+from PyQt5.Qt  import QApplication, QCursor, Qt
 
 # ==
 

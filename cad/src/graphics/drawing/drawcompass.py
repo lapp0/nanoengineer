@@ -43,12 +43,18 @@ from OpenGL.GL import glEndList
 from OpenGL.GL import glCallList
 
 try:
+    QString = unicode
+except NameError:
+    # Python 3
+    QString = str
+
+try:
     from OpenGL.GLE import glePolyCone
 except:
     print("GLE module can't be imported. Now trying _GLE")
     from OpenGL._GLE import glePolyCone
 
-from PyQt4.Qt import QFont, QString, QColor
+from PyQt5.QtGui import QFont, QColor
 
 import math
 

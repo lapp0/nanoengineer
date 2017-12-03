@@ -7,15 +7,21 @@ old_extrude_widgets.py - these were used in the original Extrude Mode dashboard.
 @copyright: 2004-2008 Nanorex, Inc.  See LICENSE file for details.
 """
 
-from PyQt4.Qt import QGroupBox, QSpinBox, QCheckBox
-from PyQt4.Qt import QVBoxLayout
-from PyQt4.Qt import QHBoxLayout
-from PyQt4.Qt import QLabel
+from PyQt5.QtGui import QGroupBox, QSpinBox, QCheckBox
+from PyQt5.QtWidgets import QVBoxLayout
+from PyQt5.QtWidgets import QHBoxLayout
+from PyQt5.QtWidgets import QLabel
 
 from utilities.qt4transition import qt4warning, qt4todo
 
 # These don't exist in Qt4 but we can make begin(QVBox) and
 # begin(QHBox) act the same as before.
+try:
+    QString = unicode
+except NameError:
+    # Python 3
+    QString = str
+
 QVBox, QHBox = list(range(2))
 
 class widget_filler:

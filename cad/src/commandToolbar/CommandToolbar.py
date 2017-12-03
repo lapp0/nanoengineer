@@ -80,12 +80,11 @@ ninad 20080715: a) Workaround for Qt4.3 bug 2916 (disabled 'extension indicator'
  in classes FlyoutToolbar and NE1_QWidgetAction.
 """
 
-from PyQt4 import QtGui
-from PyQt4.Qt import Qt
-from PyQt4.Qt import SIGNAL
-from PyQt4.Qt import QToolButton
-from PyQt4.Qt import QMenu
-from PyQt4.Qt import QWidgetAction
+from PyQt5 import QtGui, QtWidgets
+from PyQt5.QtCore import Qt
+from PyQt5.QtWidgets import QToolButton
+from PyQt5.QtWidgets import QMenu
+from PyQt5.QtWidgets import QWidgetAction
 from foundation.wiki_help import QToolBar_WikiHelp
 
 
@@ -174,8 +173,7 @@ class CommandToolbar(Ui_CommandToolbar):
         """
         Connect signals to slots.
         """
-        self.win.connect(self.cmdButtonGroup, SIGNAL("buttonClicked(int)"),
-                         self.controlButtonChecked)
+        self.cmdButtonGroup.buttonClicked[int].connect(self.controlButtonChecked)
 
 
 
@@ -452,7 +450,7 @@ class CommandToolbar(Ui_CommandToolbar):
         for l in commandActionLists:
             cmdActionCount += len(l)
 
-        widgetActions = [act for act in allActionsList if isinstance(act, QtGui.QWidgetAction)]
+        widgetActions = [act for act in allActionsList if isinstance(act, QtWidgets.QWidgetAction)]
 
 
         self.flyoutToolBar.clear()

@@ -19,7 +19,7 @@ See class CrossoverSite_Marker for details
 
 import foundation.env as env
 
-from PyQt4.Qt import Qt
+from PyQt5.QtCore import Qt
 from utilities.constants import banana, silver,  darkred, darkgreen, yellow
 from graphics.drawing.CS_draw_primitives import drawcylinder
 from graphics.drawing.CS_draw_primitives import drawsphere

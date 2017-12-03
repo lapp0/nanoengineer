@@ -3,7 +3,7 @@
 $Id$
 """
 
-from PyQt4 import QtGui
+from PyQt5 import QtGui, QtWidgets
 
 import ne1_ui.menus.Ui_BuildStructuresMenu as Ui_BuildStructuresMenu
 import ne1_ui.menus.Ui_BuildToolsMenu as Ui_BuildToolsMenu
@@ -52,9 +52,9 @@ def retranslateUi(win):
     @param win: NE1's mainwindow object.
     @type  win: U{B{QMainWindow}<http://doc.trolltech.com/4/qmainwindow.html>}
     """
-    win.toolsMenu.setTitle(QtGui.QApplication.translate(
+    win.toolsMenu.setTitle(QtCore.QCoreApplication.translate(
         "MainWindow", "&Tools",
-        None, QtGui.QApplication.UnicodeUTF8))
+        None))
 
     # Set text for the submenus.
     Ui_BuildStructuresMenu.retranslateUi(win)

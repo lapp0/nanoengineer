@@ -9,9 +9,9 @@ PM_FontComboBox.py
 
 """
 
-from PyQt4.Qt import QFontComboBox
-from PyQt4.Qt import QLabel
-from PyQt4.Qt import QWidget
+from PyQt5.QtWidgets import QFontComboBox
+from PyQt5.QtWidgets import QLabel
+from PyQt5.QtWidgets import QWidget
 
 class PM_FontComboBox( QFontComboBox ):
     """

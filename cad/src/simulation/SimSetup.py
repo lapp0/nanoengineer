@@ -21,11 +21,10 @@ convention for other Dialog subclasses.
 
 import os
 
-from PyQt4.Qt import QDialog
-from PyQt4.Qt import QButtonGroup
-from PyQt4.Qt import QAbstractButton
-from PyQt4.Qt import SIGNAL
-from PyQt4.Qt import QSize, QWhatsThis
+from PyQt5.QtWidgets import QDialog
+from PyQt5.QtWidgets import QButtonGroup
+from PyQt5.QtWidgets import QAbstractButton
+from PyQt5.QtGui import QSize, QWhatsThis
 
 import foundation.env as env
 
@@ -89,18 +88,16 @@ class SimSetup(QDialog, Ui_SimSetupDialog): # before 050325 this class was calle
         self.whatsthis_btn.setIconSize(QSize(22, 22))
         self.whatsthis_btn.setToolTip('Enter "What\'s This?" help mode')
 
-        self.connect(self.whatsthis_btn,
-                     SIGNAL("clicked()"),
-                     QWhatsThis.enterWhatsThisMode)
+        self.whatsthis_btn.clicked.connect(QWhatsThis.enterWhatsThisMode)
 
         self.watch_motion_buttongroup = QButtonGroup()
         self.watch_motion_buttongroup.setExclusive(True)
         for obj in self.watch_motion_groupbox.children():
             if isinstance(obj, QAbstractButton):
                 self.watch_motion_buttongroup.addButton(obj)
-        self.connect(self.run_sim_btn,SIGNAL("clicked()"),self.createMoviePressed)
-        self.connect(self.cancel_btn,SIGNAL("clicked()"),self.close)
-        qt4todo('self.connect(self.watch_motion_groupbox,SIGNAL("toggled(bool)"),self.setEnabled) ???')
+        self.run_sim_btn.clicked.connect(self.createMoviePressed)
+        self.cancel_btn.clicked.connect(self.close)
+        self.watch_motion_groupbox.toggled[bool].connect(self.setEnabled) ???')
         self.watch_motion_groupbox.setEnabled(True)
         ## self.part = part
             # not yet needed, though in future we might display info

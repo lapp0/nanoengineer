@@ -18,23 +18,22 @@ bruce 2007-06-15: partly cleaned up inheritance (by splitting out PropertyManage
 
 __author__ = "Ninad"
 
-from PyQt4 import QtCore, QtGui
-from PyQt4.Qt import Qt
-from PyQt4.Qt import QPalette
-from PyQt4.Qt import QSizePolicy
-from PyQt4.Qt import QGroupBox
-from PyQt4.Qt import QFrame
-from PyQt4.Qt import QHBoxLayout
-from PyQt4.Qt import QLabel
-from PyQt4.Qt import SIGNAL
-from PyQt4.Qt import QSpacerItem
-from PyQt4.Qt import QToolButton
-from PyQt4.Qt import QSize
-from PyQt4.Qt import QWhatsThis
-from PyQt4.Qt import QVBoxLayout
-from PyQt4.Qt import QTextOption
-from PyQt4.Qt import QPushButton
-from PyQt4.Qt import QTextEdit
+from PyQt5 import QtCore, QtGui, QtWidgets
+from PyQt5.QtCore import Qt
+from PyQt5.QtGui import QPalette
+from PyQt5.QtWidgets import QSizePolicy
+from PyQt5.QtWidgets import QGroupBox
+from PyQt5.QtWidgets import QFrame
+from PyQt5.QtWidgets import QHBoxLayout
+from PyQt5.QtWidgets import QLabel
+from PyQt5.QtWidgets import QSpacerItem
+from PyQt5.QtWidgets import QToolButton
+from PyQt5.QtCore import QSize
+from PyQt5.QtWidgets import QWhatsThis
+from PyQt5.QtWidgets import QVBoxLayout
+from PyQt5.QtGui import QTextOption
+from PyQt5.QtWidgets import QPushButton
+from PyQt5.QtWidgets import QTextEdit
 
 from utilities import debug_flags
 
@@ -82,8 +81,8 @@ from PM.PropMgr_Constants import pmGroupBoxSpacing
 def pmVBoxLayout(propMgr):
     """Create the master vertical box layout for <propMgr>.
     """
-    propMgr.pmVBoxLayout = QtGui.QVBoxLayout(propMgr)
-    propMgr.pmVBoxLayout.setMargin(pmMainVboxLayoutMargin)
+    propMgr.pmVBoxLayout = QtWidgets.QVBoxLayout(propMgr)
+    propMgr.pmVBoxLayout.setContentsMargins(pmMainVboxLayoutMargin, pmMainVboxLayoutMargin, pmMainVboxLayoutMargin, pmMainVboxLayoutMargin)
     propMgr.pmVBoxLayout.setSpacing(pmMainVboxLayoutSpacing)
     propMgr.pmVBoxLayout.setObjectName("pmVBoxLayout")
 
@@ -119,7 +118,7 @@ def pmAddHeader(propMgr):
     # HBox layout for heading frame, containing the pixmap
     # and label (title).
     HeaderFrameHLayout = QHBoxLayout(propMgr.header_frame)
-    HeaderFrameHLayout.setMargin(pmHeaderFrameMargin) # 2 pixels around edges.
+    HeaderFrameHLayout.setContentsMargins(pmHeaderFrameMargin) # 2 pixels around edges., pmHeaderFrameMargin) # 2 pixels around edges., pmHeaderFrameMargin) # 2 pixels around edges., pmHeaderFrameMargin) # 2 pixels around edges.)
     HeaderFrameHLayout.setSpacing(pmHeaderFrameSpacing) # 5 pixel between pixmap and label.
 
     # PropMgr icon. Set image by calling setPropMgrIcon() at any time.
@@ -147,24 +146,22 @@ def pmAddHeader(propMgr):
 def pmAddSponsorButton(propMgr):
     """Creates the sponsor button for <propMgr>.
     """
-    propMgr.sponsor_frame = QtGui.QFrame(propMgr)
-    propMgr.sponsor_frame.setFrameShape(QtGui.QFrame.NoFrame)
-    propMgr.sponsor_frame.setFrameShadow(QtGui.QFrame.Plain)
+    propMgr.sponsor_frame = QtWidgets.QFrame(propMgr)
+    propMgr.sponsor_frame.setFrameShape(QtWidgets.QFrame.NoFrame)
+    propMgr.sponsor_frame.setFrameShadow(QtWidgets.QFrame.Plain)
     propMgr.sponsor_frame.setObjectName("sponsor_frame")
 
-    propMgr.gridlayout_sponsor = QtGui.QGridLayout(propMgr.sponsor_frame)
-    propMgr.gridlayout_sponsor.setMargin(pmSponsorFrameMargin)
+    propMgr.gridlayout_sponsor = QtWidgets.QGridLayout(propMgr.sponsor_frame)
+    propMgr.gridlayout_sponsor.setContentsMargins(pmSponsorFrameMargin, pmSponsorFrameMargin, pmSponsorFrameMargin, pmSponsorFrameMargin)
     propMgr.gridlayout_sponsor.setSpacing(pmSponsorFrameSpacing)
 
-    propMgr.sponsor_btn = QtGui.QPushButton(propMgr.sponsor_frame)
+    propMgr.sponsor_btn = QtWidgets.QPushButton(propMgr.sponsor_frame)
     propMgr.sponsor_btn.setAutoDefault(False)
     propMgr.sponsor_btn.setFlat(True)
     propMgr.sponsor_btn.setObjectName("sponsor_btn")
     propMgr.gridlayout_sponsor.addWidget(propMgr.sponsor_btn,0,0,1,1)
 
-    propMgr.connect(propMgr.sponsor_btn,
-                    SIGNAL("clicked()"),
-                    propMgr.sponsor_btn_clicked)
+    propMgr.sponsor_btn.clicked.connect(propMgr.sponsor_btn_clicked)
 
     propMgr.pmVBoxLayout.addWidget(propMgr.sponsor_frame)
 
@@ -225,7 +222,7 @@ def pmAddTopRowButtons(propMgr, showFlags=pmAllButtons):
 
     # Create Hbox layout for main frame.
     TopRowBtnsHLayout = QHBoxLayout(propMgr.TopRowBtnsFrame)
-    TopRowBtnsHLayout.setMargin(pmTopRowBtnsMargin)
+    TopRowBtnsHLayout.setContentsMargins(pmTopRowBtnsMargin, pmTopRowBtnsMargin, pmTopRowBtnsMargin, pmTopRowBtnsMargin)
     TopRowBtnsHLayout.setSpacing(pmTopRowBtnsSpacing)
 
     TopRowBtnsHLayout.addItem(HSpacer)
@@ -239,9 +236,7 @@ def pmAddTopRowButtons(propMgr, showFlags=pmAllButtons):
     propMgr.done_btn.setIcon(
         geticon("ui/actions/Properties Manager/Done.png"))
     propMgr.done_btn.setIconSize(QSize(22,22))
-    propMgr.connect(propMgr.done_btn,
-                   SIGNAL("clicked()"),
-                   propMgr.ok_btn_clicked)
+    propMgr.done_btn.clicked.connect(propMgr.ok_btn_clicked)
     propMgr.done_btn.setToolTip("Done")
 
     TopRowBtnsHLayout.addWidget(propMgr.done_btn)
@@ -251,9 +246,7 @@ def pmAddTopRowButtons(propMgr, showFlags=pmAllButtons):
     propMgr.abort_btn.setIcon(
         geticon("ui/actions/Properties Manager/Abort.png"))
     propMgr.abort_btn.setIconSize(QSize(22,22))
-    propMgr.connect(propMgr.abort_btn,
-                   SIGNAL("clicked()"),
-                   propMgr.abort_btn_clicked)
+    propMgr.abort_btn.clicked.connect(propMgr.abort_btn_clicked)
     propMgr.abort_btn.setToolTip("Cancel")
 
     TopRowBtnsHLayout.addWidget(propMgr.abort_btn)
@@ -263,9 +256,7 @@ def pmAddTopRowButtons(propMgr, showFlags=pmAllButtons):
     propMgr.restore_defaults_btn.setIcon(
         geticon("ui/actions/Properties Manager/Restore.png"))
     propMgr.restore_defaults_btn.setIconSize(QSize(22,22))
-    propMgr.connect(propMgr.restore_defaults_btn,
-                   SIGNAL("clicked()"),
-                   propMgr.restore_defaults_btn_clicked)
+    propMgr.restore_defaults_btn.clicked.connect(propMgr.restore_defaults_btn_clicked)
     propMgr.restore_defaults_btn.setToolTip("Restore Defaults")
     TopRowBtnsHLayout.addWidget(propMgr.restore_defaults_btn)
 
@@ -274,9 +265,7 @@ def pmAddTopRowButtons(propMgr, showFlags=pmAllButtons):
     propMgr.preview_btn.setIcon(
         geticon("ui/actions/Properties Manager/Preview.png"))
     propMgr.preview_btn.setIconSize(QSize(22,22))
-    propMgr.connect(propMgr.preview_btn,
-                   SIGNAL("clicked()"),
-                   propMgr.preview_btn_clicked)
+    propMgr.preview_btn.clicked.connect(propMgr.preview_btn_clicked)
     propMgr.preview_btn.setToolTip("Preview")
 
     TopRowBtnsHLayout.addWidget(propMgr.preview_btn)
@@ -286,9 +275,7 @@ def pmAddTopRowButtons(propMgr, showFlags=pmAllButtons):
     propMgr.whatsthis_btn.setIcon(
         geticon("ui/actions/Properties Manager/WhatsThis.png"))
     propMgr.whatsthis_btn.setIconSize(QSize(22,22))
-    propMgr.connect(propMgr.whatsthis_btn,
-                   SIGNAL("clicked()"),
-                   QWhatsThis.enterWhatsThisMode)
+    propMgr.whatsthis_btn.clicked.connect(QWhatsThis.enterWhatsThisMode)
     propMgr.whatsthis_btn.setToolTip("What\'s This Help")
 
     TopRowBtnsHLayout.addWidget(propMgr.whatsthis_btn)
@@ -376,17 +363,16 @@ class pmMessageGroupBox(QGroupBox, PropertyManager_common):
 
         # Create vertical box layout
         self.VBoxLayout = QVBoxLayout(self)
-        self.VBoxLayout.setMargin(pmMsgGrpBoxMargin)
+        self.VBoxLayout.setContentsMargins(pmMsgGrpBoxMargin, pmMsgGrpBoxMargin, pmMsgGrpBoxMargin, pmMsgGrpBoxMargin)
         self.VBoxLayout.setSpacing(pmMsgGrpBoxSpacing)
 
         # Add title button to GroupBox
         self.titleButton = self.getTitleButton(title, self)
         self.VBoxLayout.addWidget(self.titleButton)
-        self.connect(self.titleButton,SIGNAL("clicked()"),
-                     self.toggleExpandCollapse)
+        self.titleButton.clicked.connect(self.toggleExpandCollapse)
 
         # Yellow MessageTextEdit
-        self.MessageTextEdit = QtGui.QTextEdit(self)
+        self.MessageTextEdit = QtWidgets.QTextEdit(self)
         self.MessageTextEdit.setMaximumHeight(80) # 80 pixels height
         self.MessageTextEdit.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
         self.VBoxLayout.addWidget(self.MessageTextEdit)
@@ -620,14 +606,14 @@ def pmAddBottomSpacer(parent, vlayout, last=False):
     """
     if last:
         parent.bottom_spacer = \
-            QtGui.QSpacerItem(10, 0, \
-                            QtGui.QSizePolicy.Fixed, \
-                            QtGui.QSizePolicy.Expanding)
+            QtWidgets.QSpacerItem(10, 0, \
+                            QtWidgets.QSizePolicy.Fixed, \
+                            QtWidgets.QSizePolicy.Expanding)
     else:
         parent.bottom_spacer = \
-            QtGui.QSpacerItem(10, pmGroupBoxSpacing, \
-                            QtGui.QSizePolicy.Fixed, \
-                            QtGui.QSizePolicy.Fixed)
+            QtWidgets.QSpacerItem(10, pmGroupBoxSpacing, \
+                            QtWidgets.QSizePolicy.Fixed, \
+                            QtWidgets.QSizePolicy.Fixed)
 
     vlayout.addItem(parent.bottom_spacer)
 
@@ -768,7 +754,7 @@ class PropertyManagerMixin(PropertyManager_common, SponsorableMixin):
         See also: getGroupBoxTitleCheckBox , getGroupBoxButtonStyleSheet  methods
         """
 
-        button  = QtGui.QPushButton(name, parent)
+        button  = QtWidgets.QPushButton(name, parent)
         button.setFlat(False)
         button.setAutoFillBackground(True)
 
@@ -836,7 +822,7 @@ class PropertyManagerMixin(PropertyManager_common, SponsorableMixin):
         See also: getGroupBoxTitleButton method.
         """
 
-        checkbox = QtGui.QCheckBox(name, parent)
+        checkbox = QtWidgets.QCheckBox(name, parent)
         checkbox.setAutoFillBackground(True)
 
         palette = self.getGroupBoxCheckBoxPalette()

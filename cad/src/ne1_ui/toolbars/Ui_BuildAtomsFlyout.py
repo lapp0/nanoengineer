@@ -22,9 +22,8 @@ for class BuildAtoms_Command
 
 """
 from ne1_ui.NE1_QWidgetAction import NE1_QWidgetAction
-from PyQt4.Qt import SIGNAL
-from PyQt4.Qt import QAction
-from PyQt4.Qt import QActionGroup
+from PyQt5.QtWidgets import QAction
+from PyQt5.QtWidgets import QActionGroup
 
 
 from utilities.icon_utilities import geticon

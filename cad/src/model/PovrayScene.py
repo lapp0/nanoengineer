@@ -12,12 +12,12 @@ mark 060601 - Created.
 """
 
 import os
-from PyQt4.Qt import QDialog
-from PyQt4.Qt import QPixmap
-from PyQt4.Qt import QLabel
-from PyQt4.Qt import QRect
-from PyQt4.Qt import QSize
-from PyQt4.Qt import QApplication
+from PyQt5.QtWidgets import QDialog
+from PyQt5.QtGui import QPixmap
+from PyQt5.QtWidgets import QLabel
+from PyQt5.QtCore import QRect
+from PyQt5.QtCore import QSize
+from PyQt5.QtWidgets import QApplication
 
 import foundation.env as env
 from foundation.Utility import SimpleCopyMixin, Node

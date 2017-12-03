@@ -23,8 +23,7 @@ __author__ = "Josh"
 
 import os, sys
 
-from PyQt4.Qt import QWidget
-from PyQt4.Qt import SIGNAL
+from PyQt5.QtWidgets import QWidget
 
 from ne1_ui.help.HelpDialog import Ui_HelpDialog
 from utilities.icon_utilities import geticon
@@ -36,8 +35,8 @@ class Ne1HelpDialog(QWidget, Ui_HelpDialog):
     def __init__(self):
         QWidget.__init__(self)
         self.setupUi(self)
-        self.connect(self.help_tab,SIGNAL("currentChanged(int)"),self.setup_current_page)
-        self.connect(self.close_btn,SIGNAL("clicked()"),self.close)
+        self.help_tab.currentChanged[int].connect(self.setup_current_page)
+        self.close_btn.clicked.connect(self.close)
 
         self.setWindowIcon(geticon('ui/border/MainWindow.png'))
 

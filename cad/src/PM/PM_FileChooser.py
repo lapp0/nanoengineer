@@ -11,13 +11,13 @@ History:
 """
 import os
 
-from PyQt4.Qt import QLabel
-from PyQt4.Qt import QLineEdit
-from PyQt4.Qt import QToolButton
-from PyQt4.Qt import QHBoxLayout
-from PyQt4.Qt import QWidget
-from PyQt4.Qt import SIGNAL
-from PyQt4.Qt import QFileDialog
+from PyQt5.QtWidgets import QLabel
+from PyQt5.QtWidgets import QLineEdit
+from PyQt5.QtWidgets import QToolButton
+from PyQt5.QtWidgets import QHBoxLayout
+from PyQt5.QtWidgets import QWidget
+from PyQt5.QtGui import pyqtSignal
+from PyQt5.QtWidgets import QFileDialog
 
 from utilities.prefs_constants import getDefaultWorkingDirectory
 
@@ -59,6 +59,7 @@ class PM_FileChooser( QWidget ):
     @cvar browseButton: The Qt tool button widget for this PM widget.
     @type browseButton: U{B{QToolButton}<http://doc.trolltech.com/4/qtoolbutton.html>}
     """
+    editingFinished = pyqtSignal()
 
     defaultText = ""
     setAsDefault = True
@@ -154,7 +155,7 @@ class PM_FileChooser( QWidget ):
 
         # Create vertical box layout.
         self.hBoxLayout = QHBoxLayout(self)
-        self.hBoxLayout.setMargin(0)
+        self.hBoxLayout.setContentsMargins(0, 0, 0, 0)
         self.hBoxLayout.setSpacing(2)
         self.hBoxLayout.insertWidget(-1, self.lineEdit)
         self.hBoxLayout.insertWidget(-1, self.browseButton)
@@ -164,7 +165,7 @@ class PM_FileChooser( QWidget ):
 
         # Set browse button text and make signal-slot connection.
         self.browseButton.setText("...")
-        self.connect(self.browseButton, SIGNAL("clicked()"), self.openFileChooserDialog)
+        self.browseButton.clicked.connect(self.openFileChooserDialog)
 
         # Set default value
         self.defaultText = text
@@ -199,11 +200,11 @@ class PM_FileChooser( QWidget ):
         fname = QFileDialog.getOpenFileName(self,
                                    self.caption,
                                    _dir,
-                                   self.filter)
+                                   self.filter)[0]
 
         if fname:
             self.setText(fname)
-            self.lineEdit.emit(SIGNAL("editingFinished()"))
+            self.lineEdit.editingFinished.emit()
 
         return
 

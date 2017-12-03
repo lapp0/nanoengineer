@@ -1159,7 +1159,7 @@ else:
 # ==
 
 def copy_QColor(obj):
-    from PyQt4.Qt import QColor
+    from PyQt5.QtGui import QColor
     assert obj.__class__ is QColor # might fail (in existing calls) if some other class has the same name
     if (env.debug() or DEBUG_PYREX_ATOMS):
         print("atom_debug: ran copy_QColor") # remove when works once; will equality work right? ###@@@
@@ -1170,7 +1170,7 @@ try:
     # becomes a problem (e.g. if this module should work in environments where qt is not available),
     # make other modules register QColor with us, or make sure it's ok if this import fails
     # (it is in theory).
-    from PyQt4.Qt import QColor
+    from PyQt5.QtGui import QColor
 except:
     if (env.debug() or DEBUG_PYREX_ATOMS):
         print("fyi: can't import QColor from qt, so not registering its copy function")

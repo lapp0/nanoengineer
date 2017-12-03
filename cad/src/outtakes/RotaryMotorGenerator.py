@@ -13,7 +13,7 @@ __author__ = "Mark"
 
 from utilities.Log import greenmsg
 
-from PyQt4.Qt import QDialog
+from PyQt5.QtWidgets import QDialog
 from RotaryMotorGeneratorDialog import RotaryMotorPropMgr
 from command_support.GeneratorBaseClass import GeneratorBaseClass
 

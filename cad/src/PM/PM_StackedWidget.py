@@ -13,8 +13,7 @@ the UI requirements imposed by adding all the DNA display style preferences
 into a property manager.
 """
 
-from PyQt4.Qt import QStackedWidget
-from PyQt4.Qt import SIGNAL
+from PyQt5.QtWidgets import QStackedWidget
 
 from PM.PM_GroupBox         import PM_GroupBox
 from PM.PM_ComboBox         import PM_ComboBox
@@ -145,9 +144,7 @@ class PM_StackedWidget( QStackedWidget ):
             assert isinstance(switchPageWidget, PM_ComboBox) or \
                    isinstance(switchPageWidget, PM_ListWidget)
 
-            self.connect(switchPageWidget,
-                         SIGNAL("activated(int)"),
-                         self.setCurrentIndex)
+            switchPageWidget.activated[int].connect(self.setCurrentIndex)
 
             self.switchPageWidget = switchPageWidget
 

@@ -17,9 +17,10 @@ see cad/src/experimental/oleksandr/README.txt.
 """
 
 from Numeric import sqrt, pi, sin, cos
+from PyQt5.QtWidgets import *
 import types
 
-from PyQt4.Qt import QApplication, Qt, QCursor
+from PyQt5.QtGui import QApplication, Qt, QCursor
 
 import foundation.env as env
 from graphics.drawing.CS_draw_primitives import drawsurface

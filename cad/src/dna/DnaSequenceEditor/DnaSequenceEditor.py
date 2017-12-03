@@ -45,15 +45,13 @@ import foundation.env as env
 import os
 import re
 
-from PyQt4.Qt import SIGNAL
-from PyQt4.Qt import QTextCursor, QRegExp
-from PyQt4.Qt import QString
-from PyQt4.Qt import QFileDialog
-from PyQt4.Qt import QMessageBox
-from PyQt4.Qt import QTextCharFormat, QBrush
-from PyQt4.Qt import QRegExp
-from PyQt4.Qt import QTextDocument
-from PyQt4.Qt import QPalette
+from PyQt5.QtGui import QTextCursor, QRegExp
+from PyQt5.QtWidgets import QFileDialog
+from PyQt5.QtWidgets import QMessageBox
+from PyQt5.QtGui import QTextCharFormat, QBrush
+from PyQt5.QtCore import QRegExp
+from PyQt5.QtGui import QTextDocument
+from PyQt5.QtGui import QPalette
 
 from dna.model.Dna_Constants import basesDict
 from dna.model.Dna_Constants import getComplementSequence
@@ -72,6 +70,12 @@ from utilities import debug_flags
 from utilities.debug import print_compact_stack
 
 from dna.model.Dna_Constants import MISSING_COMPLEMENTARY_STRAND_ATOM_SYMBOL
+
+try:
+    QString = unicode
+except NameError:
+    # Python 3
+    QString = str
 
 class DnaSequenceEditor(Ui_DnaSequenceEditor):
     """
@@ -897,7 +901,7 @@ class DnaSequenceEditor(Ui_DnaSequenceEditor):
                 self,
                 "Load Strand Sequence",
                 odir,
-                "Strand Sequnce file (*.txt);;All Files (*.*);;"))
+                "Strand Sequnce file (*.txt);;All Files (*.*);;"))[0]
         lines = self.sequenceFileName
         try:
             lines = open(self.sequenceFileName, "rU").readlines()
@@ -941,7 +945,7 @@ class DnaSequenceEditor(Ui_DnaSequenceEditor):
                      "Save Strand Sequence As ...",
                      sdir,
                     "Strand Sequence File (*.txt)"
-                     )
+                     )[0]
 
         if fileName:
             fileName = str(fileName)

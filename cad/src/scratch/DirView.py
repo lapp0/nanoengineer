@@ -23,14 +23,14 @@ whose copyright notice reads as follows:
 
 import sys
 
-from PyQt4.Qt import QTreeWidgetItem
-from PyQt4.Qt import QTreeWidget
-from PyQt4.Qt import QListView
-from PyQt4.Qt import QIcon
-from PyQt4.Qt import QPixmap
-from PyQt4.Qt import QSize
-from PyQt4.Qt import QDir
-from PyQt4.Qt import QApplication
+from PyQt5.QtWidgets import QTreeWidgetItem
+from PyQt5.QtWidgets import QTreeWidget
+from PyQt5.QtWidgets import QListView
+from PyQt5.QtGui import QIcon
+from PyQt5.QtGui import QPixmap
+from PyQt5.QtCore import QSize
+from PyQt5.QtCore import QDir
+from PyQt5.QtWidgets import QApplication
 
 from utilities.qt4transition import qt4todo
 
@@ -348,11 +348,11 @@ class DirView(QTreeWidget):
 # Here is the example we find in PyQt-x11-gpl-4.0.1/examples/itemviews/dirview.py
 
 if __name__ == '__main__':
-    from PyQt4 import QtGui
-    app = QtGui.QApplication(sys.argv)
+    from PyQt5 import QtGui, QtWidgets
+    app = QtWidgets.QApplication(sys.argv)
 
-    model = QtGui.QDirModel(['*.mmp', '*.MMP'], QDir.AllEntries|QDir.AllDirs, QDir.Name)
-    tree = QtGui.QTreeView()
+    model = QtWidgets.QDirModel(['*.mmp', '*.MMP'], QDir.AllEntries|QDir.AllDirs, QDir.Name)
+    tree = QtWidgets.QTreeView()
     tree.setModel(model)
     tree.setRootIndex(model.index('../partlib'))
 

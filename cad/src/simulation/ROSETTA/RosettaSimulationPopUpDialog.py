@@ -7,15 +7,16 @@ Qt Dialog for setting the arguments for a rosetta simulation
 @copyright:2008 Nanorex, Inc. See LICENSE file for details.
 """
 
-from PyQt4.Qt import SIGNAL, SLOT
-from PyQt4.Qt import QSizePolicy
-from PyQt4.QtGui import QDialog, QLineEdit, QPushButton, QLabel, QCheckBox
-from PyQt4.QtGui import QHBoxLayout, QVBoxLayout, QApplication, QTextEdit
-from PyQt4.QtGui import QSpinBox, QSpacerItem
+from PyQt5.QtGui import pyqtSignal
+from PyQt5.QtWidgets import QSizePolicy
+from PyQt5.QtGui import QDialog, QLineEdit, QPushButton, QLabel, QCheckBox
+from PyQt5.QtGui import QHBoxLayout, QVBoxLayout, QApplication, QTextEdit
+from PyQt5.QtGui import QSpinBox, QSpacerItem
 import string
 from utilities.icon_utilities import geticon, getpixmap
 
 class RosettaSimulationPopUpDialog(QDialog):
+    editingFinished = pyqtSignal()
 
     def __init__(self, parent = None):
         """
@@ -139,20 +140,20 @@ class RosettaSimulationPopUpDialog(QDialog):
         Signal slot connections for rosetta simulation parameters dialog
         """
         #signal slot connections for various parameter checkboxes
-        self.connect(self.ex1Checkbox, SIGNAL("stateChanged(int)"), self.update_ex1)
-        self.connect(self.ex1aroCheckbox, SIGNAL("stateChanged(int)"), self.update_ex1aro)
-        self.connect(self.ex2Checkbox, SIGNAL("stateChanged(int)"), self.update_ex2)
-        self.connect(self.ex2aroOnlyCheckbox, SIGNAL("stateChanged(int)"), self.update_ex2aro_only)
-        self.connect(self.ex3Checkbox, SIGNAL("stateChanged(int)"), self.update_ex3)
-        self.connect(self.ex4Checkbox, SIGNAL("stateChanged(int)"), self.update_ex4)
-        self.connect(self.rotOptCheckbox, SIGNAL("stateChanged(int)"), self.update_rot_opt)
-        self.connect(self.tryBothHisTautomersCheckbox, SIGNAL("stateChanged(int)"), self.update_try_both_his_tautomers)
-        self.connect(self.softRepDesignCheckbox, SIGNAL("stateChanged(int)"), self.update_soft_rep_design)
-        self.connect(self.useElecRepCheckbox, SIGNAL("stateChanged(int)"), self.update_use_elec_rep)
-        self.connect(self.norepackDisulfCheckbox, SIGNAL("stateChanged(int)"), self.update_norepack_disulf)
+        self.ex1Checkbox.stateChanged[int].connect(self.update_ex1)
+        self.ex1aroCheckbox.stateChanged[int].connect(self.update_ex1aro)
+        self.ex2Checkbox.stateChanged[int].connect(self.update_ex2)
+        self.ex2aroOnlyCheckbox.stateChanged[int].connect(self.update_ex2aro_only)
+        self.ex3Checkbox.stateChanged[int].connect(self.update_ex3)
+        self.ex4Checkbox.stateChanged[int].connect(self.update_ex4)
+        self.rotOptCheckbox.stateChanged[int].connect(self.update_rot_opt)
+        self.tryBothHisTautomersCheckbox.stateChanged[int].connect(self.update_try_both_his_tautomers)
+        self.softRepDesignCheckbox.stateChanged[int].connect(self.update_soft_rep_design)
+        self.useElecRepCheckbox.stateChanged[int].connect(self.update_use_elec_rep)
+        self.norepackDisulfCheckbox.stateChanged[int].connect(self.update_norepack_disulf)
         #signal slot connections for the push buttons
-        self.connect(self.okButton, SIGNAL("clicked()"), self.getRosettaParameters)
-        self.connect(self.cancelButton, SIGNAL("clicked()"), self, SLOT("reject()"))
+        self.okButton.clicked.connect(self.getRosettaParameters)
+        self.cancelButton.clicked.connect(self.reject)
         return
 
     def update_ex1(self, state):
@@ -330,5 +331,5 @@ class RosettaSimulationPopUpDialog(QDialog):
         numSim = self.numSimSpinBox.value()
         self.parentWidget.setRosettaParameters(numSim, otherOptionsText)
         self.close()
-        self.emit(SIGNAL("editingFinished()"))
+        self.editingFinished.emit()
         return

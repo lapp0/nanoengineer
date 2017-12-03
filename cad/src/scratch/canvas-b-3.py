@@ -29,10 +29,18 @@ so it can find the 'butterfly.png' file.
 """
 
 import sys
-from PyQt4.Qt import * # this statement has been ported to Qt4, but nothing else has!
+from PyQt5.QtWidgets import *
+from PyQt5.QtGui import (* # this statement has been ported to Qt4,
+                         but nothing else has!)
 import random
 
 import time #bruce
+try:
+    QString = unicode
+except NameError:
+    # Python 3
+    QString = str
+
 try:
     from utilities.debug import print_compact_stack
 except:
@@ -429,7 +437,7 @@ class Main (QMainWindow):
         file.insertSeparator();
         file.insertItem("&Print", self._print, Qt.CTRL+Qt.Key_P)
         file.insertSeparator()
-        file.insertItem("E&xit", qApp, SLOT("quit()"), Qt.CTRL+Qt.Key_Q)
+        file.insertItem("E&xit", QApplication.instance(), SLOT("quit()"), Qt.CTRL+Qt.Key_Q)
         self.menuBar().insertItem("&File", file)
 
         edit = QPopupMenu(self.menuBar() )
@@ -497,9 +505,9 @@ class Main (QMainWindow):
 
     def newView(self):
         m=Main(self.canvas,None,"new window",Qt.WDestructiveClose)
-        qApp.setMainWidget(m)
+        QApplication.instance().setMainWidget(m)
         m.show()
-        qApp.setMainWidget(None)
+        QApplication.instance().setMainWidget(None)
         views.append(m)
 
     def textEditor(self):
@@ -839,7 +847,7 @@ if __name__ == '__main__':
     m=Main(canvas,None,"pyqt canvas example")
     m.resize(m.sizeHint())
 
-    qApp.setMainWidget(m)
+    QApplication.instance().setMainWidget(m)
     m.setCaption("Qt Canvas Example ported to PyQt")
     if QApplication.desktop().width() > m.width() + 10 and QApplication.desktop().height() > m.height() + 30:
         m.show()
@@ -848,9 +856,9 @@ if __name__ == '__main__':
 
     m.show();
     #//    m.help();
-    qApp.setMainWidget(None);
+    QApplication.instance().setMainWidget(None);
 
-    QObject.connect( qApp, SIGNAL("lastWindowClosed()"), qApp, SLOT("quit()") )
+    QApplication.instance().lastWindowClosed.connect(QApplication.quit)
 
     app.exec_() ###@@@ this is first on dragEnterEvent stack
 

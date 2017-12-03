@@ -18,7 +18,7 @@ To do:
 
 import sys
 
-from PyQt4.Qt import Qt
+from PyQt5.QtCore import Qt
 
 __author__ = "Mark"
 

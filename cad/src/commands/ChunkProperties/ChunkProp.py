@@ -9,8 +9,9 @@ ChunkProp.py
 History: Original code from MoleculeProps.py and cleaned up by Mark.
 """
 
-from PyQt4 import QtGui
-from PyQt4.Qt import QDialog, SIGNAL, QColorDialog
+from PyQt5 import QtGui
+from PyQt5.QtWidgets import *
+from PyQt5.QtGui import QDialog, QColorDialog
 
 from commands.ChunkProperties.ChunkPropDialog import Ui_ChunkPropDialog
 from widgets.widget_helpers import RGBf_to_QColor, QColor_to_RGBf
@@ -23,11 +24,11 @@ class ChunkProp(QDialog, Ui_ChunkPropDialog):
         self.chunk = chunk
         self.glpane = chunk.glpane
 
-        self.connect(self.ok_btn,SIGNAL("clicked()"),self.accept)
-        self.connect(self.cancel_btn,SIGNAL("clicked()"),self.reject)
-        self.connect(self.reset_color_btn,SIGNAL("clicked()"),self.reset_chunk_color)
-        self.connect(self.choose_color_btn,SIGNAL("clicked()"),self.change_chunk_color)
-        self.connect(self.make_atoms_visible_btn,SIGNAL("clicked()"),self.make_atoms_visible)
+        self.ok_btn.clicked.connect(self.accept)
+        self.cancel_btn.clicked.connect(self.reject)
+        self.reset_color_btn.clicked.connect(self.reset_chunk_color)
+        self.choose_color_btn.clicked.connect(self.change_chunk_color)
+        self.make_atoms_visible_btn.clicked.connect(self.make_atoms_visible)
 
         self.setup()
 

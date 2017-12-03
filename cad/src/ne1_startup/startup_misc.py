@@ -115,7 +115,7 @@ def pre_main_show( win):
         norm_y = min( want_y, (screen_h - norm_h)) + y0
 
     # Set the main window geometry, hopefully before the caller shows the window
-    from PyQt4.Qt import QRect
+    from PyQt5.QtCore import QRect
     win.setGeometry(QRect(norm_x, norm_y, norm_w, norm_h))
 
     ###e it might be good to register this as the default geom. in the prefs system, and use that to implement "restore defaults"

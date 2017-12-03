@@ -3,7 +3,7 @@
 $Id$
 """
 
-from PyQt4 import QtGui
+from PyQt5 import QtGui, QtWidgets
 from utilities.debug_prefs import debug_pref, Choice_boolean_False
 
 def setupUi(win):
@@ -44,9 +44,9 @@ def retranslateUi(win):
     @param win: NE1's mainwindow object.
     @type  win: Ui_MainWindow
     """
-    win.insertMenu.setTitle(QtGui.QApplication.translate(
+    win.insertMenu.setTitle(QtCore.QCoreApplication.translate(
         "MainWindow", "&Insert",
-        None, QtGui.QApplication.UnicodeUTF8))
+        None))
     # Removed by Mark 2008-04-05.
     #win.referenceGeometryMenu.setTitle(QtGui.QApplication.translate(
     #    "MainWindow", "Reference Geometry",

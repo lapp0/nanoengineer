@@ -25,9 +25,10 @@ key attrs and widgets (i.e. pwLeftArea and pwBottomArea)
 """
 
 import os
+from PyQt5.QtWidgets import *
 
-from PyQt4.Qt import Qt, QWidget, QFrame, QVBoxLayout, QSplitter, QTimer
-from PyQt4.Qt import QTabWidget, QScrollArea, QSizePolicy, SIGNAL
+from PyQt5.QtGui import Qt, QWidget, QFrame, QVBoxLayout, QSplitter, QTimer
+from PyQt5.QtGui import QTabWidget, QScrollArea, QSizePolicy
 from graphics.widgets.GLPane import GLPane
 from PM.PM_Constants import PM_DEFAULT_WIDTH, PM_MAXIMUM_WIDTH, PM_MINIMUM_WIDTH
 from utilities.icon_utilities import geticon
@@ -201,7 +202,7 @@ class Ui_PartWindow(QWidget):
 
         # This layout will contain splitter (above) and the pwBottomArea.
         leftChannelVBoxLayout = QVBoxLayout(pwLeftArea)
-        leftChannelVBoxLayout.setMargin(0)
+        leftChannelVBoxLayout.setContentsMargins(0, 0, 0, 0)
         leftChannelVBoxLayout.setSpacing(0)
 
         pwSplitter.addWidget(pwLeftArea)
@@ -235,7 +236,7 @@ class Ui_PartWindow(QWidget):
             "")
 
         modelTreeTabLayout = QVBoxLayout(self.modelTreeTab)
-        modelTreeTabLayout.setMargin(0)
+        modelTreeTabLayout.setContentsMargins(0, 0, 0, 0)
         modelTreeTabLayout.setSpacing(0)
 
         # Create the model tree (GUI) and add it to the tab layout.
@@ -384,7 +385,7 @@ class Ui_PartWindow(QWidget):
         # of this routine.
         # The "[*]" placeholder below is modified or removed by Qt; see:
         # http://doc.trolltech.com/4/qwidget.html#windowModified-prop
-        self.setWindowTitle(self.trUtf8(partname + '[*]'))
+        self.setWindowTitle(self.tr(partname + '[*]'))
         self.setWindowModified(changed) # replaces '[*]' by '' or '*'
         return
 

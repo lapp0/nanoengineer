@@ -22,7 +22,7 @@ the user maintain info needed to run external processes.
 
 import foundation.env as env
 import os
-from PyQt4.Qt import QMessageBox
+from PyQt5.QtWidgets import QMessageBox
 from processes.Process import Process
 
 def _dialogToOfferPluginPrefsFixup(caption, text):

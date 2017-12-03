@@ -27,8 +27,7 @@ or its own toplevel package.
 
 import os
 
-from PyQt4.Qt import QWidget
-from PyQt4.Qt import SIGNAL
+from PyQt5.QtWidgets import QWidget
 
 from utilities.Log import redmsg
 
@@ -137,12 +136,12 @@ class JobManager(QWidget, Ui_JobManagerDialog):
         """
         QWidget.__init__(self, parent)
         self.setupUi(self)
-        self.connect(self.close_btn,SIGNAL("clicked()"),self.close)
-        self.connect(self.job_table,SIGNAL("clicked(int,int,int,const QPoint&)"),self.cell_clicked)
-        self.connect(self.delete_btn,SIGNAL("clicked()"),self.delete_job)
-        self.connect(self.refresh_btn,SIGNAL("clicked()"),self.refresh_job_table)
-        self.connect(self.start_btn,SIGNAL("clicked()"),self.startJob)
-        self.connect(self.stop_btn,SIGNAL("clicked()"),self.stopJob)
+        self.close_btn.clicked.connect(self.close)
+        self.job_table.clicked[int, int, int, QPoint].connect(self.cell_clicked)
+        self.delete_btn.clicked.connect(self.delete_job)
+        self.refresh_btn.clicked.connect(self.refresh_job_table)
+        self.start_btn.clicked.connect(self.startJob)
+        self.stop_btn.clicked.connect(self.stopJob)
 
         self.win = parent
         self.jobs = [] # The job object, currently selected in the job table.

@@ -13,10 +13,10 @@ file and renamed it PM_ToolButton.
 """
 import os
 
-from PyQt4.Qt import QLabel
-from PyQt4.Qt import QToolButton
-from PyQt4.Qt import QWidget
-from PyQt4.Qt import QSize
+from PyQt5.QtWidgets import QLabel
+from PyQt5.QtWidgets import QToolButton
+from PyQt5.QtWidgets import QWidget
+from PyQt5.QtCore import QSize
 
 from utilities.icon_utilities import geticon
 

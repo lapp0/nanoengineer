@@ -9,7 +9,6 @@ PM_MolecularModelingKit.py - Atom Chooser widget
 
 from model.elements import PeriodicTable
 
-from PyQt4.Qt import SIGNAL
 from PM.PM_GroupBox import PM_GroupBox
 from PM.PM_ToolButtonGrid import PM_ToolButtonGrid
 from utilities.constants import diTUBES
@@ -111,9 +110,7 @@ class PM_MolecularModelingKit( PM_GroupBox ):
                                setAsDefault = True
                                )
 
-        self.connect( self._elementsButtonGroup.buttonGroup,
-                      SIGNAL("buttonClicked(int)"),
-                      self.setElement )
+        self._elementsButtonGroup.buttonGroup.buttonClicked[int].connect(self.setElement)
 
 
     def _updateAtomTypesButtons(self):

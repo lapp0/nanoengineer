@@ -36,7 +36,7 @@ from OpenGL.GL import glClear
 
 from OpenGL.GLU import gluUnProject
 
-from PyQt4.QtOpenGL import QGLWidget
+from PyQt5.QtOpenGL import QGLWidget
 
 import foundation.env as env
 

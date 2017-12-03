@@ -403,7 +403,7 @@ def debug_timing_test_pycode_from_a_dialog( ): #bruce 051117
     # TODO: rewrite this to call grab_text_using_dialog (should be easy)
     title = "debug: time python code"
     label = "one line of python to compile and exec REPEATEDLY in debug.py's globals()\n(or use @@@ to fake \\n for more lines)"
-    from PyQt4.Qt import QInputDialog
+    from PyQt5.QtWidgets import QInputDialog
     parent = None
     text, ok = QInputDialog.getText(parent, title, label) # parent argument needed only in Qt4 [bruce 070329, more info above]
     if not ok:

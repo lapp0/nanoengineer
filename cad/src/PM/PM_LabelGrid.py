@@ -11,7 +11,7 @@ History:
 ninad 2007-08-14: Created.
 """
 
-from PyQt4.Qt import QFont
+from PyQt5.QtGui import QFont
 
 from PM.PM_WidgetGrid import PM_WidgetGrid
 

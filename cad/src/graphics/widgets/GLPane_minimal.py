@@ -34,8 +34,8 @@ from OpenGL.GL import glViewport
 
 from OpenGL.GLU import gluPickMatrix
 
-from PyQt4.QtOpenGL import QGLFormat
-from PyQt4.QtOpenGL import QGLWidget
+from PyQt5.QtOpenGL import QGLFormat
+from PyQt5.QtOpenGL import QGLWidget
 
 from Numeric import dot
 

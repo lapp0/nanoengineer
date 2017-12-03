@@ -15,8 +15,7 @@ moved many ui helper methods defined globally in extrudeMode.py to this class.
 """
 
 import math
-from PyQt4.Qt import SIGNAL
-from PyQt4.Qt import Qt
+from PyQt5.QtCore import Qt
 from commands.Extrude.Ui_ExtrudePropertyManager import Ui_ExtrudePropertyManager
 
 _superclass = Ui_ExtrudePropertyManager

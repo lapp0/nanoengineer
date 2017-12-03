@@ -13,9 +13,9 @@ To do:
 
 from PM.PM_ComboBox import PM_ComboBox
 
-from PyQt4.Qt import QPixmap, QIcon, QColor, QSize
-from PyQt4.Qt import SIGNAL
-from PyQt4.Qt import QColorDialog
+from PyQt5.QtGui import QPixmap, QIcon, QColor, QSize
+from PyQt5.QtGui import pyqtSignal
+from PyQt5.QtWidgets import QColorDialog
 
 from utilities.constants import white, gray, black
 from utilities.constants import red, orange, yellow
@@ -40,6 +40,7 @@ class PM_ColorComboBox( PM_ComboBox ):
 
     @note: Subclasses L{PM_ComboBox}.
     """
+    editingFinished = pyqtSignal()
     customColorCount  = 0
     color = None
     otherColor = lightgray
@@ -144,7 +145,7 @@ class PM_ColorComboBox( PM_ComboBox ):
         self.setIconSize(QSize(12, 12)) # Default is 16x16.
         self.setColor(color) # Sets current index.
 
-        self.connect(self, SIGNAL("activated(QString)"), self._setColorFromName)
+        self.activated['QString'].connect(self._setColorFromName)
 
         return
 
@@ -198,7 +199,7 @@ class PM_ColorComboBox( PM_ComboBox ):
             self.setCurrentIndex(self.colorList.index(self.otherColor))
 
         # Finally, emit a signal so the parent knows the color has changed.
-        self.emit(SIGNAL("editingFinished()"))
+        self.editingFinished.emit()
         return
 
     def getColor(self):
@@ -234,5 +235,5 @@ class PM_ColorComboBox( PM_ComboBox ):
         c = QColorDialog.getColor(qcolor, self)
         if c.isValid():
             self.setColor(QColor_to_RGBf(c))
-            self.emit(SIGNAL("editingFinished()"))
+            self.editingFinished.emit()
 

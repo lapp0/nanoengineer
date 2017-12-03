@@ -16,9 +16,9 @@ Created between Nov 8-12, 2008 for Mark's consulting work. Needs cleanup
 
 """
 from utilities.debug import print_compact_traceback
-from PyQt4.Qt import Qt, SIGNAL
-from PyQt4.Qt import QLabel
-from PyQt4.Qt import QTableWidgetItem
+from PyQt5.QtCore import Qt
+from PyQt5.QtWidgets import QLabel
+from PyQt5.QtWidgets import QTableWidgetItem
 from utilities.icon_utilities import geticon
 from PM.PM_TableWidget import PM_TableWidget
 from PM.PM_Colors import pmGrpBoxColor

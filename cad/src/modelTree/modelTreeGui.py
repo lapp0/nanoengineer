@@ -52,21 +52,21 @@ _api classes, and splitting some code into separate files.
 import sys
 import time
 
-from PyQt4 import QtGui
-from PyQt4 import QtCore
-from PyQt4.Qt import Qt
-from PyQt4.Qt import QScrollArea
-from PyQt4.Qt import QIcon
-from PyQt4.Qt import QDrag
-from PyQt4.Qt import QMimeData
-from PyQt4.Qt import QPoint
-from PyQt4.Qt import QPixmap
-from PyQt4.Qt import QPainter
-from PyQt4.Qt import QFontMetrics
-from PyQt4.Qt import QLineEdit
-from PyQt4.Qt import QColor
-from PyQt4.Qt import QRect
-from PyQt4.Qt import QPalette
+from PyQt5 import QtGui, QtWidgets
+from PyQt5 import QtCore, QtWidgets
+from PyQt5.QtCore import Qt
+from PyQt5.QtWidgets import QScrollArea
+from PyQt5.QtGui import QIcon
+from PyQt5.QtGui import QDrag
+from PyQt5.QtCore import QMimeData
+from PyQt5.QtCore import QPoint
+from PyQt5.QtGui import QPixmap
+from PyQt5.QtGui import QPainter
+from PyQt5.QtGui import QFontMetrics
+from PyQt5.QtWidgets import QLineEdit
+from PyQt5.QtGui import QColor
+from PyQt5.QtCore import QRect
+from PyQt5.QtGui import QPalette
 
 import foundation.env as env
 
@@ -912,7 +912,7 @@ class ModelTreeGui_common(ModelTreeGUI_api):
         if _DEBUG2:
             print("\nMT mousePressEvent: button %r, buttons %s, modifiers %s, globalPos %r, pos %r" % \
                   (button,
-                   describe_buttons(buttons), # str and repr only show the class, which is PyQt4.QtCore.MouseButtons; int works
+                   describe_buttons(buttons), # str and repr only show the class, which is PyQt5.QtCore.MouseButtons; int works
                    describe_modifiers(modifiers),
                    (qp.x(), qp.y()),
                    (event.pos().x(), event.pos().y())
@@ -1280,12 +1280,12 @@ MT_CONTENT_TOP_Y = 0
 def x_for_indent(n):
     return INDENT_0 + INDENT_OFFSET * n
 
-class MT_View(QtGui.QWidget):
+class MT_View(QtWidgets.QWidget):
     """
     contents view for ModelTreeGui
     """
     def __init__(self, parent, palette_widget, modeltreegui):
-        QtGui.QWidget.__init__(self, parent)
+        QtWidgets.QWidget.__init__(self, parent)
         self.palette_widget = palette_widget #e rename?
         self.modeltreegui = modeltreegui
         self.treemodel = self.modeltreegui.treemodel ###KLUGE? not sure. consider passing this directly?

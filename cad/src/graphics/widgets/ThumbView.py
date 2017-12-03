@@ -51,7 +51,7 @@ from OpenGL.GL import GL_LEQUAL
 
 from OpenGL.GLU import gluUnProject
 
-from PyQt4.Qt import Qt
+from PyQt5.QtCore import Qt
 
 from geometry.VQT import V, Q, A
 from graphics.drawing.drawers import drawFullWindow
@@ -484,7 +484,7 @@ class ThumbView(GLPane_minimal):
             dScale *= 0.5
         if modifiers & Qt.ControlModifier:
             dScale *= 2.0
-        self.scale *= 1.0 + dScale * event.delta()
+        self.scale *= 1.0 + dScale * event.angleDelta().y()
             ### BUG: The scale variable needs to set a limit; otherwise, it will
             # set self.near = self.far = 0.0 because of machine precision,
             # which will cause OpenGL Error. [Huaicai 10/18/04]

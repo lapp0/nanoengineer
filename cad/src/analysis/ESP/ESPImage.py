@@ -57,8 +57,8 @@ from OpenGL.GL import GL_UNSIGNED_BYTE
 from OpenGL.GL import glTexImage2D
 from OpenGL.GLU import gluBuild2DMipmaps
 
-from PyQt4.Qt import QMessageBox
-from PyQt4.Qt import QFileDialog
+from PyQt5.QtWidgets import QMessageBox
+from PyQt5.QtWidgets import QFileDialog
 
 import foundation.env as env
 from utilities import debug_flags
@@ -721,7 +721,7 @@ class ESPImage(RectGadget):
                 "Load an ESP Image File",
                 cwd,
                 "Portable Network Graphics (*.png);;All Files (*.*);;"
-                ) #bruce 060212 added All Files option
+                ) #bruce 060212 added All Files option[0]
 
 
             if not fn:

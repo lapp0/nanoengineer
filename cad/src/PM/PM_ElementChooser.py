@@ -12,8 +12,9 @@ mark 2007-08-03: Created.
 """
 
 from PM.PM_MolecularModelingKit import PM_MolecularModelingKit
+from PyQt5.QtWidgets import *
 
-from PyQt4.Qt import SIGNAL, QSpacerItem, QSizePolicy
+from PyQt5.QtGui import QSpacerItem, QSizePolicy
 from PM.PM_ToolButtonGrid import PM_ToolButtonGrid
 
 # Elements button list to create elements tool button group.
@@ -185,9 +186,7 @@ class PM_ElementChooser( PM_MolecularModelingKit ):
 
 
 
-        self.connect( self._atomTypesButtonGroup.buttonGroup,
-                      SIGNAL("buttonClicked(int)"),
-                      self._setAtomType )
+        self._atomTypesButtonGroup.buttonGroup.buttonClicked[int].connect(self._setAtomType)
 
         self._updateAtomTypesButtons()
 

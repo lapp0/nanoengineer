@@ -24,7 +24,7 @@ add all the API methods to it, and rename the other methods
 in class Command to look private.
 """
 
-from PyQt4.Qt import QToolButton
+from PyQt5.QtWidgets import QToolButton
 
 from utilities.debug import print_compact_traceback, print_compact_stack
 
@@ -883,7 +883,7 @@ class basicCommand(anyCommand):
         # env.history / statusbar methods.
         # Or, perhaps just inline it into its sole real caller.
 
-        from PyQt4.Qt import QMessageBox
+        from PyQt5.QtWidgets import QMessageBox
 
         use_status_bar = 0 # always 0, for now
         use_dialog = bother_user_with_dialog

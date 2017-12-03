@@ -35,8 +35,8 @@ from OpenGL.GL import GL_CLIP_PLANE0
 from OpenGL.GL import glClipPlane
 from OpenGL.GL import glPopMatrix
 
-from PyQt4.Qt import Qt
-from PyQt4.Qt import QCursor
+from PyQt5.QtCore import Qt
+from PyQt5.QtGui import QCursor
 
 import foundation.env as env
 from geometry.VQT import V, Q, A, norm, vlen

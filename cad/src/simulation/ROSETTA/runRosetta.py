@@ -10,6 +10,7 @@ This file is very different from runSim.py, partly because rosetta simulation
 is quite different from gromacs simulation
 """
 from files.pdb.files_pdb import writepdb
+from PyQt5.QtWidgets import *
 from files.pdb.files_pdb import insertpdb
 from model.chunk import Chunk
 from utilities.debug import print_compact_traceback
@@ -17,8 +18,8 @@ from platform_dependent.PlatformDependent import find_or_make_Nanorex_subdir
 import os, sys, time, string
 from widgets.StatusBar import AbortHandler
 from datetime import datetime
-from PyQt4.Qt import QApplication, QCursor, Qt, QStringList
-from PyQt4.Qt import QProcess, QFileInfo
+from PyQt5.QtGui import QApplication, QCursor, Qt
+from PyQt5.QtGui import QProcess, QFileInfo
 from utilities.Log import redmsg, greenmsg, orangemsg, quote_html, _graymsg
 import foundation.env as env
 from geometry.VQT import A, vlen

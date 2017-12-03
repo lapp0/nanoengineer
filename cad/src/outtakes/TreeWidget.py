@@ -17,9 +17,16 @@ and split it into three modules:
 - modelTree.py (customized for showing a "model tree" per se).
 """
 
+try:
+    QString = unicode
+except NameError:
+    # Python 3
+    QString = str
+
 assert 0, "TreeWidget.py is NO LONGER USED IN Qt4 NE1" #bruce 070503 Qt4
 
 from TreeView import * # including class TreeView, and import * from many other modules
+from PyQt5.QtWidgets import *
 from widgets.menu_helpers import makemenu_helper
 from platform import fix_buttons_helper
 from utilities.debug import DebugMenuMixin, print_compact_stack, print_compact_traceback
@@ -113,8 +120,8 @@ class TreeWidget(TreeView, DebugMenuMixin):
             # The "real version of this" is in our own contentsMousePress... method.
 
         # bruce 050112 zapping most signals, we'll handle the events ourself.
-        self.connect(self, SIGNAL("itemRenamed(QListViewItem*, int, const QString&)"), self._itemRenamed)
-        self.connect(self, SIGNAL("contentsMoving(int, int)"), self._contentsMoving)
+        self.itemRenamed[QListViewItem, int, 'QString'].connect(self._itemRenamed)
+        self.contentsMoving[int, int].connect(self._contentsMoving)
 
         return # from TreeWidget.__init__
 
@@ -1846,7 +1853,7 @@ class TreeWidget(TreeView, DebugMenuMixin):
         splitter.update()
         win.mt.setContentsPos( x, y) # do this 3 times ... doesn't help avoid a "flicker to no scrollbar state"
             # but i bet setting the contents height initially would help! try it sometime. ###e
-        env.call_qApp_processEvents() #bruce 050908 replaced qApp.processEvents()
+        env.call_qApp_processEvents() #bruce 050908 replaced QApplication.processEvents()
             # might be needed before setContentPos in order to make it work
         win.mt.setContentsPos( x, y) # do this 3 times - was not enough to do it before updateGeometry above
 ##        win.mt.show()

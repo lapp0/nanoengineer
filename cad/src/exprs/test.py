@@ -46,7 +46,7 @@ import os
 import sys
 import time
 
-from PyQt4.Qt import QInputDialog
+from PyQt5.QtWidgets import QInputDialog
 
 # == imports from parent directory
 

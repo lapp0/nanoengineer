@@ -29,10 +29,11 @@ instead of being inherited by that mode.
 
 import os, sys
 
-from PyQt4 import QtGui
-from PyQt4.Qt import Qt
-from PyQt4.Qt import QDialog, SIGNAL, QIcon, QVBoxLayout, QStringList, QFileDialog
-from PyQt4.Qt import QDir, QTreeView, QTreeWidgetItem, QAbstractItemDelegate, QWhatsThis
+from PyQt5 import QtGui, QtWidgets
+from PyQt5.QtCore import Qt
+from PyQt5.QtGui import QDialog, QIcon, QVBoxLayout, QFileDialog
+from PyQt5.QtGui import (QDir, QTreeView, QTreeWidgetItem,
+                         QAbstractItemDelegate, QWhatsThis)
 
 from MMKitDialog import Ui_MMKitDialog
 from graphics.widgets.ThumbView import MMKitView, ChunkView
@@ -107,35 +108,22 @@ class MMKit(QDialog,
 
         self.pw = None # pw = partwindow
 
-        self.connect(self.mmkit_tab,
-                     SIGNAL("currentChanged(int)"),
-                     self.tabCurrentChanged)
+        self.mmkit_tab.currentChanged[int].connect(self.tabCurrentChanged)
 
-        self.connect(self.chunkListBox,
-                     SIGNAL("currentItemChanged(QListWidgetItem*,QListWidgetItem*)"),
-                     self.chunkChanged)
-        self.connect(self.browseButton,
-                     SIGNAL("clicked(bool)"),
-                     self.browseDirectories)
-        self.connect(self.defaultPartLibButton,
-                     SIGNAL("clicked(bool)"),
-                     self.useDefaultPartLibDirectory)
+        self.chunkListBox.currentItemChanged[QListWidgetItem, QListWidgetItem].connect(self.chunkChanged)
+        self.browseButton.clicked[bool].connect(self.browseDirectories)
+        self.defaultPartLibButton.clicked[bool].connect(self.useDefaultPartLibDirectory)
 
         #self.connect(self.elementButtonGroup,SIGNAL("buttonClicked(int)"),self.setElementInfo)
 
-        self.connect(self.thumbView_groupBoxButton, SIGNAL("clicked()"),
-                     self.toggle_thumbView_groupBox)
-        self.connect(self.bondTool_groupBoxButton , SIGNAL("clicked()"),
-                     self.toggle_bondTool_groupBox)
-        self.connect(self.MMKitGrpBox_TitleButton, SIGNAL("clicked()"),
-                     self.toggle_MMKit_groupBox)
-        self.connect(self.filterCB, SIGNAL("stateChanged(int)"),
-                     self.toggle_selectionFilter_groupBox)
-        self.connect(self.advancedOptions_groupBoxButton, SIGNAL("clicked()"),
-                     self.toggle_advancedOptions_groupBox)
+        self.thumbView_groupBoxButton.clicked.connect(self.toggle_thumbView_groupBox)
+        self.bondTool_groupBoxButton.clicked.connect(self.toggle_bondTool_groupBox)
+        self.MMKitGrpBox_TitleButton.clicked.connect(self.toggle_MMKit_groupBox)
+        self.filterCB.stateChanged[int].connect(self.toggle_selectionFilter_groupBox)
+        self.advancedOptions_groupBoxButton.clicked.connect(self.toggle_advancedOptions_groupBox)
 
         # Make the elements act like a big exclusive radio button.
-        self.theElements = QtGui.QButtonGroup()
+        self.theElements = QtWidgets.QButtonGroup()
         self.theElements.setExclusive(True)
         self.theElements.addButton(self.toolButton1, 1)
         self.theElements.addButton(self.toolButton2, 2)
@@ -156,18 +144,17 @@ class MMKit(QDialog,
         self.theElements.addButton(self.toolButton35, 35)
         self.theElements.addButton(self.toolButton32, 32)
         self.theElements.addButton(self.toolButton36, 36)
-        self.connect(self.theElements, SIGNAL("buttonPressed(int)"), self.update_dialog)
+        self.theElements.buttonPressed[int].connect(self.update_dialog)
 
-        self.theHybridizations = QtGui.QButtonGroup()
+        self.theHybridizations = QtWidgets.QButtonGroup()
         self.theHybridizations.setExclusive(True)
         self.theHybridizations.addButton(self.sp3_btn, 0)
         self.theHybridizations.addButton(self.sp2_btn, 1)
         self.theHybridizations.addButton(self.sp_btn, 2)
         self.theHybridizations.addButton(self.graphitic_btn, 3)
-        self.connect(self.theHybridizations, SIGNAL("buttonClicked(int)"), self.update_hybrid_btngrp)
+        self.theHybridizations.buttonClicked[int].connect(self.update_hybrid_btngrp)
 
-        self.connect(self.filterCB,
-                        SIGNAL("toggled(bool)"),self.set_selection_filter)
+        self.filterCB.toggled[bool].connect(self.set_selection_filter)
 
 
         self.elemTable = PeriodicTable
@@ -230,17 +217,17 @@ class MMKit(QDialog,
 
         #self.connect(self., SIGNAL("), )
 
-        self.connect(self.w.hybridComboBox, SIGNAL("activated(int)"), self.hybridChangedOutside)
+        self.w.hybridComboBox.activated[int].connect(self.hybridChangedOutside)
 
-        self.connect(self.w.hybridComboBox, SIGNAL("activated(const QString&)"), self.change2AtomsPage)
-        self.connect(self.w.elemChangeComboBox, SIGNAL("activated(const QString&)"), self.change2AtomsPage)
-        self.connect(self.w.pasteComboBox, SIGNAL("activated(const QString&)"), self.change2ClipboardPage)
+        self.w.hybridComboBox.activated['QString'].connect(self.change2AtomsPage)
+        self.w.elemChangeComboBox.activated['QString'].connect(self.change2AtomsPage)
+        self.w.pasteComboBox.activated['QString'].connect(self.change2ClipboardPage)
 
         #self.connect(self.w.depositAtomDashboard.pasteBtn, SIGNAL("pressed()"), self.change2ClipboardPage)
-        self.connect(self.w.depositAtomDashboard.pasteBtn, SIGNAL("stateChanged(int)"), self.pasteBtnStateChanged)
-        self.connect(self.w.depositAtomDashboard.depositBtn, SIGNAL("stateChanged(int)"), self.depositBtnStateChanged)
+        self.w.depositAtomDashboard.pasteBtn.stateChanged[int].connect(self.pasteBtnStateChanged)
+        self.w.depositAtomDashboard.depositBtn.stateChanged[int].connect(self.depositBtnStateChanged)
 
-        self.connect(self.dirView, SIGNAL("selectionChanged(QItemSelection *, QItemSelection *)"), self.partChanged)
+        self.dirView.selectionChanged[QItemSelection, QItemSelection].connect(self.partChanged)
 
         self.add_whats_this_text()
 
@@ -664,8 +651,8 @@ class MMKit(QDialog,
             self.browseButton.hide()
             self.defaultPartLibButton.hide()
             self.atomsPageSpacer.changeSize(0,5,
-                QtGui.QSizePolicy.Expanding,
-                QtGui.QSizePolicy.Minimum)
+                QtWidgets.QSizePolicy.Expanding,
+                QtWidgets.QSizePolicy.Minimum)
 
         elif page == self.clipboardPage: # Clipboard page
             self.w.depositState = 'Clipboard'
@@ -675,8 +662,8 @@ class MMKit(QDialog,
             self.browseButton.hide()
             self.defaultPartLibButton.hide()
             self.atomsPageSpacer.changeSize(0,5,
-                QtGui.QSizePolicy.Expanding,
-                QtGui.QSizePolicy.Minimum)
+                QtWidgets.QSizePolicy.Expanding,
+                QtWidgets.QSizePolicy.Minimum)
 
         elif page == self.libraryPage: # Library page
             if self.rootDir:
@@ -685,8 +672,8 @@ class MMKit(QDialog,
             self.browseButton.show()
             self.defaultPartLibButton.show()
             self.atomsPageSpacer.changeSize(0,5,
-                QtGui.QSizePolicy.Minimum,
-                QtGui.QSizePolicy.Minimum)
+                QtWidgets.QSizePolicy.Minimum,
+                QtWidgets.QSizePolicy.Minimum)
 
             #Turn off both paste and deposit buttons, so when in library page and user choose 'set hotspot and copy'
             #it will change to paste page, also, when no chunk selected, a history message shows instead of depositing an atom.
@@ -861,7 +848,7 @@ class MMKit(QDialog,
             QTreeView.__init__(self, parent)
 
             self.setEnabled(True)
-            self.model = QtGui.QDirModel(['*.mmp', '*.MMP'], # name filters
+            self.model = QtWidgets.QDirModel(['*.mmp', '*.MMP'], # name filters
                                          QDir.AllEntries|QDir.AllDirs|QDir.NoDotAndDotDot, # filters
                                          QDir.Name # sort order
                                          )
@@ -962,7 +949,7 @@ class MMKit(QDialog,
         # Put the GL widget inside the frame
         if not self.flayout:
             self.flayout = QVBoxLayout(self.elementFrame)
-            self.flayout.setMargin(1)
+            self.flayout.setContentsMargins(1, 1, 1, 1)
             self.flayout.setSpacing(1)
         else:
             if self.elemGLPane:
@@ -985,7 +972,7 @@ class MMKit(QDialog,
         ##self.dirView.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOn)
 
         libraryPageLayout = QVBoxLayout(self.libraryPage)
-        libraryPageLayout.setMargin(pmMMKitPageMargin) # Was 4. Mark 2007-05-30
+        libraryPageLayout.setContentsMargins(pmMMKitPageMargin) # Was 4. Mark 2007-05-30, pmMMKitPageMargin) # Was 4. Mark 2007-05-30, pmMMKitPageMargin) # Was 4. Mark 2007-05-30, pmMMKitPageMargin) # Was 4. Mark 2007-05-30)
         libraryPageLayout.setSpacing(2)
         libraryPageLayout.addWidget(self.dirView)
 

@@ -31,6 +31,13 @@ from utilities.debug import print_compact_traceback
 from platform_dependent.PlatformDependent import find_or_make_any_directory, tempfiles_dir, find_plugin_dir
 import utilities.EndUser as EndUser
 
+try:
+    QString = unicode
+except NameError:
+    # Python 3
+    QString = str
+QStringList = list
+
 debug_install = False
 
 def debug_run():
@@ -517,7 +524,7 @@ class PluginlikeGenerator:
     def run_command(self, program, args):
         if debug_run():
             print("will run this command:", program, args)
-        from PyQt4.Qt import QStringList, QProcess, QObject, SIGNAL, QDir
+        from PyQt5.QtGui import QProcess, QObject, QDir
         # modified from runSim.py
         arguments = QStringList()
         if sys.platform == 'win32':
@@ -541,8 +548,8 @@ class PluginlikeGenerator:
                 # examples from CoNTub/bin/HJ:
                 # stderr: BAD INPUT
                 # stderr: Error: Indices of both tubes coincide
-            QObject.connect(simProcess, SIGNAL("readyReadStdout()"), blabout)
-            QObject.connect(simProcess, SIGNAL("readyReadStderr()"), blaberr)
+            simProcess.readyReadStdout.connect(blabout)
+            simProcess.readyReadStderr.connect(blaberr)
         started = simProcess.start() ###k what is this code? i forget if true means ok or error
         if debug_run():
             print("qprocess started:",started)
@@ -561,8 +568,8 @@ class PluginlikeGenerator:
             print("process done i guess: normalExit = %r, (if normal) exitStatus = %r" % \
                   (simProcess.normalExit(), simProcess.exitStatus()))
         if 1:
-            QObject.disconnect(simProcess, SIGNAL("readyReadStdout()"), blabout)
-            QObject.disconnect(simProcess, SIGNAL("readyReadStderr()"), blaberr)
+            simProcess.readyReadStdout.disconnect(blabout)
+            simProcess.readyReadStderr.disconnect(blaberr)
         if simProcess.normalExit():
             return simProcess.exitStatus()
         else:

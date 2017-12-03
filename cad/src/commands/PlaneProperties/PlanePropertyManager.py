@@ -14,8 +14,9 @@ TODO 2008-09-19:
 See Plane_EditCommand.py
 
 """
-from PyQt4.Qt import SIGNAL
-from PyQt4.Qt import Qt
+from PyQt5.QtGui import pyqtSignal
+from PyQt5.QtWidgets import *
+from PyQt5.QtCore import Qt
 from PM.PM_GroupBox      import PM_GroupBox
 from PM.PM_DoubleSpinBox import PM_DoubleSpinBox
 from PM.PM_CheckBox      import PM_CheckBox
@@ -51,6 +52,7 @@ class PlanePropertyManager(EditCommand_PM):
     """
 
     # The title that appears in the Property Manager header.
+    editingFinished = pyqtSignal()
     title = "Plane"
     # The name of this Property Manager. This will be set to
     # the name of the PM_Dialog object via setObjectName().
@@ -699,7 +701,7 @@ class PlanePropertyManager(EditCommand_PM):
         Enables FileChooser and displays image when checkbox is checked otherwise
         not
         """
-        self.imageDisplayFileChooser.lineEdit.emit(SIGNAL("editingFinished()"))
+        self.imageDisplayFileChooser.lineEdit.editingFinished.emit()
         if checked == Qt.Checked:
             self.imageDisplayFileChooser.setEnabled(True)
         elif checked == Qt.Unchecked:

@@ -18,13 +18,17 @@ Ninad 2008-08-22:
      in its own class (see Ui_BuildCrystalFlyout); moved command specific code
      in the command class.
 """
-from PyQt4.Qt import SIGNAL
-from PyQt4.Qt import QString
-from PyQt4.Qt import QColor
-from PyQt4.Qt import QColorDialog
+from PyQt5.QtGui import QColor
+from PyQt5.QtWidgets import QColorDialog
 
 from commands.BuildCrystal.Ui_BuildCrystal_PropertyManager import Ui_BuildCrystal_PropertyManager
 
+
+try:
+    QString = unicode
+except NameError:
+    # Python 3
+    QString = str
 
 _superclass = Ui_BuildCrystal_PropertyManager
 class BuildCrystal_PropertyManager(Ui_BuildCrystal_PropertyManager):

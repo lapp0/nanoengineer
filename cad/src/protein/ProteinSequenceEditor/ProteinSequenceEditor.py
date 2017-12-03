@@ -15,14 +15,12 @@ import foundation.env as env
 import os
 import re
 import string
-from PyQt4.Qt import SIGNAL
-from PyQt4.Qt import QTextCursor
-from PyQt4.Qt import QString
-from PyQt4.Qt import QFileDialog
-from PyQt4.Qt import QMessageBox
-from PyQt4.Qt import QRegExp
-from PyQt4.Qt import QTextDocument
-from PyQt4.Qt import QPalette
+from PyQt5.QtGui import QTextCursor
+from PyQt5.QtWidgets import QFileDialog
+from PyQt5.QtWidgets import QMessageBox
+from PyQt5.QtCore import QRegExp
+from PyQt5.QtGui import QTextDocument
+from PyQt5.QtGui import QPalette
 
 from PM.PM_Colors import getPalette
 from PM.PM_Colors import sequenceEditorNormalColor
@@ -32,6 +30,12 @@ from utilities.prefs_constants import workingDirectory_prefs_key
 from protein.ProteinSequenceEditor.Ui_ProteinSequenceEditor import Ui_ProteinSequenceEditor
 from utilities import debug_flags
 from utilities.debug import print_compact_stack
+
+try:
+    QString = unicode
+except NameError:
+    # Python 3
+    QString = str
 
 class ProteinSequenceEditor(Ui_ProteinSequenceEditor):
     """
@@ -690,7 +694,7 @@ class ProteinSequenceEditor(Ui_ProteinSequenceEditor):
                 self,
                 "Load FASTA sequence for " + self.current_protein.name,
                 odir,
-                "FASTA file (*.txt);;All Files (*.*);;"))
+                "FASTA file (*.txt);;All Files (*.*);;"))[0]
         lines = self.sequenceFileName
         try:
             lines = open(self.sequenceFileName, "rU").readlines()
@@ -743,7 +747,7 @@ class ProteinSequenceEditor(Ui_ProteinSequenceEditor):
                      "Save Sequence As ...",
                      sdir,
                     "FASTA File (*.txt)"
-                     )
+                     )[0]
 
         if fileName:
             fileName = str(fileName)

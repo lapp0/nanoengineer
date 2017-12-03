@@ -22,7 +22,7 @@ from utilities.Comparison import same_vals
 from utilities.icon_utilities import geticon
 from utilities.icon_utilities import getpixmap
 
-from PyQt4.Qt import Qt
+from PyQt5.QtCore import Qt
 
 from PM.PM_Colors import pmColor
 from PM.PM_Colors import pmHeaderFrameColor
@@ -48,22 +48,21 @@ from PM.PM_Constants import PM_RESTORE_DEFAULTS_BUTTON
 from PM.PM_Constants import PM_PREVIEW_BUTTON
 from PM.PM_Constants import PM_WHATS_THIS_BUTTON
 
-from PyQt4.Qt import SIGNAL
-from PyQt4.Qt import QDialog
-from PyQt4.Qt import QFont
-from PyQt4.Qt import QFrame
-from PyQt4.Qt import QGridLayout
-from PyQt4.Qt import QLabel
-from PyQt4.Qt import QPushButton
-from PyQt4.Qt import QPalette
-from PyQt4.Qt import QToolButton
-from PyQt4.Qt import QSpacerItem
-from PyQt4.Qt import QHBoxLayout
-from PyQt4.Qt import QVBoxLayout
-from PyQt4.Qt import QSize
-from PyQt4.Qt import QSizePolicy
-from PyQt4.Qt import QWhatsThis
-from PyQt4.Qt import QWidget
+from PyQt5.QtWidgets import QDialog
+from PyQt5.QtGui import QFont
+from PyQt5.QtWidgets import QFrame
+from PyQt5.QtWidgets import QGridLayout
+from PyQt5.QtWidgets import QLabel
+from PyQt5.QtWidgets import QPushButton
+from PyQt5.QtGui import QPalette
+from PyQt5.QtWidgets import QToolButton
+from PyQt5.QtWidgets import QSpacerItem
+from PyQt5.QtWidgets import QHBoxLayout
+from PyQt5.QtWidgets import QVBoxLayout
+from PyQt5.QtCore import QSize
+from PyQt5.QtWidgets import QSizePolicy
+from PyQt5.QtWidgets import QWhatsThis
+from PyQt5.QtWidgets import QWidget
 
 from PM.PM_GroupBox         import PM_GroupBox
 from PM.PM_MessageGroupBox  import PM_MessageGroupBox
@@ -126,7 +125,7 @@ class PM_Dialog( QDialog, SponsorableMixin ):
 
         # Main vertical layout for PropMgr.
         self.vBoxLayout = QVBoxLayout(self)
-        self.vBoxLayout.setMargin(PM_MAINVBOXLAYOUT_MARGIN)
+        self.vBoxLayout.setContentsMargins(PM_MAINVBOXLAYOUT_MARGIN, PM_MAINVBOXLAYOUT_MARGIN, PM_MAINVBOXLAYOUT_MARGIN, PM_MAINVBOXLAYOUT_MARGIN)
         self.vBoxLayout.setSpacing(PM_MAINVBOXLAYOUT_SPACING)
 
         # Add PropMgr's header, sponsor button, top row buttons and (hidden)
@@ -360,7 +359,7 @@ class PM_Dialog( QDialog, SponsorableMixin ):
         # and label (title).
         HeaderFrameHLayout = QHBoxLayout(self.headerFrame)
         # 2 pixels around edges --
-        HeaderFrameHLayout.setMargin(PM_HEADER_FRAME_MARGIN)
+        HeaderFrameHLayout.setContentsMargins(PM_HEADER_FRAME_MARGIN, PM_HEADER_FRAME_MARGIN, PM_HEADER_FRAME_MARGIN, PM_HEADER_FRAME_MARGIN)
         # 5 pixel between pixmap and label. --
         HeaderFrameHLayout.setSpacing(PM_HEADER_FRAME_SPACING)
 
@@ -438,14 +437,12 @@ class PM_Dialog( QDialog, SponsorableMixin ):
         self.sponsorButtonContainer = QWidget(self)
 
         SponsorFrameGrid = QGridLayout(self.sponsorButtonContainer)
-        SponsorFrameGrid.setMargin(PM_SPONSOR_FRAME_MARGIN)
+        SponsorFrameGrid.setContentsMargins(PM_SPONSOR_FRAME_MARGIN, PM_SPONSOR_FRAME_MARGIN, PM_SPONSOR_FRAME_MARGIN, PM_SPONSOR_FRAME_MARGIN)
         SponsorFrameGrid.setSpacing(PM_SPONSOR_FRAME_SPACING) # Has no effect.
 
         self.sponsor_btn = QToolButton(self.sponsorButtonContainer)
         self.sponsor_btn.setAutoRaise(True)
-        self.connect(self.sponsor_btn,
-                     SIGNAL("clicked()"),
-                     self.open_sponsor_homepage)
+        self.sponsor_btn.clicked.connect(self.open_sponsor_homepage)
 
         SponsorFrameGrid.addWidget(self.sponsor_btn, 0, 0, 1, 1)
 
@@ -490,7 +487,7 @@ class PM_Dialog( QDialog, SponsorableMixin ):
 
         # Create Hbox layout for main frame.
         topRowBtnsHLayout = QHBoxLayout(self.topRowBtnsContainer)
-        topRowBtnsHLayout.setMargin(PM_TOPROWBUTTONS_MARGIN)
+        topRowBtnsHLayout.setContentsMargins(PM_TOPROWBUTTONS_MARGIN, PM_TOPROWBUTTONS_MARGIN, PM_TOPROWBUTTONS_MARGIN, PM_TOPROWBUTTONS_MARGIN)
         topRowBtnsHLayout.setSpacing(PM_TOPROWBUTTONS_SPACING)
 
         # Set to True to center align the buttons in the PM
@@ -503,9 +500,7 @@ class PM_Dialog( QDialog, SponsorableMixin ):
             geticon("ui/actions/Properties Manager/Done_16x16.png"))
         self.done_btn.setIconSize(topBtnSize)
         self.done_btn.setAutoRaise(True)
-        self.connect(self.done_btn,
-                     SIGNAL("clicked()"),
-                     self.doneButtonClicked)
+        self.done_btn.clicked.connect(self.doneButtonClicked)
         self.done_btn.setToolTip("Done")
 
         topRowBtnsHLayout.addWidget(self.done_btn)
@@ -516,9 +511,7 @@ class PM_Dialog( QDialog, SponsorableMixin ):
             geticon("ui/actions/Properties Manager/Abort_16x16.png"))
         self.cancel_btn.setIconSize(topBtnSize)
         self.cancel_btn.setAutoRaise(True)
-        self.connect(self.cancel_btn,
-                     SIGNAL("clicked()"),
-                     self.cancelButtonClicked)
+        self.cancel_btn.clicked.connect(self.cancelButtonClicked)
         self.cancel_btn.setToolTip("Cancel")
 
         topRowBtnsHLayout.addWidget(self.cancel_btn)
@@ -532,9 +525,7 @@ class PM_Dialog( QDialog, SponsorableMixin ):
             geticon("ui/actions/Properties Manager/Restore_16x16.png"))
         self.restore_defaults_btn.setIconSize(topBtnSize)
         self.restore_defaults_btn.setAutoRaise(True)
-        self.connect(self.restore_defaults_btn,
-                     SIGNAL("clicked()"),
-                     self.restoreDefaultsButtonClicked)
+        self.restore_defaults_btn.clicked.connect(self.restoreDefaultsButtonClicked)
         self.restore_defaults_btn.setToolTip("Restore Defaults")
         topRowBtnsHLayout.addWidget(self.restore_defaults_btn)
 
@@ -544,9 +535,7 @@ class PM_Dialog( QDialog, SponsorableMixin ):
             geticon("ui/actions/Properties Manager/Preview_16x16.png"))
         self.preview_btn.setIconSize(topBtnSize)
         self.preview_btn.setAutoRaise(True)
-        self.connect(self.preview_btn,
-                     SIGNAL("clicked()"),
-                     self.previewButtonClicked)
+        self.preview_btn.clicked.connect(self.previewButtonClicked)
         self.preview_btn.setToolTip("Preview")
 
         topRowBtnsHLayout.addWidget(self.preview_btn)
@@ -557,9 +546,7 @@ class PM_Dialog( QDialog, SponsorableMixin ):
             geticon("ui/actions/Properties Manager/WhatsThis_16x16.png"))
         self.whatsthis_btn.setIconSize(topBtnSize)
         self.whatsthis_btn.setAutoRaise(True)
-        self.connect(self.whatsthis_btn,
-                     SIGNAL("clicked()"),
-                     self.whatsThisButtonClicked)
+        self.whatsthis_btn.clicked.connect(self.whatsThisButtonClicked)
         self.whatsthis_btn.setToolTip("Enter \"What's This\" help mode")
 
         topRowBtnsHLayout.addWidget(self.whatsthis_btn)

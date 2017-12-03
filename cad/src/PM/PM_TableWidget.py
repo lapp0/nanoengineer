@@ -14,10 +14,10 @@ piotr 2008-07-15: Created this file.
 
 """
 
-from PyQt4.Qt import Qt
-from PyQt4.Qt import QTableWidget
-from PyQt4.Qt import QLabel
-from PyQt4.Qt import QWidget
+from PyQt5.QtCore import Qt
+from PyQt5.QtWidgets import QTableWidget
+from PyQt5.QtWidgets import QLabel
+from PyQt5.QtWidgets import QWidget
 
 class PM_TableWidget( QTableWidget ):
     """

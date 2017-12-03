@@ -12,8 +12,7 @@ History:
 TODO:
 """
 from ne1_ui.toolbars.Ui_AbstractFlyout import Ui_AbstractFlyout
-from PyQt4.Qt import SIGNAL
-from PyQt4 import QtGui
+from PyQt5 import QtGui, QtWidgets
 from ne1_ui.NE1_QWidgetAction import NE1_QWidgetAction
 from utilities.icon_utilities import geticon
 _superclass = Ui_AbstractFlyout
@@ -81,10 +80,10 @@ class BuildCrystalFlyout(Ui_AbstractFlyout):
         _superclass._createActions(self, parentWidget)
 
         # The subControlActionGroup is the parent of all flyout QActions.
-        self.subControlActionGroup = QtGui.QActionGroup(parentWidget)
+        self.subControlActionGroup = QtWidgets.QActionGroup(parentWidget)
 
         self._subControlAreaActionList.append(self.exitModeAction)
-        separator = QtGui.QAction(parentWidget)
+        separator = QtWidgets.QAction(parentWidget)
         separator.setSeparator(True)
         self._subControlAreaActionList.append(separator)
 

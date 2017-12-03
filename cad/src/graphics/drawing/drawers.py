@@ -114,6 +114,12 @@ from graphics.drawing.gl_lighting import apply_material
 from graphics.drawing.gl_GLE import glePolyCone, gleGetNumSides, gleSetNumSides
 from graphics.drawing.gl_Scale import glScale, glScalef
 
+try:
+    QString = unicode
+except NameError:
+    # Python 3
+    QString = str
+
 def drawCircle(color, center, radius, normal):
     """
     Scale, rotate/translate the unit circle properly.
@@ -1119,7 +1125,7 @@ def drawtext(text, color, origin, point_size, glpane):
     glDisable(GL_LIGHTING)
     glDisable(GL_DEPTH_TEST)
 
-    from PyQt4.Qt import QFont, QString ##, QColor
+    from PyQt5.QtGui import QFont, QString ##, QColor
     font = QFont( QString("Helvetica"), point_size)
     #glpane.qglColor(QColor(75, 75, 75))
     from widgets.widget_helpers import RGBf_to_QColor

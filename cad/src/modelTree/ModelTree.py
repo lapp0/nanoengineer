@@ -42,7 +42,7 @@ ModelTree and TreeModel into separate objects with separate classes and
 _api classes, and splitting some code into separate files.
 """
 
-from PyQt4 import QtCore
+from PyQt5 import QtCore
 
 from modelTree.modelTreeGui import ModelTreeGui
 from modelTree.TreeModel import TreeModel

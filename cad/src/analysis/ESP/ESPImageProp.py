@@ -5,10 +5,9 @@ ESPImageProp.py
 $Id$
 """
 
-from PyQt4.Qt import QWidget
-from PyQt4.Qt import SIGNAL
-from PyQt4.Qt import QColorDialog
-from PyQt4.Qt import QDialog
+from PyQt5.QtWidgets import QWidget
+from PyQt5.QtWidgets import QColorDialog
+from PyQt5.QtWidgets import QDialog
 
 from analysis.ESP.ESPImagePropDialog import Ui_ESPImagePropDialog
 
@@ -19,27 +18,27 @@ class ESPImageProp(QDialog, Ui_ESPImagePropDialog):
 
         QWidget.__init__(self)
         self.setupUi(self)
-        self.connect(self.ok_btn,SIGNAL("clicked()"),self.accept)
-        self.connect(self.cancel_btn,SIGNAL("clicked()"),self.reject)
-        self.connect(self.choose_border_color_btn,SIGNAL("clicked()"),self.change_border_color)
-        self.connect(self.choose_fill_color_btn,SIGNAL("clicked()"),self.change_fill_color)
-        self.connect(self.show_esp_bbox_checkbox,SIGNAL("toggled(bool)"),self.show_esp_bbox)
-        self.connect(self.select_atoms_btn,SIGNAL("clicked()"),self.select_atoms_inside_esp_bbox)
-        self.connect(self.highlight_atoms_in_bbox_checkbox,SIGNAL("toggled(bool)"),self.highlight_atoms_in_bbox)
-        self.connect(self.calculate_esp_btn,SIGNAL("clicked()"),self.calculate_esp)
-        self.connect(self.rotate_ccw_btn,SIGNAL("clicked()"),self.rotate_90)
-        self.connect(self.rotate_cw_btn,SIGNAL("clicked()"),self.rotate_neg_90)
-        self.connect(self.flip_btn,SIGNAL("clicked()"),self.flip_esp_image)
-        self.connect(self.mirror_btn,SIGNAL("clicked()"),self.mirror_esp_image)
-        self.connect(self.opacity_slider,SIGNAL("valueChanged(int)"),self.change_opacity)
-        self.connect(self.choose_file_btn,SIGNAL("clicked()"),self.change_esp_image)
-        self.connect(self.load_btn,SIGNAL("clicked()"),self.load_esp_image)
-        self.connect(self.clear_btn,SIGNAL("clicked()"),self.clear_esp_image)
-        self.connect(self.xaxis_spinbox,SIGNAL("valueChanged(int)"),self.change_xaxisOrient)
-        self.connect(self.yaxis_spinbox,SIGNAL("valueChanged(int)"),self.change_yaxisOrient)
-        self.connect(self.width_linedit,SIGNAL("returnPressed()"),self.change_jig_size)
-        self.connect(self.edge_offset_linedit,SIGNAL("returnPressed()"),self.change_jig_size)
-        self.connect(self.image_offset_linedit,SIGNAL("returnPressed()"),self.change_jig_size)
+        self.ok_btn.clicked.connect(self.accept)
+        self.cancel_btn.clicked.connect(self.reject)
+        self.choose_border_color_btn.clicked.connect(self.change_border_color)
+        self.choose_fill_color_btn.clicked.connect(self.change_fill_color)
+        self.show_esp_bbox_checkbox.toggled[bool].connect(self.show_esp_bbox)
+        self.select_atoms_btn.clicked.connect(self.select_atoms_inside_esp_bbox)
+        self.highlight_atoms_in_bbox_checkbox.toggled[bool].connect(self.highlight_atoms_in_bbox)
+        self.calculate_esp_btn.clicked.connect(self.calculate_esp)
+        self.rotate_ccw_btn.clicked.connect(self.rotate_90)
+        self.rotate_cw_btn.clicked.connect(self.rotate_neg_90)
+        self.flip_btn.clicked.connect(self.flip_esp_image)
+        self.mirror_btn.clicked.connect(self.mirror_esp_image)
+        self.opacity_slider.valueChanged[int].connect(self.change_opacity)
+        self.choose_file_btn.clicked.connect(self.change_esp_image)
+        self.load_btn.clicked.connect(self.load_esp_image)
+        self.clear_btn.clicked.connect(self.clear_esp_image)
+        self.xaxis_spinbox.valueChanged[int].connect(self.change_xaxisOrient)
+        self.yaxis_spinbox.valueChanged[int].connect(self.change_yaxisOrient)
+        self.width_linedit.returnPressed.connect(self.change_jig_size)
+        self.edge_offset_linedit.returnPressed.connect(self.change_jig_size)
+        self.image_offset_linedit.returnPressed.connect(self.change_jig_size)
         self.jig = esp_image
         self.glpane = glpane
 

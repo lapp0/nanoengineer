@@ -21,8 +21,7 @@ I think the latter will help decoupling ui elements from fuseMode. Same thing
 applies to other modes and Propert Managers (e.g. Move mode, Build Atoms mode)
 """
 
-from PyQt4.Qt import SIGNAL
-from PyQt4.Qt import Qt
+from PyQt5.QtCore import Qt
 
 from PM.PM_GroupBox        import PM_GroupBox
 from PM.PM_ComboBox        import PM_ComboBox
@@ -82,18 +81,14 @@ class FusePropertyManager(MovePropertyManager):
                          setAsDefault = False,
                          spanWidth    = True)
 
-        self.connect(self.fuseComboBox,
-                     SIGNAL("activated(const QString&)"),
-                     self.command.change_fuse_mode)
+        self.fuseComboBox.activated['QString'].connect(self.command.change_fuse_mode)
 
         self.fusePushButton = PM_PushButton( inPmGroupBox,
                                              label     = "",
                                              text      = "Make Bonds",
                                              spanWidth = True )
 
-        self.connect( self.fusePushButton,
-                      SIGNAL("clicked()"),
-                      self.command.fuse_something)
+        self.fusePushButton.clicked.connect(self.command.fuse_something)
 
         self.toleranceSlider =  PM_Slider( inPmGroupBox,
                                            currentValue = 100,
@@ -102,9 +97,7 @@ class FusePropertyManager(MovePropertyManager):
                                            label        = \
                                            'Tolerance:100% => 0 bondable pairs'
                                          )
-        self.connect(self.toleranceSlider,
-                       SIGNAL("valueChanged(int)"),
-                       self.command.tolerance_changed)
+        self.toleranceSlider.valueChanged[int].connect(self.command.tolerance_changed)
 
         self.mergeChunksCheckBox = PM_CheckBox( inPmGroupBox,
                                                 text         = 'Merge chunks',

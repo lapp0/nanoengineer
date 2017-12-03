@@ -22,8 +22,8 @@ for all UI_*Flyout modules  needs to be reconsidered [Ninad 2008-09-10]
 """
 
 from utilities.exception_classes import AbstractMethod
+from PyQt5.QtWidgets import *
 from ne1_ui.NE1_QWidgetAction import NE1_QWidgetAction
-from PyQt4.Qt import SIGNAL
 from utilities.icon_utilities import geticon
 
 from utilities.GlobalPreferences import KEEP_SIGNALS_ALWAYS_CONNECTED

@@ -43,17 +43,16 @@ TODO: Code cleanup planned for Alpha 10 (lower priority) -- Ninad 2007-09-11
 
 """
 
-from PyQt4    import QtGui
-from PyQt4.Qt import QWidget
-from PyQt4.Qt import QSizePolicy
-from PyQt4.Qt import QHBoxLayout
-from PyQt4.Qt import QButtonGroup
-from PyQt4.Qt import QToolButton
-from PyQt4.Qt import QSize
-from PyQt4.Qt import Qt
-from PyQt4.Qt import QSpacerItem
-from PyQt4.Qt import QString
-from PyQt4.Qt import QPalette
+from PyQt5    import QtGui
+from PyQt5.QtWidgets import QWidget
+from PyQt5.QtWidgets import QSizePolicy
+from PyQt5.QtWidgets import QHBoxLayout
+from PyQt5.QtWidgets import QButtonGroup
+from PyQt5.QtWidgets import QToolButton
+from PyQt5.QtCore import QSize
+from PyQt5.QtCore import Qt
+from PyQt5.QtWidgets import QSpacerItem
+from PyQt5.QtGui import QPalette
 
 from utilities.icon_utilities import geticon
 from foundation.whatsthis_utilities import fix_QAction_whatsthis
@@ -81,6 +80,12 @@ from ne1_ui.toolbars.FlyoutToolbar import FlyoutToolBar
 #indicator). The command toolbar code is likely to be revised post FNANO08
 #that time, this can be cleaned up further. Till then, the default
 #implementation will use controlarea as a QWidget object instead of QToolbar
+try:
+    QString = unicode
+except NameError:
+    # Python 3
+    QString = str
+
 DEFINE_CONTROL_AREA_AS_A_QWIDGET = True
 
 class Ui_CommandToolbar( QWidget ):
@@ -112,7 +117,7 @@ class Ui_CommandToolbar( QWidget ):
         self.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Fixed)
 
         layout_cmdtoolbar = QHBoxLayout(self)
-        layout_cmdtoolbar.setMargin(2)
+        layout_cmdtoolbar.setContentsMargins(2, 2, 2, 2)
         layout_cmdtoolbar.setSpacing(2)
 
         #See comment at the top for details about this flag
@@ -134,7 +139,7 @@ class Ui_CommandToolbar( QWidget ):
         #See comment at the top for details about this flag
         if DEFINE_CONTROL_AREA_AS_A_QWIDGET:
             layout_controlArea = QHBoxLayout(self.cmdToolbarControlArea)
-            layout_controlArea.setMargin(0)
+            layout_controlArea.setContentsMargins(0, 0, 0, 0)
             layout_controlArea.setSpacing(0)
 
         self.cmdButtonGroup = QButtonGroup()
@@ -182,8 +187,8 @@ class Ui_CommandToolbar( QWidget ):
 
         self.spacerItem = QSpacerItem(0,
                                       0,
-                                      QtGui.QSizePolicy.Expanding,
-                                      QtGui.QSizePolicy.Minimum)
+                                      QtWidgets.QSizePolicy.Expanding,
+                                      QtWidgets.QSizePolicy.Minimum)
         self.spacerItem.setGeometry = self.flyoutToolBar.geometry()
 
         for btn in self.cmdButtonGroup.buttons():
@@ -199,7 +204,7 @@ class Ui_CommandToolbar( QWidget ):
                 whatsThisTextForCommandToolbarInsertButton(btn)
             if str(btn.objectName()) == 'Tools':
                 #fyi: cmd stands for 'command toolbar' - ninad070406
-                self.win.cmdToolsMenu = QtGui.QMenu(self.win)
+                self.win.cmdToolsMenu = QtWidgets.QMenu(self.win)
                 self.win.cmdToolsMenu.addAction(self.win.toolsExtrudeAction)
                 self.win.cmdToolsMenu.addAction(self.win.toolsFuseChunksAction)
                 self.win.cmdToolsMenu.addSeparator()
@@ -212,7 +217,7 @@ class Ui_CommandToolbar( QWidget ):
                 btn.setToolTip("Tools")
                 whatsThisTextForCommandToolbarToolsButton(btn)
             if str(btn.objectName()) == 'Move':
-                self.win.moveMenu = QtGui.QMenu(self.win)
+                self.win.moveMenu = QtWidgets.QMenu(self.win)
                 self.win.moveMenu.addAction(self.win.toolsMoveMoleculeAction)
                 self.win.moveMenu.addAction(self.win.rotateComponentsAction)
                 self.win.moveMenu.addSeparator()

@@ -25,11 +25,10 @@ it seems more useful to file it in widgets than in foundation.
 (Reusable widgets are in a sense just a certain kind of "ui utility".)
 """
 
-from PyQt4.Qt import QMenu
-from PyQt4.Qt import QAction
-from PyQt4.Qt import SIGNAL
-from PyQt4.Qt import QPixmap
-from PyQt4.Qt import QIcon
+from PyQt5.QtWidgets import QMenu
+from PyQt5.QtWidgets import QAction
+from PyQt5.QtGui import QPixmap
+from PyQt5.QtGui import QIcon
 
 from utilities import debug_flags
 
@@ -91,7 +90,7 @@ def makemenu_helper(widget, menu_spec, menu = None):
     #menu = QMenu( widget)
     for m in menu_spec:
         try: #bruce 050416 added try/except as debug code and for safety
-            menutext = m and widget.trUtf8(m[0])
+            menutext = m and widget.tr(m[0])
             if m and isinstance(m[1], QMenu): #bruce 041010 added this case
                 submenu = m[1]
                 #menu.insertItem( menutext, submenu )
@@ -122,7 +121,7 @@ def makemenu_helper(widget, menu_spec, menu = None):
                         act.setCheckable(True)
                         act.setChecked(True)
                     menu.addAction(act)
-                    widget.connect(act, SIGNAL("activated()"), func)
+                    act.activated.connect(func)
                 else:
                     # disabled case
                     # [why is this case done differently, in this Qt4 port?? -- bruce 070522 question]

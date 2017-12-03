@@ -16,12 +16,18 @@ TODO:
   may better be in a dna/model class?
 """
 import foundation.env as env
-from PyQt4.Qt import QFont, QString
+from PyQt5.QtGui import QFont
 
 from utilities.prefs_constants import dnaBaseNumberLabelColor_prefs_key
 from utilities.prefs_constants import dnaBaseNumberingOrder_prefs_key
 from utilities.prefs_constants import dnaBaseNumberLabelChoice_prefs_key
 
+
+try:
+    QString = unicode
+except NameError:
+    # Python 3
+    QString = str
 
 def _correct_baseatom_order_for_dnaStrand(strand, baseatoms):
     """

@@ -100,7 +100,7 @@ from model.part import ClipboardItemPart
 
 from utilities.icon_utilities import imagename_to_pixmap
 from commands.PartProperties.PartProp import PartProp
-from PyQt4 import QtGui
+from PyQt5 import QtGui
 
 from foundation.Assembly_API import Assembly_API
 import foundation.undo_manager as undo_manager

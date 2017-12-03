@@ -34,16 +34,15 @@ from PM.PM_Constants import PM_GRIDLAYOUT_SPACING
 
 from PM.PM_Constants import PM_LABEL_LEFT_ALIGNMENT, PM_LABEL_RIGHT_ALIGNMENT
 
-from PyQt4.Qt import QGroupBox
-from PyQt4.Qt import QGridLayout
-from PyQt4.Qt import QLabel
-from PyQt4.Qt import QPushButton
-from PyQt4.Qt import QPalette
-from PyQt4.Qt import QSizePolicy
-from PyQt4.Qt import QSpacerItem
-from PyQt4.Qt import QVBoxLayout
-from PyQt4.Qt import QWidget
-from PyQt4.Qt import SIGNAL
+from PyQt5.QtWidgets import QGroupBox
+from PyQt5.QtWidgets import QGridLayout
+from PyQt5.QtWidgets import QLabel
+from PyQt5.QtWidgets import QPushButton
+from PyQt5.QtGui import QPalette
+from PyQt5.QtWidgets import QSizePolicy
+from PyQt5.QtWidgets import QSpacerItem
+from PyQt5.QtWidgets import QVBoxLayout
+from PyQt5.QtWidgets import QWidget
 
 from widgets.widget_helpers import QColor_to_Hex
 from utilities.icon_utilities import geticon, getpixmap
@@ -177,7 +176,7 @@ class PM_GroupBox( QGroupBox ):
         # - the group box title button (or title) on row 0.
         # - the container widget for all PM widgets on row 1.
         self._vBoxLayout = QVBoxLayout(self)
-        self._vBoxLayout.setMargin(0)
+        self._vBoxLayout.setContentsMargins(0, 0, 0, 0)
         self._vBoxLayout.setSpacing(0)
 
         # _containerWidget contains all PM widgets in this group box.
@@ -190,12 +189,12 @@ class PM_GroupBox( QGroupBox ):
 
         # Create vertical box layout
         self.vBoxLayout = QVBoxLayout(self._containerWidget)
-        self.vBoxLayout.setMargin(PM_GROUPBOX_VBOXLAYOUT_MARGIN)
+        self.vBoxLayout.setContentsMargins(PM_GROUPBOX_VBOXLAYOUT_MARGIN, PM_GROUPBOX_VBOXLAYOUT_MARGIN, PM_GROUPBOX_VBOXLAYOUT_MARGIN, PM_GROUPBOX_VBOXLAYOUT_MARGIN)
         self.vBoxLayout.setSpacing(PM_GROUPBOX_VBOXLAYOUT_SPACING)
 
         # Create grid layout
         self.gridLayout = QGridLayout()
-        self.gridLayout.setMargin(PM_GRIDLAYOUT_MARGIN)
+        self.gridLayout.setContentsMargins(PM_GRIDLAYOUT_MARGIN, PM_GRIDLAYOUT_MARGIN, PM_GRIDLAYOUT_MARGIN, PM_GRIDLAYOUT_MARGIN)
         self.gridLayout.setSpacing(PM_GRIDLAYOUT_SPACING)
 
         # Insert grid layout in its own vBoxLayout
@@ -211,9 +210,7 @@ class PM_GroupBox( QGroupBox ):
                 self.titleButton = self._getTitleButton(self, title)
                 self._vBoxLayout.insertWidget(0, self.titleButton)
                 if connectTitleButton:
-                    self.connect( self.titleButton,
-                                  SIGNAL("clicked()"),
-                                  self.toggleExpandCollapse)
+                    self.titleButton.clicked.connect(self.toggleExpandCollapse)
                 self._insertMacSpacer()
 
         # Fixes the height of the group box. Very important. Mark 2007-05-29
@@ -583,9 +580,9 @@ class PM_GroupBox( QGroupBox ):
         Collapse this group box i.e. hide all its contents and change the look
         and feel of the groupbox button.
         """
-        self.vBoxLayout.setMargin(0)
+        self.vBoxLayout.setContentsMargins(0, 0, 0, 0)
         self.vBoxLayout.setSpacing(0)
-        self.gridLayout.setMargin(0)
+        self.gridLayout.setContentsMargins(0, 0, 0, 0)
         self.gridLayout.setSpacing(0)
         # The styleSheet contains the expand/collapse.
         styleSheet = self._getTitleButtonStyleSheet(showExpanded = False)
@@ -599,9 +596,9 @@ class PM_GroupBox( QGroupBox ):
         Expand this group box i.e. show all its contents and change the look
         and feel of the groupbox button.
         """
-        self.vBoxLayout.setMargin(PM_GROUPBOX_VBOXLAYOUT_MARGIN)
+        self.vBoxLayout.setContentsMargins(PM_GROUPBOX_VBOXLAYOUT_MARGIN, PM_GROUPBOX_VBOXLAYOUT_MARGIN, PM_GROUPBOX_VBOXLAYOUT_MARGIN, PM_GROUPBOX_VBOXLAYOUT_MARGIN)
         self.vBoxLayout.setSpacing(PM_GROUPBOX_VBOXLAYOUT_SPACING)
-        self.gridLayout.setMargin(PM_GROUPBOX_GRIDLAYOUT_MARGIN)
+        self.gridLayout.setContentsMargins(PM_GROUPBOX_GRIDLAYOUT_MARGIN, PM_GROUPBOX_GRIDLAYOUT_MARGIN, PM_GROUPBOX_GRIDLAYOUT_MARGIN, PM_GROUPBOX_GRIDLAYOUT_MARGIN)
         self.gridLayout.setSpacing(PM_GROUPBOX_GRIDLAYOUT_SPACING)
 
         # The styleSheet contains the expand/collapse.

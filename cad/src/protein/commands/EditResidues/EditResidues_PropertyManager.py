@@ -29,19 +29,17 @@ from utilities.Log import greenmsg
 from utilities.constants import yellow, orange, red, magenta
 from utilities.constants import cyan, blue, white, black, gray
 
-from PyQt4.Qt import SIGNAL
-from PyQt4.Qt import Qt
-from PyQt4.Qt import QCheckBox
-from PyQt4.Qt import QLabel
-from PyQt4.Qt import QFont
-from PyQt4.Qt import QComboBox
-from PyQt4.Qt import QTableWidgetItem
-from PyQt4.Qt import QSize
+from PyQt5.QtCore import Qt
+from PyQt5.QtWidgets import QCheckBox
+from PyQt5.QtWidgets import QLabel
+from PyQt5.QtGui import QFont
+from PyQt5.QtWidgets import QComboBox
+from PyQt5.QtWidgets import QTableWidgetItem
+from PyQt5.QtCore import QSize
 
 
-from PyQt4 import QtGui
 
-from PyQt4.Qt import QFileDialog, QString, QMessageBox, QSlider
+from PyQt5.QtGui import QFileDialog, QMessageBox, QSlider
 from PM.PM_PushButton   import PM_PushButton
 from command_support.Command_PropertyManager import Command_PropertyManager
 from PM.PM_GroupBox import PM_GroupBox
@@ -592,9 +590,7 @@ class EditResidues_PropertyManager(Command_PropertyManager):
             self.setComboBox = QComboBox()
             self.setComboBox.addItems(self.set_names)
 
-            self.win.connect(self.setComboBox,
-                             SIGNAL("activated(int)"),
-                             self._setComboBoxIndexChanged)
+            self.setComboBox.activated[int].connect(self._setComboBoxIndexChanged)
 
             self.sequenceTable.setCellWidget(crow, 2, self.setComboBox)
 
@@ -615,7 +611,7 @@ class EditResidues_PropertyManager(Command_PropertyManager):
                 else:
                     current_aa.set_backrub_mode(False)
 
-        from PyQt4.Qt import QTextCursor
+        from PyQt5.QtGui import QTextCursor
         cursor = self.sequenceEditor.sequenceTextEdit.textCursor()
         #boundary condition
         if crow == -1:

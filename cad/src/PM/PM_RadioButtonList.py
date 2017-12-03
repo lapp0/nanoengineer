@@ -11,11 +11,11 @@ History:
 mark 2007-08-05: Created.
 """
 
-from PyQt4.Qt import QButtonGroup
-from PyQt4.Qt import QRadioButton
+from PyQt5.QtWidgets import QButtonGroup
+from PyQt5.QtWidgets import QRadioButton
 
 from PM.PM_GroupBox import PM_GroupBox
-from PyQt4.Qt import QLabel
+from PyQt5.QtWidgets import QLabel
 
 class PM_RadioButtonList( PM_GroupBox ):
     """

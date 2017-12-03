@@ -15,11 +15,11 @@ mark 2007-07-22: Split PropMgrMessageGroupBox out of PropMgrBaseClass.py
 into this file and renamed it PM_MessageGroupBox.
 """
 
-from PyQt4.Qt import QTextOption
-from PyQt4.Qt import QSizePolicy
-from PyQt4.Qt import QPalette
-from PyQt4.Qt import QString, QTextCursor
-from PyQt4.Qt import Qt
+from PyQt5.QtGui import QTextOption
+from PyQt5.QtWidgets import QSizePolicy
+from PyQt5.QtGui import QPalette
+from PyQt5.QtGui import QTextCursor
+from PyQt5.QtCore import Qt
 
 from PM.PM_Colors    import getPalette
 from PM.PM_Colors    import pmMessageBoxColor

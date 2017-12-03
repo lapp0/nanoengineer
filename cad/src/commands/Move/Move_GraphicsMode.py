@@ -14,8 +14,8 @@ Ninad 2008-01-25: Split modifyMode into Command and GraphicsMode classes
 import math
 from Numeric import dot
 
-from PyQt4.Qt import QMouseEvent
-from PyQt4.Qt import Qt
+from PyQt5.QtGui import QMouseEvent
+from PyQt5.QtCore import Qt
 import foundation.env as env
 from geometry.VQT import V, Q, A, vlen, norm
 from commands.SelectChunks.SelectChunks_GraphicsMode import SelectChunks_GraphicsMode

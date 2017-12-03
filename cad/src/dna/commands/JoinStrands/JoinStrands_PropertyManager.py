@@ -23,7 +23,6 @@ Break and JoinStrands PMs into new module BreakOrJoinStrands_PropertyManager
 import sys
 from PM.PM_GroupBox import PM_GroupBox
 from PM.PM_CheckBox import PM_CheckBox
-from PyQt4.Qt import SIGNAL
 
 import foundation.env as env
 from utilities.prefs_constants import joinStrandsCommand_arrowsOnThreePrimeEnds_prefs_key

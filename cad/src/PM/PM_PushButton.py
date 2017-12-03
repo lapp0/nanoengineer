@@ -12,9 +12,9 @@ mark 2007-07-22: Split PropMgrPushButton out of PropMgrBaseClass.py into this
 file and renamed it PM_PushButton.
 """
 
-from PyQt4.Qt import QLabel
-from PyQt4.Qt import QPushButton
-from PyQt4.Qt import QWidget
+from PyQt5.QtWidgets import QLabel
+from PyQt5.QtWidgets import QPushButton
+from PyQt5.QtWidgets import QWidget
 
 from widgets.prefs_widgets import widget_setAction
 from widgets.prefs_widgets import QPushButton_ConnectionWithAction

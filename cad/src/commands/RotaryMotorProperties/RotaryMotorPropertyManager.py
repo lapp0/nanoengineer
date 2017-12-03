@@ -16,7 +16,6 @@ Ninad 2007-10-09:
 
 """
 
-from PyQt4.Qt import SIGNAL
 
 from PM.PM_DoubleSpinBox import PM_DoubleSpinBox
 from PM.PM_CheckBox      import PM_CheckBox

@@ -13,7 +13,7 @@ extrude dashboard to extrude property manager.
 ninad 2007-09-10: Code clean up to use PM module classes
 """
 
-from PyQt4.Qt import Qt
+from PyQt5.QtCore import Qt
 
 from PM.PM_GroupBox      import PM_GroupBox
 from PM.PM_CheckBox      import PM_CheckBox

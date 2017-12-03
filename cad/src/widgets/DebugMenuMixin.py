@@ -26,10 +26,11 @@ for general use in this menu).
 """
 
 import sys
+from PyQt5.QtWidgets import *
 import time
 
-from PyQt4.Qt import QDialog, QGridLayout, QLabel, QPushButton, QLineEdit, SIGNAL
-from PyQt4.Qt import QFontDialog, QInputDialog
+from PyQt5.QtGui import QDialog, QGridLayout, QLabel, QPushButton, QLineEdit
+from PyQt5.QtGui import QFontDialog, QInputDialog
 
 import foundation.env as env
 from utilities import debug_flags
@@ -530,7 +531,7 @@ class SimParameterDialog(QDialog):
         QDialog.__init__(self, win)
         self.setWindowTitle('Manually edit sim parameters')
         layout = QGridLayout(self)
-        layout.setMargin(1)
+        layout.setContentsMargins(1, 1, 1, 1)
         layout.setSpacing(-1)
         layout.setObjectName("SimParameterDialog")
         for i in range(len(_sim_param_table)):
@@ -551,11 +552,11 @@ class SimParameterDialog(QDialog):
                 btn = QPushButton(self)
                 btn.setText('True')
                 layout.addWidget(btn, i, 2)
-                self.connect(btn,SIGNAL("clicked()"), trueFunc)
+                btn.clicked.connect(trueFunc)
                 btn = QPushButton(self)
                 btn.setText('False')
                 layout.addWidget(btn, i, 3)
-                self.connect(btn,SIGNAL("clicked()"), falseFunc)
+                btn.clicked.connect(falseFunc)
             else:
                 label = QLabel(self)
                 label.setText(currentStr)
@@ -580,7 +581,7 @@ class SimParameterDialog(QDialog):
                 btn = QPushButton(self)
                 btn.setText('OK')
                 layout.addWidget(btn, i, 3)
-                self.connect(btn, SIGNAL("clicked()"), change)
+                btn.clicked.connect(change)
         btn = QPushButton(self)
         btn.setText('Done')
         layout.addWidget(btn, len(_sim_param_table), 0, len(_sim_param_table), 4)
@@ -590,7 +591,7 @@ class SimParameterDialog(QDialog):
             #import pprint
             #pprint.pprint(sim_param_values)
             self.close()
-        self.connect(btn, SIGNAL("clicked()"), done)
+        btn.clicked.connect(done)
 
 _sim_parameter_dialog = None
 

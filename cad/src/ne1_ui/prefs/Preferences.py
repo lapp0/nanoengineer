@@ -12,22 +12,20 @@ History:
 
 import os, sys
 
-from PyQt4 import QtCore, QtGui
-from PyQt4.Qt import QDialog
-from PyQt4.Qt import QFileDialog
-from PyQt4.Qt import QMessageBox
-from PyQt4.Qt import QButtonGroup
-from PyQt4.Qt import QAbstractButton
-from PyQt4.Qt import QDoubleValidator
-from PyQt4.Qt import SIGNAL
-from PyQt4.Qt import QPalette
-from PyQt4.Qt import QColorDialog
-from PyQt4.Qt import QString
-from PyQt4.Qt import QFont
-from PyQt4.Qt import Qt
-from PyQt4.Qt import QWhatsThis
-from PyQt4.Qt import QTreeWidget
-from PyQt4.Qt import QSize
+from PyQt5 import QtCore
+from PyQt5.QtWidgets import QDialog
+from PyQt5.QtWidgets import QFileDialog
+from PyQt5.QtWidgets import QMessageBox
+from PyQt5.QtWidgets import QButtonGroup
+from PyQt5.QtWidgets import QAbstractButton
+from PyQt5.QtGui import QDoubleValidator
+from PyQt5.QtGui import QPalette
+from PyQt5.QtWidgets import QColorDialog
+from PyQt5.QtGui import QFont
+from PyQt5.QtCore import Qt
+from PyQt5.QtWidgets import QWhatsThis
+from PyQt5.QtWidgets import QTreeWidget
+from PyQt5.QtCore import QSize
 
 from ne1_ui.prefs.PreferencesDialog import Ui_PreferencesDialog
 import foundation.preferences as preferences
@@ -237,6 +235,12 @@ from widgets.prefs_widgets import connect_doubleSpinBox_with_pref
 
 # Widget constants for the "Graphics Area" page.
 
+try:
+    QString = unicode
+except NameError:
+    # Python 3
+    QString = str
+
 BG_BLUE_SKY = 0
 BG_EVENING_SKY = 1
 BG_SEAGREEN = 2
@@ -311,7 +315,7 @@ def get_filename_and_save_in_prefs(parent, prefs_key, caption=''):
         parent,
         caption,
         get_rootdir(), # '/' on Mac or Linux, something else on Windows
-    ))
+    ))[0]
 
     if not filename: # Cancelled.
         return None
@@ -547,11 +551,11 @@ class Preferences(QDialog, Ui_PreferencesDialog):
         # side of the Preferences dialog (inside the "Systems Option" tab)
         # to the slot for turning to the correct page in the QStackedWidget
         # on the right side.
-        self.connect(self.categoryTreeWidget, SIGNAL("itemSelectionChanged()"), self.showPage)
+        self.categoryTreeWidget.itemSelectionChanged.connect(self.showPage)
 
         # Connections for OK and What's This buttons at the bottom of the dialog.
-        self.connect(self.okButton, SIGNAL("clicked()"), self.accept)
-        self.connect(self.whatsThisToolButton, SIGNAL("clicked()"),QWhatsThis.enterWhatsThisMode)
+        self.okButton.clicked.connect(self.accept)
+        self.whatsThisToolButton.clicked.connect(QWhatsThis.enterWhatsThisMode)
 
         self.whatsThisToolButton.setIcon(
             geticon("ui/actions/Properties Manager/WhatsThis.png"))
@@ -594,7 +598,7 @@ class Preferences(QDialog, Ui_PreferencesDialog):
         else:
             self.logoAlwaysAskRadioBtn.setChecked(True)
 
-        self.connect(self.logosDownloadPermissionBtnGroup, SIGNAL("buttonClicked(int)"), self.setPrefsLogoDownloadPermissions)
+        self.logosDownloadPermissionBtnGroup.buttonClicked[int].connect(self.setPrefsLogoDownloadPermissions)
 
         # Build Atoms option connections.
         connect_checkbox_with_boolean_pref( self.autobond_checkbox, buildModeAutobondEnabled_prefs_key )
@@ -612,12 +616,8 @@ class Preferences(QDialog, Ui_PreferencesDialog):
 
 
 
-        self.connect(self.pasteOffsetScaleFactorForChunks_doubleSpinBox,
-                     SIGNAL("valueChanged(double)"),
-                     self.change_pasteOffsetScaleFactorForChunks)
-        self.connect(self.pasteOffsetScaleFactorForDnaObjects_doubleSpinBox,
-                     SIGNAL("valueChanged(double)"),
-                     self.change_pasteOffsetScaleFactorForDnaObjects)
+        self.pasteOffsetScaleFactorForChunks_doubleSpinBox.valueChanged[double].connect(self.change_pasteOffsetScaleFactorForChunks)
+        self.pasteOffsetScaleFactorForDnaObjects_doubleSpinBox.valueChanged[double].connect(self.change_pasteOffsetScaleFactorForDnaObjects)
         return
 
     def _setupPage_Color(self):
@@ -626,29 +626,29 @@ class Preferences(QDialog, Ui_PreferencesDialog):
         """
         # Background color widgets and connection(s).
         self._loadBackgroundColorItems()
-        self.connect(self.backgroundColorComboBox, SIGNAL("activated(int)"), self.changeBackgroundColor)
+        self.backgroundColorComboBox.activated[int].connect(self.changeBackgroundColor)
 
         # Fog checkbox
         connect_checkbox_with_boolean_pref( self.enableFogCheckBox, fogEnabled_prefs_key )
-        self.connect(self.enableFogCheckBox, SIGNAL("toggled(bool)"), self.enable_fog)
+        self.enableFogCheckBox.toggled[bool].connect(self.enable_fog)
 
         # Hover highlighting color style widgets and connection(s).
         self._loadHoverHighlightingColorStylesItems()
         self.hoverHighlightingStyleComboBox.setCurrentIndex(HHS_INDEXES.index(env.prefs[hoverHighlightingColorStyle_prefs_key]))
-        self.connect(self.hoverHighlightingStyleComboBox, SIGNAL("activated(int)"), self._change_hhStyle)
+        self.hoverHighlightingStyleComboBox.activated[int].connect(self._change_hhStyle)
         connect_colorpref_to_colorframe( hoverHighlightingColor_prefs_key, self.hoverHighlightingColorFrame)
-        self.connect(self.hoverHighlightingColorButton, SIGNAL("clicked()"), self._change_hhColor)
+        self.hoverHighlightingColorButton.clicked.connect(self._change_hhColor)
 
         # Selection color style widgets and connection(s).
         self._loadSelectionColorStylesItems()
         self.selectionStyleComboBox.setCurrentIndex(SS_INDEXES.index(env.prefs[selectionColorStyle_prefs_key]))
-        self.connect(self.selectionStyleComboBox, SIGNAL("activated(int)"), self._change_selectionStyle)
+        self.selectionStyleComboBox.activated[int].connect(self._change_selectionStyle)
         connect_colorpref_to_colorframe( selectionColor_prefs_key, self.selectionColorFrame)
-        self.connect(self.selectionColorButton, SIGNAL("clicked()"), self._change_selectionColor)
+        self.selectionColorButton.clicked.connect(self._change_selectionColor)
 
         # Halo width spinbox.
-        self.connect(self.haloWidthSpinBox, SIGNAL("valueChanged(int)"), self.change_haloWidth)
-        self.connect(self.haloWidthResetButton, SIGNAL("clicked()"), self.reset_haloWidth)
+        self.haloWidthSpinBox.valueChanged[int].connect(self.change_haloWidth)
+        self.haloWidthResetButton.clicked.connect(self.reset_haloWidth)
 
         self.haloWidthResetButton.setIcon(geticon('ui/dialogs/Reset.png'))
         self.haloWidthSpinBox.setValue(env.prefs[haloWidth_prefs_key])
@@ -665,8 +665,8 @@ class Preferences(QDialog, Ui_PreferencesDialog):
         self._setupGlobalDisplayStyleAtStartup_ComboBox()
 
 
-        self.connect(self.compassGroupBox, SIGNAL("stateChanged(int)"), self.display_compass)
-        self.connect(self.compass_position_combox, SIGNAL("activated(int)"), self.set_compass_position)
+        self.compassGroupBox.stateChanged[int].connect(self.display_compass)
+        self.compass_position_combox.activated[int].connect(self.set_compass_position)
 
         connect_checkbox_with_boolean_pref( self.compassGroupBox, displayCompass_prefs_key )
         connect_checkbox_with_boolean_pref( self.display_compass_labels_checkbox, displayCompassLabels_prefs_key )
@@ -678,17 +678,17 @@ class Preferences(QDialog, Ui_PreferencesDialog):
         connect_checkbox_with_boolean_pref( self.enable_antialiasing_checkbox, enableAntiAliasing_prefs_key )
 
         # Cursor text font point size spinbox
-        self.connect(self.cursorTextFontSizeSpinBox, SIGNAL("valueChanged(int)"), self.change_cursorTextFontSize)
+        self.cursorTextFontSizeSpinBox.valueChanged[int].connect(self.change_cursorTextFontSize)
 
         # Cursor text font size reset button.
-        self.connect(self.cursorTextFontSizeResetButton, SIGNAL("clicked()"), self.reset_cursorTextFontSize)
+        self.cursorTextFontSizeResetButton.clicked.connect(self.reset_cursorTextFontSize)
         self.cursorTextFontSizeResetButton.setIcon(geticon('ui/dialogs/Reset.png'))
         self.cursorTextFontSizeSpinBox.setValue(env.prefs[ cursorTextFontSize_prefs_key ] )
         self.change_cursorTextFontSize(env.prefs[cursorTextFontSize_prefs_key]) # Needed to update the reset button.
 
         # Cursor text color
         connect_colorpref_to_colorframe(cursorTextColor_prefs_key, self.cursorTextColorFrame)
-        self.connect(self.cursorTextColorButton, SIGNAL("clicked()"), self.change_cursorTextColor)
+        self.cursorTextColorButton.clicked.connect(self.change_cursorTextColor)
         return
 
     def _setupPage_ZoomPanRotate(self):
@@ -703,8 +703,8 @@ class Preferences(QDialog, Ui_PreferencesDialog):
         self.resetAnimationSpeed_btn.setIcon(
             geticon('ui/dialogs/Reset.png'))
 
-        self.connect(self.animation_speed_slider, SIGNAL("sliderReleased()"), self.change_view_animation_speed)
-        self.connect(self.resetAnimationSpeed_btn, SIGNAL("clicked()"), self.reset_animationSpeed)
+        self.animation_speed_slider.sliderReleased.connect(self.change_view_animation_speed)
+        self.resetAnimationSpeed_btn.clicked.connect(self.reset_animationSpeed)
 
         speed = int (env.prefs[animateMaximumTime_prefs_key] * -100)
         self.animation_speed_slider.setValue(speed)
@@ -714,8 +714,8 @@ class Preferences(QDialog, Ui_PreferencesDialog):
         self.resetMouseSpeedDuringRotation_btn.setIcon(
             geticon('ui/dialogs/Reset.png'))
 
-        self.connect(self.mouseSpeedDuringRotation_slider, SIGNAL("sliderReleased()"), self.change_mouseSpeedDuringRotation)
-        self.connect(self.resetMouseSpeedDuringRotation_btn, SIGNAL("clicked()"), self.reset_mouseSpeedDuringRotation)
+        self.mouseSpeedDuringRotation_slider.sliderReleased.connect(self.change_mouseSpeedDuringRotation)
+        self.resetMouseSpeedDuringRotation_btn.clicked.connect(self.reset_mouseSpeedDuringRotation)
 
         mouseSpeedDuringRotation = int(env.prefs[mouseSpeedDuringRotation_prefs_key] * 100)
         self.mouseSpeedDuringRotation_slider.setValue(mouseSpeedDuringRotation)
@@ -741,11 +741,11 @@ class Preferences(QDialog, Ui_PreferencesDialog):
             self.panArrowKeysDirectionComboBox.setCurrentIndex(1)
 
         # Connections for "Mouse controls" page.
-        self.connect(self.mouseWheelDirectionComboBox, SIGNAL("currentIndexChanged(int)"), self.set_mouse_wheel_direction)
-        self.connect(self.mouseWheelZoomInPointComboBox, SIGNAL("currentIndexChanged(int)"), self.set_mouse_wheel_zoom_in_position)
-        self.connect(self.mouseWheelZoomOutPointComboBox, SIGNAL("currentIndexChanged(int)"), self.set_mouse_wheel_zoom_out_position)
-        self.connect(self.hhTimeoutIntervalDoubleSpinBox, SIGNAL("valueChanged(double)"), self.set_mouse_wheel_timeout_interval)
-        self.connect(self.panArrowKeysDirectionComboBox, SIGNAL("currentIndexChanged(int)"), self.set_pan_arrow_keys_direction)
+        self.mouseWheelDirectionComboBox.currentIndexChanged[int].connect(self.set_mouse_wheel_direction)
+        self.mouseWheelZoomInPointComboBox.currentIndexChanged[int].connect(self.set_mouse_wheel_zoom_in_position)
+        self.mouseWheelZoomOutPointComboBox.currentIndexChanged[int].connect(self.set_mouse_wheel_zoom_out_position)
+        self.hhTimeoutIntervalDoubleSpinBox.valueChanged[double].connect(self.set_mouse_wheel_timeout_interval)
+        self.panArrowKeysDirectionComboBox.currentIndexChanged[int].connect(self.set_pan_arrow_keys_direction)
         return
 
     def _setupPage_Rulers(self):
@@ -753,10 +753,10 @@ class Preferences(QDialog, Ui_PreferencesDialog):
         Setup the "Rulers" page.
         """
 
-        self.connect(self.rulerDisplayComboBox, SIGNAL("currentIndexChanged(int)"), self.set_ruler_display)
-        self.connect(self.rulerPositionComboBox, SIGNAL("currentIndexChanged(int)"), self.set_ruler_position)
-        self.connect(self.ruler_color_btn, SIGNAL("clicked()"), self.change_ruler_color)
-        self.connect(self.rulerOpacitySpinBox, SIGNAL("valueChanged(int)"), self.change_ruler_opacity)
+        self.rulerDisplayComboBox.currentIndexChanged[int].connect(self.set_ruler_display)
+        self.rulerPositionComboBox.currentIndexChanged[int].connect(self.set_ruler_position)
+        self.ruler_color_btn.clicked.connect(self.change_ruler_color)
+        self.rulerOpacitySpinBox.valueChanged[int].connect(self.change_ruler_opacity)
 
         if env.prefs[displayVertRuler_prefs_key] and env.prefs[displayHorzRuler_prefs_key]:
             self.rulerDisplayComboBox.setCurrentIndex(0)
@@ -777,19 +777,19 @@ class Preferences(QDialog, Ui_PreferencesDialog):
         """
 
         # "Change Element Colors" button.
-        self.connect(self.change_element_colors_btn, SIGNAL("clicked()"), self.change_element_colors)
+        self.change_element_colors_btn.clicked.connect(self.change_element_colors)
 
         # Atom colors
         connect_colorpref_to_colorframe( atomHighlightColor_prefs_key, self.atom_hilite_color_frame)
         connect_colorpref_to_colorframe( bondpointHighlightColor_prefs_key, self.bondpoint_hilite_color_frame)
         connect_colorpref_to_colorframe( bondpointHotspotColor_prefs_key, self.hotspot_color_frame)
-        self.connect(self.atom_hilite_color_btn, SIGNAL("clicked()"), self.change_atom_hilite_color)
-        self.connect(self.bondpoint_hilite_color_btn, SIGNAL("clicked()"), self.change_bondpoint_hilite_color)
-        self.connect(self.hotspot_color_btn, SIGNAL("clicked()"), self.change_hotspot_color)
-        self.connect(self.reset_atom_colors_btn, SIGNAL("clicked()"), self.reset_atom_colors)
+        self.atom_hilite_color_btn.clicked.connect(self.change_atom_hilite_color)
+        self.bondpoint_hilite_color_btn.clicked.connect(self.change_bondpoint_hilite_color)
+        self.hotspot_color_btn.clicked.connect(self.change_hotspot_color)
+        self.reset_atom_colors_btn.clicked.connect(self.reset_atom_colors)
 
         # Level of detail.
-        self.connect(self.level_of_detail_combox, SIGNAL("activated(int)"), self.change_level_of_detail)
+        self.level_of_detail_combox.activated[int].connect(self.change_level_of_detail)
 
         lod = env.prefs[ levelOfDetail_prefs_key ]
         lod = int(lod)
@@ -803,8 +803,8 @@ class Preferences(QDialog, Ui_PreferencesDialog):
         self.level_of_detail_combox.setCurrentIndex(loditem)
 
         # Ball and Stick atom scale factor.
-        self.connect(self.ballStickAtomScaleFactorSpinBox, SIGNAL("valueChanged(int)"), self.change_ballStickAtomScaleFactor)
-        self.connect(self.reset_ballstick_scale_factor_btn, SIGNAL("clicked()"), self.reset_ballStickAtomScaleFactor)
+        self.ballStickAtomScaleFactorSpinBox.valueChanged[int].connect(self.change_ballStickAtomScaleFactor)
+        self.reset_ballstick_scale_factor_btn.clicked.connect(self.reset_ballStickAtomScaleFactor)
 
         self.reset_ballstick_scale_factor_btn.setIcon(
             geticon('ui/dialogs/Reset.png'))
@@ -813,8 +813,8 @@ class Preferences(QDialog, Ui_PreferencesDialog):
         self.change_ballStickAtomScaleFactor(_sf) # Needed to update the reset button.
 
         # CPK atom scale factor.
-        self.connect(self.cpkAtomScaleFactorDoubleSpinBox, SIGNAL("valueChanged(double)"), self.change_cpkAtomScaleFactor)
-        self.connect(self.reset_cpk_scale_factor_btn, SIGNAL("clicked()"), self.reset_cpkAtomScaleFactor)
+        self.cpkAtomScaleFactorDoubleSpinBox.valueChanged[double].connect(self.change_cpkAtomScaleFactor)
+        self.reset_cpk_scale_factor_btn.clicked.connect(self.reset_cpkAtomScaleFactor)
 
         self.reset_cpk_scale_factor_btn.setIcon(
             geticon('ui/dialogs/Reset.png'))
@@ -843,18 +843,18 @@ class Preferences(QDialog, Ui_PreferencesDialog):
             self.high_order_bond_display_btngrp.setId(obj, objId)
             objId +=1
 
-        self.connect(self.high_order_bond_display_btngrp, SIGNAL("buttonClicked(int)"), self.change_high_order_bond_display)
-        self.connect(self.reset_bond_colors_btn, SIGNAL("clicked()"), self.reset_bond_colors)
-        self.connect(self.show_bond_labels_checkbox, SIGNAL("toggled(bool)"), self.change_bond_labels)
-        self.connect(self.show_valence_errors_checkbox, SIGNAL("toggled(bool)"), self.change_show_valence_errors)
-        self.connect(self.ballstick_bondcolor_btn, SIGNAL("clicked()"), self.change_ballstick_bondcolor)
-        self.connect(self.bond_hilite_color_btn, SIGNAL("clicked()"), self.change_bond_hilite_color)
-        self.connect(self.bond_line_thickness_spinbox, SIGNAL("valueChanged(int)"), self.change_bond_line_thickness)
-        self.connect(self.bond_stretch_color_btn, SIGNAL("clicked()"), self.change_bond_stretch_color)
-        self.connect(self.bond_vane_color_btn, SIGNAL("clicked()"), self.change_bond_vane_color)
+        self.high_order_bond_display_btngrp.buttonClicked[int].connect(self.change_high_order_bond_display)
+        self.reset_bond_colors_btn.clicked.connect(self.reset_bond_colors)
+        self.show_bond_labels_checkbox.toggled[bool].connect(self.change_bond_labels)
+        self.show_valence_errors_checkbox.toggled[bool].connect(self.change_show_valence_errors)
+        self.ballstick_bondcolor_btn.clicked.connect(self.change_ballstick_bondcolor)
+        self.bond_hilite_color_btn.clicked.connect(self.change_bond_hilite_color)
+        self.bond_line_thickness_spinbox.valueChanged[int].connect(self.change_bond_line_thickness)
+        self.bond_stretch_color_btn.clicked.connect(self.change_bond_stretch_color)
+        self.bond_vane_color_btn.clicked.connect(self.change_bond_vane_color)
 
 
-        self.connect(self.cpk_cylinder_rad_spinbox, SIGNAL("valueChanged(int)"), self.change_ballstick_cylinder_radius)
+        self.cpk_cylinder_rad_spinbox.valueChanged[int].connect(self.change_ballstick_cylinder_radius)
 
         #bruce 050805 here's the new way: subscribe to the preference value,
         # but make sure to only have one such subs (for one widget's bgcolor) at a time.
@@ -926,25 +926,25 @@ class Preferences(QDialog, Ui_PreferencesDialog):
 
 
 
-        self.connect(self.dnaRestoreFactoryDefaultsPushButton, SIGNAL("clicked()"), self.dnaRestoreFactoryDefaults)
+        self.dnaRestoreFactoryDefaultsPushButton.clicked.connect(self.dnaRestoreFactoryDefaults)
 
         connect_colorpref_to_colorframe(dnaDefaultStrand1Color_prefs_key, self.dnaDefaultStrand1ColorFrame)
-        self.connect(self.dnaDefaultStrand1ColorPushButton, SIGNAL("clicked()"), self.changeDnaDefaultStrand1Color)
+        self.dnaDefaultStrand1ColorPushButton.clicked.connect(self.changeDnaDefaultStrand1Color)
 
         connect_colorpref_to_colorframe(dnaDefaultStrand2Color_prefs_key, self.dnaDefaultStrand2ColorFrame)
-        self.connect(self.dnaDefaultStrand2ColorPushButton, SIGNAL("clicked()"), self.changeDnaDefaultStrand2Color)
+        self.dnaDefaultStrand2ColorPushButton.clicked.connect(self.changeDnaDefaultStrand2Color)
 
         connect_colorpref_to_colorframe(dnaDefaultSegmentColor_prefs_key, self.dnaDefaultSegmentColorFrame)
-        self.connect(self.dnaDefaultSegmentColorPushButton, SIGNAL("clicked()"), self.changeDnaDefaultSegmentColor)
+        self.dnaDefaultSegmentColorPushButton.clicked.connect(self.changeDnaDefaultSegmentColor)
 
         self.dnaBasesPerTurnDoubleSpinBox.setValue(env.prefs[bdnaBasesPerTurn_prefs_key])
         self.dnaRiseDoubleSpinBox.setValue(env.prefs[bdnaRise_prefs_key])
 
         # Connections for "DNA Strand Arrowheads" groupbox widgets.
-        self.connect(self.strandThreePrimeArrowheadsCustomColorPushButton, SIGNAL("clicked()"), self.change_dnaStrandThreePrimeArrowheadCustomColor)
-        self.connect(self.strandFivePrimeArrowheadsCustomColorPushButton, SIGNAL("clicked()"), self.change_dnaStrandFivePrimeArrowheadCustomColor)
-        self.connect(self.strandThreePrimeArrowheadsCustomColorCheckBox, SIGNAL("toggled(bool)"), self.update_dnaStrandThreePrimeArrowheadCustomColorWidgets)
-        self.connect(self.strandFivePrimeArrowheadsCustomColorCheckBox, SIGNAL("toggled(bool)"), self.update_dnaStrandFivePrimeArrowheadCustomColorWidgets)
+        self.strandThreePrimeArrowheadsCustomColorPushButton.clicked.connect(self.change_dnaStrandThreePrimeArrowheadCustomColor)
+        self.strandFivePrimeArrowheadsCustomColorPushButton.clicked.connect(self.change_dnaStrandFivePrimeArrowheadCustomColor)
+        self.strandThreePrimeArrowheadsCustomColorCheckBox.toggled[bool].connect(self.update_dnaStrandThreePrimeArrowheadCustomColorWidgets)
+        self.strandFivePrimeArrowheadsCustomColorCheckBox.toggled[bool].connect(self.update_dnaStrandFivePrimeArrowheadCustomColorWidgets)
 
         # DNA strand arrowheads preferences
         connect_checkbox_with_boolean_pref(self.arrowsOnBackBones_checkBox, arrowsOnBackBones_prefs_key)
@@ -984,10 +984,10 @@ class Preferences(QDialog, Ui_PreferencesDialog):
         Setup the "DNA Minor Groove Error Indicator" page.
         """
         # Connections for "DNA Minor Groove Error Indicator" groupbox widgets.
-        self.connect(self.dnaMinGrooveAngleSpinBox, SIGNAL("valueChanged(int)"), self.save_dnaMinMinorGrooveAngles)
-        self.connect(self.dnaMaxGrooveAngleSpinBox, SIGNAL("valueChanged(int)"), self.save_dnaMaxMinorGrooveAngles)
-        self.connect(self.dnaGrooveIndicatorColorButton, SIGNAL("clicked()"), self.change_dnaMinorGrooveErrorIndicatorColor)
-        self.connect(self.dnaMinorGrooveRestoreFactoryDefaultsPushButton, SIGNAL("clicked()"), self._restore_dnaMinorGrooveFactoryDefaults)
+        self.dnaMinGrooveAngleSpinBox.valueChanged[int].connect(self.save_dnaMinMinorGrooveAngles)
+        self.dnaMaxGrooveAngleSpinBox.valueChanged[int].connect(self.save_dnaMaxMinorGrooveAngles)
+        self.dnaGrooveIndicatorColorButton.clicked.connect(self.change_dnaMinorGrooveErrorIndicatorColor)
+        self.dnaMinorGrooveRestoreFactoryDefaultsPushButton.clicked.connect(self._restore_dnaMinorGrooveFactoryDefaults)
 
         # Display Minor Groove Error Indicator groupbox widgets.
 
@@ -1010,13 +1010,13 @@ class Preferences(QDialog, Ui_PreferencesDialog):
         Setup the "DNA Base Orientation Indicators" page.
         """
         # Connections for "DNA base orientation indicator" groupbox widgets.
-        self.connect(self.dnaDisplayBaseOrientationIndicatorsGroupBox, SIGNAL("toggled(bool)"), self.toggle_dnaDisplayBaseOrientationIndicatorsGroupBox)
-        self.connect(self.dnaBaseOrientationIndicatorsInverseCheckBox, SIGNAL("toggled(bool)"), self.toggle_dnaDisplayBaseOrientationInvIndicatorsCheckBox)
-        self.connect(self.dnaBaseOrientationIndicatorsThresholdSpinBox, SIGNAL("valueChanged(double)"), self.change_dnaBaseIndicatorsAngle)
-        self.connect(self.dnaBaseOrientationIndicatorsTerminalDistanceSpinBox, SIGNAL("valueChanged(double)"), self.change_dnaBaseIndicatorsDistance)
-        self.connect(self.dnaChooseBaseOrientationIndicatorsColorButton, SIGNAL("clicked()"), self.change_dnaBaseIndicatorsColor)
-        self.connect(self.dnaChooseBaseOrientationIndicatorsInvColorButton, SIGNAL("clicked()"), self.change_dnaBaseInvIndicatorsColor)
-        self.connect(self.dnaBaseIndicatorsPlaneNormalComboBox, SIGNAL("activated(int)"), self.change_dnaBaseOrientIndicatorsPlane)
+        self.dnaDisplayBaseOrientationIndicatorsGroupBox.toggled[bool].connect(self.toggle_dnaDisplayBaseOrientationIndicatorsGroupBox)
+        self.dnaBaseOrientationIndicatorsInverseCheckBox.toggled[bool].connect(self.toggle_dnaDisplayBaseOrientationInvIndicatorsCheckBox)
+        self.dnaBaseOrientationIndicatorsThresholdSpinBox.valueChanged[double].connect(self.change_dnaBaseIndicatorsAngle)
+        self.dnaBaseOrientationIndicatorsTerminalDistanceSpinBox.valueChanged[double].connect(self.change_dnaBaseIndicatorsDistance)
+        self.dnaChooseBaseOrientationIndicatorsColorButton.clicked.connect(self.change_dnaBaseIndicatorsColor)
+        self.dnaChooseBaseOrientationIndicatorsInvColorButton.clicked.connect(self.change_dnaBaseInvIndicatorsColor)
+        self.dnaBaseIndicatorsPlaneNormalComboBox.activated[int].connect(self.change_dnaBaseOrientIndicatorsPlane)
 
         # DNA Base Orientation Indicator stuff.
         self.dnaDisplayBaseOrientationIndicatorsGroupBox.setChecked(
@@ -1036,11 +1036,11 @@ class Preferences(QDialog, Ui_PreferencesDialog):
         """
         Setup the "Adjust" page.
         """
-        self.connect(self.adjustEngineCombobox, SIGNAL("activated(int)"), self.set_adjust_minimization_engine)
-        self.connect(self.endRmsDoubleSpinBox, SIGNAL("valueChanged(double)"), self.changeEndRms)
-        self.connect(self.endMaxDoubleSpinBox, SIGNAL("valueChanged(double)"), self.changeEndMax)
-        self.connect(self.cutoverRmsDoubleSpinBox, SIGNAL("valueChanged(double)"), self.changeCutoverRms)
-        self.connect(self.cutoverMaxDoubleSpinBox, SIGNAL("valueChanged(double)"), self.changeCutoverMax)
+        self.adjustEngineCombobox.activated[int].connect(self.set_adjust_minimization_engine)
+        self.endRmsDoubleSpinBox.valueChanged[double].connect(self.changeEndRms)
+        self.endMaxDoubleSpinBox.valueChanged[double].connect(self.changeEndMax)
+        self.cutoverRmsDoubleSpinBox.valueChanged[double].connect(self.changeCutoverRms)
+        self.cutoverMaxDoubleSpinBox.valueChanged[double].connect(self.changeCutoverMax)
 
         self.endRmsDoubleSpinBox.setSpecialValueText("Automatic")
         self.endMaxDoubleSpinBox.setSpecialValueText("Automatic")
@@ -1095,29 +1095,29 @@ class Preferences(QDialog, Ui_PreferencesDialog):
         Setup the "Lighting" page.
         """
         # Connections for "Lighting" page.
-        self.connect(self.light_ambient_slider, SIGNAL("valueChanged(int)"), self.change_lighting)
-        self.connect(self.light_ambient_slider, SIGNAL("sliderReleased()"), self.save_lighting)
-        self.connect(self.light_checkbox, SIGNAL("toggled(bool)"), self.toggle_light)
-        self.connect(self.light_color_btn, SIGNAL("clicked()"), self.change_light_color)
-        self.connect(self.light_combobox, SIGNAL("activated(int)"), self.change_active_light)
-        self.connect(self.light_diffuse_slider, SIGNAL("sliderReleased()"), self.save_lighting)
-        self.connect(self.light_diffuse_slider, SIGNAL("valueChanged(int)"), self.change_lighting)
-        self.connect(self.light_specularity_slider, SIGNAL("valueChanged(int)"), self.change_lighting)
-        self.connect(self.light_specularity_slider, SIGNAL("sliderReleased()"), self.save_lighting)
-        self.connect(self.light_x_linedit, SIGNAL("returnPressed()"), self.save_lighting)
-        self.connect(self.light_y_linedit, SIGNAL("returnPressed()"), self.save_lighting)
-        self.connect(self.light_z_linedit, SIGNAL("returnPressed()"), self.save_lighting)
-        self.connect(self.lighting_restore_defaults_btn, SIGNAL("clicked()"), self.restore_default_lighting)
-        self.connect(self.ms_brightness_slider, SIGNAL("sliderReleased()"), self.change_material_brightness_stop)
-        self.connect(self.ms_brightness_slider, SIGNAL("valueChanged(int)"), self.change_material_brightness)
-        self.connect(self.ms_brightness_slider, SIGNAL("sliderPressed()"), self.change_material_brightness_start)
-        self.connect(self.ms_finish_slider, SIGNAL("valueChanged(int)"), self.change_material_finish)
-        self.connect(self.ms_finish_slider, SIGNAL("sliderReleased()"), self.change_material_finish_stop)
-        self.connect(self.ms_finish_slider, SIGNAL("sliderPressed()"), self.change_material_finish_start)
-        self.connect(self.ms_on_checkbox, SIGNAL("toggled(bool)"), self.toggle_material_specularity)
-        self.connect(self.ms_shininess_slider, SIGNAL("sliderReleased()"), self.change_material_shininess_stop)
-        self.connect(self.ms_shininess_slider, SIGNAL("sliderPressed()"), self.change_material_shininess_start)
-        self.connect(self.ms_shininess_slider, SIGNAL("valueChanged(int)"), self.change_material_shininess)
+        self.light_ambient_slider.valueChanged[int].connect(self.change_lighting)
+        self.light_ambient_slider.sliderReleased.connect(self.save_lighting)
+        self.light_checkbox.toggled[bool].connect(self.toggle_light)
+        self.light_color_btn.clicked.connect(self.change_light_color)
+        self.light_combobox.activated[int].connect(self.change_active_light)
+        self.light_diffuse_slider.sliderReleased.connect(self.save_lighting)
+        self.light_diffuse_slider.valueChanged[int].connect(self.change_lighting)
+        self.light_specularity_slider.valueChanged[int].connect(self.change_lighting)
+        self.light_specularity_slider.sliderReleased.connect(self.save_lighting)
+        self.light_x_linedit.returnPressed.connect(self.save_lighting)
+        self.light_y_linedit.returnPressed.connect(self.save_lighting)
+        self.light_z_linedit.returnPressed.connect(self.save_lighting)
+        self.lighting_restore_defaults_btn.clicked.connect(self.restore_default_lighting)
+        self.ms_brightness_slider.sliderReleased.connect(self.change_material_brightness_stop)
+        self.ms_brightness_slider.valueChanged[int].connect(self.change_material_brightness)
+        self.ms_brightness_slider.sliderPressed.connect(self.change_material_brightness_start)
+        self.ms_finish_slider.valueChanged[int].connect(self.change_material_finish)
+        self.ms_finish_slider.sliderReleased.connect(self.change_material_finish_stop)
+        self.ms_finish_slider.sliderPressed.connect(self.change_material_finish_start)
+        self.ms_on_checkbox.toggled[bool].connect(self.toggle_material_specularity)
+        self.ms_shininess_slider.sliderReleased.connect(self.change_material_shininess_stop)
+        self.ms_shininess_slider.sliderPressed.connect(self.change_material_shininess_start)
+        self.ms_shininess_slider.valueChanged[int].connect(self.change_material_shininess)
 
         self._updatePage_Lighting()
         return
@@ -1143,9 +1143,9 @@ class Preferences(QDialog, Ui_PreferencesDialog):
 
         # These sliders generate signals whenever their 'setValue()' slot is called (below).
         # This creates problems (bugs) for us, so we disconnect them temporarily.
-        self.disconnect(self.light_ambient_slider, SIGNAL("valueChanged(int)"), self.change_lighting)
-        self.disconnect(self.light_diffuse_slider, SIGNAL("valueChanged(int)"), self.change_lighting)
-        self.disconnect(self.light_specularity_slider, SIGNAL("valueChanged(int)"), self.change_lighting)
+        self.light_ambient_slider.valueChanged[int].disconnect(self.change_lighting)
+        self.light_diffuse_slider.valueChanged[int].disconnect(self.change_lighting)
+        self.light_specularity_slider.valueChanged[int].disconnect(self.change_lighting)
 
         # self.lights[light_num][0] contains 'color' attribute.
         # We already have it (self.light_color) from the prefs key (above).
@@ -1167,9 +1167,9 @@ class Preferences(QDialog, Ui_PreferencesDialog):
         self.light_checkbox.setChecked(self.lights[light_num][7])
 
         # Reconnect the slots to the light sliders.
-        self.connect(self.light_ambient_slider, SIGNAL("valueChanged(int)"), self.change_lighting)
-        self.connect(self.light_diffuse_slider, SIGNAL("valueChanged(int)"), self.change_lighting)
-        self.connect(self.light_specularity_slider, SIGNAL("valueChanged(int)"), self.change_lighting)
+        self.light_ambient_slider.valueChanged[int].connect(self.change_lighting)
+        self.light_diffuse_slider.valueChanged[int].connect(self.change_lighting)
+        self.light_specularity_slider.valueChanged[int].connect(self.change_lighting)
 
         self._setup_material_group()
         return
@@ -1219,60 +1219,60 @@ class Preferences(QDialog, Ui_PreferencesDialog):
         Setup the "Plug-ins" page.
         """
         # QuteMolX signal-slot connections.
-        self.connect(self.qutemol_checkbox, SIGNAL("toggled(bool)"), self.enable_qutemol)
-        self.connect( self.qutemol_path_lineedit, SIGNAL("textEdited (const QString&) "), self.set_qutemol_path)
-        self.connect(self.qutemol_choose_btn, SIGNAL("clicked()"), self.choose_qutemol_path)
+        self.qutemol_checkbox.toggled[bool].connect(self.enable_qutemol)
+        self.qutemol_path_lineedit.textEdited ['QString'].connect(self.set_qutemol_path)
+        self.qutemol_choose_btn.clicked.connect(self.choose_qutemol_path)
 
         # NanoHive-1 signal-slot connections.
-        self.connect(self.nanohive_checkbox, SIGNAL("toggled(bool)"), self.enable_nanohive)
-        self.connect( self.nanohive_path_lineedit, SIGNAL("textEdited (const QString&) "), self.set_nanohive_path)
-        self.connect(self.nanohive_choose_btn, SIGNAL("clicked()"), self.choose_nanohive_path)
+        self.nanohive_checkbox.toggled[bool].connect(self.enable_nanohive)
+        self.nanohive_path_lineedit.textEdited ['QString'].connect(self.set_nanohive_path)
+        self.nanohive_choose_btn.clicked.connect(self.choose_nanohive_path)
 
         # POV-Ray signal-slot connections.
-        self.connect(self.povray_checkbox, SIGNAL("toggled(bool)"), self.enable_povray)
-        self.connect( self.povray_path_lineedit, SIGNAL("textEdited (const QString&) "), self.set_povray_path)
-        self.connect(self.povray_choose_btn, SIGNAL("clicked()"), self.choose_povray_path)
+        self.povray_checkbox.toggled[bool].connect(self.enable_povray)
+        self.povray_path_lineedit.textEdited ['QString'].connect(self.set_povray_path)
+        self.povray_choose_btn.clicked.connect(self.choose_povray_path)
 
         # POV dir signal-slot connections.
-        self.connect(self.povdir_checkbox, SIGNAL("toggled(bool)"), self.enable_povdir)
-        self.connect( self.povdir_lineedit, SIGNAL("textEdited (const QString&) "), self.povdir_lineedit_textChanged )
-        self.connect(self.povdir_choose_btn, SIGNAL("clicked()"), self.set_povdir)
-        self.connect( self.povdir_lineedit, SIGNAL("returnPressed()"), self.povdir_lineedit_returnPressed )
+        self.povdir_checkbox.toggled[bool].connect(self.enable_povdir)
+        self.povdir_lineedit.textEdited ['QString'].connect(self.povdir_lineedit_textChanged)
+        self.povdir_choose_btn.clicked.connect(self.set_povdir)
+        self.povdir_lineedit.returnPressed.connect(self.povdir_lineedit_returnPressed)
 
         # MegaPOV signal-slot connections.
-        self.connect(self.megapov_checkbox, SIGNAL("toggled(bool)"), self.enable_megapov)
-        self.connect( self.megapov_path_lineedit, SIGNAL("textEdited (const QString&) "), self.set_megapov_path )
-        self.connect(self.megapov_choose_btn, SIGNAL("clicked()"), self.choose_megapov_path)
+        self.megapov_checkbox.toggled[bool].connect(self.enable_megapov)
+        self.megapov_path_lineedit.textEdited ['QString'].connect(self.set_megapov_path)
+        self.megapov_choose_btn.clicked.connect(self.choose_megapov_path)
 
         # GAMESS signal-slot connections.
-        self.connect(self.gamess_checkbox, SIGNAL("toggled(bool)"), self.enable_gamess)
-        self.connect(self.gamess_path_lineedit, SIGNAL("textEdited(const QString&)"), self.set_gamess_path)
-        self.connect(self.gamess_choose_btn, SIGNAL("clicked()"), self.choose_gamess_path)
+        self.gamess_checkbox.toggled[bool].connect(self.enable_gamess)
+        self.gamess_path_lineedit.textEdited['QString'].connect(self.set_gamess_path)
+        self.gamess_choose_btn.clicked.connect(self.choose_gamess_path)
 
         # GROMACS signal-slot connections.
-        self.connect(self.gromacs_checkbox, SIGNAL("toggled(bool)"), self.enable_gromacs)
-        self.connect(self.gromacs_path_lineedit, SIGNAL("textEdited(const QString&)"), self.set_gromacs_path)
-        self.connect(self.gromacs_choose_btn, SIGNAL("clicked()"), self.choose_gromacs_path)
+        self.gromacs_checkbox.toggled[bool].connect(self.enable_gromacs)
+        self.gromacs_path_lineedit.textEdited['QString'].connect(self.set_gromacs_path)
+        self.gromacs_choose_btn.clicked.connect(self.choose_gromacs_path)
 
         # cpp signal-slot connections.
-        self.connect(self.cpp_checkbox, SIGNAL("toggled(bool)"), self.enable_cpp)
-        self.connect(self.cpp_path_lineedit, SIGNAL("textEdited(const QString&)"), self.set_cpp_path)
-        self.connect(self.cpp_choose_btn, SIGNAL("clicked()"), self.choose_cpp_path)
+        self.cpp_checkbox.toggled[bool].connect(self.enable_cpp)
+        self.cpp_path_lineedit.textEdited['QString'].connect(self.set_cpp_path)
+        self.cpp_choose_btn.clicked.connect(self.choose_cpp_path)
 
         # Rosetta signal-slots connections.
-        self.connect(self.rosetta_checkbox, SIGNAL("toggled(bool)"), self.enable_rosetta)
-        self.connect(self.rosetta_path_lineedit, SIGNAL("textEdited(const QString&)"), self.set_rosetta_path)
-        self.connect(self.rosetta_choose_btn, SIGNAL("clicked()"), self.choose_rosetta_path)
+        self.rosetta_checkbox.toggled[bool].connect(self.enable_rosetta)
+        self.rosetta_path_lineedit.textEdited['QString'].connect(self.set_rosetta_path)
+        self.rosetta_choose_btn.clicked.connect(self.choose_rosetta_path)
 
         # Rosetta database signal-slots connections.
-        self.connect(self.rosetta_db_checkbox, SIGNAL("toggled(bool)"), self.enable_rosetta_db)
-        self.connect(self.rosetta_db_path_lineedit, SIGNAL("textEdited(const QString&)"), self.set_rosetta_db_path)
-        self.connect(self.rosetta_db_choose_btn, SIGNAL("clicked()"), self.choose_rosetta_db_path)
+        self.rosetta_db_checkbox.toggled[bool].connect(self.enable_rosetta_db)
+        self.rosetta_db_path_lineedit.textEdited['QString'].connect(self.set_rosetta_db_path)
+        self.rosetta_db_choose_btn.clicked.connect(self.choose_rosetta_db_path)
 
         # NanoVision-1 signal-slots connections.
-        self.connect(self.nv1_checkbox, SIGNAL("toggled(bool)"), self.enable_nv1)
-        self.connect(self.nv1_path_lineedit, SIGNAL("textEdited(const QString&)"), self.set_nv1_path)
-        self.connect(self.nv1_choose_btn, SIGNAL("clicked()"), self.choose_nv1_path)
+        self.nv1_checkbox.toggled[bool].connect(self.enable_nv1)
+        self.nv1_path_lineedit.textEdited['QString'].connect(self.set_nv1_path)
+        self.nv1_choose_btn.clicked.connect(self.choose_nv1_path)
         return
 
     def _setupPage_Undo(self):
@@ -1280,8 +1280,8 @@ class Preferences(QDialog, Ui_PreferencesDialog):
         Setup the "Undo" page.
         """
         # Connections for "Undo" page.
-        self.connect(self.undo_stack_memory_limit_spinbox, SIGNAL("valueChanged(int)"), self.change_undo_stack_memory_limit)
-        self.connect(self.update_number_spinbox, SIGNAL("valueChanged(int)"), self.update_number_spinbox_valueChanged)
+        self.undo_stack_memory_limit_spinbox.valueChanged[int].connect(self.change_undo_stack_memory_limit)
+        self.update_number_spinbox.valueChanged[int].connect(self.update_number_spinbox_valueChanged)
         return
 
     def _setupPage_Window(self):
@@ -1289,17 +1289,17 @@ class Preferences(QDialog, Ui_PreferencesDialog):
         Setup the "Window" page.
         """
         # Connections for "Window" page.
-        self.connect(self.caption_fullpath_checkbox, SIGNAL("stateChanged(int)"), self.set_caption_fullpath)
-        self.connect(self.current_height_spinbox, SIGNAL("valueChanged(int)"), self.change_window_size)
-        self.connect(self.current_width_spinbox, SIGNAL("valueChanged(int)"), self.change_window_size)
-        self.connect(self.restore_saved_size_btn, SIGNAL("clicked()"), self.restore_saved_size)
-        self.connect(self.save_current_btn, SIGNAL("clicked()"), self.save_current_win_pos_and_size)
+        self.caption_fullpath_checkbox.stateChanged[int].connect(self.set_caption_fullpath)
+        self.current_height_spinbox.valueChanged[int].connect(self.change_window_size)
+        self.current_width_spinbox.valueChanged[int].connect(self.change_window_size)
+        self.restore_saved_size_btn.clicked.connect(self.restore_saved_size)
+        self.save_current_btn.clicked.connect(self.save_current_win_pos_and_size)
 
         # Connections for font widgets (in "Windows" page). Mark 2007-05-27.
-        self.connect(self.selectedFontGroupBox, SIGNAL("toggled(bool)"), self.change_use_selected_font)
-        self.connect(self.fontComboBox, SIGNAL("currentFontChanged (const QFont &)"), self.change_font)
-        self.connect(self.fontSizeSpinBox, SIGNAL("valueChanged(int)"), self.change_fontsize)
-        self.connect(self.makeDefaultFontPushButton, SIGNAL("clicked()"), self.change_selected_font_to_default_font)
+        self.selectedFontGroupBox.toggled[bool].connect(self.change_use_selected_font)
+        self.fontComboBox.currentFontChanged [QFont].connect(self.change_font)
+        self.fontSizeSpinBox.valueChanged[int].connect(self.change_fontsize)
+        self.makeDefaultFontPushButton.clicked.connect(self.change_selected_font_to_default_font)
 
         # Update the max value of the Current Size spinboxes
         screen = screen_pos_size()
@@ -1329,10 +1329,10 @@ class Preferences(QDialog, Ui_PreferencesDialog):
         self.set_font_widgets(setFontFromPrefs = True) # Also sets the current display font.
 
         # Connect all QLineEdit widgets last. Otherwise they'll generate signals.
-        self.connect( self.caption_prefix_linedit, SIGNAL("textChanged ( const QString & ) "), self.caption_prefix_linedit_textChanged )
-        self.connect( self.caption_prefix_linedit, SIGNAL("returnPressed()"), self.caption_prefix_linedit_returnPressed )
-        self.connect( self.caption_suffix_linedit, SIGNAL("textChanged ( const QString & ) "), self.caption_suffix_linedit_textChanged )
-        self.connect( self.caption_suffix_linedit, SIGNAL("returnPressed()"), self.caption_suffix_linedit_returnPressed )
+        self.caption_prefix_linedit.textChanged ['QString'].connect(self.caption_prefix_linedit_textChanged)
+        self.caption_prefix_linedit.returnPressed.connect(self.caption_prefix_linedit_returnPressed)
+        self.caption_suffix_linedit.textChanged ['QString'].connect(self.caption_suffix_linedit_textChanged)
+        self.caption_suffix_linedit.returnPressed.connect(self.caption_suffix_linedit_returnPressed)
         return
 
     def _setupPage_Reports(self):
@@ -1348,8 +1348,8 @@ class Preferences(QDialog, Ui_PreferencesDialog):
         Setup the "Tooltips" page.
         """
         # Connections for "Tooltips" page.
-        self.connect(self.dynamicToolTipAtomDistancePrecision_spinbox, SIGNAL("valueChanged(int)"), self.change_dynamicToolTipAtomDistancePrecision)
-        self.connect(self.dynamicToolTipBendAnglePrecision_spinbox, SIGNAL("valueChanged(int)"), self.change_dynamicToolTipBendAnglePrecision)
+        self.dynamicToolTipAtomDistancePrecision_spinbox.valueChanged[int].connect(self.change_dynamicToolTipAtomDistancePrecision)
+        self.dynamicToolTipBendAnglePrecision_spinbox.valueChanged[int].connect(self.change_dynamicToolTipBendAnglePrecision)
 
         #Atom related Dynamic tooltip preferences
         connect_checkbox_with_boolean_pref(self.dynamicToolTipAtomChunkInfo_checkbox, dynamicToolTipAtomChunkInfo_prefs_key)
@@ -1520,7 +1520,7 @@ class Preferences(QDialog, Ui_PreferencesDialog):
         display_style = env.prefs[ startupGlobalDisplayStyle_prefs_key ]
         self.globalDisplayStyleStartupComboBox.setCurrentIndex(GDS_INDEXES.index(display_style))
 
-        self.connect(self.globalDisplayStyleStartupComboBox, SIGNAL("activated(int)"), self.setGlobalDisplayStyleAtStartUp)
+        self.globalDisplayStyleStartupComboBox.activated[int].connect(self.setGlobalDisplayStyleAtStartUp)
 
     def setGlobalDisplayStyleAtStartUp(self, gdsIndexUnused):
         """
@@ -3579,19 +3579,19 @@ class Preferences(QDialog, Ui_PreferencesDialog):
             font_size = env.prefs[displayFontPointSize_prefs_key]
             font = QFont(font_family, font_size)
 
-        self.disconnect(self.selectedFontGroupBox, SIGNAL("toggled(bool)"), self.change_use_selected_font)
-        self.disconnect(self.fontComboBox, SIGNAL("currentFontChanged (const QFont &)"), self.change_font)
-        self.disconnect(self.fontSizeSpinBox, SIGNAL("valueChanged(int)"), self.change_fontsize)
-        self.disconnect(self.makeDefaultFontPushButton, SIGNAL("clicked()"), self.change_selected_font_to_default_font)
+        self.selectedFontGroupBox.toggled[bool].disconnect(self.change_use_selected_font)
+        self.fontComboBox.currentFontChanged [QFont].disconnect(self.change_font)
+        self.fontSizeSpinBox.valueChanged[int].disconnect(self.change_fontsize)
+        self.makeDefaultFontPushButton.clicked.disconnect(self.change_selected_font_to_default_font)
 
         self.selectedFontGroupBox.setChecked(env.prefs[useSelectedFont_prefs_key]) # Generates signal!
         self.fontComboBox.setCurrentFont(font) # Generates signal!
         self.fontSizeSpinBox.setValue(font_size) # Generates signal!
 
-        self.connect(self.selectedFontGroupBox, SIGNAL("toggled(bool)"), self.change_use_selected_font)
-        self.connect(self.fontComboBox, SIGNAL("currentFontChanged (const QFont &)"), self.change_font)
-        self.connect(self.fontSizeSpinBox, SIGNAL("valueChanged(int)"), self.change_fontsize)
-        self.connect(self.makeDefaultFontPushButton, SIGNAL("clicked()"), self.change_selected_font_to_default_font)
+        self.selectedFontGroupBox.toggled[bool].connect(self.change_use_selected_font)
+        self.fontComboBox.currentFontChanged [QFont].connect(self.change_font)
+        self.fontSizeSpinBox.valueChanged[int].connect(self.change_fontsize)
+        self.makeDefaultFontPushButton.clicked.connect(self.change_selected_font_to_default_font)
 
         if setFontFromPrefs:
             self.set_font()

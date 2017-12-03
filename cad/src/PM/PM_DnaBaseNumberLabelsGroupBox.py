@@ -25,7 +25,6 @@ from utilities.prefs_constants import dnaBaseNumberLabelColor_prefs_key
 from utilities.prefs_constants import dnaBaseNumberingOrder_prefs_key
 from utilities.prefs_constants import dnaBaseNumberLabelChoice_prefs_key
 
-from PyQt4.Qt import SIGNAL
 from widgets.prefs_widgets import connect_comboBox_with_pref
 
 _superclass = PM_GroupBox

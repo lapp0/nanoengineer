@@ -1,6 +1,7 @@
 # Copyright 2006-2007 Nanorex, Inc.  See LICENSE file for details.
 import sys
-from PyQt4.Qt import *
+from PyQt5.QtWidgets import *
+from PyQt5.QtGui import *
 
 class Ticker(QObject):
 
@@ -8,7 +9,7 @@ class Ticker(QObject):
         QObject.__init__(self)
         self.timer = timer = QTimer(self)
         #timer.setSingleShot(True)
-        self.connect(self.timer, SIGNAL("timeout()"), self.hello)
+        self.timer.timeout.connect(self.hello)
         timer.start(1000)
 
     def hello(self):

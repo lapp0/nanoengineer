@@ -47,11 +47,11 @@ TODO:
   model_changed method defined in this widget?
 """
 from PM.PM_ListWidget import PM_ListWidget
-from PyQt4.Qt  import QListWidgetItem
-from PyQt4.Qt  import SIGNAL
-from PyQt4.Qt  import QPalette
-from PyQt4.Qt  import QAbstractItemView
-from PyQt4.Qt import Qt
+from PyQt5.QtWidgets import *
+from PyQt5.Qt  import QListWidgetItem
+from PyQt5.Qt  import QPalette
+from PyQt5.Qt  import QAbstractItemView
+from PyQt5.QtCore import Qt
 from PM.PM_Colors import getPalette
 from widgets.widget_helpers import RGBf_to_QColor
 

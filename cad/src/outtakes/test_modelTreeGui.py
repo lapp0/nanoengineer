@@ -42,13 +42,12 @@ smaller ones in the near future.
 
 # the only ones here are the ones no longer used in the main file after this was removed
 
-from PyQt4.Qt import QMainWindow
-from PyQt4.Qt import QGroupBox
-from PyQt4.Qt import QApplication
-from PyQt4.Qt import SIGNAL
-from PyQt4.Qt import QPushButton
-from PyQt4.Qt import QVBoxLayout
-from PyQt4.Qt import QHBoxLayout
+from PyQt5.QtWidgets import QMainWindow
+from PyQt5.QtWidgets import QGroupBox
+from PyQt5.QtWidgets import QApplication
+from PyQt5.QtWidgets import QPushButton
+from PyQt5.QtWidgets import QVBoxLayout
+from PyQt5.QtWidgets import QHBoxLayout
 
 
 class TestNode(Node_api):
@@ -255,7 +254,7 @@ class TestWrapper(QGroupBox):
         self.gbox = QGroupBox()
         vl = QVBoxLayout(self)
         vl.setSpacing(0)
-        vl.setMargin(0)
+        vl.setContentsMargins(0, 0, 0, 0)
         vl.addWidget(self.view)
         self.buttonLayout = hl = QHBoxLayout()
         hl.setSpacing(0)
@@ -270,7 +269,7 @@ class TestWrapper(QGroupBox):
         setattr(self, "button%d" % self.buttonNum, button)
         self.buttonNum += 1
         self.buttonLayout.addWidget(button)
-        self.connect(button, SIGNAL('clicked()'), func)
+        button.clicked.connect(func)
 
     def addIconButton(self, icon, func):
         button = QPushButton()
@@ -278,7 +277,7 @@ class TestWrapper(QGroupBox):
         setattr(self, "button%d" % self.buttonNum, button)
         self.buttonNum += 1
         self.buttonLayout.addWidget(button)
-        self.connect(button, SIGNAL('clicked()'), func)
+        button.clicked.connect(func)
 
     def addsomething(self, what):
         if what == "Chunk":

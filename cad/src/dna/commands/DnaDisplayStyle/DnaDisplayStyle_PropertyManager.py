@@ -16,6 +16,7 @@ the Preferences dialog.
 - Add "Base Colors" pref keys/values.
 """
 import os, time, fnmatch, string
+from PyQt5.QtWidgets import *
 import foundation.env as env
 
 from command_support.Command_PropertyManager import Command_PropertyManager
@@ -25,10 +26,8 @@ from utilities.prefs_constants import getDefaultWorkingDirectory
 from utilities.prefs_constants import workingDirectory_prefs_key
 from utilities.Log import greenmsg, redmsg
 
-from PyQt4.Qt import SIGNAL
-from PyQt4.Qt import Qt
-from PyQt4 import QtGui
-from PyQt4.Qt import QFileDialog, QString, QMessageBox
+from PyQt5.QtCore import Qt
+from PyQt5.QtGui import QFileDialog, QMessageBox
 from PM.PM_GroupBox import PM_GroupBox
 from PM.PM_ComboBox import PM_ComboBox
 from PM.PM_StackedWidget import PM_StackedWidget
@@ -65,6 +64,12 @@ from utilities.prefs_constants import dnaStyleBasesDisplayLetters_prefs_key
 from utilities.prefs_constants import dnaStrandLabelsEnabled_prefs_key
 from utilities.prefs_constants import dnaStrandLabelsColorMode_prefs_key
 
+
+try:
+    QString = unicode
+except NameError:
+    # Python 3
+    QString = str
 
 dnaDisplayStylePrefsList = \
                          [dnaRendition_prefs_key,
@@ -1063,7 +1068,7 @@ class DnaDisplayStyle_PropertyManager( Command_PropertyManager):
             saveLocation, #where to save
             formats, # file format options
             QString("Favorite (*.txt)") # selectedFilter
-            )
+            )[0]
         if not fn:
             env.history.message(cmd + "Cancelled")
 
@@ -1121,7 +1126,7 @@ class DnaDisplayStyle_PropertyManager( Command_PropertyManager):
         fname = QFileDialog.getOpenFileName(self,
                                          "Choose a file to load",
                                          directory,
-                                         formats)
+                                         formats)[0]
 
         if not fname:
             env.history.message("User cancelled loading file.")

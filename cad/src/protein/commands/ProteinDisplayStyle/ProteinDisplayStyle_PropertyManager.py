@@ -20,6 +20,7 @@ To do:
 
 """
 import os, time, fnmatch
+from PyQt5.QtWidgets import *
 import foundation.env as env
 
 from utilities.prefs_constants import getDefaultWorkingDirectory
@@ -29,9 +30,8 @@ from utilities.constants import yellow, orange, red, magenta
 from utilities.constants import cyan, blue, white, black, gray
 from utilities.constants import diPROTEIN
 
-from PyQt4.Qt import SIGNAL
-from PyQt4.Qt import Qt
-from PyQt4.Qt import QFileDialog, QString, QMessageBox
+from PyQt5.QtCore import Qt
+from PyQt5.QtGui import QFileDialog, QMessageBox
 from PM.PM_GroupBox import PM_GroupBox
 from PM.PM_ComboBox import PM_ComboBox
 from PM.PM_CheckBox import PM_CheckBox
@@ -56,6 +56,12 @@ from utilities.prefs_constants import proteinStyleCoilColor_prefs_key
 from utilities.Log import redmsg
 
 from command_support.Command_PropertyManager import Command_PropertyManager
+
+try:
+    QString = unicode
+except NameError:
+    # Python 3
+    QString = str
 
 proteinDisplayStylePrefsList = \
                          [proteinStyle_prefs_key,
@@ -958,7 +964,7 @@ class ProteinDisplayStyle_PropertyManager(Command_PropertyManager):
             favfilepath, #where to save
             formats, # file format options
             QString("Favorite (*.txt)") # selectedFilter
-            )
+            )[0]
         if not fn:
             env.history.message(cmd + "Cancelled")
         else:
@@ -1017,7 +1023,7 @@ class ProteinDisplayStyle_PropertyManager(Command_PropertyManager):
         fname = QFileDialog.getOpenFileName(self,
                                          "Choose a file to load",
                                          directory,
-                                         formats)
+                                         formats)[0]
         if not fname:
             env.history.message("User cancelled loading file.")
             return

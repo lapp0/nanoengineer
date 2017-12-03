@@ -17,16 +17,17 @@ do.
 """
 
 import sys
+from PyQt5.QtWidgets import *
 
 from cruft import Ui_Cruft
-from PyQt4.Qt import *
+from PyQt5.QtGui import *
 
 class Crufty(QWidget, Ui_Cruft):
 
     def __init__(self):
         QWidget.__init__(self, None)
         self.setupUi(self)
-        self.connect(self.pushButton1, SIGNAL('clicked()'), self.pushButton1_clicked)
+        self.pushButton1.clicked.connect(self.pushButton1_clicked)
         self.textBrowser.setPlainText('hello')
         self.show()
 

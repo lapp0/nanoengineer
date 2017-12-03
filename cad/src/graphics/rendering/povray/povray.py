@@ -19,8 +19,9 @@ For now, call this "graphics_io". [bruce 071215]
 """
 
 import os, sys
+from PyQt5.QtWidgets import *
 
-from PyQt4.Qt import QApplication, QCursor, Qt, QStringList, QProcess, QMessageBox
+from PyQt5.QtGui import QApplication, QCursor, Qt, QProcess, QMessageBox
 
 import foundation.env as env
 from utilities.Log import orangemsg ##, redmsg, greenmsg, _graymsg
@@ -33,6 +34,8 @@ from utilities.prefs_constants import povray_enabled_prefs_key
 from utilities.prefs_constants import povray_path_prefs_key
 from utilities.prefs_constants import povdir_enabled_prefs_key
 from utilities.prefs_constants import povdir_path_prefs_key
+
+QStringList = list
 
 def _dialog_to_offer_prefs_fixup(win, caption, text, macwarning_ok): #bruce 060710 [use Plugin.py instead?]
     """

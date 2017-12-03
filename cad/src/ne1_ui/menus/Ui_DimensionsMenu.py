@@ -3,7 +3,7 @@
 $Id$
 """
 
-from PyQt4 import QtGui
+from PyQt5 import QtGui, QtWidgets
 
 def setupUi(win):
     """
@@ -27,6 +27,6 @@ def retranslateUi(win):
     @type  win: U{B{QMainWindow}<http://doc.trolltech.com/4/qmainwindow.html>}
     """
     win.dimensionsMenu.setTitle(
-        QtGui.QApplication.translate(
+        QtCore.QCoreApplication.translate(
             "MainWindow", "&Dimensions",
-            None, QtGui.QApplication.UnicodeUTF8))
+            None))

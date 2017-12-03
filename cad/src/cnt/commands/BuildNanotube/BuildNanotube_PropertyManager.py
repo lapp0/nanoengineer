@@ -10,7 +10,6 @@ History:
 2008-01-11 Ninad: Created
 """
 import foundation.env as env
-from PyQt4.Qt import SIGNAL
 from PM.PM_GroupBox      import PM_GroupBox
 from PM.PM_PushButton    import PM_PushButton
 from PM.PM_SelectionListWidget import PM_SelectionListWidget

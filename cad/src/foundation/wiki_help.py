@@ -53,20 +53,18 @@ bruce 051201 made new source file for it, extended it to other kinds of objects
 (so far, some Node subclasses)
 """
 
-from PyQt4 import QtGui
-from PyQt4.Qt import QDialog
-from PyQt4.Qt import QTextBrowser
+from PyQt5 import QtGui
+from PyQt5.QtWidgets import QDialog
+from PyQt5.QtWidgets import QTextBrowser
 from widgets.NE1_QToolBar import NE1_QToolBar
 
-from PyQt4.Qt import QWhatsThisClickedEvent
-from PyQt4.Qt import QGridLayout
-from PyQt4.Qt import QPushButton
-from PyQt4.Qt import QSizePolicy
-from PyQt4.Qt import QSpacerItem
-from PyQt4.Qt import QSize
-from PyQt4.Qt import QApplication
-from PyQt4.Qt import SIGNAL
-from PyQt4.Qt import SLOT
+from PyQt5.QtGui import QWhatsThisClickedEvent
+from PyQt5.QtWidgets import QGridLayout
+from PyQt5.QtWidgets import QPushButton
+from PyQt5.QtWidgets import QSizePolicy
+from PyQt5.QtWidgets import QSpacerItem
+from PyQt5.QtCore import QSize
+from PyQt5.QtWidgets import QApplication
 
 import os
 import foundation.env as env
@@ -75,6 +73,12 @@ from utilities.debug import print_compact_traceback
 from utilities.Log import redmsg
 ##from qt4transition import qt4todo
 from utilities.prefs_constants import wiki_help_prefix_prefs_key
+
+try:
+    QString = unicode
+except NameError:
+    # Python 3
+    QString = str
 
 def webbrowser_open(url):
     """
@@ -303,7 +307,7 @@ class WikiHelpBrowser(QDialog):
         self.setObjectName("WikiHelpBrowser")
         TextBrowserLayout = QGridLayout(self)
         TextBrowserLayout.setSpacing(5)
-        TextBrowserLayout.setMargin(2)
+        TextBrowserLayout.setContentsMargins(2, 2, 2, 2)
         self.text_browser = QTextBrowser(self)
         self.text_browser.setOpenExternalLinks(True)
         self.text_browser.setObjectName("text_browser")
@@ -327,7 +331,7 @@ class WikiHelpBrowser(QDialog):
             self.resize(QSize(300, 550).expandedTo(self.minimumSizeHint()))
         if size == 2:
             self.resize(QSize(650, 250).expandedTo(self.minimumSizeHint()))
-        self.connect(self.close_button, SIGNAL("clicked()"), self.close)
+        self.close_button.clicked.connect(self.close)
         return
 
     pass
@@ -362,8 +366,7 @@ def __testWikiHelpBrowser():
                         __wikiPageHtmlLink("QWhatsThis and web links") +
                         " to click.")
     w.show()
-    app.connect(app, SIGNAL("lastWindowClosed()"),
-                app, SLOT("quit()"))
+    app.lastWindowClosed.connect(app.quit)
     app.exec_()
 
 if __name__ == "__main__":

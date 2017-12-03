@@ -50,7 +50,7 @@ History:
 
 from utilities.icon_utilities import geticon, getpixmap
 
-from PyQt4.Qt import Qt, SIGNAL
+from PyQt5.QtCore import Qt
 
 from PM.PM_Dialog          import PM_Dialog
 from PM.PM_GroupBox        import PM_GroupBox

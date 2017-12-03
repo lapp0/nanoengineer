@@ -12,9 +12,9 @@ mark 2007-07-22: Split PropMgrDoubleSpinBox out of PropMgrBaseClass.py into this
 and renamed it PM_DoubleSpinBox.
 """
 
-from PyQt4.Qt import QDoubleSpinBox
-from PyQt4.Qt import QLabel
-from PyQt4.Qt import QWidget
+from PyQt5.QtWidgets import QDoubleSpinBox
+from PyQt5.QtWidgets import QLabel
+from PyQt5.QtWidgets import QWidget
 
 from widgets.prefs_widgets import widget_connectWithState
 from widgets.prefs_widgets import QDoubleSpinBox_ConnectionWithState

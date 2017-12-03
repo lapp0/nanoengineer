@@ -25,7 +25,7 @@ TODO:
    special code is needed to add or remove segments from the list.
    [-- Ninad 2008-06-24 comment]
 """
-from PyQt4.Qt              import Qt, SIGNAL
+from PyQt5.Qt              import Qt
 from PM.PM_CheckBox        import PM_CheckBox
 from PM.PM_PrefsCheckBoxes import PM_PrefsCheckBoxes
 from PM.PM_SelectionListWidget import PM_SelectionListWidget

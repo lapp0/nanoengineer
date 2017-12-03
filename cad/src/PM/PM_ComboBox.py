@@ -13,9 +13,9 @@ and renamed it PM_ComboBox.
 
 """
 
-from PyQt4.Qt import QComboBox
-from PyQt4.Qt import QLabel
-from PyQt4.Qt import QWidget
+from PyQt5.QtWidgets import QComboBox
+from PyQt5.QtWidgets import QLabel
+from PyQt5.QtWidgets import QWidget
 
 class PM_ComboBox( QComboBox ):
     """

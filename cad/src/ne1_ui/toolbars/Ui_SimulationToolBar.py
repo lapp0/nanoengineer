@@ -3,7 +3,7 @@
 $Id$
 """
 
-from PyQt4 import QtGui
+from PyQt5 import QtGui, QtWidgets
 from foundation.wiki_help import QToolBar_WikiHelp
 
 def setupUi(win, toolbarArea):
@@ -65,10 +65,10 @@ def retranslateUi(win):
     menu under "View > Toolbars".
     """
     win.simulationToolBar.setWindowTitle(
-        QtGui.QApplication.translate(
+        QtCore.QCoreApplication.translate(
             "MainWindow", "Simulation",
-            None, QtGui.QApplication.UnicodeUTF8))
+            None))
     win.simulationToolBar.setToolTip(
-        QtGui.QApplication.translate(
+        QtCore.QCoreApplication.translate(
             "MainWindow", "Simulation Toolbar",
-            None, QtGui.QApplication.UnicodeUTF8))
+            None))

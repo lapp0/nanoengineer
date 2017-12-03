@@ -442,7 +442,7 @@ class ColorType(DataType): #e might be renamed ColorPrefType or ColorPref
         if value is None:
             value = self.get_defaultValue()
         rgb = self.value_as_int_tuple(value)
-        from PyQt4.Qt import QColor
+        from PyQt5.QtGui import QColor
         return QColor(rgb[0], rgb[1], rgb[2]) #k guess
     def get_defaultValue(self):
         return self._defaultValue
@@ -480,7 +480,7 @@ class ColorType(DataType): #e might be renamed ColorPrefType or ColorPref
 
 def pass_chosen_color_lambda( newval_receiver_func, curval, dialog_parent = None): #k I hope None is ok as parent
     def func():
-        from PyQt4.Qt import QColorDialog
+        from PyQt5.QtWidgets import QColorDialog
         color = QColorDialog.getColor( qcolor_from_anything(curval), dialog_parent)
         if color.isValid():
             newval = color.red()/255.0, color.green()/255.0, color.blue()/255.0
@@ -489,7 +489,7 @@ def pass_chosen_color_lambda( newval_receiver_func, curval, dialog_parent = None
     return func
 
 def qcolor_from_anything(color):
-    from PyQt4.Qt import QColor
+    from PyQt5.QtGui import QColor
     if isinstance(color, QColor):
         return color
     if color is None:
@@ -502,7 +502,7 @@ def contrasting_color(qcolor, notwhite = False ):
     if notwhite is true, it should also contrast with white.
     """
     rgb = qcolor.red(), qcolor.green(), qcolor.blue() / 2 # blue is too dark, have to count it as closer to black
-    from PyQt4.Qt import Qt
+    from PyQt5.QtCore import Qt
     if max(rgb) > 90: # threshhold is a guess, mostly untested; even blue=153 seemed a bit too low so this is dubiously low.
         # it's far enough from black (I hope)
         return Qt.black
@@ -518,7 +518,7 @@ def pixmap_from_color_and_size(color, size):
         size = size, size
     w,h = size
     qcolor = qcolor_from_anything(color)
-    from PyQt4.Qt import QPixmap
+    from PyQt5.QtGui import QPixmap
     qp = QPixmap(w,h)
     qp.fill(qcolor)
     return qp
@@ -529,7 +529,7 @@ def iconset_from_color(color):
     The color can be a QColor or any python type we use for colors (out of the few our helper funcs understand).
     """
     # figure out desired size of a small icon
-    from PyQt4.Qt import QIcon
+    from PyQt5.QtGui import QIcon
     #size = QIcon.iconSize(QIcon.Small) # a QSize object
     #w, h = size.width(), size.height()
     w, h = 16, 16   # hardwire it and be done
@@ -552,7 +552,7 @@ def modify_iconset_On_states( iconset, color = white, checkmark = False, use_col
     checkmark whose color contrasts with white, *or* with the specified color if one is provided.
     Exception to all that: if use_color is provided, it's used directly rather than any computed color.
     """
-    from PyQt4.Qt import QIcon, QPixmap
+    from PyQt5.QtGui import QIcon, QPixmap
     if True:
         ## print 'in debug_prefs.modify_iconset_On_states : implement modify_iconset_On_states for Qt 4'
         return
@@ -583,7 +583,7 @@ def modify_iconset_On_states( iconset, color = white, checkmark = False, use_col
 ##            from utilities import debug_flags
 ##            if debug_flags.atom_debug:
 ##                print "atom_debug: pixmap(%s,%s,%s) size == %d,%d" % (size, mode, state, w,h)
-            from PyQt4.Qt import copyBlt
+            from PyQt5.QtGui import copyBlt
             if checkmark:
                 if use_color is None:
                     use_color = contrasting_color( qcolor_from_anything(color))

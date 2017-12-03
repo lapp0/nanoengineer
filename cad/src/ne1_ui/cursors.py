@@ -14,7 +14,8 @@ self.o.setCursor(win.ArrowCursor)).
 - Replace all bitmap cursors with color PNG cursors.
 """
 
-from PyQt4.Qt import QCursor, QBitmap, Qt, QPainter, QApplication
+from PyQt5.QtGui import QCursor, QBitmap, Qt, QPainter, QApplication
+from PyQt5.QtWidgets import *
 import os, sys
 
 from utilities.icon_utilities import getCursorPixmap

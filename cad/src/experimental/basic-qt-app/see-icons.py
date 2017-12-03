@@ -1,8 +1,8 @@
 #!/usr/bin/python
 
 # Copyright 2006-2007 Nanorex, Inc.  See LICENSE file for details.
-from PyQt4.Qt import *
-from PyQt4 import QtCore, QtGui
+from PyQt5.QtGui import *
+from PyQt5 import QtCore, QtGui, QtWidgets
 
 # Hunt for the icons directory
 icons = 'icons'
@@ -44,7 +44,7 @@ class MainWindow(QMainWindow):
 
         self.setCentralWidget(centralwidget)
 
-        self.layout.setMargin(0)
+        self.layout.setContentsMargins(0, 0, 0, 0)
         self.layout.setSpacing(0)
 
         row, col = 0, 0
@@ -65,7 +65,7 @@ class MainWindow(QMainWindow):
 
 if __name__ == "__main__":
     import sys
-    app = QtGui.QApplication(sys.argv)
+    app = QtWidgets.QApplication(sys.argv)
     mainWin = MainWindow()
     #mainWin = ScanList()
     mainWin.show()

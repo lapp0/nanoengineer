@@ -22,9 +22,10 @@ ninad2008-08-21: Cleanup: a) to introduce command_enter/exit_* methods in the
 """
 
 import os
+from PyQt5.QtWidgets import *
 
-from PyQt4.Qt import Qt
-from PyQt4.Qt import QDialog, QGridLayout, QPushButton, QTextBrowser, SIGNAL, QCursor
+from PyQt5.QtCore import Qt
+from PyQt5.QtGui import QDialog, QGridLayout, QPushButton, QTextBrowser, QCursor
 
 from utilities.Log import redmsg, orangemsg
 
@@ -76,8 +77,8 @@ class _MovieRewindDialog(QDialog):
         layout.addWidget(self.text_browser, 0, 0, 0, 1)
         layout.addWidget(self.ok_button, 1, 0)
         layout.addWidget(self.cancel_button, 1, 1)
-        self.connect(self.ok_button, SIGNAL("clicked()"), self.rewindMovie)
-        self.connect(self.cancel_button, SIGNAL("clicked()"), self.noThanks)
+        self.ok_button.clicked.connect(self.rewindMovie)
+        self.cancel_button.clicked.connect(self.noThanks)
     def rewindMovie(self):
         self.movie._reset()
         self.accept()

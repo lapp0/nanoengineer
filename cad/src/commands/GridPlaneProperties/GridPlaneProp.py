@@ -5,10 +5,9 @@ GridPlaneProp.py
 $Id$
 """
 
-from PyQt4.Qt import QDialog
-from PyQt4.Qt import QWidget
-from PyQt4.Qt import SIGNAL
-from PyQt4.Qt import QColorDialog
+from PyQt5.QtWidgets import QDialog
+from PyQt5.QtWidgets import QWidget
+from PyQt5.QtWidgets import QColorDialog
 
 from commands.GridPlaneProperties.GridPlanePropDialog import Ui_GridPlanePropDialog
 from widgets.widget_helpers import RGBf_to_QColor, QColor_to_RGBf, get_widget_with_color_palette
@@ -18,16 +17,16 @@ class GridPlaneProp(QDialog, Ui_GridPlanePropDialog):
 
         QWidget.__init__(self)
         self.setupUi(self)
-        self.connect(self.ok_btn,SIGNAL("clicked()"),self.accept)
-        self.connect(self.cancel_btn,SIGNAL("clicked()"),self.reject)
-        self.connect(self.choose_border_color_btn,SIGNAL("clicked()"),self.change_border_color)
-        self.connect(self.choose_grid_color_btn,SIGNAL("clicked()"),self.change_grid_color)
-        self.connect(self.width_spinbox,SIGNAL("valueChanged(int)"),self.change_width)
-        self.connect(self.height_spinbox,SIGNAL("valueChanged(int)"),self.change_height)
-        self.connect(self.x_spacing_spinbox,SIGNAL("valueChanged(int)"),self.change_x_spacing)
-        self.connect(self.y_spacing_spinbox,SIGNAL("valueChanged(int)"),self.change_y_spacing)
-        self.connect(self.grid_type_combox,SIGNAL("activated(int)"),self.change_grid_type)
-        self.connect(self.line_type_combox,SIGNAL("activated(int)"),self.change_line_type)
+        self.ok_btn.clicked.connect(self.accept)
+        self.cancel_btn.clicked.connect(self.reject)
+        self.choose_border_color_btn.clicked.connect(self.change_border_color)
+        self.choose_grid_color_btn.clicked.connect(self.change_grid_color)
+        self.width_spinbox.valueChanged[int].connect(self.change_width)
+        self.height_spinbox.valueChanged[int].connect(self.change_height)
+        self.x_spacing_spinbox.valueChanged[int].connect(self.change_x_spacing)
+        self.y_spacing_spinbox.valueChanged[int].connect(self.change_y_spacing)
+        self.grid_type_combox.activated[int].connect(self.change_grid_type)
+        self.line_type_combox.activated[int].connect(self.change_line_type)
         self.grid_plane = gridPlane
         self.glpane = glpane
 

@@ -12,8 +12,8 @@ mark 2007-07-22: Split PropMgrRadioButton out of PropMgrBaseClass.py into this
 file and renamed it PM_RadioButton.
 """
 
-from PyQt4.Qt import QRadioButton
-from PyQt4.Qt import QWidget
+from PyQt5.QtWidgets import QRadioButton
+from PyQt5.QtWidgets import QWidget
 
 class PM_RadioButton( QRadioButton ):
     """

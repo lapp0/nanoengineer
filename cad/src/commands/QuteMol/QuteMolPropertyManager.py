@@ -13,8 +13,7 @@ History:
 mark 20071202: Created.
 """
 
-from PyQt4.Qt import SIGNAL
-from PyQt4.Qt import Qt
+from PyQt5.QtCore import Qt
 
 from PM.PM_GroupBox      import PM_GroupBox
 from PM.PM_ComboBox      import PM_ComboBox
@@ -30,6 +29,12 @@ from files.pdb.files_pdb import EXCLUDE_DNA_AXIS_BONDS
 from files.pdb.files_pdb import EXCLUDE_DNA_AXIS_ATOMS
 
 from command_support.Command_PropertyManager import Command_PropertyManager
+
+try:
+    QString = unicode
+except NameError:
+    # Python 3
+    QString = str
 
 _superclass = Command_PropertyManager
 class QuteMolPropertyManager(Command_PropertyManager):

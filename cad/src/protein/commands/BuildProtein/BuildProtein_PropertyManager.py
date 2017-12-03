@@ -18,7 +18,6 @@ To do list:
   but they are not selected in the graphics area.
 """
 import foundation.env as env
-from PyQt4.Qt import SIGNAL
 from PM.PM_ComboBox      import PM_ComboBox
 from PM.PM_GroupBox      import PM_GroupBox
 from PM.PM_SpinBox import PM_SpinBox

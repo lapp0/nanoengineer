@@ -32,6 +32,7 @@ Things to discuss with Bruce include an asterisk:
   - other methods that edit the current protein.
 """
 import os, time, fnmatch, string
+from PyQt5.QtWidgets import *
 import foundation.env as env
 
 from widgets.prefs_widgets import connect_checkbox_with_boolean_pref
@@ -44,11 +45,9 @@ from utilities.constants import yellow, orange, red, magenta
 from utilities.constants import cyan, blue, white, black, gray
 from utilities.constants import diPROTEIN
 
-from PyQt4.Qt import SIGNAL
-from PyQt4.Qt import Qt
-from PyQt4 import QtGui
+from PyQt5.QtCore import Qt
 
-from PyQt4.Qt import QFileDialog, QString, QMessageBox, QSlider
+from PyQt5.QtGui import QFileDialog, QMessageBox, QSlider
 from PM.PM_PushButton   import PM_PushButton
 
 from PM.PM_GroupBox import PM_GroupBox
@@ -62,7 +61,7 @@ from PM.PM_Slider import PM_Slider
 from PM.PM_Constants import PM_DONE_BUTTON
 from PM.PM_Constants import PM_WHATS_THIS_BUTTON
 from PM.PM_ColorComboBox import PM_ColorComboBox
-from PyQt4.Qt import QTextCursor
+from PyQt5.QtGui import QTextCursor
 
 from command_support.Command_PropertyManager import Command_PropertyManager
 

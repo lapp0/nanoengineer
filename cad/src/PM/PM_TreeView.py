@@ -13,10 +13,10 @@ The parts from the partlib can be pasted in the 3D  Workspace.
 ninad 2007-09-06: Created.
 """
 
-from PyQt4.Qt import QTreeView
-from PyQt4.Qt import QDir
-from PyQt4.Qt import QDirModel
-from PyQt4.Qt import Qt
+from PyQt5.QtWidgets import QTreeView
+from PyQt5.QtCore import QDir
+from PyQt5.QtWidgets import QDirModel
+from PyQt5.QtCore import Qt
 
 import os
 import foundation.env as env

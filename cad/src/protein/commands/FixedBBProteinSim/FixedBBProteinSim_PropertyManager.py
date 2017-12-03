@@ -14,10 +14,7 @@ Build > Protein mode.
 import string
 import foundation.env as env
 
-from PyQt4.Qt import SIGNAL
-from PyQt4.Qt import Qt
-from PyQt4 import QtGui
-from PyQt4.Qt import QString
+from PyQt5.QtCore import Qt
 from PM.PM_PushButton   import PM_PushButton
 from PM.PM_GroupBox import PM_GroupBox
 from PM.PM_TextEdit import PM_TextEdit

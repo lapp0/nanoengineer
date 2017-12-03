@@ -14,8 +14,9 @@ Some parts rewritten by Bruce circa 050427.
 """
 
 import os, sys
+from PyQt5.QtWidgets import *
 from struct import unpack
-from PyQt4.Qt import Qt, qApp, QApplication, QCursor, SIGNAL
+from PyQt5.QtGui import Qt, QApplication, QApplication, QCursor
 from utilities.Log import redmsg, orangemsg, greenmsg
 from geometry.VQT import A
 from foundation.state_utils import IdentityCopyMixin
@@ -946,7 +947,7 @@ class Movie(IdentityCopyMixin): #bruce 080321 bugfix: added IdentityCopyMixin
                 self.glpane.gl_update()
 
             # Process queued events [bruce comment 050516: note that this will do a paintGL from our earlier gl_update above ####@@@@]
-            env.call_qApp_processEvents() #bruce 050908 replaced qApp.processEvents()
+            env.call_qApp_processEvents() #bruce 050908 replaced QApplication.processEvents()
                 #e bruce 050427 comment: should we check to see if the user changed the controls,
                 # and (if so) change the fnum we're heading for?? ###@@@
 

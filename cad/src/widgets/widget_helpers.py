@@ -18,22 +18,26 @@ outtakes file "old_extrude_widgets.py".]
 In the meantime we might rename it to widget_helpers.py.
 """
 
-from PyQt4 import QtGui
-from PyQt4.Qt import QDialog
-from PyQt4.Qt import QVBoxLayout
-from PyQt4.Qt import SIGNAL
-from PyQt4.Qt import QString
-from PyQt4.Qt import QValidator
-from PyQt4.Qt import QColor
-from PyQt4.Qt import QTextEdit
-from PyQt4.Qt import QPushButton
-from PyQt4.Qt import QSize
-from PyQt4.Qt import QMessageBox
+from PyQt5 import QtGui
+from PyQt5.QtWidgets import QDialog
+from PyQt5.QtWidgets import QVBoxLayout
+from PyQt5.QtGui import QValidator
+from PyQt5.QtGui import QColor
+from PyQt5.QtWidgets import QTextEdit
+from PyQt5.QtWidgets import QPushButton
+from PyQt5.QtCore import QSize
+from PyQt5.QtWidgets import QMessageBox
 
 
 from utilities.qt4transition import qt4todo
 
 # ==
+
+try:
+    QString = unicode
+except NameError:
+    # Python 3
+    QString = str
 
 def double_fixup(validator, text, prevtext):
     """
@@ -64,7 +68,7 @@ def colorchoose(self, r, g, b):
     is a 3-tuple of floats. (Sorry, that's how I found it.)
     """
     # r, g, b is the default color displayed in the QColorDialog window.
-    from PyQt4.Qt import QColorDialog
+    from PyQt5.QtWidgets import QColorDialog
     color = QColorDialog.getColor(QColor(r, g, b), self, "choose") #k what does "choose" mean?
     if color.isValid():
         return color.red()/255.0, color.green()/255.0, color.blue()/255.0
@@ -134,7 +138,7 @@ class TextMessageBox(QDialog):
         self.setWindowTitle(name)
 
         TextMessageLayout = QVBoxLayout(self)
-        TextMessageLayout.setMargin(5)
+        TextMessageLayout.setContentsMargins(5, 5, 5, 5)
         TextMessageLayout.setSpacing(1)
 
         self.text_edit = QTextEdit(self)
@@ -150,7 +154,7 @@ class TextMessageBox(QDialog):
             # Help > Graphics Info textbox. mark 060322
         qt4todo('self.clearWState(Qt.WState_Polished)') # what is this?
 
-        self.connect(self.close_button, SIGNAL("clicked()"),self.close)
+        self.close_button.clicked.connect(self.close)
 
     def setText(self, txt):
         """

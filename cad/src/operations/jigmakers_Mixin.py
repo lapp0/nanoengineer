@@ -15,7 +15,7 @@ or misleading import dependencies on jigs.py.
 
 import sys
 
-from PyQt4.Qt import QMessageBox
+from PyQt5.QtWidgets import QMessageBox
 
 from utilities.Log import redmsg, greenmsg, orangemsg
 import foundation.env as env

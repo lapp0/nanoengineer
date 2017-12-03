@@ -7,12 +7,15 @@ Qt Dialog for fetching pdb files from the interweb
 @copyright:2008 Nanorex, Inc. See LICENSE file for details.
 """
 
-from PyQt4.Qt import SIGNAL, SLOT
-from PyQt4.QtGui import QDialog, QLineEdit, QPushButton, QLabel
-from PyQt4.QtGui import QHBoxLayout, QVBoxLayout, QApplication
+from PyQt5.QtGui import pyqtSignal
+from PyQt5.QtWidgets import *
+from PyQt5.QtGui import QDialog, QLineEdit, QPushButton, QLabel
+from PyQt5.QtGui import QHBoxLayout, QVBoxLayout, QApplication
 
 
 class FetchPDBDialog(QDialog):
+    editingFinished = pyqtSignal()
+
     def __init__(self, parent = None):
         self.parentWidget = parent
         super(FetchPDBDialog, self).__init__(parent)
@@ -39,14 +42,14 @@ class FetchPDBDialog(QDialog):
         layout.addLayout(buttonLayout)
         self.setLayout(layout)
 
-        self.connect(self.lineEdit, SIGNAL("returnPressed()"), self.getProteinCode)
-        self.connect(self.okButton, SIGNAL("clicked()"), self.getProteinCode)
-        self.connect(self.cancelButton, SIGNAL("clicked()"), self, SLOT("reject()"))
+        self.lineEdit.returnPressed.connect(self.getProteinCode)
+        self.okButton.clicked.connect(self.getProteinCode)
+        self.cancelButton.clicked.connect(self.reject)
         self.show()
         return
 
     def getProteinCode(self):
         self.parentWidget.setPDBCode(str(self.lineEdit.text()))
         self.close()
-        self.emit(SIGNAL("editingFinished()"))
+        self.editingFinished.emit()
         return

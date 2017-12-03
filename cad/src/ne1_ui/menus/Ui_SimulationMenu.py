@@ -3,7 +3,7 @@
 $Id$
 """
 
-from PyQt4 import QtGui
+from PyQt5 import QtGui, QtWidgets
 from utilities.icon_utilities import geticon
 from utilities.debug_prefs import debug_pref, Choice_boolean_False
 
@@ -60,10 +60,10 @@ def retranslateUi(win):
     @type  win: U{B{QMainWindow}<http://doc.trolltech.com/4/qmainwindow.html>}
     """
     win.simulationMenu.setTitle(
-        QtGui.QApplication.translate(
+        QtCore.QCoreApplication.translate(
             "MainWindow", "Simulation",
-            None, QtGui.QApplication.UnicodeUTF8))
+            None))
     win.measurementsMenu.setTitle(
-        QtGui.QApplication.translate(
+        QtCore.QCoreApplication.translate(
             "MainWindow", "Measurements",
-            None, QtGui.QApplication.UnicodeUTF8))
+            None))

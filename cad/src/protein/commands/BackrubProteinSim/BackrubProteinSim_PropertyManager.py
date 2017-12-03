@@ -16,8 +16,7 @@ from utilities.Log import redmsg
 from command_support.Command_PropertyManager import Command_PropertyManager
 
 from utilities.prefs_constants import rosetta_backrub_enabled_prefs_key
-from PyQt4.Qt import SIGNAL
-from PyQt4.Qt import Qt
+from PyQt5.QtCore import Qt
 from PM.PM_PushButton   import PM_PushButton
 from PM.PM_GroupBox import PM_GroupBox
 from PM.PM_TextEdit import PM_TextEdit

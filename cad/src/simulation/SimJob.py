@@ -10,7 +10,7 @@ SimJob.py - The base class for a simulation job.
 
 import time
 import sys
-from PyQt4.Qt import QObject
+from PyQt5.QtCore import QObject
 
 class SimJob(QObject):
     """

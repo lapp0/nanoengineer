@@ -25,12 +25,12 @@ Bug 2956: Problems related to changing strand direction to "3' to 5'" direction:
 
 """
 
-from PyQt4.Qt import QToolButton
-from PyQt4.Qt import QPalette
-from PyQt4.Qt import QTextOption
-from PyQt4.Qt import QLabel, QString
-from PyQt4.Qt import QAction, QMenu
-from PyQt4.Qt import Qt
+from PyQt5.QtWidgets import QToolButton
+from PyQt5.QtGui import QPalette
+from PyQt5.QtGui import QTextOption
+from PyQt5.QtWidgets import QLabel
+from PyQt5.QtGui import QAction, QMenu
+from PyQt5.QtCore import Qt
 
 from PM.PM_Colors    import getPalette
 from PM.PM_Colors    import sequenceEditStrandMateBaseColor

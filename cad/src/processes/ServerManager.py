@@ -10,13 +10,16 @@ Unclear whether or not this is GAMESS-specific.
 """
 
 from processes.ServerManagerDialog import Ui_ServerManagerDialog
-from PyQt4.Qt import QDialog, QStringList, SIGNAL, QMessageBox
+from PyQt5.QtWidgets import *
+from PyQt5.QtGui import QDialog, QMessageBox
 from simulation.SimServer import SimServer
 import os
 import pickle as pickle
 from utilities.debug import print_compact_stack
 from utilities.qt4transition import qt4todo
 from platform_dependent.PlatformDependent import find_or_make_Nanorex_directory
+
+QStringList = list
 
 class ServerManager(QDialog, Ui_ServerManagerDialog):
     """
@@ -34,11 +37,11 @@ class ServerManager(QDialog, Ui_ServerManagerDialog):
     def __init__(self):
         QDialog.__init__(self)
         self.setupUi(self)
-        self.connect(self.new_btn,SIGNAL("clicked()"),self.addServer)
-        self.connect(self.exit_btn,SIGNAL("clicked()"),self.close)
-        self.connect(self.server_listview,SIGNAL("currentChanged(QListViewItem*)"),self.changeServer)
-        self.connect(self.engine_combox,SIGNAL("activated(const QString&)"),self.engineChanged)
-        self.connect(self.del_btn,SIGNAL("clicked()"),self.deleteServer)
+        self.new_btn.clicked.connect(self.addServer)
+        self.exit_btn.clicked.connect(self.close)
+        self.server_listview.currentChanged[QListViewItem].connect(self.changeServer)
+        self.engine_combox.activated['QString'].connect(self.engineChanged)
+        self.del_btn.clicked.connect(self.deleteServer)
         qt4todo('self.server_listview.setSorting(-1)')
         ## The ordered server list
         self.servers = self._loadServerList()
@@ -202,6 +205,6 @@ class ServerManager(QDialog, Ui_ServerManagerDialog):
 # == Test code [stub]
 
 if __name__ == '__main__':
-    from PyQt4.Qt import QApplication, QDialog
+    from PyQt5.QtGui import QApplication, QDialog
 
 # end

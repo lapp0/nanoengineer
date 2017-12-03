@@ -5,7 +5,7 @@ PM_WidgetsDemoPropertyManager.py - Displays all the PM module widgets in a PM.
 $Id$
 """
 
-from PyQt4.Qt import Qt, SIGNAL
+from PyQt5.QtCore import Qt
 
 from PM.PM_Dialog          import PM_Dialog
 from PM.PM_GroupBox        import PM_GroupBox
@@ -166,9 +166,7 @@ class PM_WidgetsDemoPropertyManager(PM_Dialog, GeneratorBaseClass):
                          setAsDefault = False,
                          spanWidth    = True )
 
-        self.connect(self.widgetSelectorComboBox,
-                     SIGNAL("currentIndexChanged(int)"),
-                     self._updateGroupBoxes)
+        self.widgetSelectorComboBox.currentIndexChanged[int].connect(self._updateGroupBoxes)
 
     def _loadPM_CheckBox(self, inPmGroupBox):
         """
