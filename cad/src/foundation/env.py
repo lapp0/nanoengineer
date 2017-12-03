@@ -1,4 +1,4 @@
-# TODO: most of this file is BS and should be deleted
+# NEWTODO: most of this file is BS and should be deleted
 
 # Copyright 2005-2009 Nanorex, Inc.  See LICENSE file for details.
 """

@@ -1,3 +1,5 @@
+# NEWTODO: most of this file should be removed, not all this stuff needs to be imported early and all these optimizations are dumb
+
 # Copyright 2004-2008 Nanorex, Inc.  See LICENSE file for details.
 """
 main_startup.py -- provides the startup_script function called by main.py
@@ -130,7 +132,7 @@ def startup_script( main_globals):
 
     # "Do things that should be done before creating the application object."
 
-    startup_before_most_imports.before_creating_app()
+    # startup_before_most_imports.before_creating_app()
         ### TODO: this imports undo, env, debug, and it got moved earlier
         # in the startup process at some point. Those imports are probably not
         # too likely to pull in a lot of others, but if possible we should put up

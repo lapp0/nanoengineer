@@ -19,8 +19,6 @@ moved SAMEVALS_SPEEDUP and "import samevals" along with it
 setup2.py [now in outtakes], and part of Makefile) [bruce 071005]
 """
 
-from types import InstanceType
-
 _haveNumeric = True # might be modified below
 
 try:
