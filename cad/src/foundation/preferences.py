@@ -1,4 +1,6 @@
-﻿# Copyright 2005-2009 Nanorex, Inc.  See LICENSE file for details.
+﻿# NEWTODO: better way of storing preferences
+
+# Copyright 2005-2009 Nanorex, Inc.  See LICENSE file for details.
 """
 preferences.py -- Preferences system.
 
@@ -256,7 +258,7 @@ def _make_prefs_shelf():
         # By experiment, on the Mac, with bsddb there is no extension added,
         # and without it there is '.db' added. [bruce 050105]
     mkdirs_in_filename(_shelfname)
-    _shelf = shelve.open(_shelfname.encode("utf_8"))
+    _shelf = shelve.open(_shelfname)
     _cache = {}
     _cache.update(_shelf) # will this work?
     was_just_made = (not _cache) #bruce 080505
@@ -346,7 +348,7 @@ def _make_prefs_shelf():
         items = list(default_prefs_values.items())
         items.sort() # just to make the following console prints look nicer
         # now open, store the values, and close
-        _shelf = shelve.open(_shelfname.encode("utf_8"))
+        _shelf = shelve.open(_shelfname)
         for key, val in items:
             pkey = _PREFS_KEY_TO_SHELF_KEY(key)
             _store_while_open( pkey, val)

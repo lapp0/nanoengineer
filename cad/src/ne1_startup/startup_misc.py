@@ -48,8 +48,6 @@ def call_module_init_functions(): #bruce 071005 split this out of main_startup.s
     import PM.GroupButtonMixin as GroupButtonMixin
     GroupButtonMixin.GroupButtonMixin.initialize()
 
-    return
-
 def register_MMP_RecordParsers(): #bruce 071019
     """
     Register MMP_RecordParser subclasses for the model objects that can be read
@@ -77,7 +75,7 @@ def register_MMP_RecordParsers(): #bruce 071019
 
 # (MWsemantics.__init__ is presumably run after the above functions and before the following ones.)
 
-def pre_main_show( win):
+def pre_main_show(main_window):
     """
     Do whatever should be done after the main window is created
     but before it's first shown.

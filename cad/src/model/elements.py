@@ -36,8 +36,6 @@ To access public attributes of elements, just use getElement()
 and then access the attribute directly.
 """
 
-from foundation.preferences import prefs_context
-
 from model.Elem import Elem
 from model.atomtypes import AtomType
 
@@ -117,7 +115,6 @@ class _ElementPeriodicTable(object):
         @param directional_bond_elements: a list of elements in elmTable
                                            which support directional bonds.
         """
-        prefs = prefs_context()
         symbols = {}
         for elm in elmTable:
             options = dict(default_options)

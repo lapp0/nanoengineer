@@ -21,7 +21,8 @@ Some are io.
 
 import sys, os, time
 from PyQt5.QtWidgets import *
-from PyQt5.QtGui import Qt, QDesktopWidget, QRect
+from PyQt5.QtWidgets import QDesktopWidget
+from PyQt5.QtCore import Qt
 import foundation.env as env
 from utilities import debug_flags
 from utilities.debug import print_compact_traceback
@@ -754,37 +755,9 @@ def hhmmss_str(secs):
 
 #e (I should also pull in some more related code from main.py...)
 
-def screen_pos_size(): ###e this copies code in main.py -- main.py should call this
-    """
-    Return (x,y),(w,h), where the main screen area
-    (not including menubar, for Mac) is in a rect of size w,h,
-    topleft at x,y. Note that x,y is 0,0 except for Mac.
-    Current implementation guesses Mac menubar size since it doesn't
-    know how to measure it.
-    """
-    # Create desktop widget to obtain screen resolution
-    dtop = QDesktopWidget()
-    screensize = QRect (dtop.screenGeometry (0))
-
-    if is_macintosh():
-        # menubar_height = 44 was measured (approximately) on an iMac G5 20 inch
-        # screen; I don't know if it's the same on all Macs (or whether it can
-        # vary with OS or user settings). (Is there any way of getting this info
-        # from Qt? #e)
-        menubar_height = 44
-    else:
-        menubar_height = 0
-
-    screen_w = screensize.width()
-    screen_h = screensize.height() # of which menubar_height is in use at the top
-
-    x,y = 0,0
-    w,h = screen_w, screen_h
-
-    y += menubar_height
-    h -= menubar_height
-
-    return (x,y), (w,h)
+# NEWTODO: make sure deleting this doesn't fuck anything up
+def screen_pos_size():
+    pass
 
 # ==
 
