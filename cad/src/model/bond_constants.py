@@ -34,14 +34,15 @@ from simulation.PyrexSimulator import thePyrexSimulator
 # If these need an order, their standard order is the same as the order of their numeric valences
 # (as in the constant list BOND_VALENCES).
 
-V_SINGLE     = 6 * 1   #  6
-V_GRAPHITE   = 6 * 4/3 #  8 (this can't be written 6 * (1+1/3) or 6 * (1+1/3.0) - first one is wrong, second one is not an exact int)
-V_AROMATIC   = 6 * 3/2 #  9
-V_DOUBLE     = 6 * 2   # 12
-V_CARBOMERIC = 6 * 5/2 # 15 for the bonds in a carbomer of order 2.5 (which alternate with aromatic bonds); saved as bondc as of 050920
-V_TRIPLE     = 6 * 3   # 18
+# NEWTODO: don't use this number as an index, use a dict
+V_SINGLE     = int(6 * 1)   #  6
+V_GRAPHITE   = int(6 * 4/3) #  8 (this can't be written 6 * (1+1/3) or 6 * (1+1/3.0) - first one is wrong, second one is not an exact int)
+V_AROMATIC   = int(6 * 3/2) #  9
+V_DOUBLE     = int(6 * 2)   # 12
+V_CARBOMERIC = int(6 * 5/2) # 15 for the bonds in a carbomer of order 2.5 (which alternate with aromatic bonds); saved as bondc as of 050920
+V_TRIPLE     = int(6 * 3)   # 18
 
-V_UNKNOWN    = 6 * 7/6 #  7 not in most tables here, and not yet used; someday might be used internally by bond-type inference code
+V_UNKNOWN    = int(6 * 7/6) #  7 not in most tables here, and not yet used; someday might be used internally by bond-type inference code
 
 BOND_VALENCES = [V_SINGLE, V_GRAPHITE, V_AROMATIC, V_DOUBLE, V_CARBOMERIC, V_TRIPLE]
     # when convenient (e.g. after A8), V_GRAPHITE should be renamed to V_GRAPHITIC [bruce 060629]
