@@ -2,8 +2,6 @@
 """
 VQT.py - Vectors, Quaternions, and [no longer in this file] Trackballs
 
-Vectors are a simplified interface to the Numeric arrays.
-
 A relatively full implementation of Quaternions
 (but note that we use the addition operator to multiply them).
 
@@ -19,7 +17,7 @@ so the remaining part of this module can be classified as "geometry"
 import math
 from utilities import debug_flags
 
-import Numeric
+import numpy as np
 
 _DEBUG_QUATS = False
     #bruce 050518; I'll leave this turned on in the main sources for awhile
@@ -33,10 +31,7 @@ floType = type(2.0)
 numTypes = [intType, floType]
 
 def V(*v):
-    return Numeric.array(v, Numeric.Float)
-
-def A(a):
-    return Numeric.array(a, Numeric.Float)
+    return np.array(v, dtype=np.float)
 
 def cross(v1, v2):
     #bruce 050518 comment: for int vectors, this presumably gives an int vector result
@@ -49,18 +44,18 @@ def cross(v1, v2):
 def vlen(v1):
     #bruce 050518 question: is vlen correct for int vectors, not only float ones?
     # In theory it should be, since sqrt works for int args and always gives float answers.
-    # And is it correct for Numeric arrays of vectors? I don't know; norm is definitely not.
-    return Numeric.dot(v1, v1) ** 0.5
+    # And is it correct for numpy arrays of vectors? I don't know; norm is definitely not.
+    return np.dot(v1, v1) ** 0.5
 
 def norm(v1):
     #bruce 050518 questions:
     # - Is this correct for int vectors, not only float ones?
     # In theory it should be, since vlen is always a float (see above).
-    # - Is it correct for Numeric arrays of vectors (doing norm on each one alone)?
+    # - Is it correct for numpy arrays of vectors (doing norm on each one alone)?
     # No... clearly the "if" makes the same choice for all of them, but even ignoring that,
     # it gives an alignment exception for any vector-array rather than working at all.
     # I don't know how hard that would be to fix.
-    lng = Numeric.dot(v1, v1) ** 0.5
+    lng = np.dot(v1, v1) ** 0.5
     if lng:
         return v1 / lng
         # bruce 041012 optimized this by using lng instead of
@@ -77,17 +72,17 @@ def angleBetween(vec1, vec2):
     # paranoid acos(dotproduct) function, wware 051103
     # [TODO: should merge with threepoint_angle_in_radians]
     TEENY = 1.0e-10
-    lensq1 = Numeric.dot(vec1, vec1)
+    lensq1 = np.dot(vec1, vec1)
     if lensq1 < TEENY:
         return 0.0
-    lensq2 = Numeric.dot(vec2, vec2)
+    lensq2 = np.dot(vec2, vec2)
     if lensq2 < TEENY:
         return 0.0
 
     #Replaced earlier formula "vec1 /= lensq1 ** .5" to fix the
     #following bug:
     #The above formula was modifying the arguments using the /= statement.
-    #Numeric.array objects (V objects) are mutable, and op= operators modify
+    #np.array objects (V objects) are mutable, and op= operators modify
     #them so replacing  [--ninad 20070614 comments, based on an email
     #conversation with Bruce where he noticed the real problem.]
 
@@ -97,7 +92,7 @@ def angleBetween(vec1, vec2):
     #diff = vec1 - vec2
     #if dot(diff, diff) < TEENY:
     #    return 0.0
-    dprod = Numeric.dot(vec1, vec2)
+    dprod = np.dot(vec1, vec2)
     if dprod >= 1.0:
         return 0.0
     if dprod <= -1.0:
@@ -106,7 +101,7 @@ def angleBetween(vec1, vec2):
 
 def threepoint_angle_in_radians(p1, p2, p3):
     """
-    Given three points (Numeric arrays of floats),
+    Given three points (np arrays of floats),
     return the angle p1-p2-p3 in radians.
     """
     #bruce 071030 made this from chem.atom_angle_radians.
@@ -115,12 +110,12 @@ def threepoint_angle_in_radians(p1, p2, p3):
     # Also compare with def angle in jigs_motors.
     v1 = norm(p1 - p2)
     v2 = norm(p3 - p2)
-    dotprod = Numeric.dot(v1, v2)
+    dotprod = np.dot(v1, v2)
     if dotprod > 1.0:
         #bruce 050414 investigating bugs 361 and 498 (probably the same underlying bug);
         # though (btw) it would probably be better to skip this [now caller's] angle-printing entirely ###e
         # if angle obviously 0 since atoms 1 and 3 are the same.
-        # This case (dotprod > 1.0) can happen due to numeric roundoff in norm();
+        # This case (dotprod > 1.0) can happen due to np roundoff in norm();
         # e.g. I've seen this be 1.0000000000000002 (as printed by '%r').
         # If not corrected, it can make acos() return nan or have an exception!
         dotprod = 1.0
@@ -133,7 +128,7 @@ def atom_angle_radians(atom1, atom2, atom3):
     """
     Return the angle between the positions of atom1-atom2-atom3, in radians.
     These "atoms" can be any objects with a .posn() method which returns a
-    Numeric array of three floats. If these atoms are bonded, this is the
+    np array of three floats. If these atoms are bonded, this is the
     angle between the atom2-atom1 and atom2-atom3 bonds,
     but this function does not assume they are bonded.
        Warning: current implementation is inaccurate for angles near
@@ -150,7 +145,7 @@ def atom_angle_radians(atom1, atom2, atom3):
 #  distance from p2 to the p1-v1 line.
 # v1 should be a unit vector.
 def orthodist(p1, v1, p2):
-    dist = Numeric.dot(v1, p2 - p1)
+    dist = np.dot(v1, p2 - p1)
     wid = vlen(p1 + dist * v1 - p2)
     return (dist, wid)
 
@@ -254,8 +249,8 @@ class Q:
 
         elif type(y) in numTypes:
             # axis vector and angle [used often]
-            v = (x / vlen(x)) * Numeric.sin(y * 0.5)
-            self.vec = V(Numeric.cos(y * 0.5), v[0], v[1], v[2])
+            v = (x / vlen(x)) * np.sin(y * 0.5)
+            self.vec = V(np.cos(y * 0.5), v[0], v[1], v[2])
 
         elif y is not None:
             # rotation between 2 vectors [used often]
@@ -269,9 +264,9 @@ class Q:
             # I didn't fix that problem.
             x = norm(x)
             y = norm(y)
-            dotxy = Numeric.dot(x, y)
+            dotxy = np.dot(x, y)
             v = cross(x, y)
-            vl = Numeric.dot(v, v) ** .5
+            vl = np.dot(v, v) ** .5
             if vl<0.000001:
                 # x, y are very close, or very close to opposite, or one of them is zero
                 if dotxy < 0:
@@ -295,9 +290,9 @@ class Q:
                 # old code's method is numerically unstable if abs(dotxy) is close to 1. I didn't fix this.
                 # I also didn't review this code (unchanged from old code) for correctness. [bruce 050730]
                 theta = math.acos(min(1.0, max(-1.0, dotxy)))
-                if Numeric.dot(y, cross(x, v)) > 0.0:
+                if np.dot(y, cross(x, v)) > 0.0:
                     theta = 2.0 * math.pi - theta
-                w = Numeric.cos(theta * 0.5)
+                w = np.cos(theta * 0.5)
                 s = ((1 - w**2)**.5) / vl
                 self.vec = V(w, v[0]*s, v[1]*s, v[2]*s)
             pass
@@ -342,7 +337,7 @@ class Q:
             #  This will optimize it too (avoiding 42 __getattr__ calls!).
             # ]
             w, x, y, z = self.vec
-            self.__dict__['matrix'] = mat = Numeric.array([
+            self.__dict__['matrix'] = mat = np.array([
                     [1.0 - 2.0 * (y**2 + z**2),
                      2.0 * (x*y + z*w),
                      2.0 * (z*x - y*w)],
@@ -368,10 +363,10 @@ class Q:
             if self.__class__ is not other.__class__:
                 return False
         except AttributeError:
-            # some objects have no __class__ (e.g. Numeric arrays)
+            # some objects have no __class__ (e.g. np arrays)
             return False
         return not (self.vec != other.vec) # assumes all quats have .vec; true except for bugs
-            #bruce 070227 fixed "Numeric array == bug" encountered by this line (when it said "self.vec == other.vec"),
+            #bruce 070227 fixed "np array == bug" encountered by this line (when it said "self.vec == other.vec"),
             # which made Q(1, 0, 0, 0) == Q(0.877583, 0.287655, 0.38354, 0) (since they're equal in at least one component)!!
             # Apparently it was my own bug, since it says above that I wrote this method on 060209.
         pass
@@ -384,9 +379,9 @@ class Q:
         Set the quaternion's rotation to theta (destructive modification).
         (In the same direction as before.)
         """
-        theta = Numeric.remainder(theta / 2.0, math.pi)
-        self.vec[1:] = norm(self.vec[1:]) * Numeric.sin(theta)
-        self.vec[0] = Numeric.cos(theta)
+        theta = np.remainder(theta / 2.0, math.pi)
+        self.vec[1:] = norm(self.vec[1:]) * np.sin(theta)
+        self.vec[0] = np.cos(theta)
         self.__reset()
         return self
 
@@ -500,7 +495,7 @@ class Q:
 
     def __str__(self):
         a= "<q:%6.2f @ " % (2.0 * math.acos(self.w) * 180 / math.pi)
-        l = Numeric.sqrt(self.x**2 + self.y**2 + self.z**2)
+        l = np.sqrt(self.x**2 + self.y**2 + self.z**2)
         if l:
             z = V(self.x, self.y, self.z) / l
             a += "[%4.3f, %4.3f, %4.3f] " % (z[0], z[1], z[2])
@@ -523,7 +518,7 @@ class Q:
     def normalize(self):
         w = self.vec[0]
         v = V(self.vec[1],self.vec[2],self.vec[3])
-        length = Numeric.dot(v, v) ** .5
+        length = np.dot(v, v) ** .5
         if length:
             s = ((1.0 - w**2)**0.5) / length
             self.vec = V(w, v[0]*s, v[1]*s, v[2]*s)
@@ -532,7 +527,7 @@ class Q:
         return self
 
     def unrot(self, v):
-        return Numeric.matrixmultiply(self.matrix, v)
+        return np.matmul(self.matrix, v)
 
     def vunrot(self, v):
         # for use with row vectors
@@ -540,10 +535,10 @@ class Q:
         #  the comment about 'matrix' in __getattr__ (also old and by Josh)
         #  that it's the transpose of the normal form so it can be used for row vectors.
         #  See the other comment for more info.]
-        return Numeric.matrixmultiply(v, Numeric.transpose(self.matrix))
+        return np.matmul(v, Numeric.transpose(self.matrix))
 
     def rot(self, v):
-        return Numeric.matrixmultiply(v, self.matrix)
+        return np.matmul(v, self.matrix)
 
     pass # end of class Q
 
@@ -572,9 +567,9 @@ def proj2sphere(x, y):
     """
     d = (x*x + y*y) ** .5
     theta = math.pi * 0.5 * d
-    s = Numeric.sin(theta)
+    s = np.sin(theta)
     if d > 0.0001:
-        return V(s*x/d, s*y/d, Numeric.cos(theta))
+        return V(s*x/d, s*y/d, np.cos(theta))
     else:
         return V(0.0, 0.0, 1.0)
 
@@ -584,7 +579,7 @@ def ptonline(xpt, lpt, ldr):
     nearest to point xpt
     """
     ldr = norm(ldr)
-    return Numeric.dot(xpt - lpt, ldr) * ldr + lpt
+    return np.dot(xpt - lpt, ldr) * ldr + lpt
 
 def planeXline(ppt, pv, lpt, lv):
     """
@@ -594,14 +589,14 @@ def planeXline(ppt, pv, lpt, lv):
        WARNING: don't use a boolean test on the return value, since V(0,0,0) is a real point
     but has boolean value False. Use "point is not None" instead.
     """
-    d = Numeric.dot(lv, pv)
+    d = np.dot(lv, pv)
     if abs(d) < 0.000001:
         return None
-    return lpt + lv * (Numeric.dot(ppt - lpt, pv) / d)
+    return lpt + lv * (np.dot(ppt - lpt, pv) / d)
 
 def cat(a, b):
     """
-    concatenate two arrays (the Numeric Python version is a mess)
+    concatenate two arrays (the np Python version is a mess)
     """
     #bruce comment 050518: these boolean tests look like bugs!
     # I bet they should be testing the number of entries being 0, or so.
@@ -614,22 +609,22 @@ def cat(a, b):
         if (_DEBUG_QUATS or debug_flags.atom_debug):
             print("_DEBUG_QUATS: cat(a, b) with false b -- is it right?", b)
         return a
-    r1 = Numeric.shape(a)
-    r2 = Numeric.shape(b)
+    r1 = np.shape(a)
+    r2 = np.shape(b)
     if len(r1) == len(r2):
-        return Numeric.concatenate((a, b))
+        return np.concatenate((a, b))
     if len(r1) < len(r2):
-        return Numeric.concatenate((Numeric.reshape(a,(1,) + r1), b))
+        return np.concatenate((np.reshape(a,(1,) + r1), b))
     else:
-        return Numeric.concatenate((a, Numeric.reshape(b,(1,) + r2)))
+        return np.concatenate((a, np.reshape(b,(1,) + r2)))
 
 def Veq(v1, v2):
     """
     tells if v1 is all equal to v2
     """
-    return Numeric.logical_and.reduce(v1 == v2)
+    return np.logical_and.reduce(v1 == v2)
     #bruce comment 050518: I guess that not (v1 != v2) would also work (and be slightly faster)
-    # (in principle it would work, based on my current understanding of Numeric...)
+    # (in principle it would work, based on my current understanding of np...)
 
 # == bruce 050518 moved the following here from extrudeMode.py (and bugfixed/docstringed them)
 
