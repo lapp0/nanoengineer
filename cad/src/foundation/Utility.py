@@ -28,11 +28,13 @@ Bruce 080305 added some abstract classes between Node and Group
 in the inheritance hierarchy (defined in this module for now).
 """
 
+# NEWTODO: clean this file, is deepcopying the best way to do this?
+from copy import deepcopy
+
 from utilities.debug import print_compact_stack
 from utilities import debug_flags
 import foundation.env as env
 from utilities.constants import genKey
-from foundation.state_utils import copy_val, StateMixin
 from utilities.Log import redmsg, orangemsg
 from foundation.state_constants import S_PARENT, S_DATA, S_CHILD
 
@@ -86,7 +88,7 @@ _will_kill_count = 1
 
 # ==
 
-class Node( StateMixin):
+class Node:
     """
     Superclass for model components which can be displayed in the Model Tree.
     This is inherited by Groups, molecules (Chunks), Jigs, and some more
@@ -161,7 +163,8 @@ class Node( StateMixin):
         # no change to .part, since that's declared as S_CHILD
         self.prior_part = None
         del self.prior_part # save RAM
-        StateMixin._undo_update(self)
+        #NEWTODO: _undo_updat doesn't do anything and it was removed, take care of it:
+        #StateMixin._undo_update(self)
         return
 
     def __init__(self, assy, name, dad = None):
@@ -1558,8 +1561,10 @@ class Node( StateMixin):
         for attr in self.copyable_attrs:
             assert attr != 'assy' # todo: optim by doing this once per class
             val = getattr(self, attr)
+            
             if own_mutable_state:
-                val = copy_val(val)
+                val = deepcopy(val)
+            
             setattr(target, attr, val)
                 # note: waste of RAM: this turns some default class attrs
                 # into unneeded instance attrs (nevermind for now;
@@ -1579,7 +1584,7 @@ class Node( StateMixin):
         res = {}
         for attr in self.copyable_attrs:
             val = getattr(self, attr)
-            val = copy_val(val)
+            val = deepcopy(val)
             res[attr] = val
         return res
 
@@ -2323,7 +2328,7 @@ class SimpleCopyMixin(Node):
         mapping = self._mapping # REVIEW: is keeping this reference until we return necessary?
         del self._mapping
         copy = self
-        orig.copy_copyable_attrs_to(copy) # this uses copy_val on all attrs
+        orig.copy_copyable_attrs_to(copy)
         return
 
     pass # end of class SimpleCopyMixin

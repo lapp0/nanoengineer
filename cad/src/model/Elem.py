@@ -22,9 +22,7 @@ to help permit specialized modules and Elem/Atom subclasses
 for PAM3 and PAM5 (etc). (Should we define new Elem subclasses for them?)
 """
 
-from foundation.state_utils import IdentityCopyMixin
-
-class Elem(IdentityCopyMixin):
+class Elem:
     """
     There is exactly one of these objects for each supported element in the periodic table.
     Its identity (as a python object) never changes during the run.

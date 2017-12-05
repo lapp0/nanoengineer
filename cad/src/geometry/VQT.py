@@ -18,7 +18,6 @@ so the remaining part of this module can be classified as "geometry"
 
 import math
 from utilities import debug_flags
-from foundation.state_utils import DataMixin
 
 import Numeric
 
@@ -162,7 +161,7 @@ Z_AXIS = V(0, 0, 1)
 
 # ==
 
-class Q:  # REFACTOR- remove Datamixin
+class Q:
     """
     Quaternion class. Many constructor forms:
 
@@ -361,13 +360,7 @@ class Q:  # REFACTOR- remove Datamixin
     # (I don't think it needs a __nonzero__ method, and if it had one
     # I don't know if Q(1,0,0,0) should be False or True.)
     #bruce 060222 note that it also now needs __eq__ and __ne__ to be
-    # compatible with its _copyOfObject (they are).
-    # later, __ne__ no longer needed since defined in DataMixin.
-
-    # override abstract method of DataMixin
-    def _copyOfObject(self):
-        #bruce 051003, for use by state_utils.copy_val (in class Q)
-        return self.__class__(self)
+     # compatible with its _copyOfObject (they are).
 
     # override abstract method of DataMixin
     def __eq__(self, other): #bruce 070227 revised this

@@ -13,6 +13,7 @@ providing undo/redo ops which apply those diffs to the model state.
  not in cvs; can clean up and commit later #e]
 """
 
+from copy import deepcopy
 import time
 from utilities import debug_flags
 from utilities.debug import print_compact_traceback, print_compact_stack, safe_repr
@@ -346,7 +347,6 @@ def mash_attrs( archive, attrdicts, modified, invalmols, differential = False ):
     classifier = archive.obj_classifier
     reset_obj_attrs_to_defaults = classifier.reset_obj_attrs_to_defaults
     attrcodes_with_undo_setattr = classifier.attrcodes_with_undo_setattr
-    from foundation.state_utils import copy_val as copy
         # OPTIM: ideally, copy_val might depend on attr (and for some attrs
         # is not needed at all), i.e. we should grab one just for each attr
         # farther inside this loop, and have a loop variant without it
@@ -398,7 +398,7 @@ def mash_attrs( archive, attrdicts, modified, invalmols, differential = False ):
                     # if it happens). And we probably also need to update
                     # modified first (as we do before that).
             modified[key] = obj # redundant if not differential (nevermind)
-            val = copy(val)
+            val = deepcopy(val)
                 # TODO: possible future optim: let some attrs declare that this
                 # copy is not needed for them [MIGHT BE A BIG OPTIM]
             if might_have_undo_setattr: # optim: this flag depends on attr name
@@ -1451,8 +1451,6 @@ class AssyUndoArchive: # modified from UndoArchive_older and AssyUndoArchive_old
         # Note: this is never changed and use_060213_format = False is not supported, but preserve this until we have another format option
         # that varies, in case we need one for diffing some attrs in special ways. Note: use_060213_format appears in state_utils.py too.
         # [bruce 060314]
-
-    copy_val = state_utils.copy_val #060216, might turn out to be a temporary kluge ###@@@
 
     _undo_archive_initialized = False
 

@@ -895,12 +895,6 @@ class image_mod_record(DataMixin):
         return not not (self.mirrorQ or self.rot)
             # only correct since we always canonicalize rot by % 360
 
-    def _copyOfObject(self): # (in class image_mod_record [bruce circa 060210])
-        """
-        [override abstract method of DataMixin]
-        """
-        return self.__class__(self.mirrorQ, self.rot)
-
     def __eq__(self, other): #bruce 060222 for Undo; in class image_mod_record
         """
         [override abstract method of DataMixin]

@@ -156,8 +156,7 @@ from platform_dependent.PlatformDependent import fix_plurals
 
 import foundation.env as env
 
-from foundation.state_utils import StateMixin
-from foundation.state_utils import copy_val
+from copy import deepcopy
 
 from foundation.state_constants import S_CHILDREN, S_PARENT, S_DATA, S_CACHE
 from foundation.state_constants import UNDO_SPECIALCASE_ATOM, ATOM_CHUNK_ATTRIBUTE_NAME
@@ -441,7 +440,7 @@ def Atom_prekill_prep(): #bruce 060328
     Utility._will_kill_count += 1
     return Utility._will_kill_count
 
-class Atom( PAM_Atom_methods, AtomBase, InvalMixin, StateMixin, Selobj_API):
+class Atom( PAM_Atom_methods, AtomBase, InvalMixin, Selobj_API):
     #bruce 050610 renamed this from class atom, but most code still uses
     # "atom" for now (so we have to assign atom = Atom, after this class
     # definition, until all code has been revised)
@@ -735,7 +734,7 @@ class Atom( PAM_Atom_methods, AtomBase, InvalMixin, StateMixin, Selobj_API):
         # can't do this yet:
         ## for jig in self.jigs[:]:
         ##    jig.moved_atom(self)   ####@@@@ need to do this later?
-        StateMixin._undo_update(self)
+        self._undo_update()
 
     def __init__(self, sym, where, mol = None): #bruce 060612 let mol be left out
         """
@@ -3518,7 +3517,7 @@ class Atom( PAM_Atom_methods, AtomBase, InvalMixin, StateMixin, Selobj_API):
         if not self._f_Pl_posn_is_definitive:
             print("bug? copying %r in which ._f_Pl_posn_is_definitive is not set" % self)
         if self._PAM3plus5_Pl_Gv_data is not None:
-            nuat._PAM3plus5_Pl_Gv_data = copy_val(self._PAM3plus5_Pl_Gv_data)
+            nuat._PAM3plus5_Pl_Gv_data = deepcopy(self._PAM3plus5_Pl_Gv_data)
 
         if (self.overlayText):
             nuat.overlayText = self.overlayText

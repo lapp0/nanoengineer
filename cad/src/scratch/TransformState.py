@@ -11,9 +11,7 @@ see comments in TransformNode docstring for why.
 """
 
 
-from foundation.state_utils import StateMixin
-from foundation.state_utils import copy_val
-
+from copy import deepcopy
 from utilities.Comparison import same_vals
 
 # ==
@@ -27,7 +25,7 @@ _IDENTITY_ROTATION = Q(1, 0, 0, 0)
 
 # ==
 
-class TransformState(StateMixin, object):
+class TransformState:
     """
     A mutable orthonormal 3d transform, represented as a rotation followed by
     a translation (with the rotation and translation being undoable state).
@@ -127,8 +125,8 @@ class StaticTransform( TransformState):
         if value is not None:
             # copy our value from the given value or TransformState
             if isinstance(value, TransformState):
-                self.rotation = copy_val(value.rotation)
-                self.translation = copy_val(value.translation)
+                self.rotation = deepcopy(value.rotation)
+                self.translation = deepcopy(value.translation)
             else:
                 assert 0 # nim
         assert tc ### probably required by other code... REVIEW

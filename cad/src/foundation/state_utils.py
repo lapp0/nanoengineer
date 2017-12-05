@@ -496,8 +496,6 @@ class InstanceClassification(Classification): #k used to be called StateHolderIn
                                 self.attrs_declared_as(S_CHILDREN) + \
                                 self.attrs_declared_as(S_CHILDREN_NOT_DATA)  #e sorted somehow? no need yet.
 
-        self._objs_are_data = class1.__name__ in copiers_for_InstanceType_class_names or \
-                              hasattr(class1, '_s_isPureData')
             # WARNING: this code is duplicated/optimized in _same_InstanceType_helper [as of bruce 060419, for A7]
 
         if self.warn and (env.debug() or DEBUG_PYREX_ATOMS):
@@ -968,55 +966,6 @@ if 1:
 
 # ==
 
-def _generalCopier(obj):
-    """
-    @param obj: a class instance (old or new style), or anything else whose type
-                is not specifically known to copy_val, which occurs as or in the
-                value of some copyable attribute in a "model object" passed to
-                copy_val
-    @type obj: anything
-
-    @return: a copy of obj, for the purposes of copy_val. Note: this is *not*
-             the same as a copy of a model object for purposes of user-level
-             copy operations -- e.g., that usually makes a new model object,
-             whereas this just returns it unchanged (treating it as a reference
-             to the same mutable object as before) if it inherits StateMixin.
-             The difference comes from copying obj as it's used in some other
-             object's attr value (as we do here), vs copying "obj itself".
-
-    @note: This function's main point is to honor the _copyOfObject method on
-           obj (returning whatever it returns), rather than just returning obj
-           (as it does anyway if that method is not defined).
-
-    @note: this is called from both C and Python copy_val, for both old and new
-           style class instances (and any other unrecognized types)
-
-    @see: InstanceClassification (related; may share code, or maybe ought to)
-    """
-    #bruce 090206 (modelled after older copy_InstanceType, and superceding it)
-    try:
-        copy_method = obj._copyOfObject
-            # note: not compatible with copy.deepcopy's __deepcopy__ method;
-            # see DataMixin and IdentityCopyMixin below.
-    except AttributeError:
-        # This will happen once for anything whose type is not known to copy_val
-        # and which doesn't inherit DataMixin or IdentityCopyMixin or StateMixin
-        # (or otherwise define _copyOfObject), unless we added it to
-        # _generalCopier_exceptions above.
-        if not _generalCopier_exceptions.get(type(obj)):
-            print("\n***** adding _generalCopier exception for %r " \
-                  "(bad if not a built-in type -- classes used in copied model " \
-                  "attributes should inherit something like DataMixin or " \
-                  "StateMixin)" % type(obj))
-            _generalCopier_exceptions[type(obj)] = type(obj)
-        return obj
-    else:
-        res = copy_method()
-            #bruce 081229 no longer pass copy_val (no implem used it)
-        if debug_flags.atom_debug: ## TEST: this might slow down the C version
-            _debug_check_copyOfObject(obj, res)
-        return res
-    pass
 
 # note: the following old code/comments came from copy_InstanceType when it
 # was merged into _generalCopier; they may or may not be obsolete. [bruce 090206]
@@ -2166,30 +2115,6 @@ class InstanceLike(object):
     # some newer code depends on this now.
     pass
 
-class IdentityCopyMixin(InstanceLike): # by EricM
-    def _copyOfObject(self):
-        """
-        Implements the copying of an object for copy_val.  For objects
-        which care about their identity (which inherit from
-        IdentityCopyMixin), this will return a new reference to the
-        same object.  There is no need to override this method.
-        Compare this with the behavior of DataMixin._copyOfObject().
-        """
-        return self
-
-    def _isIdentityCopyMixin(self):
-        """
-        This method acts as a flag allowing us to tell the difference
-        between things which inherit from DataMixin and those which
-        inherit from IdentityCopyMixin.  Any given class should only
-        inherit from one of those two mixin interfaces (or from StateMixin,
-        which inherits from IdentityCopyMixin).  So, both
-        _isIdentityCopyMixin and _s_isPureData should not be defined
-        on the same object.  This can be used to check coverage of
-        types in _generalCopier().
-        """
-        pass
-    pass
 
 # Review: The only known classes which need IdentityCopyMixin but not StateMixin
 # are Elem, AtomType, and Movie (as of 080321). In the case of Elem and AtomType,
@@ -2223,64 +2148,6 @@ class StateMixin( _eq_id_mixin_, IdentityCopyMixin ):
         return
     pass
 
-class DataMixin(InstanceLike):
-    """
-    Convenience mixin for classes that act as 'data' when present in
-    values of declared state-holding attributes. Provides method stubs
-    to remind you when you haven't defined a necessary method. Makes
-    sure state system treats this object as data (and doesn't warn
-    about it). All such data-like classes which may be handled by
-    copy_val must inherit DataMixin.
-    """
-    _s_isPureData = None # value is arbitrary; only presence of attr matters
-
-        # TODO: rename _s_isPureData -- current name is misleading (used to
-        # indicate mutability, but not all data is mutable; maybe this means
-        # we need to let it be overridden or introduce a third subclass?
-        # [bruce 090206 comment])
-
-        # note: presence of this attribute makes sure this object is treated as data.
-        # (this is a kluge, and an isinstance test might make more sense,
-        #  but at the moment that might be an import cycle issue.)
-        # [by EricM, revised by Bruce 090206]
-
-    def _copyOfObject(self):
-        """
-        This method must be defined in subclasses to implement
-        the copying of an object for copy_val. For data
-        objects (which inherit from DataMixin, or define
-        _s_isPureData), this should return a newly allocated object
-        which will be __eq__ to the original, but which will have a
-        different id(). Implementation of this method must be
-        compatible with the implementation of __eq__ for this class.
-
-        This method has a name which appears private, solely for performance
-        reasons. In particular, InvalMixin.__getattr__() has a fast
-        return for attributes which start with an underscore. Many
-        objects (like atoms) inherit from InvalMixin, and looking up
-        non-existent attributes on them takes significantly longer if
-        the attribute name does not start with underscore. In
-        general, such objects should inherit from IdentityCopyMixin as
-        well, and thus have _copyOfObject defined in order to avoid
-        exception processing overhead in _generalCopier(), so it
-        doesn't really matter. Should something slip through the
-        cracks, at least we're only imposing one slowdown on the copy,
-        and not two.
-        """
-        print("_copyOfObject needs to be overridden in", self)
-        print("  (implem must be compatible with __eq__)")
-        return self
-    def __eq__(self, other):
-        print("__eq__ needs to be overridden in", self)
-        print("  (implem must be compatible with _copyOfObject; " \
-              "don't forget to avoid '==' when comparing Numeric arrays)")
-        return self is other
-    def __ne__(self, other):
-        return not (self == other)
-            # this uses the __eq__ above, or one which the specific class defined
-    pass
-
-# ===
 
 # test code
 

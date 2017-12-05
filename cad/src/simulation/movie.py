@@ -19,7 +19,6 @@ from struct import unpack
 from PyQt5.QtGui import Qt, QApplication, QApplication, QCursor
 from utilities.Log import redmsg, orangemsg, greenmsg
 from geometry.VQT import A
-from foundation.state_utils import IdentityCopyMixin
 from operations.move_atoms_and_normalize_bondpoints import move_atoms_and_normalize_bondpoints
 from utilities import debug_flags
 from platform_dependent.PlatformDependent import fix_plurals
@@ -40,7 +39,7 @@ playDirection = { FWD : "Forward", REV : "Reverse" }
 
 # ==
 
-class Movie: #bruce 080321 bugfix: added IdentityCopyMixin
+class Movie:
     """
     Movie object.
 

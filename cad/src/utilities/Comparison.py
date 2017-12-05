@@ -26,5 +26,6 @@ setup2.py [now in outtakes], and part of Makefile) [bruce 071005]
 
 import numpy
 
+# wtf does this exist
 def same_vals(v1, v2): #060303
-    return v1 == v2
+    return v1 == v2  

@@ -83,38 +83,4 @@ UNDO_SPECIALCASE_BOND = 'UNDO_SPECIALCASE_BOND'
 
 ATOM_CHUNK_ATTRIBUTE_NAME = 'molecule' # must match the Atom.molecule attrname
 
-# ==
-
-# Note: _UNSET_class should inherit from IdentityCopyMixin, but that would
-# only work when IdentityCopyMixin has been split out from state_utils,
-# since state_utils imports this file. Instead, we copy the methods here.
-
-class _UNSET_class:
-    """
-    [private class for _UNSET_, which sometimes represents
-     unset attribute values within Undo snapshots, and similar things]
-    """
-    # review: can we add a decl that makes the _s_attr system notice
-    # the bug if it ever hits this value in a real attrval? (should we?)
-    def __init__(self, name = "_???_"):
-        self.name = name
-    def __repr__(self):
-        return self.name
-    def _copyOfObject(self): # copied from IdentityCopyMixin
-        return self
-    def _isIdentityCopyMixin(self): # copied from IdentityCopyMixin
-        pass
-    pass
-
-# ensure only one instance of _UNSET_ itself, even if we reload this module
-try:
-    _UNSET_
-except:
-    _UNSET_ = _UNSET_class("_UNSET_")
-
-try:
-    _Bugval
-except:
-    _Bugval = _UNSET_class("_Bugval")
-
 # end

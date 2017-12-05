@@ -647,7 +647,6 @@ class Protein:
             print(aa)
         return
 
-    # override abstract method of DataMixin
     def _copyOfObject(self):
         """
         Create and return a copy of protein.
@@ -686,13 +685,7 @@ class Protein:
         print("Protein._copyOfObject(): HERE!")
         return protein
 
-    # override abstract method of DataMixin.
-    # Ask Bruce to review. --Mark 2008-12-25
     def __eq__(self, other):
-        """
-        Compare self with other.
-        """
-        print("Protein.__eq__(): HERE!")
         if self.chain_id != other.chain_id:
             return False
         elif self.pdb_id != other.pdb_id:
