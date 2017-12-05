@@ -33,6 +33,9 @@ numTypes = [intType, floType]
 def V(*v):
     return np.array(v, dtype=np.float)
 
+def A(a):
+    return np.array(a, dtype=np.float)
+
 def cross(v1, v2):
     #bruce 050518 comment: for int vectors, this presumably gives an int vector result
     # (which is correct, and unlikely to cause bugs even in calling code unaware of it,
