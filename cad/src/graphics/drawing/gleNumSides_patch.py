@@ -37,13 +37,12 @@ $Id$
 #        OpenGL/raw/GLE/__init__.py
 
 from ctypes import c_int
-from OpenGL import platform, arrays
-from OpenGL.constant import Constant # not used -- what is it?
+from OpenGL import platform, GLE
 from OpenGL import constants as GLconstants
 
 # /usr/include/GL/gle.h 114
 gleGetNumSides = platform.createBaseFunction(
-        'gleGetNumSlices', dll=platform.GLE, resultType=c_int,
+        'gleGetNumSlices', dll=GLE, resultType=c_int,
         argTypes=[],
         doc='gleGetNumSlices(  ) -> c_int',
         argNames=(),
@@ -51,7 +50,7 @@ gleGetNumSides = platform.createBaseFunction(
 
 # /usr/include/GL/gle.h 115
 gleSetNumSides = platform.createBaseFunction(
-        'gleSetNumSlices', dll=platform.GLE, resultType=None,
+        'gleSetNumSlices', dll=GLE, resultType=None,
         argTypes=[c_int],
         doc='gleSetNumSlices( c_int(slices) ) -> None',
         argNames=('slices',),
