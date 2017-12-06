@@ -71,19 +71,8 @@ scratch/TransformNode.py.)
 
 """
 
-import Numeric # for sqrt
-
-import math # only used for pi, everything else is from Numeric [as of before 071113]
-
-from Numeric import array
-from Numeric import add
-from Numeric import dot
-from Numeric import PyObject
-from Numeric import argsort
-from Numeric import compress
-from Numeric import nonzero
-from Numeric import take
-from Numeric import argmax
+import numpy as np
+import math
 
 from OpenGL.GL import glPushMatrix
 from OpenGL.GL import glTranslatef
@@ -1458,7 +1447,7 @@ class Chunk(Chunk_Dna_methods, Chunk_mmp_methods,
         atomitems.sort()
             # in order of atom keys; probably doesn't yet matter, but makes order deterministic
         atlist = [atom for (key, atom) in atomitems]
-        self.atlist = array(atlist, PyObject) #review: untested whether making it an array is good or bad
+        self.atlist = np.array(atlist) #review: untested whether making it an array is good or bad
         for atom, i in zip(atlist, list(range(len(atlist)))):
             atom.index = i
         return
@@ -2491,7 +2480,7 @@ class Chunk(Chunk_Dna_methods, Chunk_mmp_methods,
         # (though the docstring doesn't mention this assumption since it is
         #  probably not required as long as z direction == glpane.out);
         # transform array of atom centers (xy parallel to water, z towards user).
-        v = dot( atpos - point, matrix)
+        v = np.dot( atpos - point, matrix)
 
         # compute xy distances-squared between line of sight and atom centers
         r_xy_2 = v[:,0]**2 + v[:,1]**2
@@ -2552,7 +2541,7 @@ class Chunk(Chunk_Dna_methods, Chunk_mmp_methods,
         if not p1: # i.e. if p1 is an array of all false/0 values [bruce 050516 guess/comment]
             # no atoms hit by line of sight (common when several mols shown)
             return []
-        p1inds = nonzero(p1) # indices of the nonzero elements of p1
+        p1inds = np.nonzero(p1) # indices of the nonzero elements of p1
         # note: now compress(p1, arr, dim) == take(arr, p1inds, dim)
         vp1 = take( v, p1inds, 0) # transformed positions of atoms hit by line of sight
         vp1z = vp1[:,2] # depths (above water = positive) of atoms in p1
@@ -2561,9 +2550,9 @@ class Chunk(Chunk_Dna_methods, Chunk_mmp_methods,
         # this is suboptimal if the slab test becomes a good one (likely, in the future).
 
         # atom half-thicknesses at places they're hit
-        r_xy_2_p1 = take( r_xy_2, p1inds)
-        radii_2_p1 = take( radii_2, p1inds)
-        thicks_p1 = Numeric.sqrt( radii_2_p1 - r_xy_2_p1 )
+        r_xy_2_p1 = np.take( r_xy_2, p1inds)
+        radii_2_p1 = np.take( radii_2, p1inds)
+        thicks_p1 = np.sqrt( radii_2_p1 - r_xy_2_p1 )
         # now front surfaces are at vp1z + thicks_p1, backs at vp1z - thicks_p1
 
         fronts = vp1z + thicks_p1 # arbitrary order (same as vp1)
@@ -2607,7 +2596,7 @@ class Chunk(Chunk_Dna_methods, Chunk_mmp_methods,
                     r_xy_2_0 = r_xy_2[ind]
                     radii_2_0 = rad2
                     if r_xy_2_0 <= radii_2_0:
-                        thick_0 = Numeric.sqrt( radii_2_0 - r_xy_2_0 )
+                        thick_0 = np.sqrt( radii_2_0 - r_xy_2_0 )
                         zz = v[ind][2] + thick_0
                         if zz < near_cutoff:
                             pairs.append( (zz, ind) )
@@ -2673,10 +2662,10 @@ class Chunk(Chunk_Dna_methods, Chunk_mmp_methods,
         v = singlpos - point
         try:
             #bruce 051129 add try/except and printout to help debug bug 829
-            r = Numeric.sqrt(v[:,0]**2 + v[:,1]**2 + v[:,2]**2) # this line had OverflowError in bug 829
+            r = np.sqrt(v[:,0]**2 + v[:,1]**2 + v[:,2]**2) # this line had OverflowError in bug 829
             p = (r <= radius)
-            i = argsort(compress(p, r))
-            return take(compress(p, self.singlets), i)
+            i = np.argsort(np.compress(p, r))
+            return np.take(np.compress(p, self.singlets), i)
         except:
             print_compact_traceback("exception in nearSinglets (data printed below): ")
             print("if that was bug 829, this data (point, singlpos, v) might be relevant:")
@@ -3361,18 +3350,16 @@ def mol_copy_name(name, assy = None):
     return gensym(name + "-copy", assy) # (in mol_copy_name)
         # note: we assume this adds a number to the end
 
-# == Numeric.array utilities [bruce 041207/041213]
-
 def index_of_smallest_positive_elt(arr, retval_if_none = None):
     # use same kluge value as findatoms (an assumption of max model depth)
-    res = argmax( - arr - 100000.0*(arr < 0) )
+    res = npargmax( - arr - 100000.0*(arr < 0) )
     if arr[res] > 0.0:
         return res
     else:
         return retval_if_none
 
 def index_of_largest_elt(arr):
-    return argmax(arr) #e inline it?
+    return npargmax(arr) #e inline it?
 
 # == debug code
 
