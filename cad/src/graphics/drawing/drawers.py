@@ -22,11 +22,8 @@ ColorSorter.py CS_workers.py c_renderer.py CS_draw_primitives.py drawers.py
 gl_lighting.py gl_buffers.py
 """
 
-# the imports from math vs. Numeric are as discovered in existing code
-# as of 2007/06/25.  It's not clear why acos is coming from math...
 from math import floor, ceil, acos
-import Numeric
-from Numeric import pi
+import numpy as np
 
 import foundation.env as env
 
@@ -131,7 +128,7 @@ def drawCircle(color, center, radius, normal):
 
     glTranslatef(center[0], center[1], center[2])
     rQ = Q(V(0, 0, 1), normal)
-    rotAngle = rQ.angle*180.0/pi
+    rotAngle = rQ.angle*180.0/np.pi
 
     #This may cause problems as proved before in Linear motor display.
     #rotation around (0, 0, 0)
@@ -157,7 +154,7 @@ def drawFilledCircle(color, center, radius, normal):
 
     glTranslatef(center[0], center[1], center[2])
     rQ = Q(V(0, 0, 1), normal)
-    rotAngle = rQ.angle*180.0/pi
+    rotAngle = rQ.angle*180.0/np.pi
 
     #This may cause problems as proved before in Linear motor display.
     #rotation around (0, 0, 0)
@@ -194,7 +191,7 @@ def drawLinearSign(color, center, axis, l, h, w):
 
     ##Huaicai 1/17/05: To avoid rotate around (0, 0, 0), which causes
     ## display problem on some platforms
-    angle = -acos(axis[2])*180.0/pi
+    angle = -acos(axis[2])*180.0/np.pi
     if (axis[2]*axis[2] >= 1.0):
         glRotate(angle, 0.0, 1.0, 0.0)
     else:
@@ -270,13 +267,13 @@ def drawRotateSign(color, pos1, pos2, radius, rotation = 0.0):
 
     ##Huaicai 1/17/05: To avoid rotate around (0, 0, 0), which causes
     ## display problem on some platforms
-    angle = -acos(axis[2])*180.0/pi
+    angle = -acos(axis[2])*180.0/np.pi
     if (axis[2]*axis[2] >= 1.0):
         glRotate(angle, 0.0, 1.0, 0.0)
     else:
         glRotate(angle, axis[1], -axis[0], 0.0)
     glRotate(rotation, 0.0, 0.0, 1.0) #bruce 050518
-    glScale(radius,radius,Numeric.dot(vec,vec)**.5)
+    glScale(radius, radius, np.dot(vec,vec)**.5)
 
     glLineWidth(2.0)
     glDisable(GL_LIGHTING)
@@ -804,8 +801,8 @@ def drawrectangle(pt1, pt2, rt, up, color):
     """
     glColor3f(color[0], color[1], color[2])
     glDisable(GL_LIGHTING)
-    c2 = pt1 + rt * Numeric.dot(rt, pt2 - pt1)
-    c3 = pt1 + up * Numeric.dot(up, pt2 - pt1)
+    c2 = pt1 + rt * np.dot(rt, pt2 - pt1)
+    c3 = pt1 + up * np.dot(up, pt2 - pt1)
     glBegin(GL_LINE_LOOP)
     glVertex(pt1[0], pt1[1], pt1[2])
     glVertex(c2[0], c2[1], c2[2])
@@ -854,7 +851,7 @@ def drawbrick(color, center, axis, l, h, w, opacity = 1.0):
 
     ##Huaicai 1/17/05: To avoid rotate around (0, 0, 0), which causes
     ## display problem on some platforms
-    angle = -acos(axis[2])*180.0/pi
+    angle = -acos(axis[2])*180.0/np.pi
     if (axis[2]*axis[2] >= 1.0):
         glRotate(angle, 0.0, 1.0, 0.0)
     else:
