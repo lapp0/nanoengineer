@@ -8,7 +8,7 @@ $Id$
 import sys
 from PyQt5.QtWidgets import *
 
-from PyQt5.QtGui import QDialog, QListWidgetItem
+from PyQt5.QtWidgets import QDialog, QListWidgetItem
 from commands.GroupProperties.GroupPropDialog import Ui_GroupPropDialog
 from geometry.VQT import V
 
