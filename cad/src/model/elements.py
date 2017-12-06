@@ -36,6 +36,10 @@ To access public attributes of elements, just use getElement()
 and then access the attribute directly.
 """
 
+# NEWTODO: clean up preferences
+from foundation import preferences
+prefs = preferences.prefs_context()
+
 from model.Elem import Elem
 from model.atomtypes import AtomType
 
