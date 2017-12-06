@@ -19,10 +19,9 @@ even though it also includes graphics code, and hardcoded constants
 about its use for our model objects (atoms).
 """
 
-from graphics.drawing.drawers import drawwirebox
-from Numeric import add, subtract, sqrt
-from Numeric import maximum, minimum, dot
+import numpy as np
 
+from graphics.drawing.drawers import drawwirebox
 from geometry.VQT import V, A, cat
 from utilities.constants import black
 
@@ -43,26 +42,26 @@ class BBox:
             # convert from 2d (x, y) coordinates into its 3d world (x, y, 0)
             #coordinates(the lower-left and upper-right corner).
             #In another word, the 3d coordinates minus the z offset of the plane
-            x = dot(A(point1), A(point2))
+            x = np.dot(A(point1), A(point2))
             # Get the vector from upper-right point to the lower-left point
-            dx = subtract.reduce(x)
+            dx = np.subtract.reduce(x)
             # Get the upper-left and lower right corner points
-            oc = x[1] + V(point2[0]*dot(dx,point2[0]),
-                          point2[1]*dot(dx,point2[1]))
+            oc = x[1] + V(point2[0]*np.dot(dx,point2[0]),
+                          point2[1]*np.dot(dx,point2[1]))
             # Get the four 3d cooridinates on the bottom crystal-cutting plane
-            sq1 = cat(x,oc) + slab.normal*dot(slab.point, slab.normal)
+            sq1 = cat(x,oc) + slab.normal*np.dot(slab.point, slab.normal)
             # transfer the above 4 3d coordinates in parallel to get that on
             #the top plane, put them together
             sq1 = cat(sq1, sq1+slab.thickness*slab.normal)
-            self.data = V(maximum.reduce(sq1), minimum.reduce(sq1))
+            self.data = V(np.maximum.reduce(sq1), np.minimum.reduce(sq1))
         elif point2:
             # just 2 3d points
-            self.data = V(maximum(point1, point2), minimum(point1, point2))
+            self.data = V(np.maximum(point1, point2), np.minimum(point1, point2))
         elif point1:
             # list of points: could be 2d or 3d?  +/- 1.8 to make the bounding
             #box enclose the vDw ball of an atom?
-            self.data = V(maximum.reduce(point1) + BBOX_MARGIN,
-                          minimum.reduce(point1) - BBOX_MARGIN)
+            self.data = V(np.maximum.reduce(point1) + BBOX_MARGIN,
+                          np.minimum.reduce(point1) - BBOX_MARGIN)
         else:
             # a null bbox
             self.data = None
@@ -70,7 +69,7 @@ class BBox:
 
     def add(self, point):
         vl = cat(self.data, point)
-        self.data = V(maximum.reduce(vl), minimum.reduce(vl))
+        self.data = V(np.maximum.reduce(vl), np.minimum.reduce(vl))
 
     def merge(self, bbox):
         if self.data and bbox.data:
@@ -82,7 +81,7 @@ class BBox:
         if self.data:
             drawwirebox(black,
                         add.reduce(self.data) / 2,
-                        subtract.reduce(self.data) / 2 )
+                        np.subtract.reduce(self.data) / 2 )
 
     def center(self):
         if self.data:
@@ -91,8 +90,8 @@ class BBox:
             return V(0, 0, 0)
 
     def isin(self, pt):
-        return (minimum(pt,self.data[1]) == self.data[1] and
-                maximum(pt,self.data[0]) == self.data[0])
+        return (np.minimum(pt,self.data[1]) == self.data[1] and
+                np.maximum(pt,self.data[0]) == self.data[0])
 
     def scale(self):
         """
@@ -110,9 +109,9 @@ class BBox:
         if not self.data: return 10.0
         #x=1.2*maximum.reduce(subtract.reduce(self.data))
 
-        dd = 0.5*subtract.reduce(self.data)
+        dd = 0.5*np.subtract.reduce(self.data)
             # dd = halfwidths in each dimension (x,y,z)
-        x = sqrt(dd[0]*dd[0] + dd[1]*dd[1] + dd[2]*dd[2])
+        x = np.sqrt(dd[0]*dd[0] + dd[1]*dd[1] + dd[2]*dd[2])
             # x = half-diameter of bounding sphere of self
         #return max(x, 2.0)
         return x
