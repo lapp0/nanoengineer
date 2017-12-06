@@ -72,7 +72,6 @@ scratch/TransformNode.py.)
 """
 
 import numpy as np
-import math
 
 from OpenGL.GL import glPushMatrix
 from OpenGL.GL import glTranslatef
@@ -629,7 +628,7 @@ class Chunk(Chunk_Dna_methods, Chunk_mmp_methods,
         origin = self.basecenter
         glTranslatef(origin[0], origin[1], origin[2])
         q = self.quat
-        glRotatef(q.angle * 180.0 / math.pi, q.x, q.y, q.z)
+        glRotatef(q.angle * 180.0 / np.pi, q.x, q.y, q.z)
         return
 
     def popMatrix(self, glpane):
