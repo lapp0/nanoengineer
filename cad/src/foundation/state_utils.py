@@ -1019,56 +1019,22 @@ _known_type_scanners[ InstanceType ] = _scan_Instance
     #  but which don't inherit InstanceLike; that is probably an error
     #  but not currently detected. [bruce 090206 comment])
 
-# ==
 
-def copy_Numeric_array(obj):
-    if obj.typecode() == np.PyObject:
-        if (env.debug() or DEBUG_PYREX_ATOMS):
-            print("atom_debug: ran copy_Numeric_array, PyObject case") # remove when works once ###@@@
-        return np.array( list(map( copy_val, obj)) )
-            ###e this is probably incorrect for multiple dimensions; doesn't matter for now.
-            # Note: We can't assume the typecode of the copied array should also be PyObject,
-            # since _copyOfObject methods could return anything, so let it be inferred.
-            # In future we might decide to let this typecode be declared somehow...
-##    if debug_dont_trust_Numeric_copy: # 060302
-##        res = array( map( copy_val, list(obj)) )
-##        if debug_print_every_array_passed_to_Numeric_copy and env.debug():
-##            print "copy_Numeric_array on %#x produced %#x (not using Numeric.copy); input data %s" % \
-##                  (id(obj), id(res), obj)
-##        return res
-    return obj.copy() # use Numeric's copy method for Character and number arrays
-        ###@@@ verify ok from doc of this method...
+# NEWTODO: remove/refactor this
+# note: related code exists in utilities/Comparison.py.
+numeric_array_type = type(array(list(range(2))))
+# note: __name__ is 'array', but Numeric.array itself is a
+# built-in function, not a type
+assert numeric_array_type != InstanceType
+_known_type_copiers[ numeric_array_type ] = copy_Numeric_array
+_known_type_scanners[ numeric_array_type ] = scan_Numeric_array
+_known_mutable_types[ numeric_array_type ] = True
 
-def  scan_Numeric_array(obj, func):
-    if obj.typecode() == np.PyObject:
-        # note: this doesn't imply each element is an InstanceType instance,
-        # just an arbitrary Python value
-        if env.debug() or DEBUG_PYREX_ATOMS:
-            print("atom_debug: ran scan_Numeric_array, PyObject case") # remove when works once ###@@@
-        ## map( func, obj)
-        for elt in obj:
-            scan_val(elt, func) #bruce 060315 bugfix
-        # is there a more efficient way?
-        ###e this is probably correct but far too slow for multiple dimensions; doesn't matter for now.
-    return
-
-
-        print("fyi: can't import array, PyObject from Numeric, so not registering its copy & scan functions")
-else:
-    # note: related code exists in utilities/Comparison.py.
-    numeric_array_type = type(np.array(list(range(2))))
-        # note: __name__ is 'array', but Numeric.array itself is a
-        # built-in function, not a type
-    assert numeric_array_type != InstanceType
-    _known_type_copiers[ numeric_array_type ] = copy_Numeric_array
-    _known_type_scanners[ numeric_array_type ] = scan_Numeric_array
-    _known_mutable_types[ numeric_array_type ] = True
-
-    _Numeric_array_type = numeric_array_type #bruce 060309 kluge, might be temporary
-    del numeric_array_type
-        # but leave array, PyObject as module globals for use by the
-        # functions above, for efficiency
-    pass
+_Numeric_array_type = numeric_array_type #bruce 060309 kluge, might be temporary
+del numeric_array_type
+# but leave array, PyObject as module globals for use by the
+# functions above, for efficiency
+pass
 
 # ==
 
@@ -2157,7 +2123,7 @@ def _test():
                   [4,5],
                   (6.0,),
                   {7:8,9:10},
-                  np.array([2,3]),
+                  array([2,3]),
                   None] ))
     print("done")
 
