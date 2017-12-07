@@ -23,8 +23,8 @@ acceptable when the time comes for sim support.
 """
 
 import sys
-import Numeric
-from Numeric import dot
+import string
+import numpy as np
 
 import foundation.env as env
 
@@ -52,12 +52,12 @@ def _constrainHandleToAngle(pos, p0, p1, p2):
     z0 = norm(p0 - p1)
     z2 = norm(p2 - p1)
     oop = norm(cross(z0, z2))
-    u = u - dot(oop, u) * oop
+    u = u - np.dot(oop, u) * oop
     # clip the point so it lies within the angle
-    if dot(cross(z0, u), oop) < 0:
+    if np.dot(cross(z0, u), oop) < 0:
         # Clip on the z0 side of the angle.
         u = vlen(u) * z0
-    elif dot(cross(u, z2), oop) < 0:
+    elif np.dot(cross(u, z2), oop) < 0:
         # Clip on the z2 side of the angle.
         u = vlen(u) * z2
     return p1 + u
@@ -188,7 +188,7 @@ class MeasurementJig(Jig):
         return True
 
     def center(self):
-        c = Numeric.array((0.0, 0.0, 0.0))
+        c = np.array((0.0, 0.0, 0.0))
         n = len(self.atoms)
         for a in self.atoms:
             c += a.posn() / n
@@ -200,9 +200,8 @@ class MeasurementJig(Jig):
         mapping.write("info leaf handle = %g %g %g\n" % (x, y, z))
 
     def readmmp_info_leaf_setitem(self, key, val, interp):
-        import string, Numeric
         if key == ['handle']:
-            self.handle_offset = Numeric.array(list(map(string.atof, val.split()))) - self.center()
+            self.handle_offset = np.array(list(map(string.atof, val.split()))) - self.center()
         else:
             Jig.readmmp_info_leaf_setitem(self, key, val, interp)
 
@@ -224,7 +223,7 @@ class MeasureDistance(MeasurementJig):
         pos, p0, p1 = self.center() + self.handle_offset, a[0].posn(), a[1].posn()
         z = p1 - p0
         nz = norm(z)
-        dotprod = dot(pos - p0, nz)
+        dotprod = np.dot(pos - p0, nz)
         if dotprod < 0.0:
             return pos - dotprod * nz
         elif dotprod > vlen(z):
@@ -367,9 +366,9 @@ class MeasureDihedral(MeasurementJig): # new class. wware 051031
         axis = norm(p2 - p1)
         midpoint = 0.5 * (p1 + p2)
         return _constrainHandleToAngle(self.center() + self.handle_offset,
-                                       p0 - dot(p0 - midpoint, axis) * axis,
+                                       p0 - np.dot(p0 - midpoint, axis) * axis,
                                        midpoint,
-                                       p3 - dot(p3 - midpoint, axis) * axis)
+                                       p3 - np.dot(p3 - midpoint, axis) * axis)
 
     def _getinfo(self):    # add atom list, wware 051101
         return  "[Object: Measure Dihedral] [Name: " + str(self.name) + "] " + \
@@ -404,7 +403,7 @@ class MeasureDihedral(MeasurementJig): # new class. wware 051031
         zy = self.atoms[3].posn()-self.atoms[2].posn()
         u = cross(wx, yx)
         v = cross(xy, zy)
-        if dot(zy, u) < 0:   # angles go from -180 to 180, wware 051101
+        if np.dot(zy, u) < 0:   # angles go from -180 to 180, wware 051101
             return -angleBetween(u, v)  # use new acos(dot) func, wware 051103
         else:
             return angleBetween(u, v)

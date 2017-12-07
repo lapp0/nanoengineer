@@ -2,7 +2,7 @@
 import time
 import unittest
 import random
-import Numeric
+import numpy as np
 from bases import *
 
 N = int(10**6)
@@ -66,14 +66,14 @@ class Tests(unittest.TestCase):
 
     def test_AtomSetAsArrayMethod(self):
         x = AtomSet()
-        a = Numeric.array(list(range(N)), Numeric.UInt32)
+        a = np.array(list(range(N)), np.int32)
         x.quickFill(N)
         assert len(x) == len(a)
         assert len(x) == N
         xa = x.asArray()
         # only way to test equality of two arrays
         a = a - xa
-        assert Numeric.vdot(a, a) == 0
+        assert np.vdot(a, a) == 0
 
     def test_AtomSetContainsPerformance(self):
         x = AtomSet()

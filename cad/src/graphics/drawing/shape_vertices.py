@@ -41,11 +41,9 @@ ColorSorter.py CS_workers.py c_renderer.py CS_draw_primitives.py drawers.py
 gl_lighting.py gl_buffers.py
 """
 
-# the imports from math vs. Numeric are as discovered in existing code
-# as of 2007/06/25.  It's not clear why acos is coming from math...
 from math import atan2
-from Numeric import sin, cos, sqrt, pi
-degreesPerRadian = 180.0 / pi
+import numpy as np
+degreesPerRadian = 180.0 / np.pi
 
 from geometry.VQT import norm, vlen, V, Q, A
 from utilities.constants import DIAMOND_BOND_LENGTH
@@ -59,7 +57,7 @@ def init_icos():
 
     # the golden ratio
     global phi
-    phi = (1.0+sqrt(5.0))/2.0
+    phi = (1.0+np.sqrt(5.0))/2.0
     vert = norm(V(phi,0,1))
     a = vert[0]
     b = vert[1]
@@ -232,16 +230,16 @@ def getSphereTriStrips(level):
     # Basic triangle-strip icosahedron vertices.  Start and end with the Poles.
     # Reflect the master vertex into the southern hemisphere and rotate 5 copies
     # to make the middle rings of 5 vertices at North and South latitudes.
-    p2_5 = 2*pi / 5.0
+    p2_5 = 2*np.pi / 5.0
     # Simplify indexing by replicating the Poles, so everything is in fives.
     icosRings = [ 5 * [V(0.0, -1.0, 0.0)], # South Pole.
 
                   # South ring, first edge *centered on* the Greenwich Meridian.
-                  [V(cylRad*cos((i-.5)*p2_5),-vert0[1], cylRad*sin((i-.5)*p2_5))
+                  [V(cylRad*np.cos((i-.5)*p2_5),-vert0[1], cylRad*np.sin((i-.5)*p2_5))
                    for i in range(5)],
 
                   # North ring, first vertex *on* the Greenwich Meridian.
-                  [V(cylRad*cos(i*p2_5 ), vert0[1], cylRad*sin(i*p2_5))
+                  [V(cylRad*np.cos(i*p2_5 ), vert0[1], cylRad*np.sin(i*p2_5))
                    for i in range(5)],
 
                   5 * [V(0.0, 1.0, 0.0)] ] # North Pole.
@@ -350,12 +348,12 @@ def init_cyls():
     # respect to the other these are used as cylinder ends [not quite true
     # anymore, see comments just below]
     slices = 13
-    circ1 = list(map((lambda n: n*2.0*pi/slices), list(range(slices+1))))
-    circ2 = list(map((lambda a: a+pi/slices), circ1))
-    drawing_globals.drum0 = drum0 = list(map((lambda a: (cos(a), sin(a), 0.0)),
+    circ1 = list(map((lambda n: n*2.0*np.pi/slices), list(range(slices+1))))
+    circ2 = list(map((lambda a: a+np.pi/slices), circ1))
+    drawing_globals.drum0 = drum0 = list(map((lambda a: (np.cos(a), np.sin(a), 0.0)),
                                         circ1))
-    drum1 = list(map((lambda a: (cos(a), sin(a), 1.0)), circ2))
-    drum1n = list(map((lambda a: (cos(a), sin(a), 0.0)), circ2))
+    drum1 = list(map((lambda a: (np.cos(a), np.sin(a), 1.0)), circ2))
+    drum1n = list(map((lambda a: (np.cos(a), np.sin(a), 0.0)), circ2))
 
     #grantham 20051213 I finally decided the look of the oddly twisted cylinder
     # bonds was not pretty enough, so I made a "drum2" which is just drum0 with
@@ -364,7 +362,7 @@ def init_cyls():
     # cylinder being "ragged" (letting empty space show through), which I fixed
     # by using drum2 for that cap rather than drum1.  drum1 is no longer used
     # except as an intermediate value in the next few lines.
-    drawing_globals.drum2 = drum2 = list(map((lambda a: (cos(a), sin(a), 1.0)),
+    drawing_globals.drum2 = drum2 = list(map((lambda a: (np.cos(a), np.sin(a), 1.0)),
                                         circ1))
 
     # This edge list zips up the "top" vertex and normal and then the "bottom"
@@ -388,17 +386,17 @@ init_cyls()
 def init_motors():
     ###data structure to construct the rotation sign for rotary motor
     numSeg = 20
-    rotS = list(map((lambda n: pi/2+n*2.0*pi/numSeg), list(range(numSeg*3/4 + 1))))
+    rotS = list(map((lambda n: np.pi/2+n*2.0*np.pi/numSeg), list(range(numSeg*3/4 + 1))))
     zOffset = 0.005
     scaleS = 0.4
     drawing_globals.rotS0n = rotS0n = list(map(
-        (lambda a: (scaleS*cos(a), scaleS*sin(a), 0.0 - zOffset)), rotS))
+        (lambda a: (scaleS*np.cos(a), scaleS*np.sin(a), 0.0 - zOffset)), rotS))
     drawing_globals.rotS1n = rotS1n = list(map(
-        (lambda a: (scaleS*cos(a), scaleS*sin(a), 1.0 + zOffset)), rotS))
+        (lambda a: (scaleS*np.cos(a), scaleS*np.sin(a), 1.0 + zOffset)), rotS))
 
     ###Linear motor arrow sign data structure
     drawing_globals.halfHeight = 0.45
-    drawing_globals.halfEdge = halfEdge = 3.0 * scaleS * sin(pi/numSeg)
+    drawing_globals.halfEdge = halfEdge = 3.0 * scaleS * np.sin(np.pi/numSeg)
 
     arrow0Vertices = [
         (rotS0n[-1][0]-halfEdge, rotS0n[-1][1], rotS0n[-1][2]),
@@ -424,7 +422,7 @@ def init_diamond():
     drawing_globals.sp0 = sp0 = 0.0
     #bruce 051102 replaced 1.52 with this constant (1.544),
     #  re bug 900 (partial fix.)
-    drawing_globals.sp1 = sp1 = DIAMOND_BOND_LENGTH / sqrt(3.0)
+    drawing_globals.sp1 = sp1 = DIAMOND_BOND_LENGTH / np.sqrt(3.0)
     sp2 = 2.0*sp1
     sp3 = 3.0*sp1
     drawing_globals.sp4 = sp4 = 4.0*sp1
@@ -476,7 +474,7 @@ def init_cube():
                                       1.0, -1.0, -1.0]
         assert flatCubeVertices == flatCubeVertices_hardcoded
 
-    sq3 = sqrt(3.0)/3.0
+    sq3 = np.sqrt(3.0)/3.0
     drawing_globals.cubeNormals = [
         [-sq3, sq3, -sq3], [-sq3, sq3, sq3],
         [sq3, sq3, sq3], [sq3, sq3, -sq3],

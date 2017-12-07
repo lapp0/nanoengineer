@@ -34,7 +34,7 @@ from qt import *
 from qtcanvas import *
 from qtgl import *
 from OpenGL.GL import *
-import Numeric
+import numpy as np
 import sys
 import random
 import time
@@ -54,7 +54,7 @@ class MyGLWidget(QGLWidget):
             QGLWidget.__init__(self, parent, name)
 
         # point of view, and half-height of window in Angstroms
-        self.pov = Numeric.array((0.0, 0.0, 0.0))
+        self.pov = np.array((0.0, 0.0, 0.0))
         self.scale = 10.0
         #self.quat = Q(1, 0, 0, 0)
 
@@ -79,7 +79,7 @@ class MyGLWidget(QGLWidget):
     def resetView(self):
         '''Subclass can override this method with different <scale>, so call this version in the overridden
            version. '''
-        self.pov = Numeric.array((0.0, 0.0, 0.0))
+        self.pov = np.array((0.0, 0.0, 0.0))
         #self.quat = Q(1, 0, 0, 0)
 
     def resizeGL(self, width, height):

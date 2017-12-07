@@ -10,7 +10,7 @@ from qt import *
 from qtcanvas import *
 from qtgl import *
 from OpenGL.GL import *
-import Numeric
+import numpy as np
 import sys
 import random
 import time
@@ -151,7 +151,7 @@ class Craft(CruftDialog.CruftDialog):
     def paintEvent(self, e):
         """Draw a colorful collection of lines and circles.
         """
-        white = Numeric.array((1.0, 1.0, 1.0), Numeric.Float)
+        white = np.array((1.0, 1.0, 1.0), np.float64)
         # clearing works fine
         glClearColor(0.0, 0.5, 0.0, 0.0)
         glClear(GL_COLOR_BUFFER_BIT)
@@ -162,8 +162,8 @@ class Craft(CruftDialog.CruftDialog):
             glPushAttrib(GL_LIST_BIT)
 
             glListBase(self.fontOffset)
-            # PyOpenGL's glCallLists requires a Numeric array
-            glCallLists(Numeric.array(list(map(ord, str))))
+            # PyOpenGL's glCallLists requires a numpy array
+            glCallLists(np.array(list(map(ord, str))))
 
             # glCallList(self.fontOffset + ord('A'))
             glPopAttrib()

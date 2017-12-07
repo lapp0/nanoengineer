@@ -27,11 +27,8 @@ gl_lighting.py gl_buffers.py
 
 _DRAW_BONDS = True # Debug/test switch. Similar constant in chunk.py.
 
-# the imports from math vs. Numeric are as discovered in existing code
-# as of 2007/06/25.  It's not clear why acos is coming from math...
 from math import acos
-import Numeric
-from Numeric import pi
+import numpy as np
 
 # russ 080519 No doubt many of the following imports are unused.
 # When the dust settles, the unnecessary ones will be removed.
@@ -244,13 +241,13 @@ def drawcylinder_worker(params):
 
     ##Huaicai 1/17/05: To avoid rotate around (0, 0, 0), which causes
     ## display problem on some platforms
-    angle = -acos(axis[2])*180.0/pi
+    angle = -acos(axis[2])*180.0/np.pi
     if (axis[2]*axis[2] >= 1.0):
         glRotate(angle, 0.0, 1.0, 0.0)
     else:
         glRotate(angle, axis[1], -axis[0], 0.0)
 
-    glScale(radius,radius,Numeric.dot(vec,vec)**.5)
+    glScale(radius, radius, np.dot(vec,vec)**.5)
     glCallList(drawing_globals.CylList)
     if capped:
         glCallList(drawing_globals.CapList)

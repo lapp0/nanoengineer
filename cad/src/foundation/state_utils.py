@@ -166,6 +166,7 @@ from foundation.state_constants import UNDO_SPECIALCASE_ATOM, UNDO_SPECIALCASE_B
 from foundation.state_constants import ATOM_CHUNK_ATTRIBUTE_NAME
 from foundation.state_constants import _UNSET_, _Bugval
 
+import numpy as np
 import foundation.env as env
 from utilities.debug import print_compact_stack
 from utilities import debug_flags
@@ -1021,10 +1022,10 @@ _known_type_scanners[ InstanceType ] = _scan_Instance
 # ==
 
 def copy_Numeric_array(obj):
-    if obj.typecode() == PyObject:
+    if obj.typecode() == np.PyObject:
         if (env.debug() or DEBUG_PYREX_ATOMS):
             print("atom_debug: ran copy_Numeric_array, PyObject case") # remove when works once ###@@@
-        return array( list(map( copy_val, obj)) )
+        return np.array( list(map( copy_val, obj)) )
             ###e this is probably incorrect for multiple dimensions; doesn't matter for now.
             # Note: We can't assume the typecode of the copied array should also be PyObject,
             # since _copyOfObject methods could return anything, so let it be inferred.
@@ -1038,8 +1039,8 @@ def copy_Numeric_array(obj):
     return obj.copy() # use Numeric's copy method for Character and number arrays
         ###@@@ verify ok from doc of this method...
 
-def scan_Numeric_array(obj, func):
-    if obj.typecode() == PyObject:
+def  scan_Numeric_array(obj, func):
+    if obj.typecode() == np.PyObject:
         # note: this doesn't imply each element is an InstanceType instance,
         # just an arbitrary Python value
         if env.debug() or DEBUG_PYREX_ATOMS:
@@ -1051,14 +1052,11 @@ def scan_Numeric_array(obj, func):
         ###e this is probably correct but far too slow for multiple dimensions; doesn't matter for now.
     return
 
-try:
-    from Numeric import array, PyObject
-except:
-    if env.debug() or DEBUG_PYREX_ATOMS:
+
         print("fyi: can't import array, PyObject from Numeric, so not registering its copy & scan functions")
 else:
     # note: related code exists in utilities/Comparison.py.
-    numeric_array_type = type(array(list(range(2))))
+    numeric_array_type = type(np.array(list(range(2))))
         # note: __name__ is 'array', but Numeric.array itself is a
         # built-in function, not a type
     assert numeric_array_type != InstanceType
@@ -2153,14 +2151,13 @@ class StateMixin( _eq_id_mixin_, IdentityCopyMixin ):
 
 def _test():
     print("testing some simple cases of copy_val")
-    from Numeric import array
     list(map( _test1, [2,
                   3,
                   "string",
                   [4,5],
                   (6.0,),
                   {7:8,9:10},
-                  array([2,3]),
+                  np.array([2,3]),
                   None] ))
     print("done")
 

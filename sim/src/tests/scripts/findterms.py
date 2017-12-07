@@ -51,7 +51,7 @@ import getopt
 from MmpFile import MmpFile
 from XyzFile import XyzFile
 import math
-import Numeric
+import numpy as np
 
 # How much variation do we permit in bond lengths and bond
 # angles before we think it's a problem? For now these are
@@ -64,20 +64,20 @@ ANGLE_TOLERANCE = 10     # degrees
 # Borrow stuff from VQT.py
 
 def V(*v):
-    return Numeric.array(v, Numeric.Float)
+    return np.array(v, np.float64)
 
 def vlen(v1):
-    return math.sqrt(Numeric.dot(v1, v1))
+    return math.sqrt(np.dot(v1, v1))
 
 def angleBetween(vec1, vec2):
     TEENY = 1.0e-10
-    lensq1 = Numeric.dot(vec1, vec1)
+    lensq1 = np.dot(vec1, vec1)
     if lensq1 < TEENY:
         return 0.0
-    lensq2 = Numeric.dot(vec2, vec2)
+    lensq2 = np.dot(vec2, vec2)
     if lensq2 < TEENY:
         return 0.0
-    dprod = Numeric.dot(vec1 / lensq1**.5, vec2 / lensq2**.5)
+    dprod = np.dot(vec1 / lensq1**.5, vec2 / lensq2**.5)
     if dprod >= 1.0:
         return 0.0
     if dprod <= -1.0:

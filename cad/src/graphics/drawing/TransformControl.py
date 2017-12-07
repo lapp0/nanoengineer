@@ -73,13 +73,13 @@ See design comments on:
 import graphics.drawing.drawing_constants as drawing_constants
 
 from geometry.VQT import Q
-import Numeric
+import numpy as np
 import math
 
 from OpenGL.GL import glTranslatef, glRotatef
 
 def floatIdent(size):
-    return Numeric.asarray(Numeric.identity(size), Numeric.Float)
+    return np.asarray(np.identity(size), np.float64)
 
 def qmat4x4(quat):
     """
@@ -138,7 +138,7 @@ class TransformControl:
         """
         Post-multiply self's transform with a rotation given by a quaternion.
         """
-        self.transform = Numeric.matrixmultiply(self.transform, qmat4x4(quat))
+        self.transform = np.matrixmultiply(self.transform, qmat4x4(quat))
         self.changed = drawing_constants.eventStamp()
         return
 

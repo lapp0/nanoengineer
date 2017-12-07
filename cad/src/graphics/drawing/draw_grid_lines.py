@@ -19,7 +19,7 @@ does drawer.drawGrid also belong here?
 # the imports from math vs. Numeric are as discovered in existing code
 # as of 2007/06/25 [when this was part of drawer.py].
 from math import floor, ceil
-from Numeric import sqrt
+import numpy as np
 
 from OpenGL.GL import glBegin
 ##from OpenGL.GL import GL_BLEND
@@ -93,7 +93,7 @@ SiCGridList = None # TODO: make this private
 #              0          sic_uLen     2*sic_uLen    3*sic_uLen
 #
 sic_uLen = 1.8   # Si-C bond length (I think)
-sic_yU = sic_uLen * sqrt(3.0) / 2
+sic_yU = sic_uLen * np.sqrt(3.0) / 2
 sic_vpdat = [[0.0 * sic_uLen, 1.0 * sic_yU, 0.0],
              [1.5 * sic_uLen, 0.0 * sic_yU, 0.0],
              [1.0 * sic_uLen, 1.0 * sic_yU, 0.0],

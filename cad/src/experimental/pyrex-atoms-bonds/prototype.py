@@ -6,7 +6,7 @@ import string
 import unittest
 import time
 import types
-import Numeric
+import numpy as np
 
 # This is a prototype of the desired API for Pyrex atoms, bonds, and
 # atom sets. See "Pyrex atoms and bonds" page on the wiki.
@@ -63,7 +63,7 @@ int followbond(int fromAtom, struct bond *b)
 def isSmallInteger(x):
     return type(x) == int
 def isNumericArray(x):
-    return type(x) == Numeric.ArrayType
+    return type(x) == np.ndarray
 
 class CStruct:
     def __init__(self):
@@ -204,7 +204,7 @@ class AtomSetBase(CStruct):
         return other
     # should there also be methods for map and reduce?
     def atomInfo(self):
-        ar = Numeric.zeros((len(list(self.keys())), 4), 'd')
+        ar = np.zeros((len(list(self.keys())), 4), 'd')
         i = 0
         for k in list(self.keys()):
             atm = self[k]
@@ -216,7 +216,7 @@ class Structure:
     def __init__(self):
         self.bondlist = [ ]
         self.atomset = AtomSetBase()
-        self.atomArray = None   # Numeric array
+        self.atomArray = None   # numpy array
     def __len__(self):
         return len(self.atomArray)
     def bondThese(self, atm1, atm2, order):
@@ -250,7 +250,7 @@ class Structure:
 
 def water():
     w = Structure()
-    w.atomArray = Numeric.array(
+    w.atomArray = np.array(
         ((1.0, -0.983, -0.008, 0.000),  # hydrogen
          (8.0, 0.017, -0.008, 0.000),   # oxygen
          (1.0, 0.276, -0.974, 0.000)))  # hydrogen

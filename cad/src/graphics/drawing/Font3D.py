@@ -17,8 +17,7 @@ bruce 071030 - split Font3D out of dimensions module (since used in drawer.py)
 __author__ = "Will"
 
 import types
-import Numeric
-from Numeric import dot
+import numpy as np
 
 from OpenGL.GL import glVertex
 
@@ -363,7 +362,7 @@ class Font3D:
                         y1 = SCALE * (HEIGHT - 1 - y)
                     else:
                         y1 = SCALE * y
-                    return Numeric.array((xpos + yoff1 + y1, ypos + fx(x), 0.0))
+                    return np.array((xpos + yoff1 + y1, ypos + fx(x), 0.0))
             else:
                 xpos += xgap
                 ypos -= halfheight * SCALE
@@ -372,7 +371,7 @@ class Font3D:
                         y1 = SCALE * (HEIGHT - 1 - y)
                     else:
                         y1 = SCALE * y
-                    return Numeric.array((xpos + fx(x), ypos + yoff1 + y1, 0.0))
+                    return np.array((xpos + fx(x), ypos + yoff1 + y1, 0.0))
             self.tfm = tfm
 
     def drawString(self, str, yoff=1.0, color=None, tfm=None,
@@ -390,7 +389,7 @@ class Font3D:
             p0 = self.tfm(0, 0, yoff, False)
             textOutOfScreen = cross(self.tfm(1, 0, yoff, False) - p0,
                                     self.tfm(0, 1, yoff, False) - p0)
-            yflip = dot(textOutOfScreen, self.outOfScreen) < 0.0
+            yflip = np.dot(textOutOfScreen, self.outOfScreen) < 0.0
             def tfmgen(i):
                 def tfm2(x, y):
                     return self.tfm(x + (WIDTH+1) * fi(i), y, yoff, yflip)

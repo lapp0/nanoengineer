@@ -14,8 +14,7 @@ bruce 071030 - split Font3D out of dimensions module (since used in drawer.py)
 __author__ = "Will"
 
 import math
-import Numeric
-from Numeric import dot
+import numpy as np
 
 from utilities import debug_flags
 from geometry.VQT import cross
@@ -41,9 +40,9 @@ class CylindricalCoordinates:
             raise ZeroLengthCylinder()
         self.zinv = 1.0 / zlen
         self.zn = zn = norm(z)
-        u = norm(uhint - (dot(uhint, z) / zlen**2) * z)
+        u = norm(uhint - (np.dot(uhint, z) / zlen**2) * z)
         if vlen(u) < 1.0e-4:
-            u = norm(uhint2 - (dot(uhint2, z) / zlen**2) * z)
+            u = norm(uhint2 - (np.dot(uhint2, z) / zlen**2) * z)
         v = cross(zn, u)
         self.u = u
         self.v = v
@@ -55,11 +54,11 @@ class CylindricalCoordinates:
                  vecrepr(self.u), vecrepr(self.v)))
     def rtz(self, pt):
         d = pt - self.p0
-        z = dot(d, self.zn)
+        z = np.dot(d, self.zn)
         d = d - z * self.zn
         r = vlen(d)
-        theta = Numeric.arctan2(dot(d, self.v), dot(d, self.u))
-        return Numeric.array((r, theta, z), 'd')
+        theta = np.arctan2(np.dot(d, self.v), np.dot(d, self.u))
+        return np.array((r, theta, z), 'd')
     def xyz(self, rtz):
         r, t, z = rtz
         du = (r * math.cos(t)) * self.u
@@ -112,11 +111,11 @@ def drawLinearDimension(color,      # what color are we drawing this in
     drawline(color, v1, arrow11)
     # draw the text for the numerical measurement, make
     # sure it goes from left to right
-    xflip = dot(csys.z, right) < 0
+    xflip = np.dot(csys.z, right) < 0
     # then make sure it's right side up
     theoreticalRight = (xflip and -csys.z) or csys.z
     theoreticalOutOfScreen = cross(theoreticalRight, bdiff)
-    yflip = dot(theoreticalOutOfScreen, outOfScreen) < 0
+    yflip = np.dot(theoreticalOutOfScreen, outOfScreen) < 0
     if debug_flags.atom_debug:
         print("DEBUG INFO FROM drawLinearDimension")
         print(csys)
@@ -202,13 +201,13 @@ def drawAngleDimension(color, right, up, bpos, p0, p1, p2, text,
     texty = norm(csys.xyz((br + 0.5 + h, midangle, 0)) - tmidpoint)
 
     # make sure the text runs from left to right
-    if dot(textx, right) < 0:
+    if np.dot(textx, right) < 0:
         textx = -textx
 
     # make sure the text isn't upside-down
     outOfScreen = cross(right, up)
     textForward = cross(textx, texty)
-    if dot(outOfScreen, textForward) < 0:
+    if np.dot(outOfScreen, textForward) < 0:
         tmidpoint = csys.xyz((br + 1.5, midangle, 0))
         texty = -texty
 

@@ -14,10 +14,7 @@ __author__ = "Will"
 
 ## import threading #bruce 060101 removed this since I think it's not used now
 
-try:
-    import Numeric
-except ImportError:
-    import numpy as Numeric
+import numpy as np
 import unittest
 
 cdef extern from "simhelp.c": 
@@ -398,8 +395,8 @@ cdef class _Simulator:
     def getFrame(self):
         frm = getFrame_c()
         num_atoms = len(frm) / (3 * 8)
-        array = Numeric.fromstring(frm, Numeric.Float64)
-        return Numeric.resize(array, [num_atoms, 3])
+        array = np.fromstring(frm, np.float64)
+        return np.resize(array, [num_atoms, 3])
 
 _theSimulator = None
 

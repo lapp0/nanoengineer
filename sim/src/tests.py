@@ -22,10 +22,8 @@ __author__ = "Will"
 
 QStringList = list
 
-try:
-    import Numeric
-except ImportError:
-    import numpy as Numeric
+
+import numpy as np
 import math
 import md5
 import os
@@ -103,20 +101,20 @@ class LengthAngleMismatch(AssertionError):
     pass
 
 def V(*v):
-    return Numeric.array(v, Numeric.Float)
+    return np.array(v, np.Float)
 
 def vlen(v1):
-    return math.sqrt(Numeric.dot(v1, v1))
+    return math.sqrt(np.dot(v1, v1))
 
 def angleBetween(vec1, vec2):
     TEENY = 1.0e-10
-    lensq1 = Numeric.dot(vec1, vec1)
+    lensq1 = np.dot(vec1, vec1)
     if lensq1 < TEENY:
         return 0.0
-    lensq2 = Numeric.dot(vec2, vec2)
+    lensq2 = np.dot(vec2, vec2)
     if lensq2 < TEENY:
         return 0.0
-    dprod = Numeric.dot(vec1 / lensq1**.5, vec2 / lensq2**.5)
+    dprod = np.dot(vec1 / lensq1**.5, vec2 / lensq2**.5)
     if dprod >= 1.0:
         return 0.0
     if dprod <= -1.0:

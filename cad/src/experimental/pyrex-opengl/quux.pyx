@@ -1,4 +1,7 @@
-# Copyright 2006-2007 Nanorex, Inc.  See LICENSE file for details. 
+# Copyright 2006-2007 Nanorex, Inc.  See LICENSE file for details.
+
+"""
+numeric no longer in use and this file is not used
 import Numeric
 import types
 import unittest
@@ -290,3 +293,4 @@ def test():
     suite = unittest.makeSuite(Tests, 'test')
     runner = unittest.TextTestRunner()
     runner.run(suite)
+"""

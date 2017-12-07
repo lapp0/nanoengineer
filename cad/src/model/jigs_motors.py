@@ -11,14 +11,8 @@ History:
 
 """
 
-# imports from math vs. Numeric as discovered from running code on 2007/06/25.
 from math import asin, atan2
-
-from Numeric import pi
-from Numeric import sqrt
-from Numeric import dot
-from Numeric import argmax
-from Numeric import reshape
+import numpy as np
 
 from OpenGL.GL import glPushMatrix
 from OpenGL.GL import glTranslatef
@@ -144,7 +138,7 @@ class Motor(Jig):
         # between "align to chunk" and "recenter on atoms".
         #bruce 060116 modified this fix to avoid setting axis to V(0,0,0) if it's perpendicular to old axis.
         newAxis = chunk.getaxis()
-        if dot(self.axis,newAxis) < 0:
+        if np.dot(self.axis,newAxis) < 0:
             newAxis = - newAxis
         self.axis = newAxis
         self.assy.changed()   # wware 060116 bug 1331 - assembly changed when axis changed
@@ -373,9 +367,9 @@ class RotaryMotor(Motor):
         modify it and might or might not return the same (modified) object.
         """
         axis = self.axis
-        dots = dot(posns, axis)
+        dots = np.dot(posns, axis)
         ## axis_times_dots = axis * dots #  guess from this line: exceptions.ValueError: frames are not aligned
-        axis_times_dots = A(len(dots) * [axis]) * reshape(dots,(len(dots),1)) #k would it be ok to just use axis * ... instead?
+        axis_times_dots = A(len(dots) * [axis]) * np.reshape(dots,(len(dots),1)) #k would it be ok to just use axis * ... instead?
         posns -= axis_times_dots
         ##posns = norm(posns) # some exception from this
         posns = A(list(map(norm, posns)))
@@ -443,7 +437,7 @@ class RotaryMotor(Motor):
         angs = A(angs)
         gaps = angs[1:] - angs[:-1]
         gaps = [angs[0] - angs[-1] + 360] + list(gaps)
-        i = argmax(gaps)
+        i = np.argmax(gaps)
         ##e Someday we should check whether this largest gap is large enough for this to make sense (>>180);
         # we are treating the angles as "clustered together in the part of the circle other than this gap"
         # and averaging them within that cluster. It would also make sense to discard outliers,
@@ -488,7 +482,7 @@ class RotaryMotor(Motor):
         try:
             glTranslatef( self.center[0], self.center[1], self.center[2])
             q = self.quat
-            glRotatef( q.angle*180.0/pi, q.x, q.y, q.z)
+            glRotatef( q.angle*180.0/np.pi, q.x, q.y, q.z)
 
             orig_center = V(0.0, 0.0, 0.0)
 
@@ -580,7 +574,7 @@ def angle(x,y): #bruce 050518; see also atan2 (noticed used in VQT.py) which mig
     if y > x: return 90 - angle(y,x)
     #e here we could normalize length if we felt like it,
     # and/or repair any glitches in continuity at exactly 45 degrees
-    res = asin(y)*180/pi
+    res = asin(y)*180/np.pi
     #print "angle(%r,%r) -> %r" % (x,y,res)
     if res < 0:
         return res + 360 # should never happen
@@ -686,8 +680,8 @@ class LinearMotor(Motor):
 
     def _getinfo_TEST(self): # please leave in for debugging POV-Ray lmotor macro. mark 060324
         a = self.axen()
-        xrot = -atan2(a[1], sqrt(1-a[1]*a[1]))*180/pi
-        yrot = atan2(a[0], sqrt(1-a[0]*a[0]))*180/pi
+        xrot = -atan2(a[1], np.sqrt(1-a[1]*a[1]))*180/np.pi
+        yrot = atan2(a[0], np.sqrt(1-a[0]*a[0]))*180/np.pi
 
         return  "[Object: Linear Motor] [Name: " + str(self.name) + "] " + \
                 "[Force = " + str(self.force) + " pN] " + \
@@ -720,7 +714,7 @@ class LinearMotor(Motor):
         try:
             glTranslatef( self.center[0], self.center[1], self.center[2])
             q = self.quat
-            glRotatef( q.angle*180.0/pi, q.x, q.y, q.z)
+            glRotatef( q.angle*180.0/np.pi, q.x, q.y, q.z)
 
             orig_center = V(0.0, 0.0, 0.0)
             drawbrick(color, orig_center, self.axis,
@@ -749,8 +743,8 @@ class LinearMotor(Motor):
         c = self.posn()
         a = self.axen()
 
-        xrot = -atan2(a[1], sqrt(1-a[1]*a[1]))*180/pi
-        yrot =  atan2(a[0], sqrt(1-a[0]*a[0]))*180/pi
+        xrot = -atan2(a[1], np.sqrt(1-a[1]*a[1]))*180/np.pi
+        yrot =  atan2(a[0], np.sqrt(1-a[0]*a[0]))*180/np.pi
 
         file.write("lmotor(" \
                    + povpoint([self.width *  0.5, self.width *  0.5, self.length *  0.5]) + "," \

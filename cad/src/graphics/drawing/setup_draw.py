@@ -28,9 +28,7 @@ ColorSorter.py CS_workers.py c_renderer.py CS_draw_primitives.py drawers.py
 gl_lighting.py gl_buffers.py
 """
 
-# the imports from math vs. Numeric are as discovered in existing code
-# as of 2007/06/25.  It's not clear why acos is coming from math...
-from Numeric import sin, cos, pi
+import numpy as np
 
 from OpenGL.GL import GL_ARRAY_BUFFER_ARB
 from OpenGL.GL import glBegin
@@ -185,7 +183,6 @@ def setup_drawer():
     didlines = {} # don't draw each triangle edge more than once
 
     def shoulddoline(v1,v2):
-        # make sure not list (unhashable) or Numeric array (bug in __eq__)
         v1 = tuple(v1)
         v2 = tuple(v2)
         if (v1,v2) not in didlines:
@@ -329,8 +326,8 @@ def setup_drawer():
     glNewList(circleList, GL_COMPILE)
     glBegin(GL_LINE_LOOP)
     for ii in range(60):
-        x = cos(ii*2.0*pi/60)
-        y = sin(ii*2.0*pi/60)
+        x = np.cos(ii*2.0*np.pi/60)
+        y = np.sin(ii*2.0*np.pi/60)
         glVertex3f(x, y, 0.0)
     glEnd()
     glEndList()
@@ -340,8 +337,8 @@ def setup_drawer():
     glNewList(filledCircleList, GL_COMPILE)
     glBegin(GL_POLYGON)
     for ii in range(60):
-        x = cos(ii*2.0*pi/60)
-        y = sin(ii*2.0*pi/60)
+        x = np.cos(ii*2.0*np.pi/60)
+        y = np.sin(ii*2.0*np.pi/60)
         glVertex3f(x, y, 0.0)
     glEnd()
     glEndList()

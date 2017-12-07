@@ -8,7 +8,7 @@
 
 import unittest
 from samevals import same_vals, setArrayType
-import Numeric
+import numpy as np
 
 class SameValsTests(unittest.TestCase):
 
@@ -45,65 +45,65 @@ class SameValsTests(unittest.TestCase):
         assert same_vals(a, b)
 
     def test_tuple1(self):
-        # anyone know how to generate a zero length tuple?
+        # anyone know how to generate a zero length tuple?   <- lol
         assert same_vals((1,), (1,))
         assert not same_vals((1, 2), (1,))
         assert same_vals((1, 2), (1, 2))
         assert not same_vals((1, 2), (2, 1))
 
-    def test_numericArray1(self):
-        a = Numeric.array((1, 2, 3))
-        b = Numeric.array((1, 2, 3))
+    def test_numpyArray1(self):
+        a = np.array((1, 2, 3))
+        b = np.array((1, 2, 3))
         assert same_vals(a, b)
-        b = Numeric.array((1, 2, 4))
+        b = np.array((1, 2, 4))
         assert not same_vals(a, b)
-        b = Numeric.array((1, 2))
+        b = np.array((1, 2))
         assert not same_vals(a, b)
 
-        a = Numeric.array([[1, 2], [3, 4]])
-        b = Numeric.array([[1, 2], [3, 4]])
+        a = np.array([[1, 2], [3, 4]])
+        b = np.array([[1, 2], [3, 4]])
         assert same_vals(a, b)
 
-        b = Numeric.array([4, 3])
+        b = np.array([4, 3])
         c = a[1, 1::-1]
         assert same_vals(b, c)
 
-        a = Numeric.array([[[[ 1,  2,  3], [ 4,  5,  6], [ 7,  8,  9]],
+        a = np.array([[[[ 1,  2,  3], [ 4,  5,  6], [ 7,  8,  9]],
                             [[10, 11, 12], [13, 14, 15], [16, 17, 18]],
                             [[19, 20, 21], [22, 23, 24], [25, 26, 27]]],
                            [[[28, 29, 30], [31, 32, 33], [34, 35, 36]],
                             [[37, 38, 39], [40, 41, 42], [43, 44, 45]],
                             [[46, 47, 48], [49, 50, 51], [52, 53, 54]]]])
-        b = Numeric.array([[[[ 1,  2,  3], [ 4,  5,  6], [ 7,  8,  9]],
+        b = np.array([[[[ 1,  2,  3], [ 4,  5,  6], [ 7,  8,  9]],
                             [[10, 11, 12], [13, 14, 15], [16, 17, 18]],
                             [[19, 20, 21], [22, 23, 24], [25, 26, 27]]],
                            [[[28, 29, 30], [31, 32, 33], [34, 35, 36]],
                             [[37, 38, 39], [40, 41, 42], [43, 44, 45]],
                             [[46, 47, 48], [49, 50, 51], [52, 53, 54]]]])
         assert same_vals(a, b)
-        b = Numeric.array([[[[ 1,  2,  3], [ 4,  5,  6], [ 7,  8,  9]],
+        b = np.array([[[[ 1,  2,  3], [ 4,  5,  6], [ 7,  8,  9]],
                             [[10, 11, 12], [13, 14, 15], [16, 17, 18]],
                             [[19, 20, 21], [22, 23, 24], [25, 26, 27]]],
                            [[[28, 29, 30], [31, 32, 33], [34, 35, 36]],
                             [[37, 38, 39], [40, 41, 42], [43, 44, 45]],
                             [[46, 47, 48], [49, 50, 51], [52, 53, 55]]]])
         assert not same_vals(a, b)
-        b = Numeric.array([[[[ 1,  2,  3], [ 4,  5,  6], [ 7,  8,  9]],
+        b = np.array([[[[ 1,  2,  3], [ 4,  5,  6], [ 7,  8,  9]],
                             [[10, 11, 12], [13, 14, 15], [16, 17, 18]],
                             [[19, 20, 21], [22, 23, 24], [25, 26, 27]]],
                            [[[28, 29, 30], [31, 30, 33], [34, 35, 36]],
                             [[37, 38, 39], [40, 41, 42], [43, 44, 45]],
                             [[46, 47, 48], [49, 50, 51], [52, 53, 54]]]])
         assert not same_vals(a, b)
-        b = Numeric.array([[[[ 1,  2,  3], [ 4,  5,  6], [ 7,  8,  9]],
+        b = np.array([[[[ 1,  2,  3], [ 4,  5,  6], [ 7,  8,  9]],
                             [[10, 11, 12], [13, 14, 15], [16, 17, 18]],
                             [[19, 20, 21], [22, 23, 24], [25, 26, 27]]]])
         assert not same_vals(a, b)
 
-        a = Numeric.array(["abc", "def"], Numeric.PyObject)
-        b = Numeric.array(["abc", "def"], Numeric.PyObject)
+        a = np.array(["abc", "def"], np.PyObject)
+        b = np.array(["abc", "def"], np.PyObject)
         assert same_vals(a, b)
-        b = Numeric.array(["abc", "defg"], Numeric.PyObject)
+        b = np.array(["abc", "defg"], np.PyObject)
         assert not same_vals(a, b)
 
 def test():
@@ -112,5 +112,5 @@ def test():
     runner.run(suite)
 
 if __name__ == "__main__":
-    setArrayType(type(Numeric.array((1,2,3))))
+    setArrayType(type(np.array((1,2,3))))
     test()

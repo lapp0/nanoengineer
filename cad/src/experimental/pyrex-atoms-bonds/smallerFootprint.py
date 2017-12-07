@@ -4,7 +4,7 @@
 
 import time
 import unittest
-import Numeric
+import numpy as np
 
 stuff = None
 #stuff = [ ]
@@ -131,7 +131,7 @@ class Set:
             self.population += 1
 
     def asArray(self):
-        z = Numeric.zeros(self.population, 'u')
+        z = np.zeros(self.population, 'u')
         lst = [ ]
         r = self.root
         while r != None:
@@ -274,13 +274,13 @@ class Tests(unittest.TestCase):
 
     def test_AsArray(self):
         x = SetWithTestMethods()
-        a = Numeric.array(list(range(N)), Numeric.UInt32)
+        a = np.array(list(range(N)), np.int32)
         x.addRange(0, N)
         assert len(x) == len(a)
         assert len(x) == N
         xa = x.asArray()
         a = a - xa
-        assert Numeric.vdot(a, a) == 0
+        assert np.vdot(a, a) == 0
 
     # MEMORY TEST
 
