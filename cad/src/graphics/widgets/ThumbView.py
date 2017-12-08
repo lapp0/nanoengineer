@@ -9,7 +9,7 @@ code copied from GLPane)
 @copyright: 2004-2009 Nanorex, Inc.  See LICENSE file for details.
 """
 
-from Numeric import dot
+import numpy as np
 
 from OpenGL.GL import GL_NORMALIZE
 from OpenGL.GL import glEnable
@@ -569,7 +569,7 @@ class ThumbView(GLPane_minimal):
             # reset that scale when loading a new model (latter is probably
             # already done, but I didn't check). See also the comments
             # in def wheelEvent.) [bruce 080220 comment]
-        dp = - dot(pxyz, pn)
+        dp = - np.dot(pxyz, pn)
 
         # Save projection matrix before it's changed.
         glMatrixMode(GL_PROJECTION)

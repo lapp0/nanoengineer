@@ -27,7 +27,7 @@ from OpenGL.GLU import gluUnProject
 from geometry.VQT import V, A, norm
 from geometry.VQT import planeXline, ptonline
 
-from Numeric import dot
+import numpy as np
 
 import foundation.env as env
 
@@ -1011,7 +1011,7 @@ class GLPane_event_methods(object, DebugMenuMixin):
 
         los = self.lineOfSight
 
-        k = dot(los, -self.pov - p1) / dot(los, p2 - p1)
+        k = np.dot(los, -self.pov - p1) / np.dot(los, p2 - p1)
 
         p2 = p1 + k*(p2-p1)
         return (p1, p2)
@@ -1157,4 +1157,3 @@ class GLPane_event_methods(object, DebugMenuMixin):
     pass
 
 # end
-

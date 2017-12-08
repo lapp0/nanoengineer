@@ -37,7 +37,7 @@ from OpenGL.GLU import gluPickMatrix
 from PyQt5.QtOpenGL import QGLFormat
 from PyQt5.QtOpenGL import QGLWidget
 
-from Numeric import dot
+import numpy as np
 
 from geometry.VQT import norm, angleBetween
 from geometry.VQT import V, Q
@@ -307,7 +307,7 @@ class GLPane_minimal(QGLWidget, GLPane_drawingset_methods, object): #bruce 07091
         # dot(vec, self.up) < 0 and dot(vec, self.right) == 0.
         vec = norm(vec)
         theta = angleBetween(vec, self.right)
-        if dot(vec, self.up) < 0:
+        if np.dot(vec, self.up) < 0:
             theta = - theta
         return theta
 

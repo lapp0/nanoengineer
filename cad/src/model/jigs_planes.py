@@ -19,7 +19,7 @@ Split more. Perhaps merge GridPlane with Plane (reference plane).
 """
 
 import math
-from Numeric import size, add
+import numpy as np
 
 from OpenGL.GL import glPushMatrix
 from OpenGL.GL import glTranslatef
@@ -93,7 +93,7 @@ class RectGadget(Jig):
 
         planeNorm = self._getPlaneOrientation(self.atomPos)
         self.quat = Q(V(0.0, 0.0, 1.0), planeNorm)
-        self.center = add.reduce(self.atomPos)/len(self.atomPos)
+        self.center = np.add.reduce(self.atomPos)/len(self.atomPos)
 
     def __computeBBox(self):
         """
@@ -349,7 +349,7 @@ class GridPlane(RectGadget):
 def povStrVec(va): # review: refile in povheader or so? [bruce 071215 comment]
     # used in other modules too
     rstr = '<'
-    for ii in range(size(va)):
+    for ii in range(np.size(va)):
         rstr += str(va[ii]) + ', '
 
     return rstr

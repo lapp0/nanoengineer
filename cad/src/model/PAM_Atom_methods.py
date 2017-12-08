@@ -35,7 +35,7 @@ entries for PAM elements, and some bond_geometry_error_string things
 # Atom, as opposed to on a PAM-specific subclass of class Atom; and having
 # that class Atom known directly to class Chunk.) [bruce 090119]
 
-from Numeric import dot
+import numpy as np
 
 from geometry.VQT import norm, V
 
@@ -85,7 +85,7 @@ def make_vec_perp_to_vec(vec1, vec2): #bruce 080405
     return a modified copy of vec1 with its component parallel to vec2 subtracted out.
     """
     remove_this_direction = norm(vec2)
-    return vec1 - dot(vec1, remove_this_direction) * remove_this_direction #k
+    return vec1 - np.dot(vec1, remove_this_direction) * remove_this_direction #k
 
 _GV5_DATA_INDEX = 2
 

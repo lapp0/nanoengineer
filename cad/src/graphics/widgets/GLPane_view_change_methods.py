@@ -14,7 +14,7 @@ bruce 080912 split this out of class GLPane
 import time
 import math
 
-from Numeric import dot
+import numpy as np
 from geometry.VQT import V, Q, norm, vlen
 
 import foundation.env as env
@@ -274,7 +274,7 @@ class GLPane_view_change_methods(object):
 
         # The rotation path may turn either the "short way" (less than 180) or the "long way" (more than 180).
         # Long paths can be prevented by negating one end (if the dot product is negative).
-        if dot(wxyz1, wxyz2) < 0:
+        if np.dot(wxyz1, wxyz2) < 0:
             wxyz2 = V(-q2.w, -q2.x, -q2.y, -q2.z)
 
         # Compute the maximum number of frames for the maximum possible
@@ -453,4 +453,3 @@ class GLPane_view_change_methods(object):
     pass
 
 # end
-

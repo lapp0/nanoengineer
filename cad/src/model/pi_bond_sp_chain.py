@@ -24,7 +24,7 @@ is to help change those directions in an organized way.)
 """
 
 import math
-from Numeric import dot
+import numpy as np
 
 from utilities import debug_flags
 from model.jigs import Jig
@@ -421,7 +421,7 @@ class PiBondSpChain(PerceivedStructureType):
 ##        if self.twist90 and i % 2 == 1:
 ##            bm1R_pvec_no_twist = norm(cross(axism1, bm1R_pvec_no_twist))
         # use negative if that fits better
-        if dot(bm1R_pvec_no_twist, self.bm1R_pvec) < 0:
+        if np.dot(bm1R_pvec_no_twist, self.bm1R_pvec) < 0:
             bm1R_pvec_no_twist = - bm1R_pvec_no_twist
         # total twist is shared over every bond
         # note: we care which direction we rotate around axism1
@@ -581,7 +581,7 @@ def pi_vectors(bond, out = DFLT_OUT, up = DFLT_UP, abs_coords = False): # rename
             pvec2 = pvec1
         else:
             # both vectors not None -- use them, but negate pvec2 if this makes them more aligned
-            if dot(pvec1, pvec2) < 0:
+            if np.dot(pvec1, pvec2) < 0:
                 pvec2 = - pvec2
     return pi_info_from_abs_pvecs( bond, bond_axis, pvec1, pvec2, abs_coords = abs_coords)
 
@@ -716,10 +716,10 @@ def p_vector_from_sp2_2_bonds(atom, bond, out = DFLT_OUT, up = DFLT_UP):
     lenv2p = vlen(v2p)
     if lenv2p < 0.01:
         # this entire case happens rarely or hopefully never (only when 2 sp2 bonds are parallel)
-        res = up - v1 * dot(up,v1)
+        res = up - v1 * np.dot(up,v1)
         if vlen(res) >= 0.01:
             return norm(res)
-        res = out - v1 * dot(out,v1)
+        res = out - v1 * np.dot(out,v1)
         return norm(out)
     return v2p / lenv2p
 

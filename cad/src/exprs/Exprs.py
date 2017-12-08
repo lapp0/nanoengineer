@@ -14,6 +14,9 @@ this file is getting kind of long - maybe split it in some sensible way?
 # note: this module should not import ExprsMeta, though its InstanceOrExpr subclass needs to (in another module).
 # instead, it is probably fully imported by ExprsMeta.
 
+import numpy as np
+from geometry.VQT import V, norm, vlen
+
 from utilities.debug import compact_stack
 from utilities.debug import print_compact_stack
 from utilities.debug import safe_repr
@@ -806,8 +809,6 @@ class tuple_Expr(OpExpr): #k not well reviewed, re how it should be used, esp. i
     pass
 
 # same as in basic.py:
-from Numeric import dot
-from geometry.VQT import V, norm, vlen
 
 class V_expr(OpExpr):
     """
@@ -837,7 +838,7 @@ def vlen_Expr(*args):
     return call_Expr( vlen, *args)
 
 def dot_Expr(*args):
-    return call_Expr( dot, *args)
+    return call_Expr( np.dot, *args)
 
 def max_Expr(*args):
     return call_Expr( max, *args)
@@ -1434,4 +1435,3 @@ class Symbol(SymbolicExpr):
 # note about Instance, Arg, Option, ArgOrOption, State -- they are now in another file to ease import-recursion issues.
 
 # end
-

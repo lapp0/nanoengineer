@@ -10,10 +10,11 @@ InternalCoordinatesToCartesian.py
 """
 
 from geometry.VQT import V
+import numpy as np
 
-from Numeric import zeros, Float, cos, sin, sqrt, pi
 
-DEG2RAD = (pi/180.0)
+DEG2RAD = (np.pi / 180.0)
+
 
 class InternalCoordinatesToCartesian(object):
     """
@@ -57,7 +58,7 @@ class InternalCoordinatesToCartesian(object):
                                    are defined before any actual data
                                    points are added.
         """
-        self._coords = zeros([length+1, 3], Float)
+        self._coords = np.zeros([length+1, 3], np.float64)
         if (initialCoordinates):
             self._coords[1][0] = initialCoordinates[0][0]
             self._coords[1][1] = initialCoordinates[0][1]
@@ -121,11 +122,11 @@ class InternalCoordinatesToCartesian(object):
         if (i != self._nextIndex):
             raise IndexError("next index is %d not %r" % (self._nextIndex, i))
 
-        cos_theta = cos(DEG2RAD * theta)
+        cos_theta = np.cos(DEG2RAD * theta)
         xb = self._coords[nb][0] - self._coords[na][0]
         yb = self._coords[nb][1] - self._coords[na][1]
         zb = self._coords[nb][2] - self._coords[na][2]
-        rba = 1.0 / sqrt(xb*xb + yb*yb + zb*zb)
+        rba = 1.0 / np.sqrt(xb*xb + yb*yb + zb*zb)
 
         if abs(cos_theta) >= 0.999:
             # Linear case
@@ -139,7 +140,7 @@ class InternalCoordinatesToCartesian(object):
             yc = self._coords[nc][1] - self._coords[na][1]
             zc = self._coords[nc][2] - self._coords[na][2]
 
-            xyb = sqrt(xb*xb + yb*yb)
+            xyb = np.sqrt(xb*xb + yb*yb)
 
             inv = False
             if xyb < 0.001:
@@ -150,7 +151,7 @@ class InternalCoordinatesToCartesian(object):
                 tmp = zb
                 zb = -xb
                 xb = tmp
-                xyb = sqrt(xb*xb + yb*yb)
+                xyb = np.sqrt(xb*xb + yb*yb)
                 inv = True
 
             costh = xb / xyb
@@ -158,10 +159,10 @@ class InternalCoordinatesToCartesian(object):
             xpc = xc * costh + yc * sinth
             ypc = yc * costh - xc * sinth
             sinph = zb * rba
-            cosph = sqrt(abs(1.0- sinph * sinph))
+            cosph = np.sqrt(abs(1.0- sinph * sinph))
             xqa = xpc * cosph + zc * sinph
             zqa = zc * cosph - xpc * sinph
-            yzc = sqrt(ypc * ypc + zqa * zqa)
+            yzc = np.sqrt(ypc * ypc + zqa * zqa)
             if yzc < 1e-8:
                 coskh = 1.0
                 sinkh = 0.0
@@ -169,9 +170,9 @@ class InternalCoordinatesToCartesian(object):
                 coskh = ypc / yzc
                 sinkh = zqa / yzc
 
-            sin_theta = sin(DEG2RAD * theta)
-            sin_phi = -sin(DEG2RAD * phi)
-            cos_phi = cos(DEG2RAD * phi)
+            sin_theta = np.sin(DEG2RAD * theta)
+            sin_phi = -np.sin(DEG2RAD * phi)
+            cos_phi = np.cos(DEG2RAD * phi)
 
             # Apply the bond length.
             xd = r * cos_theta

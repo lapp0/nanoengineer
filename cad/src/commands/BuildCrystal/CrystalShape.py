@@ -39,7 +39,7 @@ are fully implemented, and its use of .dl may become the only reason we need to
 keep that member around in CSDL.
 """
 
-from Numeric import dot, floor
+import numpy as np
 
 from geometry.VQT import vlen, V
 from OpenGL.GL import glNewList, glEndList, glCallList
@@ -271,7 +271,7 @@ class CrystalShape(shape):
                 self.curves += cbs[1:]
 
     def _hashAtomPos(self, pos):
-        return int(dot(V(1000000, 1000, 1), floor(pos * 1.2)))
+        return int(np.dot(V(1000000, 1000, 1), np.floor(pos * 1.2)))
 
     def _addCurve(self, layer, c):
         """

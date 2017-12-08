@@ -38,7 +38,7 @@ from utilities.constants import black, banana
 from dna.commands.MakeCrossovers.MakeCrossovers_Handle import MakeCrossovers_Handle
 
 from geometry.VQT import orthodist, norm, vlen, angleBetween
-from Numeric import dot
+import numpy as np
 from model.bonds import bond_direction
 
 
@@ -450,7 +450,7 @@ class CrossoverSite_Marker:
 
         theta = angleBetween(orthogonal_vector, centerVec)
 
-        if dot(centerVec, orthogonal_vector) < 1:
+        if np.dot(centerVec, orthogonal_vector) < 1:
             theta = 180.0 - theta
 
         if abs(theta) > MAX_ANGLE_BET_PLANE_NORMAL_AND_AVG_CENTER_VECTOR_OF_CROSSOVER_PAIRS:

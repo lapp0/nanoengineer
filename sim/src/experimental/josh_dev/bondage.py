@@ -1,7 +1,7 @@
 #! /usr/bin/python
 
 # Copyright 2005 Nanorex, Inc.  See LICENSE file for details.
-from Numeric import *
+import numpy as np
 from VQT import *
 from string import *
 import re
@@ -32,9 +32,9 @@ def readmmp(fname):
             order = ['1','2','3','a','g'].index(key[4])
             bonds += [(atnum,atnos[int(x)],order)
                       for x in re.findall("\d+",card[5:])]
-    pos = transpose(array(pos)/1000.0) # gives angstroms
-    poshape = shape(pos)
-    return elt, pos, array(bonds)
+    pos = np.transpose(array(pos)/1000.0) # gives angstroms
+    poshape = np.shape(pos)
+    return elt, pos, np.array(bonds)
 
 
 
@@ -84,9 +84,9 @@ elmnts=[("H",   1,   1.6737),
         ("Br", 35, 132.674),
         ("Kr", 36, 134.429)]
 
-elmass=array([0.0]+[1e-27*x[2] for x in elmnts])
+elmass = np.array([0.0]+[1e-27*x[2] for x in elmnts])
 
-enames=['X']+[x[0] for x in elmnts]
+enames = ['X']+[x[0] for x in elmnts]
 
 btypes = ['-', '=', '+','@', '#']
 
@@ -110,7 +110,7 @@ for lin in f.readlines():
 
     ks,r0,de = [float(m.group(p)) for p in [4,5,6]]
 
-    bt=sqrt(ks/(2.0*de))/10.0
+    bt=np.sqrt(ks/(2.0*de))/10.0
     stretchtable[which] = (ks,r0,de, bt)
     stretchtable[which1] = (ks,r0,de, bt)
 
@@ -144,30 +144,30 @@ def bondsetup(bonds):
     bond0 = bonds[:,0]
     bond1 = bonds[:,1]
 
-    sort0 = argsort(bond0)
-    x0=take(bond0,sort0)
+    sort0 = np.argsort(bond0)
+    x0=np.take(bond0,sort0)
     x=x0[1:]!=x0[:-1]
     x[0]=1
-    x=compress(x,arange(len(x)))
-    mash0=concatenate((array([0]),x+1))
-    spred0=zeros(n)
-    x=take(x0,mash0[1:])
-    put(spred0,x,1+arange(len(x)))
+    x=np.compress(x,arange(len(x)))
+    mash0=np.concatenate((array([0]),x+1))
+    spred0=np.zeros(n)
+    x=np.take(x0,mash0[1:])
+    np.put(spred0,x,1+arange(len(x)))
 
-    sort1 = argsort(bond1)
-    x1=take(bond1,sort1)
+    sort1 = np.argsort(bond1)
+    x1=np.take(bond1,sort1)
     x=x1[1:]!=x1[:-1]
     x[0]=1
-    x=compress(x,arange(len(x)))
-    mash1=concatenate((array([0]),x+1))
-    spred1=zeros(n)
-    x=take(x1,mash1[1:])
-    put(spred1,x,1+arange(len(x)))
+    x=np.compress(x,arange(len(x)))
+    mash1=np.concatenate((array([0]),x+1))
+    spred1=np.zeros(n)
+    x=np.take(x1,mash1[1:])
+    np.put(spred1,x,1+arange(len(x)))
 
     btlis = [bondstr(elt,x) for x in bonds]
-    KS = array([stretchtable[x][0] for x in btlis])
+    KS = np.array([stretchtable[x][0] for x in btlis])
     KS[0]=0.0
-    R0 = array([stretchtable[x][1] for x in btlis])
+    R0 = np.array([stretchtable[x][1] for x in btlis])
     R0[0]=0.0
 
     bondict = {}
@@ -180,39 +180,39 @@ def bondsetup(bonds):
             (ob,b) = lis[i]
             for (oc,c) in lis[i+1:]:
                 bends += [(b,ob,a,oc,c)]
-    bends = array(bends)
+    bends = np.array(bends)
     bba = bends[:,0]
     bbb = bends[:,4]
     bbc = bends[:,2]
     bnlis = [bendstr(elt,x) for x in bends]
-    Theta0 = array([bendtable[b][0] for b in bnlis])
-    Ktheta = array([bendtable[b][1] for b in bnlis])
+    Theta0 = np.array([bendtable[b][0] for b in bnlis])
+    Ktheta = np.array([bendtable[b][1] for b in bnlis])
 
     n=len(elt)
 
-    bbsorta = argsort(bba)
-    x1=take(bba,bbsorta)
+    bbsorta = np.argsort(bba)
+    x1=np.take(bba,bbsorta)
     x2=x1[1:]!=x1[:-1]
-    x=compress(x2,arange(len(x2)))
-    bbmasha=concatenate((array([0]),x+1))
-    bbputa = compress(concatenate((array([1]),x2)),x1)
-    bbputa = concatenate((bbputa, n+bbputa, 2*n+bbputa))
+    x=np.compress(x2,arange(len(x2)))
+    bbmasha=np.concatenate((array([0]),x+1))
+    bbputa = np.compress(concatenate((array([1]),x2)),x1)
+    bbputa = np.concatenate((bbputa, n+bbputa, 2*n+bbputa))
 
-    bbsortb = argsort(bbb)
-    x1=take(bbb,bbsortb)
+    bbsortb = np.argsort(bbb)
+    x1=np.take(bbb,bbsortb)
     x2=x1[1:]!=x1[:-1]
-    x=compress(x2,arange(len(x2)))
-    bbmashb=concatenate((array([0]),x+1))
-    bbputb = compress(concatenate((array([1]),x2)),x1)
-    bbputb = concatenate((bbputb, n+bbputb, 2*n+bbputb))
+    x=np.compress(x2,arange(len(x2)))
+    bbmashb=np.concatenate((array([0]),x+1))
+    bbputb = np.compress(concatenate((array([1]),x2)),x1)
+    bbputb = np.concatenate((bbputb, n+bbputb, 2*n+bbputb))
 
-    bbsortc = argsort(bbc)
-    x1=take(bbc,bbsortc)
+    bbsortc = np.argsort(bbc)
+    x1=np.take(bbc,bbsortc)
     x2=x1[1:]!=x1[:-1]
-    x=compress(x2,arange(len(x2)))
-    bbmashc=concatenate((array([0]),x+1))
-    bbputc = compress(concatenate((array([1]),x2)),x1)
-    bbputc = concatenate((bbputc, n+bbputc, 2*n+bbputc))
+    x=np.compress(x2,arange(len(x2)))
+    bbmashc=np.concatenate((array([0]),x+1))
+    bbputc = np.compress(concatenate((array([1]),x2)),x1)
+    bbputc = np.concatenate((bbputc, n+bbputc, 2*n+bbputc))
 
     return bends
 
@@ -223,43 +223,43 @@ def bondsetup(bonds):
 #
 #globals: bond0, bond1: atom #'s; R0s; KSs
 def force(pos):
-    aavx = take(pos,bond0,1) - take(pos,bond1,1)
-    aax = sqrt(add.reduce(aavx*aavx))
+    aavx = np.take(pos,bond0,1) - take(pos,bond1,1)
+    aax = np.sqrt(np.add.reduce(aavx*aavx))
     aax[0]=1.0
 
     aavu = aavx/aax
     aavf = aavu * KS * (R0 - aax)
 
-    avf0 = add.reduceat(take(aavf,sort0,1),mash0)
-    avf1 = add.reduceat(take(aavf,sort1,1),mash1)
+    avf0 = np.add.reduceat(take(aavf,sort0,1),mash0)
+    avf1 = np.add.reduceat(take(aavf,sort1,1),mash1)
     f = take(avf0,spred0,1) - take(avf1,spred1,1)
 
     bbva = take(pos,bba,1) - take(pos,bbc,1)
     bbvb = take(pos,bbb,1) - take(pos,bbc,1)
-    bbla = sqrt(add.reduce(bbva*bbva))
-    bblb = sqrt(add.reduce(bbvb*bbvb))
+    bbla = np.sqrt(np.add.reduce(bbva*bbva))
+    bblb = np.sqrt(np.add.reduce(bbvb*bbvb))
     bbau = bbva/bbla
     bbbu = bbvb/bblb
-    bbadb = add.reduce(bbau*bbbu)
-    angle = arccos(bbadb)
+    bbadb = np.add.reduce(bbau*bbbu)
+    angle = np.arccos(bbadb)
     torq = Ktheta*(angle-Theta0)
 
     bbaf = bbbu-bbadb*bbau
-    bbaf = bbaf/sqrt(add.reduce(bbaf*bbaf))
+    bbaf = bbaf/np.sqrt(np.add.reduce(bbaf*bbaf))
     bbaf = bbaf*torq/bbla
     bbbf = bbau-bbadb*bbbu
-    bbbf = bbbf/sqrt(add.reduce(bbbf*bbbf))
+    bbbf = bbbf/np.sqrt(np.add.reduce(bbbf*bbbf))
     bbbf = bbbf*torq/bblb
 
-    fa = zeros(poshape,Float)
-    put(fa,bbputa,add.reduceat(take(bbaf,bbsorta,1),bbmasha))
-    fc1 = zeros(poshape,Float)
-    put(fc1,bbputc,add.reduceat(take(bbaf,bbsortc,1),bbmashc))
+    fa = np.zeros(poshape,np.float64)
+    np.put(fa,bbputa,np.add.reduceat(np.take(bbaf,bbsorta,1),bbmasha))
+    fc1 = np.zeros(poshape,np.float64)
+    np.put(fc1,bbputc,np.add.reduceat(np.take(bbaf,bbsortc,1),bbmashc))
 
-    fb = zeros(poshape,Float)
-    put(fb,bbputb,add.reduceat(take(bbbf,bbsortb,1),bbmashb))
-    fc2 = zeros(poshape,Float)
-    put(fc2,bbputc,add.reduceat(take(bbbf,bbsortc,1),bbmashc))
+    fb = np.zeros(poshape,np.float64)
+    np.put(fb,bbputb,np.add.reduceat(np.take(bbbf,bbsortb,1),bbmashb))
+    fc2 = np.zeros(poshape,Float)
+    np.put(fc2,bbputc,np.add.reduceat(np.take(bbbf,bbsortc,1),bbmashc))
 
     return f+fa+fb-fc1-fc2
 

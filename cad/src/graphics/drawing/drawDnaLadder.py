@@ -9,10 +9,10 @@ beam and each step represents duplex rise.
 @license:   GPL
 """
 import foundation.env as env
-from Numeric import  pi
-ONE_RADIAN = 180.0 / pi
-HALF_PI  = pi/2.0
-TWICE_PI = 2*pi
+import numpy as np
+ONE_RADIAN = 180.0 / np.pi
+HALF_PI  = np.pi/2.0
+TWICE_PI = 2*np.pi
 
 from OpenGL.GL import glDisable
 from OpenGL.GL import glEnable

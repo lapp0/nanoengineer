@@ -9,22 +9,22 @@ onto a sphere, tracking the cursor on the sphere.
 
 import math, types
 from math import *
-from Numeric import *
+import numpy as np
 from LinearAlgebra import *
 
 intType = type(2)
 floType = type(2.0)
 numTypes = [intType, floType]
 
-def V(*v): return array(v, Float)
-def A(a):  return array(a, Float)
+def V(*v): return np.array(v, Float)
+def A(a):  return np.array(a, Float)
 
 def cross(v1, v2):
     return V(v1[1]*v2[2] - v1[2]*v2[1],
              v1[2]*v2[0] - v1[0]*v2[2],
              v1[0]*v2[1] - v1[1]*v2[0])
 
-def vlen(v1): return sqrt(dot(v1, v1))
+def vlen(v1): return sqrt(np.dot(v1, v1))
 
 def norm(v1):
     lng = vlen(v1)
@@ -41,7 +41,7 @@ def norm(v1):
 #  distance from p2 to the p1-v1 line.
 # v1 should be a unit vector.
 def orthodist(p1, v1, p2):
-    dist = dot(v1, p2-p1)
+    dist = np.dot(v1, p2-p1)
     wid = vlen(p1+dist*v1-p2)
     return (dist, wid)
 
@@ -62,22 +62,22 @@ class Q:
         elif z: # three axis vectors
             # Just use first two
             a100 = V(1,0,0)
-            c1 = cross(a100,x)
+            c1 = np.cross(a100,x)
             if vlen(c1)<0.000001:
                 self.vec = Q(y,z).vec
                 return
-            ax1 = norm((a100+x)/2.0)
-            x2 = cross(ax1,c1)
+            ax1 = np.linalg.norm((a100+x)/2.0)
+            x2 = np.cross(ax1,c1)
             a010 = V(0,1,0)
-            c2 = cross(a010,y)
+            c2 = np.cross(a010,y)
             if vlen(c2)<0.000001:
                 self.vec = Q(x,z).vec
                 return
-            ay1 = norm((a010+y)/2.0)
-            y2 = cross(ay1,c2)
-            axis = cross(x2, y2)
-            nw = sqrt(1.0 + x[0] + y[1] + z[2])/2.0
-            axis = norm(axis)*sqrt(1.0-nw**2)
+            ay1 = np.linalg.norm((a010+y)/2.0)
+            y2 = np.cross(ay1,c2)
+            axis = np.cross(x2, y2)
+            nw = math.sqrt(1.0 + x[0] + y[1] + z[2])/2.0
+            axis = np.norm(axis)*math.sqrt(1.0-nw**2)
             self.vec = V(nw, axis[0], axis[1], axis[2])
 
         elif type(y) in numTypes:
@@ -272,7 +272,7 @@ class Q:
 
     def vunrot(self,v):
         # for use with row vectors
-        return matrixmultiply(v,transpose(self.matrix))
+        return matrixmultiply(v, np.transpose(self.matrix))
 
     def rot(self,v):
         return matrixmultiply(v,self.matrix)

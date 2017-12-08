@@ -51,7 +51,6 @@ LEFT_HANDED  =  1
 
 from geometry.VQT import V, Q, norm, cross
 from geometry.VQT import  vlen
-from Numeric import dot
 
 from utilities.debug import print_compact_stack
 from model.bonds import bond_at_singlets
@@ -219,7 +218,3 @@ class B_Dna_PAM5_Generator(B_Dna_Generator):
                     _axis_list.append(atom)
 
         return (_strandA_list, _strandB_list, _axis_list)
-
-
-
-

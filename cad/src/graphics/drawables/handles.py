@@ -14,7 +14,7 @@ TODO:
 Needs cleanup.
 """
 
-from Numeric import sqrt
+import numpy as np
 
 from geometry.VQT import V
 from geometry.VQT import vlen
@@ -136,7 +136,7 @@ class HandleSet:
             radius *= radius_multiplier
             dist, wid = orthodist(p1, v, pos)
             if radius >= wid: # the ray hits the sphere
-                delta = sqrt(radius*radius - wid*wid)
+                delta = np.sqrt(radius*radius - wid*wid)
                 front = dist - delta # depth from p1 of front surface of sphere, where it's hit
                 if front >= cutoff:
                     res.append((front,(pos,radius,info)))

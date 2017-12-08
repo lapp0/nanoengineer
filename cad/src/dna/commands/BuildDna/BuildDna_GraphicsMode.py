@@ -13,7 +13,7 @@ TODO:
 from commands.SelectChunks.SelectChunks_GraphicsMode import SelectChunks_GraphicsMode
 from model.chem import Atom
 from model.bonds import Bond
-from Numeric import dot
+import numpy as np
 from PyQt5.QtGui import QMouseEvent
 from geometry.VQT import V, Q, A, norm, vlen
 from commands.Select.Select_GraphicsMode import DRAG_STICKINESS_LIMIT
@@ -354,7 +354,7 @@ class BuildDna_GraphicsMode( SelectChunks_GraphicsMode):
         else:
             self._movablesForLeftDrag = self.win.assy.getSelectedMovables()
 
-        ma = norm(V(dot(ma,self.o.right),dot(ma,self.o.up)))
+        ma = norm(V(np.dot(ma,self.o.right),np.dot(ma,self.o.up)))
 
         self.Zmat = A([ma,[-ma[1],ma[0]]])
 
@@ -503,7 +503,7 @@ class BuildDna_GraphicsMode( SelectChunks_GraphicsMode):
         deltaMouse = V(event.pos().x() - self.o.MousePos[0],
                        self.o.MousePos[1] - event.pos().y())
 
-        a =  dot(self.Zmat, deltaMouse)
+        a =  np.dot(self.Zmat, deltaMouse)
         dx,dy =  a * V(self.o.scale/(h*0.5), 2*math.pi/w)
 
         if self._translateAlongAxis:
@@ -637,5 +637,3 @@ class BuildDna_GraphicsMode( SelectChunks_GraphicsMode):
         _superclass._drawLabels(self)
         #Draw the Dna base number labels.
         draw_dnaBaseNumberLabels(self.glpane)
-
-

@@ -8,7 +8,7 @@ Zoom in/out mode functionality.
 @license:   GPL
 """
 
-from Numeric import exp
+import numpy as np
 from temporary_commands.TemporaryCommand import TemporaryCommand_Overdrawing
 
 # == GraphicsMode part
@@ -38,7 +38,7 @@ class ZoomInOutMode_GM( TemporaryCommand_Overdrawing.GraphicsMode_class ):
         dScale = .025 # This works nicely. Mark 2008-01-29.
         delta = self.prevY - event.y()
         self.prevY = event.y()
-        factor = exp(dScale * delta)
+        factor = np.exp(dScale * delta)
         #print "y, py =", event.y(), self.prevY, ", delta =", delta, ", factor=", factor
         self.glpane.rescale_around_point(factor)
         self.glpane.gl_update()

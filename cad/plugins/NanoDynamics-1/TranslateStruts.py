@@ -32,7 +32,7 @@ Both error values should be small.
 import sys
 import math
 
-from Numeric import array
+import numpy as np
 from LinearAlgebra import inverse
 
 # a nice upgrade would be to read values selected from the NE1 history
@@ -72,7 +72,7 @@ va = vsub(a, g)
 vb = vsub(b, g)
 vc = vcross(va, vb)
 
-mat = array([[va[0], vb[0], vc[0]], [va[1], vb[1], vc[1]], [va[2], vb[2], vc[2]]])
+mat = np.array([[va[0], vb[0], vc[0]], [va[1], vb[1], vc[1]], [va[2], vb[2], vc[2]]])
 inv = inverse(mat)
 
 while (True):

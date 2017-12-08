@@ -46,7 +46,7 @@ A DnaLadder is not visible to copy or undo (i.e. it contains no
 undoable state), and is not stored in the mmp file.
 """
 
-from Numeric import dot
+import numpy as np
 from geometry.VQT import cross
 
 from model.elements import Pl5
@@ -391,7 +391,7 @@ class DnaLadder(object, DnaLadder_pam_conversion_methods):
         rung0_vec = strand1_posns[0] - axis_posns[0]
         rung1_vec = strand1_posns[1] - axis_posns[1]
         axis_vec = axis_posns[1] - axis_posns[0]
-        righthandedness = dot( cross(rung0_vec, rung1_vec), axis_vec )
+        righthandedness = np.dot( cross(rung0_vec, rung1_vec), axis_vec )
         # todo: make sure it's roughly the right magnitude, not merely positive
         if not self.error or not self.error.startswith("bug:"):
             # check strand1 for reverse twist (append to error string if we already have one)
@@ -408,7 +408,7 @@ class DnaLadder(object, DnaLadder_pam_conversion_methods):
             #  i.e. that bond directions point from strand1_atoms[0] to strand1_atoms[1])
             strand2_posns = [atom.posn() for atom in strand2_atoms]
             rung0_vec_2 = strand2_posns[0] - axis_posns[0]
-            minor_groove_where_expected_ness = dot( cross( rung0_vec, rung0_vec_2 ), axis_vec )
+            minor_groove_where_expected_ness = np.dot( cross( rung0_vec, rung0_vec_2 ), axis_vec )
             if minor_groove_where_expected_ness <= 0:
                 error_here = "bond directions both wrong re major groove"
                 if 0: # turn this on to know why it reported that error [080210]

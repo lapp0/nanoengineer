@@ -1,7 +1,6 @@
 import argparse
 import logging
 import sys, os
-from ne1_startup.main_startup import load_application
 
 
 def start_application(verbosity, data_dir, recursion_limit, dev_mode):
@@ -36,10 +35,8 @@ def run():
     parser.parse_args()
 
     start_application(parser.verbosity, parser.data_dir, parser.recursion_limit, parser.dev_mode)
-    
-    
-    
     start_application()
+
 
 if __name__ == '__main__':
     run()

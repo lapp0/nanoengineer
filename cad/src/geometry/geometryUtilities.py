@@ -21,11 +21,8 @@ History:
 # this file should remain purely geometric.
 
 import math
-from Numeric import transpose, minimum, maximum, remainder, size, add
-from Numeric import Float, zeros, multiply, sign, dot
-from LinearAlgebra import solve_linear_equations, eigenvectors
+import numpy as np
 
-from utilities import debug_flags # for atom_debug
 from geometry.VQT import V, A, cat, norm, cross, X_AXIS, Y_AXIS
 
 def selection_polyhedron(basepos, borderwidth = 1.8):
@@ -46,9 +43,9 @@ def selection_polyhedron(basepos, borderwidth = 1.8):
         return [] # a guess
 
     # find extrema in many directions
-    xtab = dot(basepos, polyXmat)
-    mins = minimum.reduce(xtab) - borderwidth
-    maxs = maximum.reduce(xtab) + borderwidth
+    xtab = np.dot(basepos, polyXmat)
+    mins = np.minimum.reduce(xtab) - borderwidth
+    maxs = np.maximum.reduce(xtab) + borderwidth
 
     polyhedron = makePolyList(cat(maxs,mins))
         # apparently polyhedron is just a long list of vertices [v0,v1,v2,v3,...] to be passed to GL_LINES
@@ -70,7 +67,7 @@ polyXmat = A([[1, 0, 0, D,  D, D,  D,  0,  0, T,  T,  T,  T],
 
 del D, T
 
-polyMat = cat(transpose(polyXmat),transpose(polyXmat))
+polyMat = cat(np.transpose(polyXmat),np.transpose(polyXmat))
 
 polyTab = [( 9, (0,7,3), [3,0,5,2,7,1,3]),
            (10, (0,1,4), [3,1,8,15,6,0,3]),#(10, (0,4,1), [3,0,6,15,8,1,3]),
@@ -96,7 +93,7 @@ polyTab = [( 9, (0,7,3), [3,0,5,2,7,1,3]),
 def planepoint(v,i,j,k):
     mat = V(polyMat[i],polyMat[j],polyMat[k])
     vec = V(v[i],v[j],v[k])
-    return solve_linear_equations(mat, vec)
+    return np.linalg.solve(mat, vec)
 
 
 def makePolyList(v):
@@ -106,9 +103,9 @@ def makePolyList(v):
         linx = []
         for i in range(3):
             l,s,r = planes[2*i:2*i+3]
-            e = remainder(i+1,3)
+            e = np.remainder(i+1,3)
             p1 = planepoint(v,corner,l,r)
-            if abs(dot(p1,polyMat[s])) <= abs(v[s]):
+            if abs(np.dot(p1,polyMat[s])) <= abs(v[s]):
                 p2 = planepoint(v,l,s,r)
                 linx += [p1]
                 xlines[edges[i]] += [p2]
@@ -135,12 +132,12 @@ def makePolyList(v):
 
 def trialMakePolyList(v): # [i think this is experimental code by Huaicai, never called, perhaps never tested. -- bruce 051117]
     pMat = []
-    for i in range(size(v)):
+    for i in range(np.size(v)):
         pMat += [polyMat[i] * v[i]]
 
     segs = []
     for corner, edges, planes in polyTab:
-      pts = size(planes)
+      pts = np.size(planes)
       for i in range(pts):
           segs += [pMat[corner], pMat[planes[i]]]
           segs += [pMat[planes[i]], pMat[planes[(i+1)%pts]]]
@@ -161,18 +158,18 @@ def inertia_eigenvectors(basepos, already_centered = False):
     #bruce 060119 split this out of shakedown_poly_evals_evecs_axis() in chunk.py
     basepos = A(basepos) # make sure it's a Numeric array
     if not already_centered and len(basepos):
-        center = add.reduce(basepos)/len(basepos)
+        center = np.add.reduce(basepos)/len(basepos)
         basepos = basepos - center
     # compute inertia tensor
-    tensor = zeros((3,3),Float)
+    tensor = np.zeros((3,3), np.float64)
     for p in basepos:
-        rsq = dot(p, p)
-        m= - multiply.outer(p, p)
+        rsq = np.dot(p, p)
+        m= - np.multiply.outer(p, p)
         m[0,0] += rsq
         m[1,1] += rsq
         m[2,2] += rsq
         tensor += m
-    evals, evecs = eigenvectors(tensor)
+    evals, evecs = np.linalg.eig(tensor)
     assert len(evals) == len(evecs) == 3
     return evals, evecs
 
@@ -331,7 +328,7 @@ def best_sign_on_vector(vec, goodvecs, numeric_threshhold):
     """
     for good in goodvecs:
         if good is not None:
-            d = dot(vec, good)
+            d = np.dot(vec, good)
             s = sign_with_threshhold(d, numeric_threshhold)
             if s:
                 # it helps!
@@ -345,7 +342,7 @@ def sign_with_threshhold( num, thresh ):
     """
     if abs(num) <= thresh:
         return 0
-    return sign(num)
+    return np.sign(num)
 
 def best_vector_in_plane( axes, goodvecs, numeric_threshhold ):
     """
@@ -359,8 +356,8 @@ def best_vector_in_plane( axes, goodvecs, numeric_threshhold ):
     x,y = axes
     for good in goodvecs:
         if good is not None:
-            dx = dot(x,good) # will be 0 for good = V(0,0,0); not sensible for vlen(good) other than 0 or 1
-            dy = dot(y,good)
+            dx = np.dot(x,good) # will be 0 for good = V(0,0,0); not sensible for vlen(good) other than 0 or 1
+            dy = np.dot(y,good)
             if abs(dx) < numeric_threshhold and abs(dy) < numeric_threshhold:
                 continue # good is perpendicular to the plane (or is zero)
             return norm(dx * x + dy * y)
@@ -378,7 +375,7 @@ def arbitrary_perpendicular( vec, nicevecs = [] ): #bruce 060608, probably dupli
     if not vec:
         return nicevecs[0] # the best we can do
     for nice in nicevecs:
-        res = norm( nice - vec * dot(nice, vec) )
+        res = norm( nice - vec * np.dot(nice, vec) )
         if res:
             return res
     return nicevecs[0] # should never happen
@@ -393,7 +390,7 @@ def matrix_putting_axis_at_z(axis): #bruce 060608
     z = norm(axis)
     x = arbitrary_perpendicular(axis)
     y = cross(z,x)
-    matrix = transpose(V(x,y,z))
+    matrix = np.transpose(V(x,y,z))
     return matrix
 
 

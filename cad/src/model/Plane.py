@@ -15,7 +15,7 @@ Those were moved to their own module on Aug 20 and Oct 17, 2007 respt.
 """
 import foundation.env as env
 from math import pi, atan, cos, sin
-from Numeric import add, dot
+import numpy as np
 
 from OpenGL.GL import glPushMatrix
 from OpenGL.GL import glPopMatrix
@@ -396,7 +396,7 @@ class Plane(ReferenceGeometry):
                 #Following draws the border of the plane in orange color
                 #for its front side (side that was in front
                 #when the plane was created) and a brown border for the backside.
-                if dot(self.getaxis(), glpane.lineOfSight) < 0:
+                if np.dot(self.getaxis(), glpane.lineOfSight) < 0:
                     bordercolor = brown #backside
                 else:
                     bordercolor = self.border_color #frontside
@@ -449,7 +449,7 @@ class Plane(ReferenceGeometry):
                        q.y,
                        q.z)
 
-            if dot(self.getaxis(), glpane.lineOfSight) < 0:
+            if np.dot(self.getaxis(), glpane.lineOfSight) < 0:
                 fill_color = brown #backside
             else:
                 fill_color = self.fill_color
@@ -705,7 +705,7 @@ class Plane(ReferenceGeometry):
         #See Plane.resizeGeometry  for further details -- ninad 20070615
         #@@@ need to document this further.
 
-        vec_P = vec_v1 * (dot(vec_v2, vec_v1) / dot(vec_v1,vec_v1))
+        vec_P = vec_v1 * (np.dot(vec_v2, vec_v1) / np.dot(vec_v1,vec_v1))
 
         #The folllowing puts 'stoppers' so that if the mouse goes beyond the
         #opposite face while dragging, the plane resizing is stopped.
@@ -713,7 +713,7 @@ class Plane(ReferenceGeometry):
         #make resizing stop early (need a bug report) ..minor bug , workaround
         #is to
         #do the mousemotion slowly. -- ninad 20070615
-        if dot(vec_v1, vec_P) < 0:
+        if np.dot(vec_v1, vec_P) < 0:
             return
         #ninad 20070515: vec_P is the orthogonal projection of vec_v2 over
         #vec_v1
@@ -794,9 +794,9 @@ class Plane(ReferenceGeometry):
             for a in atomList:
                 self.atomPos += [a.posn()]
             planeNorm = self._getPlaneOrientation(self.atomPos)
-            if dot(planeNorm, self.glpane.lineOfSight) < 0:
+            if np.dot(planeNorm, self.glpane.lineOfSight) < 0:
                 planeNorm = -planeNorm
-            self.center = add.reduce(self.atomPos) / len(self.atomPos)
+            self.center = np.add.reduce(self.atomPos) / len(self.atomPos)
             self.quat   = Q(V(0.0, 0.0, 1.0), planeNorm)
         else:
             self.center = V(0.0, 0.0, 0.0)
@@ -1119,4 +1119,3 @@ class Plane(ReferenceGeometry):
 
 
         return
-

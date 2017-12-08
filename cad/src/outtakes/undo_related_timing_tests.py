@@ -17,8 +17,8 @@ from PyQt5.QtGui import (QObject,
                          since we need them in several places.)
 from utilities.constants import genKey, noop
 from utilities import debug_flags # for atom_debug [bruce 060128, suggested by Mark;
-    # if this works, we should simplify some defs which worry if it's too early for this]
 
+import numpy as np
 
 from utilities.debug import call_func_with_timing_histmsg
 
@@ -80,15 +80,13 @@ def loadposns_cmd( target):
 
 # ==
 
-from Numeric import concatenate, array, UnsignedInt8
-
 def atom_array_of_part(part):
     "Return an Array of all atoms in the Part. Try to be linear time."
     res = []
     for m in part.molecules:
-        res.append( array(m.atlist) )
+        res.append(np.array(m.atlist) )
     # concatenate might fail for chunks with exactly 1 atom -- fix later ####@@@@
-    return concatenate(res) ###k
+    return np.concatenate(res) ###k
 
 def saveelts( part, filename):
     env.history.message( "save main part element symbols -- no, atomic numbers -- to file: " + filename )
@@ -97,7 +95,7 @@ def saveelts( part, filename):
         ## elts = [atm.element.symbol for atm in atoms]
         elts = [atm.element.eltnum for atm in atoms]
         env.history.message( "%d element nums, first few are %r" % (len(elts), elts[:5] ) )
-        thing = array(elts)
+        thing = np.array(elts)
         save_obj(thing, filename)
     call_func_with_timing_histmsg( doit)
     return
@@ -125,7 +123,7 @@ def savebtypes( part, filename):
                 if b.atom1 is atm:
                     res.append(b.v6) # a small int
         env.history.message( "%d btype ints, first few are %r" % (len(res), res[:5] ) )
-        thing = array(res, UnsignedInt8) # tell it to use a smaller type; see numpy.pdf page 14 on typecodes.
+        thing = np.array(res, np.uint8) # tell it to use a smaller type; see numpy.pdf page 14 on typecodes.
             # update, bruce 070612: we still use Numeric Python (not numarray or numpy). I am not sure what URL
             # is referred to by "numpy.pdf" above, but it is probably (and should be) about Numeric Python.
         save_obj(thing, filename)

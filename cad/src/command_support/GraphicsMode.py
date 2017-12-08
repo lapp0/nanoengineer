@@ -23,7 +23,7 @@ in class GraphicsMode to look private.
 """
 
 import math # just for pi
-from Numeric import exp
+import numpy as np
 
 from PyQt5.QtCore import Qt
 from PyQt5.QtWidgets import QMenu
@@ -1020,7 +1020,7 @@ class basicGraphicsMode(GraphicsMode_API):
         farQ_junk, point = self.dragstart_using_GL_DEPTH( event)
             # russ 080116 Limit mouse acceleration on the Mac.
         delta = max( -360, min(event.delta(), 360)) * self.w.mouseWheelDirection
-        factor = exp(dScale * delta)
+        factor = np.exp(dScale * delta)
         #print "Wheel factor=", factor, " delta=", delta
 
             #bruce 070402 bugfix: original formula, factor = 1.0 + dScale * delta, was not reversible by inverting delta,

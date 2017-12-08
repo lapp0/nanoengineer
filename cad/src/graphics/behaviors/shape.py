@@ -28,7 +28,7 @@ that I can call all these "graphics_behavior". We'll see.
 I'd be more confident that a package import cycle was unlikely.)
 """
 
-from Numeric import array, zeros, maximum, minimum, ceil, dot, floor
+import numpy as np
 
 from geometry.VQT import A, vlen, V
 
@@ -98,8 +98,8 @@ def fill(mat, p, dir): # TODO: rename (less generic so searchable), and perhaps 
     if mat[p]:
         return
     up = dn = 0
-    o1 = array([1, 0])
-    od = array([0, dir])
+    o1 = np.array([1, 0])
+    od = np.array([0, dir])
     while not mat[p - od]: p -= od
     while not mat[p]:
         mat[p] = 1
@@ -167,8 +167,8 @@ class simple_shape_2d:
         self.pt2d = list(map( self.project_2d, self.ptlist))
         assert not (None in self.pt2d)
 
-        self.bboxhi = reduce(maximum, self.pt2d)
-        self.bboxlo = reduce(minimum, self.pt2d)
+        self.bboxhi = reduce(np.maximum, self.pt2d)
+        self.bboxlo = reduce(np.minimum, self.pt2d)
         bboxlo, bboxhi = self.bboxlo, self.bboxhi
 
         # compute 3d bounding box
@@ -193,7 +193,7 @@ class simple_shape_2d:
         through pov.
         """
         x, y = self.right, self.up
-        return V(dot(pt, x), dot(pt, y))
+        return V(np.dot(pt, x), np.dot(pt, y))
 
     def project_2d(self, pt):
         """
@@ -209,7 +209,7 @@ class simple_shape_2d:
             try:
                 ###e we recompute this a lot; should cache it in self or self.shp--Bruce
                 ## Huaicai 04/23/05: made the change as suggested by Bruce above.
-                p = p / (dot(pt - self.eyeball, self.normal) / self.eye2Pov)
+                p = p / (np.dot(pt - self.eyeball, self.normal) / self.eye2Pov)
             except:
                 # bruce 041214 fix of unreported bug:
                 # point is too close to eyeball for in-ness to be determined!
@@ -272,15 +272,15 @@ class curve(simple_shape_2d): # bruce 041214 factored out simple_shape_2d
         simple_shape_2d.__init__( self, shp, ptlist, origin, selSense, opts)
 
         # bounding rectangle, in integers (scaled 8 to the angstrom)
-        ibbhi = array(list(map(int, ceil(8 * self.bboxhi)+2)))
-        ibblo = array(list(map(int, floor(8 * self.bboxlo)-2)))
+        ibbhi = np.array(list(map(int, np.ceil(8 * self.bboxhi)+2)))
+        ibblo = np.array(list(map(int, np.floor(8 * self.bboxlo)-2)))
         bboxlo = self.bboxlo
 
         # draw the curve in these matrices and fill it
         # [bruce 041214 adds this comment: this might be correct but it's very
         # inefficient -- we should do it geometrically someday. #e]
-        mat = zeros(ibbhi - ibblo)
-        mat1 = zeros(ibbhi - ibblo)
+        mat = np.zeros(ibbhi - ibblo)
+        mat1 = np.zeros(ibbhi - ibblo)
         mat1[0,:] = 1
         mat1[-1,:] = 1
         mat1[:,0] = 1
@@ -288,16 +288,16 @@ class curve(simple_shape_2d): # bruce 041214 factored out simple_shape_2d
         pt2d = self.pt2d
         pt0 = pt2d[0]
         for pt in pt2d[1:]:
-            l = ceil(vlen(pt - pt0)*8)
+            l = np.ceil(vlen(pt - pt0)*8)
             if l<0.01: continue
             v=(pt - pt0)/l
             for i in range(1 + int(l)):
-                ij = 2 + array(list(map(int, floor((pt0 + v * i - bboxlo)*8))))
+                ij = 2 + np.array(list(map(int, np.floor((pt0 + v * i - bboxlo)*8))))
                 mat[ij]=1
             pt0 = pt
         mat1 += mat
 
-        fill(mat1, array([1, 1]),1)
+        fill(mat1, np.array([1, 1]),1)
         mat1 -= mat #Which means boundary line is counted as inside the shape.
         # boolean raster of filled-in shape
         self.matrix = mat1  ## For any element inside the matrix, if it is 0, then it's inside.

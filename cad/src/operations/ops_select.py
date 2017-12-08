@@ -22,7 +22,7 @@ from model.global_model_changedicts import _changed_picked_Atoms
 from model.chunk import Chunk
 from model.elements import Singlet
 from geometry.VQT import V, A, norm, cross
-from Numeric import dot, transpose
+import numpy as np
 import foundation.env as env
 from utilities.Log import redmsg, greenmsg, orangemsg
 from utilities.debug import print_compact_traceback
@@ -892,9 +892,9 @@ class ops_select_Mixin:
             # [bruce 060608 comment]
             x = cross(self.o.up,z)
             y = cross(z,x)
-            matrix = transpose(V(x,y,z))
+            matrix = np.transpose(V(x,y,z))
         point = p2
-        cutoffs = dot( A([p1,p2]) - point, matrix)[:,2]
+        cutoffs = np.dot( A([p1,p2]) - point, matrix)[:,2]
         near_cutoff = cutoffs[0]
         if water_cutoff:
             far_cutoff = cutoffs[1]

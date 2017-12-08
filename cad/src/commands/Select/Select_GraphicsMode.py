@@ -50,7 +50,7 @@ Ninad & Bruce 2007-12-13: Created new Command and GraphicsMode classes from
                           related methods into this class from selectMode.py
 
 """
-from Numeric import dot
+import numpy as np
 
 from OpenGL.GL import GL_CLIP_PLANE0
 from OpenGL.GL import GL_DEPTH_COMPONENT
@@ -1150,7 +1150,7 @@ class Select_basicGraphicsMode( Select_GraphicsMode_MouseHelpers_preMixin,
         pxyz = A(gluUnProject(wX, wY, gz))
         pn = self.o.out
         pxyz -= 0.0002 * pn
-        dp = - dot(pxyz, pn)
+        dp = - np.dot(pxyz, pn)
 
         # Save project matrix before it's changed
         glMatrixMode(GL_PROJECTION)
@@ -1486,7 +1486,7 @@ class Select_basicGraphicsMode( Select_GraphicsMode_MouseHelpers_preMixin,
         pxyz = A(gluUnProject(wX, wY, gz))
         pn = self.o.out
         pxyz -= 0.0002*pn
-        dp = - dot(pxyz, pn)
+        dp = - np.dot(pxyz, pn)
 
         # Save project matrix before it's changed
         glMatrixMode(GL_PROJECTION)
@@ -1596,5 +1596,3 @@ class Select_GraphicsMode(Select_basicGraphicsMode):
     pass
 
 # end
-
-

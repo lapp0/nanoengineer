@@ -19,7 +19,7 @@ conflicts with the 'RotateMode'.
 """
 from utilities import debug_flags
 import math
-from Numeric import dot, sign
+import numpy as np
 import foundation.env as env
 from utilities.Log import redmsg
 from utilities.debug import print_compact_stack
@@ -103,7 +103,7 @@ class RotateChunks_GraphicsMode(Move_GraphicsMode):
                       self.rotateOption)
                 return
 
-            ma = norm(V(dot(ma,self.o.right),dot(ma,self.o.up)))
+            ma = norm(V(np.dot(ma,self.o.right),np.dot(ma,self.o.up)))
             # When in the front view, right = 1,0,0 and up = 0,1,0, so ma will
             # be computed as 0,0.This creates a special case problem when the
             # user wants to constrain rotation around the Z axis because Zmat
@@ -180,7 +180,7 @@ class RotateChunks_GraphicsMode(Move_GraphicsMode):
         deltaMouse = V(event.pos().x() - self.o.MousePos[0],
                        self.o.MousePos[1] - event.pos().y())
 
-        a =  dot(self.Zmat, deltaMouse)
+        a =  np.dot(self.Zmat, deltaMouse)
         dx,dy =  a * V(self.o.scale/(h*0.5), 2*math.pi/w)
 
         if self.rotateOption == 'ROTATEX':
@@ -196,7 +196,7 @@ class RotateChunks_GraphicsMode(Move_GraphicsMode):
 
         qrot = Q(ma,-dy) # Quat for rotation delta.
         # Increment rotation delta (and convert to degrees)
-        self.rotDelta += qrot.angle *180.0/math.pi * sign(dy)
+        self.rotDelta += qrot.angle *180.0/math.pi * np.sign(dy)
 
         if self.command and self.command.propMgr and \
            hasattr(self.command.propMgr, 'updateRotationDeltaLabels'):
@@ -284,4 +284,3 @@ class RotateChunks_GraphicsMode(Move_GraphicsMode):
         """
         _superclass.leftADown(self, objectUnderMouse, event)
         self.leftDownType = 'A_ROTATE'
-

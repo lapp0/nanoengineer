@@ -39,7 +39,7 @@ from utilities import debug_flags
 import foundation.env as env
 import foundation.changes as changes
 
-from Numeric import dot
+import numpy as np
 
 from OpenGL.GL import GL_CW
 from OpenGL.GL import glFrontFace
@@ -2072,7 +2072,7 @@ def mergeable_singlets_Q_and_offset(s1, s2, offset2 = None, tol = 1.0):
     # the open bond directions (from their atoms) should point approximately
     # opposite to each other -- per Josh suggestion, require them to be
     # within 60 deg. of collinear.
-    closeness = - dot(dir1, dir2) # ideal is 1.0, terrible is -1.0
+    closeness = - np.dot(dir1, dir2) # ideal is 1.0, terrible is -1.0
     if closeness < cosine_of_permitted_noncollinearity:
         if _EXTRUDE_LOOP_DEBUG and closeness >= 0.0:
             print("rejected nonneg closeness of %r since less than %r" % \

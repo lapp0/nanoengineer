@@ -38,7 +38,7 @@ from graphics.drawing.CS_draw_primitives import drawsphere
 from graphics.drawing.CS_draw_primitives import drawline
 from graphics.drawing.CS_draw_primitives import drawtriangle_strip
 
-from Numeric import dot
+import numpy as np
 
 from OpenGL.GL import glMaterialfv
 from OpenGL.GL import GL_FRONT_AND_BACK
@@ -1281,7 +1281,7 @@ class ProteinChunks(ChunkDisplayMode):
                         dpos = norm(cross(npep, dca))
                         n0 = last_dpos
                         n1 = dpos
-                        d = dot(n0, n1)
+                        d = np.dot(n0, n1)
                         # Flip dpos if the angle between consecutive planes
                         # is > 90 deg.
                         if d < 0.0:
@@ -1449,7 +1449,7 @@ class ProteinChunks(ChunkDisplayMode):
                     pos4, ss4, aa4, idx4, dpos4, cbpos4 = sec[4]
 
                     xvec = cross(pos4-pos3, pos3-pos2)
-                    sign = dot(xvec, dpos3)
+                    sign = np.dot(xvec, dpos3)
 
                     if sign > 0:
                         # Wrong helix face orientation, invert peptide plates

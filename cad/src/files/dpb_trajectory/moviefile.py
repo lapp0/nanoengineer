@@ -355,7 +355,7 @@ class OldFormatMovieFile: #bruce 050426
         bytes = self.filereader.delta_frame_bytes(n)
         ## older code: delta = A(unpack('bbb',file.read(3)))*0.01
         # (with luck, reading the whole frame at once will be a nice speedup for fast-forwarding...)
-        res = array(bytes,Int8)
+        res = np.array(bytes,np.int8)
         res.shape = (-1,3)
         res = res * 0.01
             #e it might be nice to move that multiply into caller (for speedup and error-reduction):
@@ -381,4 +381,3 @@ class OldFormatMovieFile: #bruce 050426
         self.filereader.close_file() # but don't forget about it!
 
     pass # end of class MovieFile
-

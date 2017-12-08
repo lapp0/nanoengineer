@@ -29,7 +29,7 @@ delete those atoms and fuse the bare strand with existing atoms
 """
 
 from geometry.VQT import Q, norm, vlen, cross
-from Numeric import dot
+import numpy as np
 from utilities.debug import print_compact_stack
 from model.bonds import bond_at_singlets
 
@@ -98,7 +98,7 @@ class B_Dna_PAM3_SingleStrand_Generator(B_Dna_PAM3_Generator):
 
         q_new = Q(axis_strand_vector, vectorAlongLadderStep)
 
-        if dot(axis_strand_vector, cross(vectorAlongLadderStep, b)) < 0:
+        if np.dot(axis_strand_vector, cross(vectorAlongLadderStep, b)) < 0:
             q_new2 = Q(b, -q_new.angle)
         else:
             q_new2 = Q(b, q_new.angle)
@@ -537,4 +537,3 @@ class B_Dna_PAM3_SingleStrand_Generator(B_Dna_PAM3_Generator):
                     break
 
         return overlapping_atoms_to_delete
-

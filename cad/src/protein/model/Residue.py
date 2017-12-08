@@ -23,6 +23,11 @@ to "Residuum", as Eric D has pointed out in his email).
 # The three-letter names are used to distinguish "protein" from "non-protein"
 # residues in PDB reading code.
 
+import numpy as np
+from math import atan2, pi, sqrt
+from geometry.VQT import cross
+
+
 AA_3_TO_1 = {
     'ALA':'A', # 20 standard amino acids
     'VAL':'V',
@@ -371,11 +376,6 @@ def calc_torsion_angle(atom_list):
     """
     # Note: this appears to be very general and perhaps ought to be moved to a more
     # general place (someday), perhaps VQT.py or nearby. [bruce 080828 comment]
-
-    from Numeric import dot
-    from math import atan2, pi, sqrt
-    from geometry.VQT import cross
-
     if len(atom_list) != 4:
         # The list has to have four members.
         return 0.0
@@ -397,15 +397,15 @@ def calc_torsion_angle(atom_list):
     y = cross(v23, x)
 
     # Calculate lengths of the x, y vectors.
-    u1 = dot(x, x)
-    v1 = dot(y, y)
+    u1 = np.dot(x, x)
+    v1 = np.dot(y, y)
 
     if u1 < 0.0 or \
        v1 < 0.0:
         return 360.0
 
-    u2 = dot(p, x) / sqrt(u1)
-    v2 = dot(p, y) / sqrt(v1)
+    u2 = np.dot(p, x) / sqrt(u1)
+    v2 = np.dot(p, y) / sqrt(v1)
 
     if u2 != 0.0 and \
        v2 != 0.0:
@@ -942,4 +942,3 @@ class Residue:
         return self.backrub
 
     pass # end of class Residue
-

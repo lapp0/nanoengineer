@@ -11,7 +11,7 @@ for notes about what's going on here.
 """
 
 from math import atan2, sin, cos, pi, asin
-from Numeric import dot
+import numpy as np
 
 from geometry.VQT import vlen, cross, norm, V
 import foundation.env as env
@@ -141,7 +141,7 @@ class Chirality:
             for m2 in range(mfirst[0], mlast[0] + 1):
                 atm2 = evenAtomDict[(0, m2)]
                 diff = atm.posn() - atm2.posn()
-                if dot(diff, diff) < self.maxlensq:
+                if np.dot(diff, diff) < self.maxlensq:
                     moffset = m2 - mmid
                     # Given the offset, zipping up the rows is easy.
                     for m in range(mfirst[n], mlast[n]+1):
@@ -476,4 +476,3 @@ class NanotubeGenerator(NanotubeGeneratorPropertyManager, GeneratorBaseClass):
     pass
 
 # end
-

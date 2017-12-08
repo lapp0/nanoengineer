@@ -41,7 +41,7 @@ from utilities.exception_classes import PluginBug, UserError
 
 from geometry.VQT import V, Veq, vlen
 from geometry.VQT import cross, norm
-from Numeric import dot
+import numpy as np
 
 from utilities.constants  import gensym
 from utilities.Log        import redmsg
@@ -989,7 +989,7 @@ class DnaSegment_EditCommand(State_preMixin, EditCommand):
 
         #If the segment is being shortened (determined by checking the
         #direction of drag) , no need to draw the rubberband line.
-        if dot(self.grabbedHandle.direction, direction_of_drag) < 0:
+        if np.dot(self.grabbedHandle.direction, direction_of_drag) < 0:
             return None
 
         basesPerTurn = self.struct.getBasesPerTurn()
@@ -1127,7 +1127,7 @@ class DnaSegment_EditCommand(State_preMixin, EditCommand):
             #This condition is applicable only when the direction of drag is
             #positive..i.e. bases bing added to the segment.
             if changedLength < duplexRise and \
-               dot(self.grabbedHandle.direction, direction_of_drag) > 0:
+               np.dot(self.grabbedHandle.direction, direction_of_drag) > 0:
                 return 0
 
 
@@ -1140,7 +1140,7 @@ class DnaSegment_EditCommand(State_preMixin, EditCommand):
                                            changedLength,
                                            duplexRise = duplexRise)
 
-            if dot(self.grabbedHandle.direction, direction_of_drag) < 0:
+            if np.dot(self.grabbedHandle.direction, direction_of_drag) < 0:
                 numberOfBasesToAddOrRemove = - numberOfBasesToAddOrRemove
 
 
@@ -1233,4 +1233,3 @@ class DnaSegment_EditCommand(State_preMixin, EditCommand):
                 return
 
         highlightedChunk.make_glpane_cmenu_items(self.Menu_spec, self)
-

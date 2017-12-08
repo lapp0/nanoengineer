@@ -16,7 +16,6 @@ from OpenGL.GL  import glPopMatrix
 from OpenGL.GLU import gluProject, gluUnProject
 from graphics.drawing.drawers import drawPolyLine
 
-from Numeric    import dot
 from math       import pi, cos
 from geometry.VQT import V, Q, cross, A, planeXline, vlen, norm, angleBetween
 
@@ -166,5 +165,3 @@ class Line(ReferenceGeometry):
                         if h in self.handles[1:-1]:
                             h.center += newCenter - oldCenter
                         self.controlPoints.append(h.center)
-
-

@@ -79,7 +79,7 @@ import model.global_model_changedicts as global_model_changedicts
 
 from geometry.VQT import V, Q, A, norm, cross, twistor, vlen, orthodist
 from geometry.VQT import atom_angle_radians
-from Numeric import dot
+import numpy as np
 
 from graphics.rendering.mdl.mdldata import marks, links, filler
 from graphics.rendering.povray.povheader import povpoint
@@ -3762,7 +3762,7 @@ class Atom( PAM_Atom_methods, AtomBase, InvalMixin, Selobj_API):
             if not other.element is Singlet:
                 continue
             other_vector = norm( other.posn() - self.posn() )
-            closeness_to_line = abs( dot( other_vector, vector) )
+            closeness_to_line = abs( np.dot( other_vector, vector) )
                 # scale depends on vlen(vector), but that doesn't matter here
             candidates.append( (closeness_to_line, other) )
         if candidates:

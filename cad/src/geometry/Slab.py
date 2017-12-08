@@ -11,9 +11,9 @@ Module classification: geometry
 Note: bruce 071215 split class Slab our of shape.py into its own module.
 """
 
-from Numeric import dot
-
+from numpy import np
 from geometry.VQT import norm
+
 
 class Slab:
     """
@@ -25,7 +25,7 @@ class Slab:
         self.thickness = thickness
 
     def isin(self, point):
-        d = dot(point - self.point, self.normal)
+        d = np.dot(point - self.point, self.normal)
         return d >= 0 and d <= self.thickness
 
     def __str__(self):

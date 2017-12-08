@@ -15,10 +15,10 @@ actual model.
 import foundation.env as env
 
 from math import asin, acos
-from Numeric import sin, cos, pi
-ONE_RADIAN = 180.0 / pi
-HALF_PI  = pi/2.0
-TWICE_PI = 2*pi
+import numpy as np
+ONE_RADIAN = 180.0 / np.pi
+HALF_PI  = np.pi/2.0
+TWICE_PI = 2*np.pi
 
 from OpenGL.GL import glDisable
 from OpenGL.GL import glEnable
@@ -37,9 +37,6 @@ from geometry.VQT import norm, vlen, V, cross, Q
 from geometry.VQT import orthodist, angleBetween
 from utilities.constants import white, blue
 from utilities.constants import diTrueCPK, diTUBES, diLINES
-
-from Numeric import dot
-
 
 from utilities.prefs_constants import DarkBackgroundContrastColor_prefs_key
 
@@ -91,14 +88,14 @@ def _compute_ribbon_point(origin,
     ##theta_offset = 0.0
     #turn_angle = twistPerBase
     ##turn_angle = (handedness * 2 * pi) / basesPerTurn
-    turn_angle = (2 * pi) / basesPerTurn
+    turn_angle = (2 * np.pi) / basesPerTurn
 ##    axial_offset = unitVectorAlongLength * duplexRise
     cY = unitVectorAlongLadderStep
     cZ = unitDepthVector
 
     theta = turn_angle * numberOfBasesDrawn + theta_offset # in radians
-    y = cos(theta) * peakDeviationFromCenter
-    z = sin(theta) * peakDeviationFromCenter
+    y = np.cos(theta) * peakDeviationFromCenter
+    z = np.sin(theta) * peakDeviationFromCenter
 ##    vx = axial_offset # a Vector
     p = origin + y * cY + z * cZ
     return p
@@ -196,7 +193,7 @@ def drawDnaSingleRibbon(glpane,
             # fix by subtracting off the parallel component.
             # but add the difference back to every point below.
         vectorAlongLadderStep = vectorAlongLadderStep0 - \
-            dot( unitVectorAlongLength,
+            np.dot( unitVectorAlongLength,
                  vectorAlongLadderStep0 ) * unitVectorAlongLength
         axial_shift = (vectorAlongLadderStep0 - vectorAlongLadderStep)
             # note: even using this, there is still a small glitch in the
@@ -502,8 +499,8 @@ def drawDnaRibbons(glpane,
 
             #Initialize ribbon1_point and ribbon2_point
             ribbon1_point = pointOnAxis + \
-                            amplitudeVector * sin(theta_ribbon_1) + \
-                            depthVector * cos(theta_ribbon_1)
+                            amplitudeVector * np.sin(theta_ribbon_1) + \
+                            depthVector * np.cos(theta_ribbon_1)
             ribbon1_direction = +1
 
     drawDnaSingleRibbon(glpane,
@@ -537,8 +534,8 @@ def drawDnaRibbons(glpane,
             phase_angle_ribbon_2 = asin(-6.0/(amplitude))
             theta_ribbon_2 = (TWICE_PI * x / T) - phase_angle_ribbon_2
             ribbon2_point = pointOnAxis - \
-                            amplitudeVector * sin(theta_ribbon_2) + \
-                            depthVector * cos(theta_ribbon_2)
+                            amplitudeVector * np.sin(theta_ribbon_2) + \
+                            depthVector * np.cos(theta_ribbon_2)
             ribbon2_direction = -1
 
     drawDnaSingleRibbon(glpane,
@@ -573,7 +570,7 @@ def _get_ribbon_point_on_other_ribbon(ribbon_start_point,
 
     #Theta = 133 degree is the angle between strand1atom-axis-strand2atom
     #It is negative if the bond direction is negative (-1)
-    theta = 133.0*pi/180
+    theta = 133.0*np.pi/180
     if ribbon_direction == -1:
         theta = -theta
 
@@ -583,4 +580,3 @@ def _get_ribbon_point_on_other_ribbon(ribbon_start_point,
     return other_ribbon_point
 
 # end
-

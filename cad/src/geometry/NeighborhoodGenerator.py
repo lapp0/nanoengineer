@@ -19,9 +19,7 @@ and .is_singlet(), and it needs no imports from model.
 """
 
 import struct
-
-from Numeric import floor
-
+import numpy as np
 from geometry.VQT import vlen
 
 # ==
@@ -57,9 +55,9 @@ class NeighborhoodGenerator:
         search the cubes right around a point.
         """
         maxradius = self._maxradius
-        return (int(floor(vec[0] / maxradius)),
-                int(floor(vec[1] / maxradius)),
-                int(floor(vec[2] / maxradius)))
+        return (int(np.floor(vec[0] / maxradius)),
+                int(np.floor(vec[1] / maxradius)),
+                int(np.floor(vec[2] / maxradius)))
 
     def add(self, atom, _pack = struct.pack):
         buckets = self._buckets

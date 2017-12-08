@@ -30,7 +30,6 @@ RIGHT_HANDED = -1
 LEFT_HANDED  =  1
 
 from geometry.VQT import norm
-from Numeric import dot
 from dna.generators.B_Dna_Generator import B_Dna_Generator
 
 class B_Dna_PAM3_Generator(B_Dna_Generator):
@@ -176,7 +175,7 @@ class B_Dna_PAM3_Generator(B_Dna_Generator):
 
         q_new = Q(axis_strand_vector, vectorAlongLadderStep)
 
-        if dot(axis_strand_vector, cross(vectorAlongLadderStep, b)) < 0:
+        if np.dot(axis_strand_vector, cross(vectorAlongLadderStep, b)) < 0:
             q_new2 = Q(b, -q_new.angle)
         else:
             q_new2 = Q(b, q_new.angle)
@@ -310,7 +309,7 @@ class B_Dna_PAM3_Generator(B_Dna_Generator):
 
         q_new = Q(axis_strand_vector, expected_vec)
 
-        if dot(axis_strand_vector, self.assy.o.lineOfSight) < 0:
+        if np.dot(axis_strand_vector, self.assy.o.lineOfSight) < 0:
             q_new2 = Q(b, -q_new.angle)
         else:
             q_new2 = Q(b, q_new.angle)

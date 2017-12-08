@@ -11,7 +11,7 @@ This is mainly intended as an example of how to use class ChunkDisplayMode,
 though it might be useful as a fast-rendering display mode too.
 """
 
-from Numeric import dot, argmax, argmin, sqrt
+import numpy as np
 
 import foundation.env as env
 from graphics.drawing.CS_draw_primitives import drawcylinder
@@ -117,19 +117,19 @@ class CylinderChunks(ChunkDisplayMode):
         points = chunk.atpos - center # not sure if basepos points are already centered
         # compare following Numeric Python code to findAtomUnderMouse and its caller
         matrix = matrix_putting_axis_at_z(axis)
-        v = dot( points, matrix)
+        v = np.dot( points, matrix)
         # compute xy distances-squared between axis line and atom centers
         r_xy_2 = v[:,0]**2 + v[:,1]**2
         ## r_xy = sqrt(r_xy_2) # not needed
 
         # to get radius, take maximum -- not sure if max(r_xy_2) would use Numeric code, but this will for sure:
-        i = argmax(r_xy_2)
+        i = np.argmax(r_xy_2)
         max_xy_2 = r_xy_2[i]
-        radius = sqrt(max_xy_2)
+        radius = np.sqrt(max_xy_2)
         # to get limits along axis (since we won't assume center is centered between them), use min/max z:
         z = v[:,2]
-        min_z = z[argmin(z)]
-        max_z = z[argmax(z)]
+        min_z = z[np.argmin(z)]
+        max_z = z[np.argmax(z)]
         bcenter = chunk.abs_to_base(center)
         # return, in chunk-relative coords, end1, end2, and radius of the cylinder, and color.
         color = chunk.color

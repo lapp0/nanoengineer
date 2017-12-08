@@ -51,7 +51,7 @@ from graphics.drawing.drawers import drawFilledCircle
 from graphics.drawing.drawers import drawtext
 
 from math import sin, cos, pi
-from Numeric import dot, argmax, argmin, sqrt
+import numpy as np
 
 from graphics.display_styles.displaymodes import ChunkDisplayMode
 
@@ -1490,7 +1490,7 @@ class DnaCylinderChunks(ChunkDisplayMode):
                                     dx, dy = _realTextSize(label_text, fm)
 
                                     # check if the right alignment is necessary
-                                    if dot(glpane.right,halfbond)<0.0:
+                                    if np.dot(glpane.right,halfbond)<0.0:
                                         textpos -= dx
 
                                     # center the label vertically

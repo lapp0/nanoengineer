@@ -17,7 +17,7 @@ Ninad 2008-08-22
 """
 
 import math # only for pi
-from Numeric import size, dot, sqrt, floor
+import numpy as np
 
 from OpenGL.GL import GL_COLOR_LOGIC_OP
 from OpenGL.GL import GL_DEPTH_TEST
@@ -829,8 +829,8 @@ class BuildCrystal_Command(basicMode):
         p0 = self.o.selArea_List[0]
         pt = p1 - p0
         if self.selectionShape in ['RECTANGLE', 'DIAMOND']:
-            hw = dot(self.o.right, pt)*self.o.right
-            hh = dot(self.o.up, pt)*self.o.up
+            hw = np.dot(self.o.right, pt)*self.o.right
+            hh = np.dot(self.o.up, pt)*self.o.up
             if self.selectionShape == 'RECTANGLE':
                 pt1 = p0 - hw + hh
                 pt2 = p0 + hw - hh
@@ -876,8 +876,8 @@ class BuildCrystal_Command(basicMode):
         <Param> pts: (the center and a corner point)
         """
         pt = pts[2] - pts[0]
-        hw = dot(self.o.right, pt)*self.o.right
-        hh = dot(self.o.up, pt)*self.o.up
+        hw = np.dot(self.o.right, pt)*self.o.right
+        hh = np.dot(self.o.up, pt)*self.o.up
         pp = []
 
         if sType == 'RECTANGLE':
@@ -1153,7 +1153,7 @@ class BuildCrystal_Command(basicMode):
         else:
             depth = vlen(self.layers[curLay + 1] - self.layers[curLay])
             num = int(
-                depth/(drawing_globals.DiGridSp * sqrt(self.whichsurf + 1)) + 0.5)
+                depth/(drawing_globals.DiGridSp * np.sqrt(self.whichsurf + 1)) + 0.5)
             return num
 
     def setOrientSurf(self, num):
@@ -1197,7 +1197,7 @@ class BuildCrystal_Command(basicMode):
         return what
 
     def setThickness(self, num):
-        self.thickness = num * drawing_globals.DiGridSp * sqrt(self.whichsurf + 1)
+        self.thickness = num * drawing_globals.DiGridSp * np.sqrt(self.whichsurf + 1)
         s = "%3.3f Angstroms" % (self.thickness)
         self.propMgr.layerThicknessLineEdit.setText(s)
 
@@ -1242,7 +1242,7 @@ class BuildCrystal_Command(basicMode):
         np = self.o.lineOfSight
 
         v1 = op - pt
-        v2 = dot(v1, np)*np
+        v2 = np.dot(v1, np)*np
 
         vr = pt + v2
         return vr
@@ -1271,7 +1271,7 @@ class BuildCrystal_Command(basicMode):
             up = V(sqrt2, 0.0, sqrt2)
 
         pt1 = p2 - orig3d
-        pt = V(dot(rt0, pt1), dot(up0, pt1))
+        pt = V(np.dot(rt0, pt1), np.dot(up0, pt1))
         pt -= V(2 * bLen, 2 * bLen)
 
         pt1 = V(sqrt2 * pt[0]-sqrt2 * pt[1], sqrt2 * pt[0]+sqrt2 * pt[1])
@@ -1353,7 +1353,7 @@ class BuildCrystal_Command(basicMode):
 
         orig3d = self._project2Plane(offset)
         p2 -= orig3d
-        pt = V(dot(rt, p2), dot(up, p2))
+        pt = V(np.dot(rt, p2), np.dot(up, p2))
 
         if vType == 0:  ## projected orig-point is at the corner
             if pt[1] < uLen:
@@ -1426,7 +1426,7 @@ class BuildCrystal_Command(basicMode):
         DELTA = 0.00005
         uLen = 0.58504827
 
-        sqrt6 = sqrt(6)
+        sqrt6 = np.sqrt(6)
         orig3d = self._project2Plane(V(0, 0,0))
         p2 -= orig3d
 
@@ -1448,11 +1448,11 @@ class BuildCrystal_Command(basicMode):
             ax = axy[0]
             ay = axy[1]
         else:
-            for ii in range(size(axy) -1):
-                cos_theta = dot(axy[ii], p2) / (vlen(axy[ii]) * vlen_p2)
+            for ii in range(np.size(axy) -1):
+                cos_theta = np.dot(axy[ii], p2) / (vlen(axy[ii]) * vlen_p2)
                 ## the 2 vectors has an angle > 60 degrees
                 if cos_theta < 0.5: continue
-                cos_theta = dot(axy[ii + 1], p2) / (vlen(axy[ii + 1]) * vlen_p2)
+                cos_theta = np.dot(axy[ii + 1], p2) / (vlen(axy[ii + 1]) * vlen_p2)
                 if cos_theta > 0.5:
                     ax = axy[ii]
                     ay = axy[ii + 1]
@@ -1473,9 +1473,9 @@ class BuildCrystal_Command(basicMode):
         Compute distance from point <pt> to corners and select the nearest corner.
         """
         if not vLen: vLen = uLen
-        hd = 0.5 * sqrt(uLen * uLen + vLen * vLen)
+        hd = 0.5 * np.sqrt(uLen * uLen + vLen * vLen)
 
-        ix = int(floor(pt[0] / uLen)) - uv1[0][0]
+        ix = int(np.floor(pt[0] / uLen)) - uv1[0][0]
         if ix == -1: ix = 0
         elif ix == (len(uv1) - 1): ix = len(uv1) - 2
         elif ix < -1 or ix >= len(uv1): raise ValueError(uv1, pt, uLen, ix)
@@ -1518,6 +1518,6 @@ class BuildCrystal_Command(basicMode):
 # == helper functions
 
 def hashAtomPos(pos):
-    return int(dot(V(1000000, 1000,1), floor(pos * 1.2)))
+    return int(np.dot(V(1000000, 1000,1), np.floor(pos * 1.2)))
 
 # end

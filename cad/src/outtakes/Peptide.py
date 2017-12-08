@@ -16,7 +16,7 @@ import foundation.env as env
 
 from math import sin, cos, pi
 from math import atan2
-from Numeric import dot, argmax, argmin, sqrt
+import numpy as np
 
 from model.chem import Atom
 from model.bonds import bond_atoms
@@ -365,18 +365,18 @@ class Peptide:
         points = chunk.atpos - center # not sure if basepos points are already centered
         # compare following Numeric Python code to findAtomUnderMouse and its caller
         matrix = matrix_putting_axis_at_z(axis)
-        v = dot( points, matrix)
+        v = np.dot( points, matrix)
         # compute xy distances-squared between axis line and atom centers
         r_xy_2 = v[:,0]**2 + v[:,1]**2
 
         # to get radius, take maximum -- not sure if max(r_xy_2) would use Numeric code, but this will for sure:
-        i = argmax(r_xy_2)
+        i = np.argmax(r_xy_2)
         max_xy_2 = r_xy_2[i]
-        radius = sqrt(max_xy_2)
+        radius = np.sqrt(max_xy_2)
         # to get limits along axis (since we won't assume center is centered between them), use min/max z:
         z = v[:,2]
-        min_z = z[argmin(z)]
-        max_z = z[argmax(z)]
+        min_z = z[np.argmin(z)]
+        max_z = z[np.argmax(z)]
 
         # Adjust the endpoints such that the ladder rungs (rings) will fall
         # on the ring segments.
@@ -519,7 +519,7 @@ class Peptide:
             for m2 in range(mfirst[0], mlast[0] + 1):
                 atm2 = evenAtomDict[(0, m2)]
                 diff = atm.posn() - atm2.posn()
-                if dot(diff, diff) < self.maxlensq:
+                if np.dot(diff, diff) < self.maxlensq:
                     moffset = m2 - mmid
                     # Given the offset, zipping up the rows is easy.
                     for m in range(mfirst[n], mlast[n]+1):
@@ -739,5 +739,3 @@ class Peptide:
         cntChunk.full_inval_and_update()
 
     pass
-
-

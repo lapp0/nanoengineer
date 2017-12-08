@@ -81,7 +81,7 @@ for help making the OpenGL do what it used to do, if that's ever needed.)
 """
 
 from math import pi
-from Numeric import dot, cos, sin
+import numpy as np
 
 from OpenGL.GL import GL_LIGHTING
 from OpenGL.GL import glDisable
@@ -180,7 +180,7 @@ def remove_unit_component(vec1, unitvec2): #e rename, or maybe just replace by r
     """Return the component of vec1 perp to unitvec2, by removing the component parallel to it.
     Requires, but does not verify, that vlen(unitvec2) == 1.0.
     """
-    return vec1 - dot(vec1, unitvec2) * unitvec2
+    return vec1 - np.dot(vec1, unitvec2) * unitvec2
 
 class Cylinder(Geom3D): #e super? ####IMPLEM - and answer the design Qs herein about state decls and model objs... #e refile
     """Be a cylinder, including as a surface... given the needed params... ###doc
@@ -296,8 +296,8 @@ class Cylinder_HelicalPath(Geom3D): #e super?
         p0 = end1 #e plus an optional offset along cyl.axisvector?
         for i in range(n+1):
             theta = turn_angle * i + theta_offset # in radians
-            y = cos(theta) * radius # y and z are Widths (numbers)
-            z = sin(theta) * radius
+            y = np.cos(theta) * radius # y and z are Widths (numbers)
+            z = np.sin(theta) * radius
             vx = i * axial_offset # a Vector
             p = p0 + vx + y * cY + z * cZ
             points.append(p)

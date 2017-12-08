@@ -15,7 +15,7 @@ History:
 2008-05-09 - 2008-05-14 Created / modified.
 
 """
-from Numeric import dot
+import numpy as np
 from geometry.VQT import V, norm, vlen
 from utilities.constants import applegreen
 
@@ -498,7 +498,7 @@ class MultipleDnaSegmentResize_EditCommand(DnaSegment_EditCommand):
         #the ribbon. So those checks are not done here. If that call is removed
         #then we need to do those checks.
 
-        if dot(self.grabbedHandle.direction, direction_of_drag) < 0:
+        if np.dot(self.grabbedHandle.direction, direction_of_drag) < 0:
             signFactor = -1.0
         else:
             signFactor = 1.0
@@ -510,7 +510,7 @@ class MultipleDnaSegmentResize_EditCommand(DnaSegment_EditCommand):
 
         #If the segment is being shortened (determined by checking the
         #direction of drag) , no need to draw the rubberband line.
-        if dot(self.grabbedHandle.direction, direction_of_drag) < 0:
+        if np.dot(self.grabbedHandle.direction, direction_of_drag) < 0:
             params_when_adding_bases = None
             params_when_removing_bases = (resizeEnd_final_position)
 
@@ -605,7 +605,7 @@ class MultipleDnaSegmentResize_EditCommand(DnaSegment_EditCommand):
         #This condition is applicable only when the direction of drag is
         #positive..i.e. bases bing added to the segment.
         if changedLength < duplexRise and \
-           dot(self.grabbedHandle.direction, direction_of_drag) > 0:
+           np.dot(self.grabbedHandle.direction, direction_of_drag) > 0:
             return 0
 
 
@@ -618,7 +618,7 @@ class MultipleDnaSegmentResize_EditCommand(DnaSegment_EditCommand):
                                        changedLength,
                                        duplexRise = duplexRise)
 
-        if dot(self.grabbedHandle.direction, direction_of_drag) < 0:
+        if np.dot(self.grabbedHandle.direction, direction_of_drag) < 0:
             numberOfBasesToAddOrRemove = - numberOfBasesToAddOrRemove
 
 
@@ -655,4 +655,3 @@ class MultipleDnaSegmentResize_EditCommand(DnaSegment_EditCommand):
 
 
         return numberOfBasesToAddOrRemove
-

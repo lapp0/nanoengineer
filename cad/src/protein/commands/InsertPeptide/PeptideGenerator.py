@@ -31,7 +31,7 @@ from protein.model.Protein import Protein
 from protein.model.Residue import Residue
 from protein.model.Residue import SS_HELIX, SS_STRAND, SS_COIL, AA_3_TO_1
 
-from Numeric import zeros, sqrt, pi, sin, cos, Float
+import numpy as np
 from geometry.VQT import Q, V, norm, vlen, cross, angleBetween
 
 from utilities.debug import print_compact_stack
@@ -528,7 +528,7 @@ AMINO_ACIDS = [
 ]
 
 # degrees to radians conversion
-DEG2RAD = (pi/180.0)
+DEG2RAD = (np.pi/180.0)
 
 def enablePeptideGenerator(enable):
     """
@@ -587,7 +587,7 @@ def get_unit_length(phi, psi):
     return unit_length
 
 class PeptideGenerator:
-    prev_coords = zeros([3,3], Float)
+    prev_coords = np.zeros([3,3], np.float64)
 
     peptide_mol = None
     length = 0
@@ -630,7 +630,7 @@ class PeptideGenerator:
             axis = V(0, 1, 0)
             # print "Now cross(a,b) =", axis
 
-        rot =  (pi / 180.0) * theta  # Convert to radians
+        rot =  (np.pi / 180.0) * theta  # Convert to radians
         qrot = Q(axis, rot) # Quat for rotation delta.
 
         # Move and rotate the Peptide into final orientation.
@@ -848,7 +848,7 @@ class PeptideGenerator:
             coords = self.prev_coords
         else:
             # if no prev_coords are given, compute the first three atom positions
-            coords = zeros([3,3], Float)
+            coords = np.zeros([3,3], np.float64)
             num, name, atom_name, atom_type, \
                atom_c, atom_b, atom_a, r, a, t = zmatrix[1]
             coords[0][0] = 0.0;
@@ -857,14 +857,14 @@ class PeptideGenerator:
             coords[1][0] = r;
             coords[1][1] = 0.0;
             coords[1][2] = 0.0;
-            ccos = cos(DEG2RAD*a)
+            ccos = np.cos(DEG2RAD*a)
             num, name, atom_name, atom_type, \
                atom_c, atom_b, atom_a, r, a, t = zmatrix[2]
             if atom_c == 1:
                 coords[2][0] = coords[0][0] + r*ccos
             else:
                 coords[2][0] = coords[0][0] - r*ccos
-            coords[2][1] = r * sin(DEG2RAD*a)
+            coords[2][1] = r * np.sin(DEG2RAD*a)
             coords[2][2] = 0.0
             for i in range (0, 3):
                 self.prev_coords[i][0] = coords[i][0] + init_pos[0]

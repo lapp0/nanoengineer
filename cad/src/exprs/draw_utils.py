@@ -25,7 +25,7 @@ from OpenGL.GL import GL_QUAD_STRIP
 from OpenGL.GLU import gluUnProject
 
 from geometry.VQT import norm, A
-from Numeric import dot
+import numpy as np
 
 from array import array
 # ==
@@ -43,7 +43,7 @@ def mymousepoints(glpane, x, y): #bruce 071017 moved this here from testdraw.py
         # note: this might be in abs coords (not sure!) even though p1 and p2 would be in local coords.
         # I need to review that in GLPane.__getattr__. ###k
 
-    k = dot(los, -self.pov - p1) / dot(los, p2 - p1)
+    k = np.dot(los, -self.pov - p1) / np.dot(los, p2 - p1)
 
     p2 = p1 + k*(p2-p1)
     return (p1, p2)

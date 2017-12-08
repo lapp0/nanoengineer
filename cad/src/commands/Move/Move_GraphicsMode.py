@@ -12,7 +12,7 @@ Ninad 2008-01-25: Split modifyMode into Command and GraphicsMode classes
 """
 
 import math
-from Numeric import dot
+import numpy as np
 
 from PyQt5.QtGui import QMouseEvent
 from PyQt5.QtCore import Qt
@@ -381,7 +381,7 @@ class Move_GraphicsMode(SelectChunks_GraphicsMode):
         self._leftADown_indiv_axes = [] #bruce 070605 optim
         for mol in movables:
             axis = mol.getaxis()
-            if dot(ma, axis) < 0.0: #bruce 070605 bugfix, in case axis happens
+            if np.dot(ma, axis) < 0.0: #bruce 070605 bugfix, in case axis happens
                 #to point the opposite way as ma
                 axis = - axis
             self._leftADown_indiv_axes.append(axis) # not sure it's best to put
@@ -399,7 +399,7 @@ class Move_GraphicsMode(SelectChunks_GraphicsMode):
             self.leftAError("(axes can't be averaged, doing nothing)")
             return
 
-        ma = norm(V(dot(ma,self.o.right),dot(ma,self.o.up)))
+        ma = norm(V(np.dot(ma,self.o.right),np.dot(ma,self.o.up)))
         self.Zmat = A([ma,[-ma[1],ma[0]]])
         self.picking = True
         self.dragdist = 0.0
@@ -449,7 +449,7 @@ class Move_GraphicsMode(SelectChunks_GraphicsMode):
         deltaMouse = V(event.pos().x() - self.o.MousePos[0],
                        self.o.MousePos[1] - event.pos().y())
 
-        a =  dot(self.Zmat, deltaMouse)
+        a =  np.dot(self.Zmat, deltaMouse)
         dx,dy =  a * V(self.o.scale/(h*0.5), 2*math.pi/w)
 
         self._leftADown_total_dx_dy += V(dx,dy)
@@ -512,4 +512,3 @@ class Move_GraphicsMode(SelectChunks_GraphicsMode):
         (pre Alpha9 - experimental)
         """
         return
-

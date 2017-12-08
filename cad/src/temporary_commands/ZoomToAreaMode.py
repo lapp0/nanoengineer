@@ -11,7 +11,7 @@ History:
 Mark 2008-01-31: Renamed from ZoomMode to ZoomToAreaMode.py
 """
 
-from Numeric import dot
+import numpy as np
 
 from OpenGL.GL import GL_DEPTH_TEST
 from OpenGL.GL import glDisable
@@ -145,7 +145,7 @@ class ZoomToAreaMode_GM( TemporaryCommand_Overdrawing.GraphicsMode_class ):
             p2 = A(gluUnProject(winCenterX, winCenterY, 1.0))
 
             los = self.glpane.lineOfSight
-            k = dot(los, -self.glpane.pov - p1) / dot(los, p2 - p1)
+            k = np.dot(los, -self.glpane.pov - p1) / np.dot(los, p2 - p1)
 
             zoomCenter = p1 + k*(p2-p1)
 
@@ -259,4 +259,3 @@ class ZoomToAreaMode(TemporaryCommand_Overdrawing):
         self.graphicsMode._restore_patches_by_GraphicsMode()
         super(ZoomToAreaMode, self).command_will_exit()
         return
-

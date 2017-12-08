@@ -9,7 +9,7 @@ represent pi orbitals as "vanes".
 """
 
 import math
-from Numeric import dot
+import numpy as np
 
 from OpenGL.GL import GL_CULL_FACE
 from OpenGL.GL import glDisable
@@ -92,7 +92,7 @@ def draw_vane( bond, a1p, a2p, ord_pi, rad, col ):
     if print_vane_params:
         print("draw vane",a1p,vlen(a1p),a2p,vlen(a2p),ord_pi)
     if twisted:
-        d12 = dot(a1p, a2p)
+        d12 = np.dot(a1p, a2p)
         ## assert d12 >= 0.0
         if d12 < 0.0:
             d12 = 0.0

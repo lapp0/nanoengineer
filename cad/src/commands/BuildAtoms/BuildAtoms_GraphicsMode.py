@@ -29,7 +29,7 @@ GraphicsMode parts and the these classes were moved into their own module
 
 
 import math
-from Numeric import dot
+import numpy as np
 
 from OpenGL.GL import GL_FALSE
 from OpenGL.GL import glDepthMask
@@ -156,8 +156,8 @@ class BuildAtoms_basicGraphicsMode(SelectAtoms_basicGraphicsMode):
             pnt = at.posn()
         else:
             pnt = - self.o.pov
-        k = (dot(self.o.lineOfSight,  pnt - p1) /
-             dot(self.o.lineOfSight, p2 - p1))
+        k = (np.dot(self.o.lineOfSight,  pnt - p1) /
+             np.dot(self.o.lineOfSight, p2 - p1))
 
         return p1+k*(p2-p1) # always return a point on the line from p1 to p2
 
@@ -1316,6 +1316,3 @@ class BuildAtoms_GraphicsMode(BuildAtoms_basicGraphicsMode):
                                           _set_highlight_singlets)
 
     ##### END of code copied from SelectAtoms_GraphicsCommand
-
-
-

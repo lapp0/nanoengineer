@@ -16,7 +16,7 @@ How to demo the pyrex/C code for SurfaceChunks
 see cad/src/experimental/oleksandr/README.txt.
 """
 
-from Numeric import sqrt, pi, sin, cos
+import numpy as np
 from PyQt5.QtWidgets import *
 import types
 
@@ -211,7 +211,7 @@ class Triple:
 
     def Len(self):
         """vector length"""
-        return sqrt(self.Len2())
+        return np.sqrt(self.Len2())
 
     def Normalize(self):
         """normalizes vector to unit length"""
@@ -406,12 +406,12 @@ class Surface:
 
     def CalculateTorus(self, a, b, u, v):
         """calculate point on torus"""
-        pi2 = 2 * pi
+        pi2 = 2 * np.pi
         #transformation function - torus
-        cf = cos(pi2*u)
-        sf = sin(pi2*u)
-        ct = cos(pi2*v)
-        st = sin(pi2*v)
+        cf = np.cos(pi2*u)
+        sf = np.sin(pi2*u)
+        ct = np.cos(pi2*v)
+        st = np.sin(pi2*v)
         #point on torus
         return Triple((a+b*ct)*cf, (a+b*ct)*sf, b*st)
 
@@ -597,7 +597,7 @@ class SurfaceChunks(ChunkDisplayMode):
                 spheres.append(p)
                 r = p[0]**2+p[1]**2+p[2]**2
                 if r > rad: rad = r
-            rad = sqrt(rad)
+            rad = np.sqrt(rad)
             radius = rad + margin
             cspheres = []
             from utilities.debug_prefs import debug_pref, Choice_boolean_True
@@ -643,7 +643,7 @@ class SurfaceChunks(ChunkDisplayMode):
                 s.spheres.append(Triple(p[0], p[1], p[2]))
                 r = p[0]**2+p[1]**2+p[2]**2
                 if r > rad: rad = r
-            rad = sqrt(rad)
+            rad = np.sqrt(rad)
             radius = rad + margin
             for i in range(len(s.spheres)):
                 s.spheres[i] /= radius

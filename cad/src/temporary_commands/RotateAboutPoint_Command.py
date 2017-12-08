@@ -13,7 +13,7 @@ conference. This may be revised further.
 -- Need documentation
 """
 
-from Numeric import dot
+import numpy as np
 import math # for pi
 
 from utilities.prefs_constants import atomHighlightColor_prefs_key
@@ -245,7 +245,7 @@ class RotateAboutPoint_Command(Line_Command):
         quat1 = Q(lineVector, reference_vec)
 
         #DEBUG Disabled temporarily . will not be used
-        if dot(lineVector, reference_vec) < 0:
+        if np.dot(lineVector, reference_vec) < 0:
             theta = math.pi - quat1.angle
         else:
             theta = quat1.angle
@@ -256,13 +256,13 @@ class RotateAboutPoint_Command(Line_Command):
         rot_axis = cross(lineVector, reference_vec)
 
 
-        if dot(lineVector, reference_vec) < 0:
+        if np.dot(lineVector, reference_vec) < 0:
             rot_axis = - rot_axis
 
         cross_prod_1 = norm(cross(reference_vec, rot_axis))
         cross_prod_2 = norm(cross(lineVector, rot_axis))
 
-        if dot(cross_prod_1, cross_prod_2) < 0:
+        if np.dot(cross_prod_1, cross_prod_2) < 0:
             quat2 = Q(rot_axis, theta)
         else:
             quat2 = Q(rot_axis, - theta)

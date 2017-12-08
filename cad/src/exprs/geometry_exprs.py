@@ -104,7 +104,7 @@ instructions for geometric calculations, rather than as ever-present overhead --
 
 """
 
-from Numeric import dot
+import numpy as np
 
 from geometry.VQT import planeXline
 from geometry.VQT import norm
@@ -126,7 +126,7 @@ from geometry.VQT import vlen
 
 def project_onto_unit_vector(vec, unit): ###UNTESTED
     "project vec onto a unit-length vector unit"
-    return dot(vec, unit) * unit
+    return np.dot(vec, unit) * unit
 
 # ==
 
@@ -177,7 +177,7 @@ class Ray: ##e (InstanceOrExpr): #k revise super to something about 3d geom. #e 
             print("inter is None (unexpected); data:",p1,v1,p2,v2,perp0)
             return None
         # inter is the retval for a variant which just wants the closest point itself, i.e. closest_pt_to_ray
-        return dot(inter - p1, v1n) / vlen(v1)
+        return np.dot(inter - p1, v1n) / vlen(v1)
     def posn_from_params(self, k):
         ""
         # return a point on self whose param is k -- as a Point or a 3-tuple? how does method name say, if both can be done?

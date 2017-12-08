@@ -15,7 +15,7 @@ mark 060120 split this out of MWsemantics.py.
 """
 
 import math
-from Numeric import dot
+import numpy as np
 from geometry.geometryUtilities import compute_heuristic_axis
 import foundation.env as env
 from geometry.VQT import V, Q, A, norm, vlen
@@ -279,7 +279,7 @@ class viewSlotsMixin:
         else: # We have a jig with no atoms.
             axis = jigs[0].getaxis() # Get the jig's axis.
             # If axis is pointing into the screen, negate (reverse) axis.
-            if dot(axis, self.glpane.lineOfSight) > 0:
+            if np.dot(axis, self.glpane.lineOfSight) > 0:
                 axis = -axis
 
         if not axis:
@@ -358,7 +358,7 @@ class viewSlotsMixin:
             return
 
         # If vec is pointing into the screen, negate (reverse) vec.
-        if dot(v, self.glpane.lineOfSight) > 0:
+        if np.dot(v, self.glpane.lineOfSight) > 0:
             v = -v
 
         # Compute the destination quat (q2).

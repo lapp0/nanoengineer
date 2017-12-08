@@ -26,7 +26,7 @@ from utilities.Comparison import same_vals
 from geometry.VQT import  V
 from geometry.VQT import  vlen
 from geometry.VQT import  norm
-from Numeric import dot
+import numpy as np
 
 from exprs.State_preMixin import State_preMixin
 from exprs.attr_decl_macros import Instance, State
@@ -743,7 +743,7 @@ class DnaStrand_EditCommand(State_preMixin, EditCommand):
 
         #If the strand bases are being removed (determined by checking the
         #direction of drag) , no need to draw the rubberband line.
-        if dot(self.grabbedHandle.direction, direction_of_drag) < 0:
+        if np.dot(self.grabbedHandle.direction, direction_of_drag) < 0:
             return None
 
         strandEndAtom, axisEndAtom = self.get_strand_and_axis_endAtoms_at_resize_end()
@@ -932,7 +932,7 @@ class DnaStrand_EditCommand(State_preMixin, EditCommand):
         #If the dot product of handle direction and the direction in which it
         #is dragged is negative, this means we need to subtract bases
         direction_of_drag = norm(currentPosition - resize_end)
-        if dot(self.grabbedHandle.direction, direction_of_drag ) < 0:
+        if np.dot(self.grabbedHandle.direction, direction_of_drag ) < 0:
             total_number_of_bases = original_numberOfBases - numberOfBasePairs_to_change
             self.propMgr.numberOfBasesSpinBox.setValue(total_number_of_bases)
         else:
@@ -1016,4 +1016,3 @@ class DnaStrand_EditCommand(State_preMixin, EditCommand):
                 return
 
         highlightedChunk.make_glpane_cmenu_items(self.Menu_spec, self)
-

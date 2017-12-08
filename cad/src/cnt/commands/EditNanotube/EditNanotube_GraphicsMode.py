@@ -18,8 +18,8 @@ History:
 Created 2008-03-10 from copy of DnaSegment_GraphicsMode.py
 Recreated 2008-04-02 from copy of DnaSegment_GraphicsMode.py
 """
-from Numeric import dot
 from PyQt5.QtGui import QMouseEvent
+import numpy as np
 
 from cnt.commands.BuildNanotube.BuildNanotube_GraphicsMode import BuildNanotube_GraphicsMode
 from cnt.model.NanotubeSegment import NanotubeSegment
@@ -223,7 +223,7 @@ class EditNanotube_GraphicsMode(BuildNanotube_GraphicsMode):
         #-- Ninad 2008-03-11
         self._movablesForLeftDrag = self.command.struct.get_all_content_chunks()
 
-        ma = norm(V(dot(ma,self.o.right),dot(ma,self.o.up)))
+        ma = norm(V(np.dot(ma,self.o.right),np.dot(ma,self.o.up)))
 
         self.Zmat = A([ma,[-ma[1],ma[0]]])
 
@@ -360,7 +360,7 @@ class EditNanotube_GraphicsMode(BuildNanotube_GraphicsMode):
         deltaMouse = V(event.pos().x() - self.o.MousePos[0],
                        self.o.MousePos[1] - event.pos().y())
 
-        a =  dot(self.Zmat, deltaMouse)
+        a =  np.dot(self.Zmat, deltaMouse)
         dx,dy =  a * V(self.o.scale/(h*0.5), 2*math.pi/w)
 
         offset = None

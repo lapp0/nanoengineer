@@ -51,7 +51,6 @@ LEFT_HANDED  =  1
 
 from geometry.VQT import V, Q, norm, cross
 from geometry.VQT import  vlen
-from Numeric import dot
 
 from utilities.debug import print_compact_stack
 from model.bonds import bond_at_singlets
@@ -65,4 +64,3 @@ class Z_Dna_PAM5_Generator(Z_Dna_Generator):
     @attention: This class is not implemented yet.
     """
     pass
-

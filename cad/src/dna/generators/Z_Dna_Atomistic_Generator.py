@@ -15,7 +15,7 @@ Mark 2007-10-18:
 import foundation.env as env
 import os
 
-from math    import sin, cos, pi
+from math import sin, cos, pi
 from utilities.debug import print_compact_traceback, print_compact_stack
 from platform_dependent.PlatformDependent import find_plugin_dir
 from files.mmp.files_mmp import readmmp
@@ -51,7 +51,6 @@ LEFT_HANDED  =  1
 
 from geometry.VQT import V, Q, norm, cross
 from geometry.VQT import  vlen
-from Numeric import dot
 
 from utilities.debug import print_compact_stack
 from model.bonds import bond_at_singlets
@@ -115,4 +114,3 @@ class Z_Dna_Atomistic_Generator(Z_Dna_Generator):
 
         basefile     = self._baseFileName(basename)
         return (basefile, zoffset, thetaOffset)
-

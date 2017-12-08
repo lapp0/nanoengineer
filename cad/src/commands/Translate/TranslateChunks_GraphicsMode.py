@@ -16,7 +16,7 @@ Translate_GraphicsMode or TranslateComponents_GraphicsMode.
 """
 from utilities import debug_flags
 import math
-from Numeric import dot
+import numpy as np
 import foundation.env as env
 from utilities.debug import print_compact_traceback
 from geometry.VQT import V, A, vlen, norm
@@ -100,7 +100,7 @@ class TranslateChunks_GraphicsMode(Move_GraphicsMode):
                 print("TranslateChunks_GraphicsMode Error - "\
                       "unknown moveOption value =", self.moveOption)
 
-            ma = norm(V(dot(ma,self.o.right),dot(ma,self.o.up)))
+            ma = norm(V(np.dot(ma,self.o.right),np.dot(ma,self.o.up)))
             # When in the front view, right = 1,0,0 and up = 0,1,0, so ma will
             #be computed as 0,0.
             # This creates a special case problem when the user wants to
@@ -205,7 +205,7 @@ class TranslateChunks_GraphicsMode(Move_GraphicsMode):
         h=self.o.height+0.0
         deltaMouse = V(event.pos().x() - self.o.MousePos[0],
                        self.o.MousePos[1] - event.pos().y())
-        a =  dot(self.Zmat, deltaMouse)
+        a =  np.dot(self.Zmat, deltaMouse)
         dx,dy =  a * V(self.o.scale/(h*0.5), 2*math.pi/w)
         if self.moveOption == 'TRANSX':
             ma = V(1,0,0) # X Axis
@@ -234,5 +234,3 @@ class TranslateChunks_GraphicsMode(Move_GraphicsMode):
         self.o.gl_update()
 
         return
-
-
