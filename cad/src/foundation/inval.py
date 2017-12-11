@@ -175,7 +175,7 @@ class InvalMixin:
     # If the correct value of self.xxx depends on anything else, then any code
     # that changes those other things needs to either declare ... or call ... ###@@@.
 
-    def __getattr__(self, attr): # in class InvalMixin; doesn't inherit _eq_id_mixin_ -- should it? ##e [060209]
+    def __getattr__(self, attr):
         """
         Called to compute certain attrs which have not been recomputed since
         the other attrs they depend on were initialized or changed. Code which
@@ -416,4 +416,3 @@ and here are c,b,a again (should be unchanged): 23,4,17
 """
 
 # end
-

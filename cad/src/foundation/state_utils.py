@@ -164,7 +164,6 @@ from foundation.state_constants import S_REF, S_REFS
 from foundation.state_constants import S_PARENT, S_PARENTS
 from foundation.state_constants import UNDO_SPECIALCASE_ATOM, UNDO_SPECIALCASE_BOND
 from foundation.state_constants import ATOM_CHUNK_ATTRIBUTE_NAME
-from foundation.state_constants import _UNSET_, _Bugval
 
 import numpy as np
 import foundation.env as env
@@ -240,55 +239,6 @@ in current code?? #####@@@@@
 
 # ==
 
-class _eq_id_mixin_: #bruce 060209 ##e refile? use more? (GLPane?)
-    """
-    For efficiency, any classes defining __getattr__ which might frequently
-    be compared using == or != or coerced to a boolean, should have definitions
-    for __eq__ and __ne__ and __nonzero__ (and any others we forgot??),
-    even if those are semantically equivalent to Python's behavior when they don't.
-
-    Otherwise Python has to call __getattr__ on each comparison of these objects,
-    just to check whether they have one of those special method definitions
-    (potentially as a value returned by __getattr__). This makes those simple
-    comparisons MUCH SLOWER!
-
-    This mixin class is one way of solving that problem by providing definitions
-    for those methods.
-
-    It's ok for a subclass to override some of the methods defined here.
-    It can override both __eq__ and __ne__, or __eq__ alone (which will cause
-    our __ne__ to follow suit, since it calls the instances __eq__), but it
-    should not normally override __ne__ alone, since that would probably
-    cause __eq__ and __ne__ to be incompatible.
-
-    These definitions are suitable for objects meant as containers for "named"
-    mutable state (for which different objects are never equal, even if their
-    *current* state is equal, since their future state might not be equal).
-
-    They are not suitable for data-like objects. This is why the class name
-    contains '_eq_id_' rather than '_eq_data_'. For datalike objects, there is
-    no shortcut to defining each of these methods in a customized way (and that
-    should definitely be done, for efficiency, under the same conditions in
-    which use of this mixin is recommended). (We might still decide to make
-    an _eq_data_mixin_(?) class for them, for some other reason.)
-    """
-    def __eq__(self, other):
-        return self is other
-    def __ne__(self, other):
-        ## return not (self == other)
-        ##     # presumably this uses self.__eq__ -- would direct use be faster?
-        return not self.__eq__(other)
-    def __bool__(self):
-        ### warning: I did not verify in Python docs that __nonzero__ is the
-        ### correct name for this! [bruce 060209]
-        return True
-    def __hash__(self):
-        #####k guess at name; guess at need for this due to __eq__,
-        #####  but it did make our objects ok as dict keys again
-        return id(self) #####k guess at legal value
-    pass
-
-# ==
 
 def noop(*args, **kws):
     # duplicate code warning: redundant with def noop in constants.py,
@@ -358,7 +308,7 @@ class _IsMutable(Exception):
     pass
 
 
-class Classification: #e want _eq_id_mixin_? probably not, since no getattr.
+class Classification:
     """
     Classifications record policies and methods for inspecting/diffing/copying/etc all objects of one kind,
     or can be used as dict keys for storing those policies externally.
@@ -757,36 +707,8 @@ copiers_for_InstanceType_class_names = {} # copier functions for InstanceTypes w
 
 # scanners_for_class_names would work the same way, but we don't need it yet.
 
-def copy_val(val):
-    """
-    Efficiently copy a general Python value (so that mutable components are
-    not shared with the original), returning class instances unchanged unless
-    they define a _copyOfObject method, and returning unrecognized objects
-    (e.g. QWidgets, bound methods) unchanged.
-
-    (See a code comment for the reason we can't just use the standard Python
-     copy module for this.)
-
-    @note: this function is replaced by a C implementation when that is
-           available. See COPYVALS_SPEEDUP in the code.
-    """
-    #bruce 060221 generalized semantics and rewrote for efficiency
-    try:
-        # wware 060308 small performance improvement (use try/except);
-        # made safer by bruce, same day.
-        # [REVIEW: is this in fact faster than using .get?]
-        # note: _known_type_copiers is a fixed public dictionary
-        copier = _known_type_copiers[type(val)]
-    except KeyError:
-        # we used to optimize by not storing any copier for atomic types...
-        # but now that we call _generalCopier [bruce 090206] that is no longer
-        # an optimization, but since the C code is
-        # used by all end-users and most developers, nevermind for now.
-        return _generalCopier(val)
-    else:
-        # assume copier is not None, since we know what's stored in _known_type_copiers
-        return copier(val)
-    pass
+from copy import deepcopy
+copy_val = deepcopy  # NEWTODO
 
 def is_mutable(val): #bruce 060302
     """
@@ -940,33 +862,6 @@ def _debug_check_copyOfObject(obj, res):
 
 # ==
 
-_generalCopier_exceptions = {}
-    # set of types which _generalCopier should not complain about;
-    # extended at runtime
-
-if 1:
-    # add exceptions for known types we should trivially copy
-    # whenever they lack a _copyOfObject method
-    class _NEW_STYLE_1(object):
-        pass
-    class _OLD_STYLE_1:
-        pass
-
-    for _x in [1, # int
-               None, # NoneType
-               True, # bool
-               "", # str
-               "", # unicode
-               0.1, # float
-               # not InstanceType -- warn about missing _copyOfObject method
-               ## _OLD_STYLE_1(), # instance == InstanceType
-               _OLD_STYLE_1, # classobj
-               _NEW_STYLE_1 # type
-              ]:
-        _generalCopier_exceptions[type(_x)] = type(_x)
-
-# ==
-
 
 # note: the following old code/comments came from copy_InstanceType when it
 # was merged into _generalCopier; they may or may not be obsolete. [bruce 090206]
@@ -995,8 +890,6 @@ COPYVAL_SPEEDUP = False # changed below if possible [bruce 090305 revised]
 ## def is_mutable_Instance(obj):
 ##     return hasattr(obj, '_s_isPureData')
 
-_known_type_copiers[ InstanceType ] = _generalCopier
-
 def _scan_Instance(obj, func):
     """
     This is called by scan_vals to support old-style instances,
@@ -1013,7 +906,7 @@ def _scan_Instance(obj, func):
     # this in C at some point.
     return None
 
-_known_type_scanners[ InstanceType ] = _scan_Instance
+# _known_type_scanners[ InstanceType ] = _scan_Instance  # NEWTODO
     # (storing this is mainly just an optimization, but not entirely,
     #  if there are any old-style classes that we should scan this way
     #  but which don't inherit InstanceLike; that is probably an error
@@ -1022,13 +915,13 @@ _known_type_scanners[ InstanceType ] = _scan_Instance
 
 # NEWTODO: remove/refactor this
 # note: related code exists in utilities/Comparison.py.
-numeric_array_type = type(array(list(range(2))))
+numeric_array_type = type(np.array(list(range(2))))  # NEWTODO
 # note: __name__ is 'array', but Numeric.array itself is a
 # built-in function, not a type
-assert numeric_array_type != InstanceType
-_known_type_copiers[ numeric_array_type ] = copy_Numeric_array
-_known_type_scanners[ numeric_array_type ] = scan_Numeric_array
-_known_mutable_types[ numeric_array_type ] = True
+#assert numeric_array_type != InstanceType  # NEWTODO
+#_known_type_copiers[ numeric_array_type ] = copy_Numeric_array
+#_known_type_scanners[ numeric_array_type ] = scan_Numeric_array
+#_known_mutable_types[ numeric_array_type ] = True
 
 _Numeric_array_type = numeric_array_type #bruce 060309 kluge, might be temporary
 del numeric_array_type
@@ -1059,17 +952,18 @@ else:
         # note: this is the type of a QColor instance, not of the class!
         # type(QColor) is <type 'sip.wrappertype'>, which we'll just treat as a constant,
         # so we don't need to handle it specially.
-    if QColor_type != InstanceType:
+    #if QColor_type != InstanceType:
         ## wrong: copiers_for_InstanceType_class_names['qt.QColor'] = copy_QColor
-        _known_type_copiers[ QColor_type ] = copy_QColor
-        _known_mutable_types[ QColor_type ] = True # not sure if needed, but might be, and safe
-    else:
-        print("Warning: QColor_type is %r, id %#x,\n and InstanceType is %r, id %#x," % \
-              ( QColor_type, id(QColor_type), InstanceType, id(InstanceType) ))
-        print(" and they should be != but are not,")
-        print(" so Undo is not yet able to copy QColors properly; this is not known to cause bugs")
-        print(" but its full implications are not yet understood. So far this is only known to happen")
-        print(" in some systems running Mandrake Linux 10.1. [message last updated 060421]")
+    #    _known_type_copiers[ QColor_type ] = copy_QColor
+    #    _known_mutable_types[ QColor_type ] = True # not sure if needed, but might be, and safe
+    #else:
+    #    print("Warning: QColor_type is %r, id %#x,\n and InstanceType is %r, id %#x," % \
+    #          ( QColor_type, id(QColor_type), InstanceType, id(InstanceType) ))
+    #    print(" and they should be != but are not,")
+    #    print(" so Undo is not yet able to copy QColors properly; this is not known to cause bugs")
+    #    print(" but its full implications are not yet understood. So far this is only known to happen")
+    #    print(" in some systems running Mandrake Linux 10.1. [message last updated 060421]")
+    print("NEWTODO")
     # no scanner for QColor is needed, since it contains no InstanceType/InstanceLike
     # objects. no same_helper is needed, since '!=' will work correctly
     # (only possible since it contains no general Python objects).
@@ -1299,6 +1193,8 @@ def diff_snapshots(snap1, snap2, whatret = 0): #060227
     Diff two snapshots. Retval format [needs doc]. Missing attrdicts
     are like empty ones. obj/attr sorting by varid to be added later.
     """
+    pass # NEWTODO
+"""
     keydict = dict(snap1.attrdicts) # shallow copy, used only for its keys (presence of big values shouldn't slow this down)
     keydict.update(snap2.attrdicts)
     attrcodes = list(keydict.keys())
@@ -1324,6 +1220,7 @@ def diff_snapshots(snap1, snap2, whatret = 0): #060227
         if diff:
             res[attrcode] = diff #k ok not to copy its mutable state? I think so...
     return res # just a diff-attrdicts-dict, with no empty dict members (so boolean test works ok) -- not a Snapshot itself.
+"""
 
 def diff_snapshots_oneway(snap1, snap2):
     """
@@ -1524,6 +1421,10 @@ def modify_and_diff_snap_for_changed_objects( archive, lastsnap_diffscan_layers,
       in the layers specified (for now only 'atoms' is supported),
     - and record the diffs from that into diffobj.
     """
+    # NEWTODO
+    pass
+"""
+
     assert len(layers) == 1 and layers[0] == 'atoms' # this is all that's supported for now
     # Get the sets of possibly changed objects... for now, this is hardcoded as 2 dicts, for atoms and bonds,
     # keyed by atom.key and id(bond), and with changes to all attrs lumped together (though they're tracked separately);
@@ -1649,6 +1550,8 @@ def modify_and_diff_snap_for_changed_objects( archive, lastsnap_diffscan_layers,
         pass
     return # from modify_and_diff_snap_for_changed_objects
 
+"""
+
 #e for the future, this pseudocode is related to how to generalize the use of chgd_atoms, chgd_bonds seen above.
 ##def xxx( archive, layers = ('atoms',) ): #bruce 060329; is this really an undo_archive method?
 ##    # ok, we've had a dict subscribed for awhile (necessarily), just update it one last time, then we have the candidates, not all valid.
@@ -1756,6 +1659,9 @@ def apply_and_reverse_diff(diff, snap):
        Return None, to remind caller we modify our argument objects.
     (Note: Calling this again on the reverse diff we returned and on the same now-modified snap should undo its effect entirely.)
     """
+    # NEWTODO
+    pass
+"""
     for attrcode, dict1 in list(diff.attrdicts.items()):
         dictsnap = snap.attrdicts.setdefault(attrcode, {})
         if 1:
@@ -1797,7 +1703,7 @@ def apply_and_reverse_diff(diff, snap):
             # which then get stored by applying the diffs, maybe compressing them together as the expr is built?
             #
     return
-
+"""
 # ==
 
 # Terminology/spelling note: in comments, we use "class" for python classes, "clas" for Classification objects.
@@ -2017,7 +1923,7 @@ class obj_classifier:
                     if env.debug() or DEBUG_PYREX_ATOMS:###@@@ rm when works
                         print("debug: collect_state exclude_layers2 excludes", attr, "of", obj)
                     continue
-                attrdicts[attrcode][key] = copy_val(getattr(obj, attr, _Bugval))
+                raise Exception #NEWTODO attrdicts[attrcode][key] = copy_val(getattr(obj, attr, _Bugval))
                     # We do it all in one statement, for efficiency in case compiler is not smart enough to see that local vars
                     # would not be used again; it might even save time due to lack of bytecodes to update linenumber
                     # to report in exceptions! (Though that will make bugs harder to track down, if exceptions occur.)
@@ -2088,7 +1994,7 @@ class InstanceLike(object):
 # to classify them and figure out if they should inherit from any new declarative
 # classes. [bruce 080321 comment]
 
-class StateMixin( _eq_id_mixin_, IdentityCopyMixin ):
+class StateMixin:
     """
     Convenience mixin for classes that contain state-attribute (_s_attr)
     declarations, to help them follow the rules for __eq__,
@@ -2123,7 +2029,7 @@ def _test():
                   [4,5],
                   (6.0,),
                   {7:8,9:10},
-                  array([2,3]),
+                  np.array([2,3]),
                   None] ))
     print("done")
 

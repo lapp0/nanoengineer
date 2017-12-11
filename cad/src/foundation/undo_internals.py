@@ -532,12 +532,6 @@ def hack_qwidget_pre_win_init(): # call this once, or more times if you can't av
 
 # app startup code must call these at the right times:
 
-def call_asap_after_QWidget_and_platform_imports_are_ok():
-    if not _use_hcmi_hack: return
-    hack_qwidget_pre_win_init()
-    _hcmi.debug_print_stats('first call')
-    return
-
 def just_before_mainwindow_super_init():
     if not _use_hcmi_hack: return
     _hcmi.debug_print_stats('just before mwsem super init')

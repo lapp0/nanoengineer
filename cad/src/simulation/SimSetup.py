@@ -97,7 +97,7 @@ class SimSetup(QDialog, Ui_SimSetupDialog): # before 050325 this class was calle
                 self.watch_motion_buttongroup.addButton(obj)
         self.run_sim_btn.clicked.connect(self.createMoviePressed)
         self.cancel_btn.clicked.connect(self.close)
-        self.watch_motion_groupbox.toggled[bool].connect(self.setEnabled) ???')
+        self.watch_motion_groupbox.toggled[bool].connect(self.setEnabled)  # NEWTODO: fix
         self.watch_motion_groupbox.setEnabled(True)
         ## self.part = part
             # not yet needed, though in future we might display info

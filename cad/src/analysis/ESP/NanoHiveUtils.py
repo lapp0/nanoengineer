@@ -89,10 +89,7 @@ def get_nh_home():
     """
     Returns the Nano-Hive home (base) directory for each platform, if it exists. Otherwise, return None.
     """
-    if sys.platform == "win32": # Windows
-        basedir = "C:\Program Files\Nano-Hive"
-    else: # Linux and MacOS
-        basedir = "/usr/local/share/Nano-Hive"
+    raise Exception('remove all references to this')
 
     if not os.path.exists(basedir): return None
     return basedir

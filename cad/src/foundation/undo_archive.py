@@ -24,7 +24,7 @@ import foundation.state_utils as state_utils
 from foundation.state_utils import objkey_allocator, obj_classifier, diff_and_copy_state
 from foundation.state_utils import transclose, StatePlace, StateSnapshot
 
-from foundation.state_constants import _UNSET_
+_UNSET_ = None  # NEWTODO: remove all _UNSET_
 from foundation.state_constants import UNDO_SPECIALCASE_ATOM, UNDO_SPECIALCASE_BOND
 from foundation.state_constants import ATOM_CHUNK_ATTRIBUTE_NAME
 

@@ -27,14 +27,10 @@ def load_splashscreen():
     else:
         print("note: splash.png was not found")
 
-def init_main_window():
-    main_window = MWsemantics() # This does a lot of initialization (in MainWindow.__init__)
-    # NEWTODO: remove
-
 
 def initialize_backend():
     # TODO: refactor funciton, perhaps the backend doesn't even need early initialization
-    
+    """
     from model_updater import master_model_updater
     master_model_updater.initialize()
 
@@ -58,11 +54,10 @@ def initialize_backend():
         DnaMarker.register_MMP_RecordParser_for_DnaMarkers()
     except:
         print_compact_traceback("bug: ignoring exception in register_MMP_RecordParser_for_DnaMarkers: ")
+    """
 
 
-        
 def load_application():
-    undo_internals.call_asap_after_QWidget_and_platform_imports_are_ok()
     ### TODO: this imports undo, env, debug, and it got moved earlier
     # in the startup process at some point. Those imports are probably not
     # too likely to pull in a lot of others, but if possible we should put up
@@ -73,12 +68,14 @@ def load_application():
 
     icon_utilities.initialize_icon_utilities()
 
+    main_window = MWsemantics() # This does a lot of initialization (in MainWindow.__init__)
+
     # Create the application object (an instance of QApplication).
     QApplication.setColorSpec(QApplication.CustomColor)
     app = QApplication(sys.argv)
     load_splashscreen()
     app.lastWindowClosed .connect(app.quit)
-    
+
     initialize_backend()
 
     startup_misc.pre_main_show(main_window) # this sets main_window's geometry, among other things

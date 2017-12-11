@@ -2,6 +2,8 @@ import argparse
 import logging
 import sys, os
 
+from ne1_startup.main_startup import load_application
+
 
 def start_application(verbosity, data_dir, recursion_limit, dev_mode):
     logger = logging.getLogger('NE1_runner')
@@ -17,6 +19,8 @@ def start_application(verbosity, data_dir, recursion_limit, dev_mode):
 
     logger.info('Setting recursion limit to {}'.format(recursion_limit))
     sys.setrecursionlimit(recursion_limit)
+
+    load_application()
 
 
 def run():
