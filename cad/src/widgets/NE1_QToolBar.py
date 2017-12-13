@@ -9,8 +9,8 @@ Command Toolbar).
 @copyright: 2004-2008 Nanorex, Inc.  See LICENSE file for details.
 """
 
-from PyQt5 import QtGui, QtWidgets
-from PyQt5.QtGui import Qt, QToolBar
+from PyQt5 import Qt, QtWidgets
+from PyQt5.QtWidgets import QToolBar
 from utilities.icon_utilities import getpixmap
 from utilities.debug import print_compact_stack
 
@@ -110,4 +110,3 @@ class NE1_QToolBar(QToolBar):
         print_compact_stack("insertSeparator() not supported. " \
             "Use addSeparator() instead or implement insertSeparator()")
         return
-

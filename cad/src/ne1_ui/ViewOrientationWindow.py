@@ -16,8 +16,8 @@ So to be safe I'm putting it into ne1_ui, though refactoring
 almost all of it into "widgets" would be good to do sometime.
 """
 
-from PyQt5 import QtCore, QtGui, QtWidgets
-from PyQt5.QtGui import Qt, QMainWindow, QDockWidget
+from PyQt5 import Qt, QtCore, QtGui, QtWidgets
+from PyQt5.QtWidgets2 import QMainWindow, QDockWidget
 
 from ne1_ui.Ui_ViewOrientation import Ui_ViewOrientation
 from utilities.icon_utilities import geticon
@@ -233,4 +233,3 @@ class ViewOrientationWindow(QDockWidget, Ui_ViewOrientation):
         """
         self.win.viewOrientationAction.setChecked(False)
         ce.accept()
-

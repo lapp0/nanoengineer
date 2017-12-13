@@ -66,7 +66,7 @@ button_names = {Qt.NoButton:None, Qt.LeftButton:'LMB', Qt.RightButton:'RMB', Qt.
 
 # ==
 
-class GLPane_event_methods(object, DebugMenuMixin):
+class GLPane_event_methods(DebugMenuMixin):
     """
     """
     # bruce 041220: handle keys in GLPane (see also setFocusPolicy, above).

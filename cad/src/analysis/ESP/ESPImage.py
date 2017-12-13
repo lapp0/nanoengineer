@@ -62,7 +62,6 @@ from PyQt5.QtWidgets import QFileDialog
 
 import foundation.env as env
 from utilities import debug_flags
-from foundation.state_utils import DataMixin
 
 from model.chunk import Chunk
 from model.chem import Atom
@@ -809,7 +808,7 @@ def getMultiplicity(objList): # only used in this file
     pass
 
 
-class image_mod_record(DataMixin):
+class image_mod_record:
     """
     record the mirror/flip/rotate history of an image in a short canonical form,
     and be able to write/read/do this

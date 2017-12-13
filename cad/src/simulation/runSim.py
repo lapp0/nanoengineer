@@ -48,8 +48,10 @@ import os, sys, time
 from math import sqrt
 from time import sleep
 from datetime import datetime
-from PyQt5.QtGui import QApplication, QCursor, Qt
-from PyQt5.QtGui import QProcess, QObject, QFileInfo
+from PyQt5 import Qt
+from PyQt5.QtWidgets import QApplication
+from PyQt5.QtCore import QProcess, QObject, QFileInfo
+from PyQt5.QtGui import QCursor
 from utilities.Log import redmsg, greenmsg, orangemsg, quote_html, _graymsg
 import foundation.env as env
 from foundation.env import seen_before

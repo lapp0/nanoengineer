@@ -16,7 +16,9 @@ Some parts rewritten by Bruce circa 050427.
 import os, sys
 from PyQt5.QtWidgets import *
 from struct import unpack
-from PyQt5.QtGui import Qt, QApplication, QApplication, QCursor
+from PyQt5 import Qt
+from PyQt5.QtWidgets import QApplication, QApplication
+from PyQt5.QtGui import QCursor
 from utilities.Log import redmsg, orangemsg, greenmsg
 from geometry.VQT import A
 from operations.move_atoms_and_normalize_bondpoints import move_atoms_and_normalize_bondpoints

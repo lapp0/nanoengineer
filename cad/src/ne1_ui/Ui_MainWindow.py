@@ -1,12 +1,12 @@
-# Copyright 2004-2007 Nanorex, Inc.  See LICENSE file for details.
+ # Copyright 2004-2007 Nanorex, Inc.  See LICENSE file for details.
 """
 $Id$
 """
 
 # -*- coding: utf-8 -*-
 
-from PyQt5 import QtCore, QtGui, QtWidgets
-from PyQt5.QtGui import Qt, QWidget, QVBoxLayout
+from PyQt5 import Qt, QtCore, QtGui, QtWidgets
+from PyQt5.QtWidgets import QWidget, QVBoxLayout
 
 from utilities.icon_utilities import geticon
 

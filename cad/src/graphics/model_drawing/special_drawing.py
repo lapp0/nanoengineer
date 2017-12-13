@@ -351,7 +351,7 @@ class SpecialDrawing_UsedValueTrackerAndComparator( UsedValueTrackerAndComparato
 
 # ===
 
-class ExtraChunkDisplayList(object, SubUsageTrackingMixin):
+class ExtraChunkDisplayList(SubUsageTrackingMixin):
     """
     Abstract class. Subclass must define method
     _construct_args_for_drawing_functions.
@@ -627,4 +627,3 @@ class Chunk_SpecialDrawingHandler(object):
     pass # end of class
 
 # end
-

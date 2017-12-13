@@ -25,7 +25,8 @@ And it might as well be extended enough to replace some existing uses of QProces
 with uses of this class, if that would simplify them (but I'm not sure whether it would).
 """
 
-from PyQt5.QtGui import QProcess, QApplication, QDir
+from PyQt5.QtWidgets import QApplication
+from PyQt5.QtCore import QProcess, QDir
 from PyQt5.QtWidgets import *
 import time
 

@@ -20,7 +20,8 @@ Probably "simulation". [bruce 071214]
 import foundation.env as env, os, sys, time
 from platform_dependent.PlatformDependent import find_or_make_Nanorex_subdir
 from utilities.prefs_constants import nanohive_path_prefs_key, nanohive_enabled_prefs_key
-from PyQt5.QtGui import Qt, QApplication, QCursor
+from PyQt5.QtWidgets import QApplication
+from PyQt5.Qt import QCursor
 from widgets.StatusBar import NanoHiveProgressReporter
 
 def get_nh_simspec_filename(basename):

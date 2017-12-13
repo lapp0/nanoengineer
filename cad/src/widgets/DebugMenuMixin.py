@@ -29,8 +29,7 @@ import sys
 from PyQt5.QtWidgets import *
 import time
 
-from PyQt5.QtGui import QDialog, QGridLayout, QLabel, QPushButton, QLineEdit
-from PyQt5.QtGui import QFontDialog, QInputDialog
+from PyQt5.QtWidgets import QDialog, QGridLayout, QLabel, QPushButton, QLineEdit, QFontDialog, QInputDialog
 
 import foundation.env as env
 from utilities import debug_flags

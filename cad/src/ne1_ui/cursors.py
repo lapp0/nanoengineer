@@ -14,7 +14,9 @@ self.o.setCursor(win.ArrowCursor)).
 - Replace all bitmap cursors with color PNG cursors.
 """
 
-from PyQt5.QtGui import QCursor, QBitmap, Qt, QPainter, QApplication
+from PyQt5 import Qt
+from PyQt5.QtGui import QCursor, QBitmap, QPainter
+from PyQt5.QtWidgets import QApplication
 from PyQt5.QtWidgets import *
 import os, sys
 
@@ -292,5 +294,3 @@ def createCompositeCursor(cursor, overlayCursor,
     painter.drawPixmap(offsetX, offsetY, overlayPixmap)
     painter.end()
     return QCursor(pixmap, hotX, hotY)
-
-

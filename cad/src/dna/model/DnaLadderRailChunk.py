@@ -27,11 +27,6 @@ from dna.model.dna_model_constants import LADDER_STRAND1_BOND_DIRECTION
 
 from utilities import debug_flags
 
-try:
-    QString = unicode
-except NameError:
-    # Python 3
-    QString = str
 
 def _DEBUG_REUSE_CHUNKS():
     return debug_flags.DEBUG_DNA_UPDATER_VERBOSE
@@ -39,7 +34,7 @@ def _DEBUG_REUSE_CHUNKS():
 import foundation.env as env
 from utilities.Log import orangemsg, graymsg
 
-from PyQt5.QtGui import QFont, QString # for debug code
+from PyQt5.QtGui import QFont
 
 from utilities.debug_prefs import debug_pref, Choice_boolean_False
 
@@ -699,7 +694,7 @@ class DnaLadderRailChunk(Chunk):
         if debug_pref("DNA: draw ladder rail atom indices?",
                       Choice_boolean_False,
                       prefs_key = True):
-            font = QFont( QString("Helvetica"), 9)
+            font = QFont("Helvetica", 9)
                 # WARNING: Anything smaller than 9 pt on Mac OS X results in
                 # un-rendered text.
             out = glpane.out * 3 # bug: 3 is too large
@@ -711,7 +706,7 @@ class DnaLadderRailChunk(Chunk):
                 text = "(%d%s)" % (i, baseLetter)
                 pos = atom.posn() + out
                 glpane.renderText(pos[0], pos[1], pos[2], \
-                          QString(text), font)
+                          text, font)
                 continue
             pass
         return

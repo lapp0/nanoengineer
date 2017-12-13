@@ -21,10 +21,8 @@ convention for other Dialog subclasses.
 
 import os
 
-from PyQt5.QtWidgets import QDialog
-from PyQt5.QtWidgets import QButtonGroup
-from PyQt5.QtWidgets import QAbstractButton
-from PyQt5.QtGui import QSize, QWhatsThis
+from PyQt5.QtWidgets import QDialog, QButtonGroup, QAbstractButton, QWhatsThis
+from PyQt5.QtCore import QSize
 
 import foundation.env as env
 

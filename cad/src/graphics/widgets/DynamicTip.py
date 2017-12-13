@@ -35,7 +35,8 @@ import math
 from PyQt5.QtWidgets import *
 import time
 
-from PyQt5.QtGui import QToolTip, QRect, QPoint
+from PyQt5.QtWidgets import QToolTip
+from PyQt5.QtCore import QRect, QPoint
 
 import foundation.env as env
 from model.chem import Atom

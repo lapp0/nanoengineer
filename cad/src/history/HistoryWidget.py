@@ -29,7 +29,8 @@ from PyQt5.QtWidgets import *
 
 from PyQt5 import QtCore
 from PyQt5.QtCore import Qt
-from PyQt5.QtGui import QTextEdit, QTextOption
+from PyQt5.QtGui import QTextOption
+from PyQt5.QtWidgets import QTextEdit
 
 from utilities import debug_flags
 from platform_dependent.PlatformDependent import mkdirs_in_filename

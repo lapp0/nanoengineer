@@ -35,9 +35,7 @@ from graphics.drawing.ColorSortedDisplayList import ColorSortedDisplayList # not
 
 # ==
 
-class TransformedDisplayListsDrawer(object,
-                                    SelfUsageTrackingMixin, SubUsageTrackingMixin
-                                    ):
+class TransformedDisplayListsDrawer(SelfUsageTrackingMixin, SubUsageTrackingMixin):
     """
     Superclass for drawing classes which make use of one or more display lists
     (actually CSDLs) to be drawn relative to a transform known to the specific

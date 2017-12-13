@@ -11,7 +11,7 @@ History: Original code from MoleculeProps.py and cleaned up by Mark.
 
 from PyQt5 import QtGui
 from PyQt5.QtWidgets import *
-from PyQt5.QtGui import QDialog, QColorDialog
+from PyQt5.QtWidgets import QDialog, QColorDialog
 
 from commands.ChunkProperties.ChunkPropDialog import Ui_ChunkPropDialog
 from widgets.widget_helpers import RGBf_to_QColor, QColor_to_RGBf
