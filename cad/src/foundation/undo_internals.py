@@ -534,7 +534,7 @@ def hack_qwidget_pre_win_init(): # call this once, or more times if you can't av
 
 def just_before_mainwindow_super_init():
     if not _use_hcmi_hack: return
-    _hcmi.debug_print_stats('just before mwsem super init')
+    # _hcmi.debug_print_stats('just before mwsem super init')  #NEWTODO: probably should remove this
     return
 
 def just_after_mainwindow_super_init():

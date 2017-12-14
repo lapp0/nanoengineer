@@ -16,8 +16,7 @@ import foundation.env as env
 from PyQt5.QtWidgets import QToolButton
 from PyQt5.QtGui import QPalette
 from PyQt5.QtGui import QTextOption
-from PyQt5.QtWidgets import QLabel
-from PyQt5.QtGui import QAction, QMenu
+from PyQt5.QtWidgets import QLabel, QAction, QMenu
 from PyQt5.QtCore import Qt
 
 from PM.PM_Colors    import getPalette
@@ -321,5 +320,3 @@ class SelectNodeByNameDockWidget(PM_DockWidget):
                                  widgetList = widgetList3,
                                  label = "",
                                  spanWidth = True )
-
-

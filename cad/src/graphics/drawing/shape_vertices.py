@@ -386,7 +386,7 @@ init_cyls()
 def init_motors():
     ###data structure to construct the rotation sign for rotary motor
     numSeg = 20
-    rotS = list(map((lambda n: np.pi/2+n*2.0*np.pi/numSeg), list(range(numSeg*3/4 + 1))))
+    rotS = list(map((lambda n: np.pi/2+n*2.0*np.pi/numSeg), list(range(int(numSeg*3/4 + 1)))))  # NEWTODO: don't cast as int, use correct type to begin with
     zOffset = 0.005
     scaleS = 0.4
     drawing_globals.rotS0n = rotS0n = list(map(

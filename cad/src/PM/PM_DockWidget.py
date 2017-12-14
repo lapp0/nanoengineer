@@ -14,9 +14,9 @@ TODO:
 NOTE: methods addPmWidget and getPmWidgetPlacementParameters are duplicated from
 PM_GroupBox
 """
-from PyQt5.QtWidgets import QDockWidget
-from PyQt5.QtGui import QLabel, QPalette
-from PyQt5.QtGui import Qt, QWidget, QVBoxLayout, QGridLayout
+from PyQt5.QtWidgets import QDockWidget, QLabel, QWidget, QVBoxLayout, QGridLayout
+from PyQt5.QtGui import QPalette
+from PyQt5 import Qt
 
 from PM.PM_Colors    import getPalette
 from PM.PM_Colors import pmGrpBoxColor
@@ -294,4 +294,3 @@ class PM_DockWidget(QDockWidget):
                                        widgetSpanCols,
                                        widgetAlignment)
         self._rowCount += rowIncrement
-

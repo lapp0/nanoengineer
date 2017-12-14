@@ -21,7 +21,10 @@ For now, call this "graphics_io". [bruce 071215]
 import os, sys
 from PyQt5.QtWidgets import *
 
-from PyQt5.QtGui import QApplication, QCursor, Qt, QProcess, QMessageBox
+from PyQt5.QtWidgets import QApplication, QMessageBox
+from PyQt5.QtCore import QProcess
+from PyQt5.QtGui import QCursor
+from PyQt5 import Qt
 
 import foundation.env as env
 from utilities.Log import orangemsg ##, redmsg, greenmsg, _graymsg

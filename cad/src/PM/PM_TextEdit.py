@@ -26,7 +26,7 @@ from PyQt5.QtWidgets import QTextEdit
 ##from PyQt4.Qt import QPalette
 from PyQt5.QtWidgets import QWidget
 from PyQt5.QtGui import QTextCharFormat
-from PyQt5.QtGui import pyqtSignal
+from PyQt5.QtCore import pyqtSignal
 
 class PM_TextEdit( QTextEdit ):
     """

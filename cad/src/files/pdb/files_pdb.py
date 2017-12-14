@@ -22,7 +22,6 @@ from model.chunk import Chunk
 from model.chem import Atom
 from model.bonds import bond_atoms
 from operations.bonds_from_atoms import inferBonds
-from string import capitalize
 from model.elements import PeriodicTable, Singlet
 from platform_dependent.PlatformDependent import fix_plurals
 from utilities.Log import redmsg, orangemsg
@@ -145,7 +144,7 @@ def _readpdb(assy,
                 atomname = atomname_exceptions.get(atomname, atomname)
                 if atomname == "HE" and key == "atom":
                     atomname = "H" # see comment in atomname_exceptions
-                sym = capitalize(atomname) # turns either 'he' or 'HE' into 'He'
+                sym = atomname.upper() # turns either 'he' or 'HE' into 'He'
                 try:
                     PeriodicTable.getElement(sym)
                 except:
@@ -787,7 +786,7 @@ def _readpdb_new(assy,
                     if atomname[0] == 'H' and key == "atom":
                         atomname = "H" # see comment in atomname_exceptions
 
-                    sym = capitalize(atomname) # turns either 'he' or 'HE' into 'He'
+                    sym = atomname.upper() # turns either 'he' or 'HE' into 'He'
 
                     try:
                         PeriodicTable.getElement(sym)

@@ -7,10 +7,9 @@ Qt Dialog for fetching pdb files from the interweb
 @copyright:2008 Nanorex, Inc. See LICENSE file for details.
 """
 
-from PyQt5.QtGui import pyqtSignal
+from PyQt5.QtCore import pyqtSignal
 from PyQt5.QtWidgets import *
-from PyQt5.QtGui import QDialog, QLineEdit, QPushButton, QLabel
-from PyQt5.QtGui import QHBoxLayout, QVBoxLayout, QApplication
+from PyQt5.QtWidgets import QHBoxLayout, QVBoxLayout, QDialog, QLineEdit, QPushButton, QLabel, QApplication
 
 
 class FetchPDBDialog(QDialog):

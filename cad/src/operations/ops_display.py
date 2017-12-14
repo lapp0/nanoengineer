@@ -31,7 +31,9 @@ from utilities.constants import diDNACYLINDER
 from utilities.constants import diCYLINDER
 from utilities.constants import diSURFACE
 
-from PyQt5.QtGui import Qt, QColorDialog, QColor
+from PyQt5.QtWidgets import QColorDialog
+from PyQt5.QtGui import QColor
+from PyQt5 import Qt
 
 from utilities.Log import greenmsg, redmsg, orangemsg
 

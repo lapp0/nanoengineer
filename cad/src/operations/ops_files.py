@@ -25,10 +25,9 @@ import shutil
 import time
 
 from PyQt5.QtCore import Qt
-from PyQt5.QtGui import QFileDialog, QMessageBox, QSettings
-from PyQt5.QtWidgets import QApplication
+from PyQt5.QtWidgets import QApplication, QFileDialog, QMessageBox
 from PyQt5.QtGui import QCursor
-from PyQt5.QtCore import QProcess
+from PyQt5.QtCore import QProcess, QSettings
 
 import foundation.env as env
 from utilities import debug_flags

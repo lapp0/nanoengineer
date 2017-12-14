@@ -116,7 +116,7 @@ from dna.updater.dna_updater_globals import rail_end_atom_to_ladder
 #  implicit re them.) If that gets hard, make it a Group. (Where in the internal MT?
 #  whereever the chunks would have been, without it.)
 
-class DnaLadder(object, DnaLadder_pam_conversion_methods):
+class DnaLadder(DnaLadder_pam_conversion_methods):
     """
     [see module docstring]
 

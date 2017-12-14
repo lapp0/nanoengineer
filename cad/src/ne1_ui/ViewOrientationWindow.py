@@ -17,7 +17,7 @@ almost all of it into "widgets" would be good to do sometime.
 """
 
 from PyQt5 import Qt, QtCore, QtGui, QtWidgets
-from PyQt5.QtWidgets2 import QMainWindow, QDockWidget
+from PyQt5.QtWidgets import QMainWindow, QDockWidget
 
 from ne1_ui.Ui_ViewOrientation import Ui_ViewOrientation
 from utilities.icon_utilities import geticon
