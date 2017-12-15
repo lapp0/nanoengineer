@@ -1,4 +1,4 @@
-# Copyright 2005-2008 Nanorex, Inc.  See LICENSE file for details. 
+# Copyright 2005-2008 Nanorex, Inc.  See LICENSE file for details.
 """
 preferences.py -- Preferences system.
 
@@ -71,7 +71,7 @@ else:
     DEFAULT_PREFS_BASENAME = "default_prefs_v%s-%s.txt" % \
                              (_tmpary[0], _tmpary[1])
     #Derrick 080703
-    # note: this name is still hardcoded into 
+    # note: this name is still hardcoded into
     # packaging/Pref_Mod/pref_modifier.py
 
 _tmpFilePath = None
@@ -215,24 +215,24 @@ Details to be documented when they are implemented and become relevant.
 Usage by client code (for now -- this might change!):
 
   from foundation.preferences import prefs_context
-  
+
   prefs = prefs_context()
-  
+
   key = "some string" # naming conventions to be introduced later
-  
+
   prefs[key] = value
-  
+
   value = prefs[key] # raises KeyError if not there
-  
+
   # these dict-like operations might or might not work
   # (not yet tested; someday we will probably suppport them
   # and make them more efficient than individual operations
   # when several prefs are changed at once)
-  
+
   prefs.get(key, defaultvalue)
-  
+
   prefs.update(dict1)
-  
+
   dict1.update(prefs)
 
 """
@@ -249,20 +249,9 @@ Usage by client code (for now -- this might change!):
 # since there's no guarantee the db format without bsddb is always the same...
 # but I don't know a good-enough way to find out which db module shelve is actually using.)
 
-try:
-    import bsddb3 as _junk
-    _junk # try to tell pylint we need this import [bruce 071023]
-except:
-    print("Error: import bsddb failed")
-    sys.exit(1)
-else:
-    dbname = "bsddb"
+import shelve
 
-# And this module requires shelve. We assume without checking that if bsddb is available,
-# shelve will use it. (I don't know any straightforward way to check this. But the
-# docs for shelve say it will use it, I think. #k check this ###@@@)
-
-from bsddb3 import dbshelve as shelve
+dbname = 'somedb'
 
 # (For the actual filename of the prefs file, see the code of _make_prefs_shelf()
 #  below, which specifies the basename only; the db module decides what extension
@@ -318,13 +307,13 @@ def _make_prefs_shelf():
     _store_while_open('_format_version', 'preferences.py/v050106')
         # storing this blindly is only ok since the only prior version is one
         # we can transparently convert to this one by the "zap obskeys" above.
-    
+
     # store a comment about the last process to start using this shelf
     # (nothing yet looks at this comment)
     proc_info = "process: pid = %d, starttime = %r" % (os.getpid(), time.asctime())
     _store_while_open( '_fyi/last_proc', proc_info ) # (nothing yet looks at this)
     _close()
-    
+
     if was_just_made:
         # use DEFAULT_PREFS_BASENAME [bruce 080505 new feature];
         # file format must correspond with that written by
@@ -362,7 +351,7 @@ def _make_prefs_shelf():
                             word = word.replace(r'\r', '\r')
                             words[i] = word
                             continue
-                        return '\\'.join(words)                        
+                        return '\\'.join(words)
                     key = decode(key)
                     val = decode(val)
                     if val == 'True':
@@ -391,7 +380,7 @@ def _make_prefs_shelf():
             print("stored key, val = (%r, %r)" % (key, val))
         _close()
         pass
-    
+
     return
 
 def _close():
@@ -430,12 +419,12 @@ def _ensure_shelf_exists():
 
 #bruce 050804/050805 new features:
 
-def _track_change(pkey): 
+def _track_change(pkey):
     _tracker_for_pkey( pkey).track_change()
-    
+
 def _track_use(pkey):
     _tracker_for_pkey( pkey).track_use()
-    
+
 def _tracker_for_pkey(pkey):
     try:
         return _trackers[pkey]
@@ -563,7 +552,7 @@ class _prefs_context:
             # and no value other than the default value (according to the current code) has been stored during this session
             # and if this remains true in the present call (i.e. val equals the default value),
             # then (due to some of today's changes to other code here, particularly self.get storing dflt in cache), #####IMPLEM
-            # we won't store anything in the prefs db now.            
+            # we won't store anything in the prefs db now.
             cached_val = _cache[pkey] # this might be a default value from the present code which is not in the prefs db
         except KeyError:
             same = False
@@ -694,7 +683,7 @@ class _prefs_context:
             finally:
                 _close()
         return
-    
+
     def get_default_values(self, keys): #bruce 080131 UNTESTED @@@@
         """
         @param keys: a list of key strings (tuple not allowed; nested list not allowed)
@@ -711,7 +700,7 @@ class _prefs_context:
         pkey = self._attr2key(key)
         dflt = _defaults.get(pkey, _default_return_value)
         return dflt
-        
+
     def has_default_value(self, key): #bruce 080131/080201 UNTESTED @@@@
         """
         @param key: a key string
@@ -734,7 +723,7 @@ class _prefs_context:
         Return True if every prefs key in the given list currently has
         its default value (i.e. if restore_defaults would not
         change their current values).
-        
+
         @param keys: a list of key strings (tuple not allowed; nested list not allowed)
         """
         assert type(keys) == type([])
@@ -744,7 +733,7 @@ class _prefs_context:
             if not self.has_default_value(key):
                 return False
         return True
-    
+
     pass # end of class _prefs_context
 
 # for now, in this stub code, all modules use one context:
@@ -782,9 +771,9 @@ def declare_pref( attrname, typecode, prefskey, dflt = None ): # arg format is s
 #        except:
 #            print_compact_traceback( "ignoring prefs_table entry %r with this exception: " % (prefrec,) )
 #        pass
-#    
+#
 #    env.prefs = prefs_context() # this is only ok because all modules use the same prefs context.
-#    
+#
 #    if 0 and debug_flags.atom_debug:
 #        print "atom_debug: done with prefs_table" # remove when works
 #    return
@@ -835,5 +824,5 @@ if __name__ == '__main__':
     testprefs = prefs_context()
     testprefs['x'] = 7
     print("should be 7:",testprefs['x'])
-    
+
 # end

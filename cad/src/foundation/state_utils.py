@@ -929,48 +929,6 @@ del numeric_array_type
 # functions above, for efficiency
 pass
 
-# ==
-
-def copy_QColor(obj):
-    from PyQt5.QtGui import QColor
-    assert obj.__class__ is QColor # might fail (in existing calls) if some other class has the same name
-    if (env.debug() or DEBUG_PYREX_ATOMS):
-        print("atom_debug: ran copy_QColor") # remove when works once; will equality work right? ###@@@
-    return QColor(obj)
-
-try:
-    # this is the simplest way to handle QColor for now; if always importing qt from this module
-    # becomes a problem (e.g. if this module should work in environments where qt is not available),
-    # make other modules register QColor with us, or make sure it's ok if this import fails
-    # (it is in theory).
-    from PyQt5.QtGui import QColor
-except:
-    if (env.debug() or DEBUG_PYREX_ATOMS):
-        print("fyi: can't import QColor from qt, so not registering its copy function")
-else:
-    QColor_type = type(QColor())
-        # note: this is the type of a QColor instance, not of the class!
-        # type(QColor) is <type 'sip.wrappertype'>, which we'll just treat as a constant,
-        # so we don't need to handle it specially.
-    #if QColor_type != InstanceType:
-        ## wrong: copiers_for_InstanceType_class_names['qt.QColor'] = copy_QColor
-    #    _known_type_copiers[ QColor_type ] = copy_QColor
-    #    _known_mutable_types[ QColor_type ] = True # not sure if needed, but might be, and safe
-    #else:
-    #    print("Warning: QColor_type is %r, id %#x,\n and InstanceType is %r, id %#x," % \
-    #          ( QColor_type, id(QColor_type), InstanceType, id(InstanceType) ))
-    #    print(" and they should be != but are not,")
-    #    print(" so Undo is not yet able to copy QColors properly; this is not known to cause bugs")
-    #    print(" but its full implications are not yet understood. So far this is only known to happen")
-    #    print(" in some systems running Mandrake Linux 10.1. [message last updated 060421]")
-    print("NEWTODO")
-    # no scanner for QColor is needed, since it contains no InstanceType/InstanceLike
-    # objects. no same_helper is needed, since '!=' will work correctly
-    # (only possible since it contains no general Python objects).
-    del QColor, QColor_type
-    pass
-
-# ==
 
 ##e Do we need a copier function for a Qt event? Probably not, since they're only safe
 # to store after making copies (see comments around QMouseEvent in selectMode.py circa 060220),

@@ -62,6 +62,7 @@ BUT WE SHOULD LOOK INTO THE LICENSE TO MAKE SURE IT'S OK!
 
 import os
 import time
+import shelve
 import NE1_Build_Constants
 
 from utilities import debug_flags
@@ -75,6 +76,8 @@ from utilities.constants import str_or_unicode
 from foundation.changes import UsageTracker
 
 from utilities.prefs_constants import prefs_table
+
+dbname = 'somedb'
 
 _tmpary = NE1_Build_Constants.NE1_RELEASE_VERSION.split(".")
 if len(_tmpary) >= 3:
@@ -194,39 +197,10 @@ Usage by client code (for now -- this might change!):
 # since there's no guarantee the db format without bsddb is always the same...
 # but I don't know a good-enough way to find out which db module shelve is actually using.)
 
-_USE_bsddb3 = NE1_Build_Constants.NE1_USE_bsddb3
-
-try:
-    if _USE_bsddb3:
-        import bsddb3 as _junk
-    else:
-        import bsddb as _junk
-    _junk # try to tell pylint we need this import [bruce 071023]
-except:
-    dbname = "somedb"
-    print("""\
-
-Warning: import bsddb failed; using some other db format for preferences file;
- giving it a different name in case that uses an incompatible binary format;
- this means, when you upgrade to bsddb, you'll lose your preferences.""")
-    if EndUser.getAlternateSourcePath() != None:
-        # [bruce 070704]
-        print("(Note: as of 070704 this is a common side-effect of using the")
-        print("ALTERNATE_CAD_SRC_PATH feature, since the built release has a")
-        print("patch to use bsddb3 which is not present in cvs code.")
-        print("This situation will probably be fixed soon.)")
-    print()
-else:
-    dbname = "bsddb"
-
+# NEWTODO: remove these comments
 # And this module requires shelve. We assume without checking that if bsddb is available,
 # shelve will use it. (I don't know any straightforward way to check this. But the
 # docs for shelve say it will use it, I think. #k check this ###@@@)
-
-if _USE_bsddb3:
-    from bsddb3 import dbshelve as shelve
-else:
-    import shelve
 
 # (For the actual filename of the prefs file, see the code of _make_prefs_shelf()
 #  below, which specifies the basename only; the db module decides what extension
