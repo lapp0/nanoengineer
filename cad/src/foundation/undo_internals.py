@@ -539,7 +539,7 @@ def just_before_mainwindow_super_init():
 
 def just_after_mainwindow_super_init():
     if not _use_hcmi_hack: return
-    _hcmi.debug_print_stats('just after mwsem super init')
+    #_hcmi.debug_print_stats('just after mwsem super init')  #NEWTODO: probably should remove this
     return
 
 def just_before_mainwindow_init_returns():

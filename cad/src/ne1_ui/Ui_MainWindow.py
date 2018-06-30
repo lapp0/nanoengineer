@@ -5,7 +5,7 @@ $Id$
 
 # -*- coding: utf-8 -*-
 
-from PyQt5 import Qt, QtCore, QtGui, QtWidgets
+from PyQt5 import QtCore, QtGui, QtWidgets
 from PyQt5.QtWidgets import QWidget, QVBoxLayout
 
 from utilities.icon_utilities import geticon
@@ -126,7 +126,7 @@ class Ui_MainWindow(object):
         """
 
         # Add toolbars to the Top area of the main window (first row)
-        toolbarArea = Qt.TopToolBarArea
+        toolbarArea = QtCore.Qt.TopToolBarArea
         Ui_StandardToolBar.setupUi(self, toolbarArea)
         Ui_BuildToolsToolBar.setupUi(self, toolbarArea)
         self.addToolBarBreak (toolbarArea) # Starts second row.
@@ -135,7 +135,7 @@ class Ui_MainWindow(object):
         Ui_SimulationToolBar.setupUi(self, toolbarArea)
 
         # Add toolbars to the Right area of the main window.
-        toolbarArea = Qt.RightToolBarArea
+        toolbarArea = QtCore.Qt.RightToolBarArea
         Ui_SelectToolBar.setupUi(self, toolbarArea)
         Ui_DisplayStylesToolBar.setupUi(self, toolbarArea)
         Ui_RenderingToolBar.setupUi(self, toolbarArea)

@@ -43,7 +43,8 @@ TODO: Code cleanup planned for Alpha 10 (lower priority) -- Ninad 2007-09-11
 
 """
 
-from PyQt5    import QtGui
+from PyQt5 import QtGui
+from PyQt5 import QtWidgets
 from PyQt5.QtWidgets import QWidget
 from PyQt5.QtWidgets import QSizePolicy
 from PyQt5.QtWidgets import QHBoxLayout

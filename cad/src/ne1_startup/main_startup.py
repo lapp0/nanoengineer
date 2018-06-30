@@ -2,7 +2,6 @@
 
 # Copyright 2004-2008 Nanorex, Inc.  See LICENSE file for details.
 import sys
-from PyQt5.QtWidgets import *
 from PyQt5.QtWidgets import *  # <- lol NEWTODO: remove all * imports
 import time
 import os
@@ -65,6 +64,7 @@ def load_application():
     # how to do that. The point of this function is mostly to wrap every signal->slot
     # connection -- maybe it's sufficient to do that before creating the main
     # window rather than before creating the app? [bruce 071008 comment]
+    app = QApplication(sys.argv)
 
     icon_utilities.initialize_icon_utilities()
 

@@ -2348,7 +2348,7 @@ if is_new_style_class(Bond): #bruce 090205
     # The comments also say how to fix this (not hard, but does require
     # changes to the C version of same_vals). Note that on 090206 I'm
     # making this true as an experiment. ### TODO: cleanup before release.
-    msg = "WARNING: Bond (%r) is new-style -- possible Undo bugs related " \
+    msg = "NEWTODO: fix and remove- WARNING: Bond (%r) is new-style -- possible Undo bugs related " \
           "to same_vals; see comments dated 090205" % Bond
     print(msg)
 ##    assert 0, msg + ". Assert 0 to make sure this is noticed."

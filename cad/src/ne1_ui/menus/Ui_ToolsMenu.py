@@ -3,7 +3,7 @@
 $Id$
 """
 
-from PyQt5 import QtGui, QtWidgets
+from PyQt5 import QtGui, QtWidgets, QtCore
 
 import ne1_ui.menus.Ui_BuildStructuresMenu as Ui_BuildStructuresMenu
 import ne1_ui.menus.Ui_BuildToolsMenu as Ui_BuildToolsMenu

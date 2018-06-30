@@ -8,7 +8,7 @@ and others to come (i.e. Sunflow)
 @copyright: 2005-2007 Nanorex, Inc.  See LICENSE file for details.
 """
 
-from PyQt5 import QtGui, QtWidgets
+from PyQt5 import QtGui, QtWidgets, QtCore
 
 def setupUi(win):
     """

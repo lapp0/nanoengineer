@@ -225,4 +225,4 @@ def setupUi(win):
 
     win.buildProteinAction.triggered.connect(win.activateProteinTool)
 
-    win.fileExitAction.activated.connect(win.close)
+    win.fileExitAction.triggered.connect(win.close)   # NEWTODO: ensure .activated -> .triggered ok

@@ -3,7 +3,7 @@
 $Id$
 """
 
-from PyQt5 import QtGui, QtWidgets
+from PyQt5 import QtGui, QtWidgets, QtCore
 
 def setupUi(win):
     """

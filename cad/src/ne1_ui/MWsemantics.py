@@ -128,8 +128,7 @@ class MWsemantics(QMainWindow,
                   viewSlotsMixin,
                   displaySlotsMixin,
                   modifySlotsMixin,
-                  Ui_MainWindow,
-                  object):
+                  Ui_MainWindow):
     """
     The single Main Window object.
     """
@@ -148,9 +147,6 @@ class MWsemantics(QMainWindow,
     defaultFont = None
 
     def __init__(self, parent = None, name = None):
-
-        assert isinstance(self, object) #bruce 071008
-
         self._init_part_two_done = False
         self._activepw = None
 
@@ -2174,7 +2170,7 @@ class MWsemantics(QMainWindow,
         """
         if recentfiles_use_QSettings:
             prefsSetting = QSettings("Nanorex", "NanoEngineer-1")
-            fileList = prefsSetting.value(RECENTFILES_QSETTINGS_KEY).toStringList()
+            fileList = prefsSetting.value(RECENTFILES_QSETTINGS_KEY, type=list)
         else:
             prefsSetting = preferences.prefs_context()
             fileList = prefsSetting.get(RECENTFILES_QSETTINGS_KEY, [])
@@ -2262,7 +2258,7 @@ class MWsemantics(QMainWindow,
             self.fileMenu.insertMenu(self.fileCloseAction,
                                      self.openRecentFilesMenu)
 
-        self.openRecentFilesMenu.triggered[QAction].connect(self.openRecentFile)
+        self.openRecentFilesMenu.triggered[QtWidgets.QAction].connect(self.openRecentFile)
         return
 
     def colorSchemeCommand(self):
@@ -2293,4 +2289,3 @@ class MWsemantics(QMainWindow,
     pass # end of class MWsemantics
 
 # end
-

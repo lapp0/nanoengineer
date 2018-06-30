@@ -3,7 +3,7 @@
 $Id$
 """
 
-from PyQt5 import QtGui, QtWidgets
+from PyQt5 import QtGui, QtWidgets, QtCore
 from PyQt5.QtCore import Qt
 from foundation.wiki_help import QToolBar_WikiHelp
 

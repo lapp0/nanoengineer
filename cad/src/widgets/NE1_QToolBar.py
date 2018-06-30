@@ -9,7 +9,7 @@ Command Toolbar).
 @copyright: 2004-2008 Nanorex, Inc.  See LICENSE file for details.
 """
 
-from PyQt5 import Qt, QtWidgets
+from PyQt5 import QtCore, QtWidgets
 from PyQt5.QtWidgets import QToolBar
 from utilities.icon_utilities import getpixmap
 from utilities.debug import print_compact_stack
@@ -79,7 +79,7 @@ class NE1_QToolBar(QToolBar):
         @param orientation: The orientation of this separator.
         @type  orientation: U{B{Qt.Orientation enum}<http://doc.trolltech.com/4.2/qtoolbar.html#orientation-prop>}
         """
-        if orientation == Qt.Horizontal:
+        if orientation == QtCore.Qt.Horizontal:
             widget.setPixmap(
                 getpixmap("ui/toolbars/h_separator.png"))
         else:
@@ -96,7 +96,7 @@ class NE1_QToolBar(QToolBar):
             _toolbarSeparator.setObjectName(_name)
             self._separatorNumber += 1
         self.setSeparatorWidgetPixmap(_toolbarSeparator, self.orientation())
-        _toolbarSeparator.setAlignment(Qt.AlignHCenter | Qt.AlignVCenter)
+        _toolbarSeparator.setAlignment(QtCore.Qt.AlignHCenter | QtCore.Qt.AlignVCenter)
         self.addWidget(_toolbarSeparator)
         self._separatorList.append(_toolbarSeparator)
 

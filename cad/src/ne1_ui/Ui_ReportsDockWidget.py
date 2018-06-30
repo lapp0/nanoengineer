@@ -14,7 +14,7 @@ Mark 2008-01-05: Created.
 """
 from history.HistoryWidget import HistoryWidget
 from PyQt5.QtWidgets import *
-from PyQt5 import Qt
+from PyQt5.QtCore import Qt
 from PyQt5.QtGui import QPalette
 from PyQt5.QtWidgets import QSizePolicy, QDockWidget, QWidget, QVBoxLayout, QTabWidget
 from PM.PM_Colors import pmGrpBoxColor
@@ -55,7 +55,7 @@ class Ui_ReportsDockWidget(QDockWidget):
         # Create vertical box layout
         self.vBoxLayout = QVBoxLayout(self._containerWidget)
         vBoxLayout = self.vBoxLayout
-        vBoxLayout.setMargin(0)
+        vBoxLayout.setContentsMargins(0, 0, 0, 0)  # NEWTODO: this may already be its default?
         vBoxLayout.setSpacing(0)
 
         self.setEnabled(True)
@@ -82,7 +82,7 @@ class Ui_ReportsDockWidget(QDockWidget):
 
         self.historyTabLayout = QVBoxLayout(self.historyTab)
         historyTabLayout = self.historyTabLayout
-        historyTabLayout.setMargin(0)
+        historyTabLayout.setContentsMargins(0, 0, 0, 0)  # NEWTODO: this may already be its default?
         historyTabLayout.setSpacing(0)
 
         self._addHistoryWidget()

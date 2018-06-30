@@ -3,7 +3,7 @@
 $Id$
 """
 
-from PyQt5 import QtGui, QtWidgets
+from PyQt5 import QtGui, QtWidgets, QtCore
 
 # Hybrid display is an experimental work. Its action and others need to be
 # removed. For now, I am just removing it using the following flag as I have

@@ -2,7 +2,7 @@
 """
 $Id$
 """
-from PyQt5 import QtGui, QtWidgets
+from PyQt5 import QtGui, QtWidgets, QtCore
 from foundation.wiki_help import QToolBar_WikiHelp
 
 def setupUi(win, toolbarArea):

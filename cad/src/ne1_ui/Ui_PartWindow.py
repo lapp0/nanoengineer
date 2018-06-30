@@ -27,9 +27,8 @@ key attrs and widgets (i.e. pwLeftArea and pwBottomArea)
 import os
 from PyQt5.QtWidgets import *
 
-from PyQt5 import Qt
 from PyQt5.QtWidgets import QWidget, QFrame, QVBoxLayout, QSplitter, QTabWidget, QScrollArea, QSizePolicy
-from PyQt5.QtCore import QTimer
+from PyQt5.QtCore import QTimer, Qt
 from graphics.widgets.GLPane import GLPane
 from PM.PM_Constants import PM_DEFAULT_WIDTH, PM_MAXIMUM_WIDTH, PM_MINIMUM_WIDTH
 from utilities.icon_utilities import geticon
@@ -171,7 +170,7 @@ class Ui_PartWindow(QWidget):
         # The main layout for the part window is a VBoxLayout <pwVBoxLayout>.
         self.pwVBoxLayout = QVBoxLayout(self)
         pwVBoxLayout = self.pwVBoxLayout
-        pwVBoxLayout.setMargin(0)
+        pwVBoxLayout.setContentsMargins(0, 0, 0, 0)
         pwVBoxLayout.setSpacing(0)
 
         # ################################################################
